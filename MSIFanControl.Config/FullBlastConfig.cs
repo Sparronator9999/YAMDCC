@@ -18,27 +18,27 @@ using System.Xml.Serialization;
 
 namespace MSIFanControl.Config
 {
-	/// <summary>
-	/// Represents a Cooler Boost configuration.
-	/// </summary>
-	public sealed class FullBlastConfig
-	{
-		/// <summary>
-		/// The register that controls the Cooler Boost function.
-		/// </summary>
-		[XmlElement]
-		public byte Register;
+    /// <summary>
+    /// Represents a Cooler Boost configuration.
+    /// </summary>
+    public sealed class FullBlastConfig
+    {
+        /// <summary>
+        /// The register that controls the Cooler Boost function.
+        /// </summary>
+        [XmlElement]
+        public byte Register;
 
-		/// <summary>
-		/// The value that turns on Cooler Boost.
-		/// </summary>
-		[XmlElement]
-		public byte OnValue;
+        /// <summary>
+        /// The value that turns on Cooler Boost.
+        /// </summary>
+        [XmlElement]
+        public byte OnValue;
 
-		/// <summary>
-		/// The value that turns off Cooler Boost.
-		/// </summary>
-		[XmlElement]
-		public byte OffValue;
-	}
+        /// <summary>
+        /// The value that turns off Cooler Boost.
+        /// </summary>
+        [XmlElement]
+        public byte OffValue;
+    }
 }

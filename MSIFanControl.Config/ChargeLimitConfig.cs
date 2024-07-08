@@ -18,33 +18,33 @@ using System.Xml.Serialization;
 
 namespace MSIFanControl.Config
 {
-	/// <summary>
-	/// Represents a charge threshold (a.k.a charge limit) config for a laptop.
-	/// </summary>
-	public sealed class ChargeLimitConfig
-	{
-		/// <summary>
-		/// The register that controls the charge threshold.
-		/// </summary>
-		[XmlElement]
-		public byte Register;
+    /// <summary>
+    /// Represents a charge threshold (a.k.a charge limit) config for a laptop.
+    /// </summary>
+    public sealed class ChargeLimitConfig
+    {
+        /// <summary>
+        /// The register that controls the charge threshold.
+        /// </summary>
+        [XmlElement]
+        public byte Register;
 
-		/// <summary>
-		/// The value that corresponds to 0% battery threshold.
-		/// </summary>
-		[XmlElement]
-		public byte MinValue;
+        /// <summary>
+        /// The value that corresponds to 0% battery threshold.
+        /// </summary>
+        [XmlElement]
+        public byte MinValue;
 
-		/// <summary>
-		/// The value that corresponds to 100% battery threshold.
-		/// </summary>
-		[XmlElement]
-		public byte MaxValue;
+        /// <summary>
+        /// The value that corresponds to 100% battery threshold.
+        /// </summary>
+        [XmlElement]
+        public byte MaxValue;
 
-		/// <summary>
-		/// The currently set Charge Threshold value.
-		/// </summary>
-		[XmlElement]
-		public byte Value;
-	}
+        /// <summary>
+        /// The currently set Charge Threshold value.
+        /// </summary>
+        [XmlElement]
+        public byte Value;
+    }
 }

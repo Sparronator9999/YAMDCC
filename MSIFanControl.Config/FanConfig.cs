@@ -18,79 +18,79 @@ using System.Xml.Serialization;
 
 namespace MSIFanControl.Config
 {
-	/// <summary>
-	/// Represents a configuration for a fan in the target laptop.
-	/// </summary>
-	public sealed class FanConfig
-	{
-		/// <summary>
-		/// The display name of the fan in the curve editor.
-		/// </summary>
-		[XmlElement]
-		public string Name;
+    /// <summary>
+    /// Represents a configuration for a fan in the target laptop.
+    /// </summary>
+    public sealed class FanConfig
+    {
+        /// <summary>
+        /// The display name of the fan in the curve editor.
+        /// </summary>
+        [XmlElement]
+        public string Name;
 
-		/// <summary>
-		/// The minimum possible register value for the fan speed.
-		/// </summary>
-		[XmlElement]
-		public byte MinSpeed;
+        /// <summary>
+        /// The minimum possible register value for the fan speed.
+        /// </summary>
+        [XmlElement]
+        public byte MinSpeed;
 
-		/// <summary>
-		/// The maximum possible register value for the fan speed.
-		/// </summary>
-		[XmlElement]
-		public byte MaxSpeed;
+        /// <summary>
+        /// The maximum possible register value for the fan speed.
+        /// </summary>
+        [XmlElement]
+        public byte MaxSpeed;
 
-		/// <summary>
-		/// The zero-based index of the <see cref="FanCurveConfig"/> to apply for this fan.
-		/// </summary>
-		[XmlElement]
-		public int CurveSel;
+        /// <summary>
+        /// The zero-based index of the <see cref="FanCurveConfig"/> to apply for this fan.
+        /// </summary>
+        [XmlElement]
+        public int CurveSel;
 
-		/// <summary>
-		/// The register to read to get the fan speed percentage.
-		/// </summary>
-		[XmlElement]
-		public byte SpeedReadReg;
+        /// <summary>
+        /// The register to read to get the fan speed percentage.
+        /// </summary>
+        [XmlElement]
+        public byte SpeedReadReg;
 
-		/// <summary>
-		/// The register to read to get the temperature
-		/// of the component that controls this fan's speed.
-		/// </summary>
-		[XmlElement]
-		public byte TempReadReg;
+        /// <summary>
+        /// The register to read to get the temperature
+        /// of the component that controls this fan's speed.
+        /// </summary>
+        [XmlElement]
+        public byte TempReadReg;
 
-		/// <summary>
-		/// Contains information on how to calculate the fan RPM.
-		/// </summary>
-		/// <remarks>
-		/// May be <c>null</c>.
-		/// </remarks>
-		[XmlElement]
-		public FanRPMConfig RPMConfig;
+        /// <summary>
+        /// Contains information on how to calculate the fan RPM.
+        /// </summary>
+        /// <remarks>
+        /// May be <c>null</c>.
+        /// </remarks>
+        [XmlElement]
+        public FanRPMConfig RPMConfig;
 
-		/// <summary>
-		/// The registers that the up thresholds are written to.
-		/// </summary>
-		[XmlArray]
-		public byte[] UpThresholdRegs;
+        /// <summary>
+        /// The registers that the up thresholds are written to.
+        /// </summary>
+        [XmlArray]
+        public byte[] UpThresholdRegs;
 
-		/// <summary>
-		/// The registers that the down thresholds are written to.
-		/// </summary>
-		[XmlArray]
-		public byte[] DownThresholdRegs;
+        /// <summary>
+        /// The registers that the down thresholds are written to.
+        /// </summary>
+        [XmlArray]
+        public byte[] DownThresholdRegs;
 
-		/// <summary>
-		/// The registers to write a fan speed profile to.
-		/// </summary>
-		[XmlArray]
-		public byte[] FanCurveRegs;
+        /// <summary>
+        /// The registers to write a fan speed profile to.
+        /// </summary>
+        [XmlArray]
+        public byte[] FanCurveRegs;
 
-		/// <summary>
-		/// The list of <see cref="FanCurveConfig"/>s associated with this fan.
-		/// </summary>
-		[XmlArray]
-		public FanCurveConfig[] FanCurveConfigs;
-	}
+        /// <summary>
+        /// The list of <see cref="FanCurveConfig"/>s associated with this fan.
+        /// </summary>
+        [XmlArray]
+        public FanCurveConfig[] FanCurveConfigs;
+    }
 }

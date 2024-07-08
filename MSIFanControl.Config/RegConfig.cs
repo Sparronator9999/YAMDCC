@@ -18,31 +18,31 @@ using System.Xml.Serialization;
 
 namespace MSIFanControl.Config
 {
-	/// <summary>
-	/// Represents miscellaneous register configurations for the target
-	/// system. May be required to enable fan control via MSI Fan Control.
-	/// </summary>
-	/// <remarks>
-	/// All RegConfigs defined here will be applied on service start.
-	/// </remarks>
-	public sealed class RegConfig
-	{
-		/// <summary>
-		/// A description of what this config does.
-		/// </summary>
-		[XmlElement]
-		public string Description;
+    /// <summary>
+    /// Represents miscellaneous register configurations for the target
+    /// system. May be required to enable fan control via MSI Fan Control.
+    /// </summary>
+    /// <remarks>
+    /// All RegConfigs defined here will be applied on service start.
+    /// </remarks>
+    public sealed class RegConfig
+    {
+        /// <summary>
+        /// A description of what this config does.
+        /// </summary>
+        [XmlElement]
+        public string Description;
 
-		/// <summary>
-		/// The register to write to.
-		/// </summary>
-		[XmlElement]
-		public byte Register;
+        /// <summary>
+        /// The register to write to.
+        /// </summary>
+        [XmlElement]
+        public byte Register;
 
-		/// <summary>
-		/// The value to write to the register.
-		/// </summary>
-		[XmlElement]
-		public byte Value;
-	}
+        /// <summary>
+        /// The value to write to the register.
+        /// </summary>
+        [XmlElement]
+        public byte Value;
+    }
 }

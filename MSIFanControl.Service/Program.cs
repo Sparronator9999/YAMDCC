@@ -14,36 +14,36 @@
 // You should have received a copy of the GNU General Public License along with
 // MSI Fan Control. If not, see <https://www.gnu.org/licenses/>.
 
+using MSIFanControl.Logs;
 using System;
 using System.Resources;
 using System.ServiceProcess;
-using MSIFanControl.Logs;
 
 namespace MSIFanControl.Service
 {
-	internal static class Program
-	{
-		private static readonly Logger Log = new Logger
-		{
-			ConsoleLogLevel = LogLevel.None,
-			FileLogLevel = LogLevel.Debug,
-		};
+    internal static class Program
+    {
+        private static readonly Logger Log = new Logger
+        {
+            ConsoleLogLevel = LogLevel.None,
+            FileLogLevel = LogLevel.Debug,
+        };
 
-		private static readonly ResourceManager Res = new ResourceManager(typeof(Program));
+        private static readonly ResourceManager Res = new ResourceManager(typeof(Program));
 
-		/// <summary>
-		/// The main entry point for the application.
-		/// </summary>
-		private static void Main()
-		{
-			AppDomain.CurrentDomain.UnhandledException += LogUnhandledException;
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        private static void Main()
+        {
+            AppDomain.CurrentDomain.UnhandledException += LogUnhandledException;
 
-			ServiceBase.Run(new ServiceBase[] { new svcFanControl(Log, Res) });
-		}
+            ServiceBase.Run(new ServiceBase[] { new svcFanControl(Log, Res) });
+        }
 
-		private static void LogUnhandledException(object sender, UnhandledExceptionEventArgs e)
-		{
-			Log.Fatal(Res.GetString("svcException"), e.ExceptionObject);
-		}
-	}
+        private static void LogUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Log.Fatal(Res.GetString("svcException"), e.ExceptionObject);
+        }
+    }
 }

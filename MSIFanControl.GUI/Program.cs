@@ -25,137 +25,137 @@ using System.Windows.Forms;
 
 namespace MSIFanControl.GUI
 {
-	internal static class Program
-	{
-		private static ResourceManager Resources;
+    internal static class Program
+    {
+        private static ResourceManager Resources;
 
-		/// <summary>
-		/// The main entry point for the application.
-		/// </summary>
-		[STAThread]
-		private static void Main()
-		{
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
+        /// <summary>
+        /// The main entry point for the application.
+        /// </summary>
+        [STAThread]
+        private static void Main()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
 
-			Resources = new ResourceManager(typeof(Program));
+            Resources = new ResourceManager(typeof(Program));
 
-			if (ServiceExists("msifcsvc"))
-			{
-				ServiceController msifcSvc = new ServiceController("msifcsvc");
+            if (ServiceExists("msifcsvc"))
+            {
+                ServiceController msifcSvc = new ServiceController("msifcsvc");
 
-				// Check if the service is stopped:
-				try
-				{
-					if (msifcSvc.Status == ServiceControllerStatus.Stopped)
-					{
-						if (MessageBox.Show(
-							Resources.GetString("svcNotRunning"),
-							"Service not running", MessageBoxButtons.YesNo,
-							MessageBoxIcon.Information) == DialogResult.Yes)
-						{
-							if (RunCmd("net", "start msifcsvc") != 0)
-							{
-								MessageBox.Show(Resources.GetString("svcErrorCrash"),
-									"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-								return;
-							}
-						}
-						else return;
-					}
-				}
-				catch (Exception ex)
-				{
-					MessageBox.Show(
-						string.Format(Resources.GetString("svcErrorStart"), ex),
-						"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
-				}
-				finally
-				{
-					msifcSvc.Close();
-				}
-			}
-			else // Service doesn't exist
-			{
-				if (File.Exists("msifcsvc.exe"))
-				{
-					if (MessageBox.Show(
-						Resources.GetString("svcNotInstalled"),
-						"Service not installed",
-						MessageBoxButtons.YesNo,
-						MessageBoxIcon.Information) == DialogResult.Yes)
-					{
-						if (InstallService("msifcsvc"))
-						{
-							MessageBox.Show(Resources.GetString("svcInstallSuccess"),
-								"Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-						}
-						else
-						{
-							MessageBox.Show(Resources.GetString("svcInstallFail"),
-								"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						}
-					}
-				}
-				else
-				{
-					MessageBox.Show(Resources.GetString("svcNotFound"),
-						"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				}
-				return;
-			}
+                // Check if the service is stopped:
+                try
+                {
+                    if (msifcSvc.Status == ServiceControllerStatus.Stopped)
+                    {
+                        if (MessageBox.Show(
+                            Resources.GetString("svcNotRunning"),
+                            "Service not running", MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Information) == DialogResult.Yes)
+                        {
+                            if (RunCmd("net", "start msifcsvc") != 0)
+                            {
+                                MessageBox.Show(Resources.GetString("svcErrorCrash"),
+                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+                        }
+                        else return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(
+                        string.Format(Resources.GetString("svcErrorStart"), ex),
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                finally
+                {
+                    msifcSvc.Close();
+                }
+            }
+            else // Service doesn't exist
+            {
+                if (File.Exists("msifcsvc.exe"))
+                {
+                    if (MessageBox.Show(
+                        Resources.GetString("svcNotInstalled"),
+                        "Service not installed",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Information) == DialogResult.Yes)
+                    {
+                        if (InstallService("msifcsvc"))
+                        {
+                            MessageBox.Show(Resources.GetString("svcInstallSuccess"),
+                                "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                        else
+                        {
+                            MessageBox.Show(Resources.GetString("svcInstallFail"),
+                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(Resources.GetString("svcNotFound"),
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                return;
+            }
 
-			// Start the program when the service finishes starting:
-			Application.Run(new MainWindow(Resources));
-		}
+            // Start the program when the service finishes starting:
+            Application.Run(new MainWindow(Resources));
+        }
 
-		private static bool ServiceExists(string svcName) =>
-			ServiceController.GetServices().Any(s => s.ServiceName == svcName);
+        private static bool ServiceExists(string svcName) =>
+            ServiceController.GetServices().Any(s => s.ServiceName == svcName);
 
-		private static bool InstallService(string exeName)
-		{
-			string runtimePath = RuntimeEnvironment.GetRuntimeDirectory();
-			int exitCode = RunCmd($"{runtimePath}\\installutil.exe", $"{exeName}.exe");
-			DeleteInstallUtilLogs();
-			return exitCode == 0;
-		}
+        private static bool InstallService(string exeName)
+        {
+            string runtimePath = RuntimeEnvironment.GetRuntimeDirectory();
+            int exitCode = RunCmd($"{runtimePath}\\installutil.exe", $"{exeName}.exe");
+            DeleteInstallUtilLogs();
+            return exitCode == 0;
+        }
 
-		private static void DeleteInstallUtilLogs()
-		{
-			foreach (string file in Directory.GetFiles(".", "*.InstallLog", SearchOption.TopDirectoryOnly))
-			{
-				try
-				{
-					File.Delete(file);
-				}
-				catch (DirectoryNotFoundException) { }
-			}
-		}
+        private static void DeleteInstallUtilLogs()
+        {
+            foreach (string file in Directory.GetFiles(".", "*.InstallLog", SearchOption.TopDirectoryOnly))
+            {
+                try
+                {
+                    File.Delete(file);
+                }
+                catch (DirectoryNotFoundException) { }
+            }
+        }
 
-		/// <summary>
-		/// Runs a command, waiting for it to exit.
-		/// </summary>
-		/// <param name="exe">The executable to run.</param>
-		/// <param name="args">The arguments to pass to the executable.</param>
-		/// <returns>The exit code generated by the called executable.</returns>
-		private static int RunCmd(string exe, string args)
-		{
-			Process p = new Process()
-			{
-				StartInfo = new ProcessStartInfo(exe)
-				{
-					CreateNoWindow = true,
-					UseShellExecute = false,
-					Verb = "runas",
-					Arguments = args,
-				},
-			};
+        /// <summary>
+        /// Runs a command, waiting for it to exit.
+        /// </summary>
+        /// <param name="exe">The executable to run.</param>
+        /// <param name="args">The arguments to pass to the executable.</param>
+        /// <returns>The exit code generated by the called executable.</returns>
+        private static int RunCmd(string exe, string args)
+        {
+            Process p = new Process()
+            {
+                StartInfo = new ProcessStartInfo(exe)
+                {
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    Verb = "runas",
+                    Arguments = args,
+                },
+            };
 
-			p.Start();
-			p.WaitForExit();
+            p.Start();
+            p.WaitForExit();
 
-			return p.ExitCode;
-		}
-	}
+            return p.ExitCode;
+        }
+    }
 }

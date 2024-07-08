@@ -20,15 +20,15 @@ using System.Resources;
 
 namespace MSIFanControl.Service
 {
-	[RunInstaller(true)]
-	public partial class ProjectInstaller : Installer
-	{
-		public ProjectInstaller()
-		{
-			InitializeComponent();
+    [RunInstaller(true)]
+    public partial class ProjectInstaller : Installer
+    {
+        public ProjectInstaller()
+        {
+            InitializeComponent();
 
-			ResourceManager res = new ResourceManager(typeof(Program));
-			svcInstaller.Description = res.GetString("svcDesc");
-		}
-	}
+            ResourceManager res = new ResourceManager(typeof(Program));
+            svcInstaller.Description = res.GetString("svcDesc");
+        }
+    }
 }

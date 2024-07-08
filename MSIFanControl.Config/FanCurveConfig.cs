@@ -18,49 +18,49 @@ using System.Xml.Serialization;
 
 namespace MSIFanControl.Config
 {
-	/// <summary>
-	/// Represents a fan profile (a.k.a. fan curve) config.
-	/// </summary>
-	public sealed class FanCurveConfig
-	{
-		/// <summary>
-		/// The name of the fan profile.
-		/// </summary>
-		[XmlElement]
-		public string Name;
+    /// <summary>
+    /// Represents a fan profile (a.k.a. fan curve) config.
+    /// </summary>
+    public sealed class FanCurveConfig
+    {
+        /// <summary>
+        /// The name of the fan profile.
+        /// </summary>
+        [XmlElement]
+        public string Name;
 
-		/// <summary>
-		/// The description of the fan profile.
-		/// </summary>
-		[XmlElement]
-		public string Description;
+        /// <summary>
+        /// The description of the fan profile.
+        /// </summary>
+        [XmlElement]
+        public string Description;
 
-		/// <summary>
-		/// The fan speeds and associated up and down thresholds.
-		/// </summary>
-		[XmlArray]
-		public TempThreshold[] TempThresholds;
+        /// <summary>
+        /// The fan speeds and associated up and down thresholds.
+        /// </summary>
+        [XmlArray]
+        public TempThreshold[] TempThresholds;
 
-		/// <summary>
-		/// Creates a deep copy of this <seealso cref="FanCurveConfig"/>.
-		/// </summary>
-		/// <returns>
-		/// A copy of this <seealso cref="FanCurveConfig"/>.
-		/// </returns>
-		public FanCurveConfig Copy()
-		{
-			// create a shallow copy of this FanCurveConfig
-			FanCurveConfig newCfg = (FanCurveConfig)MemberwiseClone();
+        /// <summary>
+        /// Creates a deep copy of this <seealso cref="FanCurveConfig"/>.
+        /// </summary>
+        /// <returns>
+        /// A copy of this <seealso cref="FanCurveConfig"/>.
+        /// </returns>
+        public FanCurveConfig Copy()
+        {
+            // create a shallow copy of this FanCurveConfig
+            FanCurveConfig newCfg = (FanCurveConfig)MemberwiseClone();
 
-			// create a copy of everything that didn't get copied by the above
-			newCfg.Name = string.Copy(Name);
-			newCfg.Description = string.Copy(Description);
-			newCfg.TempThresholds = new TempThreshold[TempThresholds.Length];
-			for (int i = 0; i < newCfg.TempThresholds.Length; i++)
-			{
-				newCfg.TempThresholds[i] = TempThresholds[i].Copy();
-			}
-			return newCfg;
-		}
-	}
+            // create a copy of everything that didn't get copied by the above
+            newCfg.Name = string.Copy(Name);
+            newCfg.Description = string.Copy(Description);
+            newCfg.TempThresholds = new TempThreshold[TempThresholds.Length];
+            for (int i = 0; i < newCfg.TempThresholds.Length; i++)
+            {
+                newCfg.TempThresholds[i] = TempThresholds[i].Copy();
+            }
+            return newCfg;
+        }
+    }
 }
