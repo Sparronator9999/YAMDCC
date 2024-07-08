@@ -20,7 +20,7 @@ A fast, lightweight, and highly configurable fan control utility for MSI laptops
 
 ## Screenshots
 
-![MSI Fan Control's main interface](Media/MSIFC-MainWindow.png)
+![A screenshot of MSI Fan Control's main interface](Media/MSIFC-MainWindow.png)
 
 ## Supported Laptops
 
@@ -32,7 +32,9 @@ For MSI laptops, this is as easy as supplying your laptop's default fan curves t
 
 Other laptop brands will require you to figure out which EC registers store the fan curve (or just use NoteBook FanControl if your laptop's supported).
 
-Please also avoid asking me (or other people) in the issue tracker to create a config for you.
+**Please also avoid asking me (or other people) in the issue tracker to create a config for you.**
+**Unless we have your specific laptop model (which we probably don't), we will not be able to help**
+**you outside of the general instructions.**
 
 ## FAQ
 
@@ -68,14 +70,16 @@ Again, [see above](#supported-laptops).
 
 ### Help! My laptop stopped booting/is doing weird stuff!
 
-On MSI laptops, shut down the laptop (holding the power button to force shut down if needed), then find the
-EC reset button (on the GF63 Thin 11SC, it is located on the underside of the laptop near the charge port)
-and press it with the end of a paperclip (or similarly small object) for at least 5 seconds.
+Try resetting your EC if you have an MSI laptop:
 
-If all else fails, you can try unplugging the laptop's battery for a few
-seconds (including any CMOS/Clock batteries, requires disassembly of laptop),
-then plug them back in, re-assemble the laptop and reboot. This will reset your
-BIOS configuration, though.
+Shut down the laptop if it's on (force shut down if needed), then find the EC reset button
+(on the GF63 Thin 11SC, it's a small hole located on the bottom of the laptop next to the charge port)
+and press it with the end of a paperclip (or similarly small object, e.g. SIM eject tool)
+for at least 5 seconds. Try rebooting.
+
+If all else fails, you can try unplugging the laptop's battery (including any CMOS/clock
+batteries, if present) for a few seconds (requires disassembly of laptop), then re-plugging,
+re-assembing and attempting another boot. This will clear all of your BIOS settings.
 
 For other laptop brands, you will need to find instructions for your laptop.
 
@@ -93,10 +97,12 @@ Due to WinForms limitations, no.
 
 ### Doesn't WinRing0 have security issues?
 
-[Yes](https://voidsec.com/crucial-mod-utility-lpe-cve-2021-41285/), however the
-[updated fork](https://github.com/GermanAizek/WinRing0) does not provide a binary release
-(due to Microsoft's driver signing requirements). I don't have the time or money to go through
-the hassle of trying to get it production-signed myself, so here we are.
+[Yes](https://voidsec.com/crucial-mod-utility-lpe-cve-2021-41285/), that is correct.
+
+I would use the [updated fork](https://github.com/GermanAizek/WinRing0), but they don't provide
+binary releases due to Microsoft's driver signing requirements, and I'm too smooth-brained
+to write my own EC access kernel driver (plus, I'd have to get it signed, which costs my time
+and money).
 
 Please read the [disclaimer](#disclaimers), especially the bold text, if you haven't already.
 
@@ -107,27 +113,29 @@ request. Please state the following in your issue request:
 
 - Laptop model, system specifications (CPU, GPU), and OS version
 - A detailed description of the problem
-- Reproduction steps
-- Relevant screenshots
+- Steps to reproduce the issue
+- Relevant screenshots when needed
 
 However, know that I **don't check my GitHub page very often** when I'm not working
 on anything, so your issue may remain open for a while before I answer it.
 
 ## Roadmap
 
-- [ ] Make sure GitHub didn't break anything after initial upload  
-- [ ] Config UI fixes:  
-  - [ ] Add button to create and delete fan profiles  
-  - [ ] Add option to uninstall service  
-- [ ] Config generation for MSI laptops  
+- [x] Make sure GitHub didn't break anything after the initial upload
+- [ ] Config UI fixes:
+  - [x] Add button to create and delete fan profiles
+  - [ ] Add option to uninstall service
+  - [ ] Probably more that I haven't thought of yet
+- [ ] Config generation for MSI laptops
   - This would only work because many MSI laptops have almost identical EC register locations
-    for all the relevent settings we change  
+    for all the relevent settings we change
   - The only thing we need to do is get the default fan curve from the user's laptop, and add
-    it to the default fan profile.  
-- [ ] Command line support  
-- [ ] Support for creating laptop configs using the GUI interface  
-  - Currently, the only way to make a new config for MSI Fan Control is to
-    edit the XML directly
+    it to the default fan profile.
+- [ ] Command line support
+  - The beginning of a CLI for MSI Fan Control exists, just not publicly yet
+- [ ] Support for editing laptop config registers using the GUI interface
+  - This would allow for creating configs for other laptop brands from the config UI
+  - Currently, the only way to do this is to edit the XML directly
 
 ## Contributing
 
@@ -139,9 +147,9 @@ or new configs, feel free to open a pull request. Please include the following:
 - **Bug Fixes/Improvements:** Describe the changes you made and why they
   are important or useful.
 - **New Config:** Include the laptop model the config was made for in the PR
-  title. Make sure your laptop doesn't need any modifications (installing 3rd-party
-  software (**MSI Center**), or even physical hardware modifications) for the
-  config to work.
+  title (e.g. Add config for MSI GF63 Thin 11SC).
+  - Make sure the config doesn't need any third-party software (**MSI Center**)
+    for it to work.
 
 ## Build
 
@@ -157,7 +165,7 @@ or new configs, feel free to open a pull request. Please include the following:
 8.  Profit!
 
 Make sure to only use matching `msifcsvc.exe` and `MSIFanControl.exe` together, otherwise you
-may encounter issues.
+may encounter issues (that means `net stop msifcsvc` first, then compile).
 
 ## License and Copyright
 
