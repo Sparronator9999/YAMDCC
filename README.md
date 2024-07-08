@@ -115,18 +115,18 @@ on anything, so your issue may remain open for a while before I answer it.
 
 ## Roadmap
 
-[ ] Make sure GitHub didn't break anything after initial upload  
-[ ] Config UI fixes:  
-    [ ] Add button to create and delete fan profiles  
-    [ ] Add option to uninstall service  
-[ ] Config generation for MSI laptops  
-    - This would only work because many MSI laptops have almost identical EC register locations
+- [ ] Make sure GitHub didn't break anything after initial upload  
+- [ ] Config UI fixes:  
+  - [ ] Add button to create and delete fan profiles  
+  - [ ] Add option to uninstall service  
+- [ ] Config generation for MSI laptops  
+  - This would only work because many MSI laptops have almost identical EC register locations
     for all the relevent settings we change  
-    - The only thing we need to do is get the default fan curve from the user's laptop, and add
+  - The only thing we need to do is get the default fan curve from the user's laptop, and add
     it to the default fan profile.  
-[ ] Command line support  
-[ ] Support for creating laptop configs using the GUI interface  
-    - Currently, the only way to make a new config for MSI Fan Control is to
+- [ ] Command line support  
+- [ ] Support for creating laptop configs using the GUI interface  
+  - Currently, the only way to make a new config for MSI Fan Control is to
     edit the XML directly
 
 ## Contributing
