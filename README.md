@@ -98,7 +98,7 @@ Due to WinForms limitations, no.
 (due to Microsoft's driver signing requirements). I don't have the time or money to go through
 the hassle of trying to get it production-signed myself, so here we are.
 
-Please read the [disclaimer](#disclaimer), especially the bold text, if you haven't already.
+Please read the [disclaimer](#disclaimers), especially the bold text, if you haven't already.
 
 ## Issues
 
