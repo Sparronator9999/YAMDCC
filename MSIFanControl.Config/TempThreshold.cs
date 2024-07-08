@@ -48,5 +48,16 @@ namespace MSIFanControl.Config
 		/// </summary>
 		[XmlElement]
 		public byte FanSpeed;
+
+		/// <summary>
+		/// Creates a copy of this <seealso cref="TempThreshold"/>.
+		/// </summary>
+		/// <returns>
+		/// The copy of this <seealso cref="TempThreshold"/>
+		/// </returns>
+		public TempThreshold Copy()
+		{
+			return (TempThreshold)MemberwiseClone();
+		}
 	}
 }

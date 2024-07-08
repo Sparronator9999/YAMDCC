@@ -15,9 +15,11 @@
 // MSI Fan Control. If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Windows.Forms;
@@ -474,6 +476,7 @@ namespace MSIFanControl.GUI
 				}
 			}
 			btnApply.Enabled = true;
+			btnProfDel.Enabled = curveConfig.Name != "Default";
 		}
 		#endregion
 
@@ -554,6 +557,101 @@ namespace MSIFanControl.GUI
 				// TODO: actually uninstall the MSI Fan Control service
 
 				Application.Exit();
+			}
+		}
+
+		private void btnProfAdd_Click(object sender, EventArgs e)
+		{
+			AddFanProfile();
+		}
+
+		private void tsiProfAdd_Click(object sender, EventArgs e)
+		{
+			AddFanProfile();
+		}
+
+		private void btnProfDel_Click(object sender, EventArgs e)
+		{
+			DeleteFanProfile();
+		}
+
+		private void tsiProfDel_Click(object sender, EventArgs e)
+		{
+			DeleteFanProfile();
+		}
+
+		private void tsiProfRename_Click(object sender, EventArgs e)
+		{
+			FanCurveConfig curveCfg = Config.FanConfigs[cboFanSel.SelectedIndex]
+				.FanCurveConfigs[cboProfSel.SelectedIndex];
+
+			TextInputDialog dlg = new TextInputDialog(
+				"Please enter a new name for your fan profile:",
+				"Change Profile Name", curveCfg.Name);
+			if (dlg.ShowDialog() == DialogResult.OK)
+			{
+				curveCfg.Name = dlg.Result;
+				cboProfSel.Items[cboProfSel.SelectedIndex] = dlg.Result;
+			}
+		}
+
+		private void tsiProfChangeDesc_Click(object sender, EventArgs e)
+		{
+			FanCurveConfig curveCfg = Config.FanConfigs[cboFanSel.SelectedIndex]
+				.FanCurveConfigs[cboProfSel.SelectedIndex]; 
+			TextInputDialog dlg = new TextInputDialog(
+				"Please enter a new description for your fan profile:",
+				"Change Profile Description", curveCfg.Description);
+			if (dlg.ShowDialog() == DialogResult.OK)
+			{
+				curveCfg.Description = dlg.Result;
+				ttMain.SetToolTip(cboProfSel, dlg.Result);
+			}
+		}
+
+		private void AddFanProfile()
+		{
+			TextInputDialog dlg = new TextInputDialog("Please enter a name for your new fan profile:", "New Profile");
+			if (dlg.ShowDialog() == DialogResult.OK)
+			{
+				FanConfig fanConfig = Config.FanConfigs[cboFanSel.SelectedIndex];
+
+				// Create a copy of the currently selected fan profile:
+				FanCurveConfig curveCfg = fanConfig.FanCurveConfigs[cboProfSel.SelectedIndex].Copy();
+
+				// Name it according to what the user specified
+				curveCfg.Name = dlg.Result;
+				curveCfg.Description = $"Copy of: {fanConfig.FanCurveConfigs[cboProfSel.SelectedIndex]}";
+
+				// Add the new fan profile to the list
+				List<FanCurveConfig> curveCfgList = fanConfig.FanCurveConfigs.ToList();
+				curveCfgList.Add(curveCfg);
+				fanConfig.FanCurveConfigs = curveCfgList.ToArray();
+				cboProfSel.Items.Add(dlg.Result);
+
+				// Select the new config
+				cboProfSel.SelectedIndex = cboProfSel.Items.Count - 1;
+			}
+		}
+
+		private void DeleteFanProfile()
+		{
+			if (cboProfSel.Text != "Default" && MessageBox.Show(
+				"This will delete the following fan profile:\n" +
+				$"{cboProfSel.Text}\n" +
+				"Are you sure you want to delete this profile?",
+				"Delete fan profile?", MessageBoxButtons.YesNo,
+				MessageBoxIcon.Warning) == DialogResult.Yes)
+			{
+				// Remove the fan profile
+				List<FanCurveConfig> curveCfgList = Config.FanConfigs[cboFanSel.SelectedIndex].FanCurveConfigs.ToList();
+				curveCfgList.RemoveAt(cboProfSel.SelectedIndex);
+				Config.FanConfigs[cboFanSel.SelectedIndex].FanCurveConfigs = curveCfgList.ToArray();
+
+				// Remove from the list client-side, and select a different fan profile
+				int oldIndex = cboProfSel.SelectedIndex;
+				cboProfSel.Items.RemoveAt(cboProfSel.SelectedIndex);
+				cboProfSel.SelectedIndex = oldIndex == 1 ? 1 : oldIndex - 1;
 			}
 		}
 	}
