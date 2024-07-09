@@ -59,7 +59,6 @@ namespace MSIFanControl.GUI
             System.Windows.Forms.TableLayoutPanel tblExtras;
             System.Windows.Forms.FlowLayoutPanel flwExtras;
             System.Windows.Forms.Label lblExtra;
-            System.Windows.Forms.Label lblChgLim;
             System.Windows.Forms.Label lblSpeed;
             System.Windows.Forms.Label lblUpT;
             System.Windows.Forms.Label lblDownT;
@@ -89,6 +88,7 @@ namespace MSIFanControl.GUI
             this.lblFanRPM = new System.Windows.Forms.Label();
             this.lblTemp = new System.Windows.Forms.Label();
             this.chkFullBlast = new System.Windows.Forms.CheckBox();
+            this.lblChgLim = new System.Windows.Forms.Label();
             this.numChgLim = new System.Windows.Forms.NumericUpDown();
             this.btnApply = new System.Windows.Forms.Button();
             this.btnRevert = new System.Windows.Forms.Button();
@@ -108,7 +108,6 @@ namespace MSIFanControl.GUI
             tblExtras = new System.Windows.Forms.TableLayoutPanel();
             flwExtras = new System.Windows.Forms.FlowLayoutPanel();
             lblExtra = new System.Windows.Forms.Label();
-            lblChgLim = new System.Windows.Forms.Label();
             lblSpeed = new System.Windows.Forms.Label();
             lblUpT = new System.Windows.Forms.Label();
             lblDownT = new System.Windows.Forms.Label();
@@ -348,6 +347,7 @@ namespace MSIFanControl.GUI
             // cboFanSel
             // 
             this.cboFanSel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboFanSel.Enabled = false;
             this.cboFanSel.FormattingEnabled = true;
             this.cboFanSel.Location = new System.Drawing.Point(35, 3);
             this.cboFanSel.Name = "cboFanSel";
@@ -368,6 +368,7 @@ namespace MSIFanControl.GUI
             // cboProfSel
             // 
             this.cboProfSel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboProfSel.Enabled = false;
             this.cboProfSel.FormattingEnabled = true;
             this.cboProfSel.Location = new System.Drawing.Point(209, 3);
             this.cboProfSel.Name = "cboProfSel";
@@ -377,8 +378,9 @@ namespace MSIFanControl.GUI
             // 
             // btnProfAdd
             // 
-            this.btnProfAdd.Location = new System.Drawing.Point(334, 3);
-            this.btnProfAdd.Margin = new System.Windows.Forms.Padding(1, 3, 1, 3);
+            this.btnProfAdd.Enabled = false;
+            this.btnProfAdd.Location = new System.Drawing.Point(336, 3);
+            this.btnProfAdd.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
             this.btnProfAdd.Name = "btnProfAdd";
             this.btnProfAdd.Size = new System.Drawing.Size(23, 23);
             this.btnProfAdd.TabIndex = 4;
@@ -388,8 +390,9 @@ namespace MSIFanControl.GUI
             // 
             // btnProfDel
             // 
+            this.btnProfDel.Enabled = false;
             this.btnProfDel.Location = new System.Drawing.Point(359, 3);
-            this.btnProfDel.Margin = new System.Windows.Forms.Padding(1, 3, 1, 3);
+            this.btnProfDel.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
             this.btnProfDel.Name = "btnProfDel";
             this.btnProfDel.Size = new System.Drawing.Size(23, 23);
             this.btnProfDel.TabIndex = 5;
@@ -415,7 +418,7 @@ namespace MSIFanControl.GUI
             // 
             this.lblStatus.AutoSize = true;
             this.lblStatus.Location = new System.Drawing.Point(3, 3);
-            this.lblStatus.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.lblStatus.Margin = new System.Windows.Forms.Padding(3);
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(39, 15);
             this.lblStatus.TabIndex = 0;
@@ -425,7 +428,7 @@ namespace MSIFanControl.GUI
             // 
             this.lblFanSpd.AutoSize = true;
             this.lblFanSpd.Location = new System.Drawing.Point(48, 3);
-            this.lblFanSpd.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.lblFanSpd.Margin = new System.Windows.Forms.Padding(3);
             this.lblFanSpd.Name = "lblFanSpd";
             this.lblFanSpd.Size = new System.Drawing.Size(86, 15);
             this.lblFanSpd.TabIndex = 1;
@@ -436,7 +439,7 @@ namespace MSIFanControl.GUI
             // 
             this.lblFanRPM.AutoSize = true;
             this.lblFanRPM.Location = new System.Drawing.Point(140, 3);
-            this.lblFanRPM.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.lblFanRPM.Margin = new System.Windows.Forms.Padding(3);
             this.lblFanRPM.Name = "lblFanRPM";
             this.lblFanRPM.Size = new System.Drawing.Size(58, 15);
             this.lblFanRPM.TabIndex = 2;
@@ -447,7 +450,7 @@ namespace MSIFanControl.GUI
             // 
             this.lblTemp.AutoSize = true;
             this.lblTemp.Location = new System.Drawing.Point(204, 3);
-            this.lblTemp.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.lblTemp.Margin = new System.Windows.Forms.Padding(3);
             this.lblTemp.Name = "lblTemp";
             this.lblTemp.Size = new System.Drawing.Size(65, 15);
             this.lblTemp.TabIndex = 3;
@@ -478,7 +481,7 @@ namespace MSIFanControl.GUI
             flwExtras.AutoSize = true;
             flwExtras.Controls.Add(lblExtra);
             flwExtras.Controls.Add(this.chkFullBlast);
-            flwExtras.Controls.Add(lblChgLim);
+            flwExtras.Controls.Add(this.lblChgLim);
             flwExtras.Controls.Add(this.numChgLim);
             flwExtras.Dock = System.Windows.Forms.DockStyle.Fill;
             flwExtras.Location = new System.Drawing.Point(0, 0);
@@ -501,6 +504,7 @@ namespace MSIFanControl.GUI
             // 
             this.chkFullBlast.AutoSize = true;
             this.chkFullBlast.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkFullBlast.Enabled = false;
             this.chkFullBlast.Location = new System.Drawing.Point(47, 4);
             this.chkFullBlast.Margin = new System.Windows.Forms.Padding(3, 4, 3, 3);
             this.chkFullBlast.Name = "chkFullBlast";
@@ -512,16 +516,18 @@ namespace MSIFanControl.GUI
             // 
             // lblChgLim
             // 
-            lblChgLim.AutoSize = true;
-            lblChgLim.Location = new System.Drawing.Point(126, 5);
-            lblChgLim.Margin = new System.Windows.Forms.Padding(3, 5, 0, 3);
-            lblChgLim.Name = "lblChgLim";
-            lblChgLim.Size = new System.Drawing.Size(75, 15);
-            lblChgLim.TabIndex = 2;
-            lblChgLim.Text = "Charge limit:";
+            this.lblChgLim.AutoSize = true;
+            this.lblChgLim.Enabled = false;
+            this.lblChgLim.Location = new System.Drawing.Point(126, 5);
+            this.lblChgLim.Margin = new System.Windows.Forms.Padding(3, 5, 0, 3);
+            this.lblChgLim.Name = "lblChgLim";
+            this.lblChgLim.Size = new System.Drawing.Size(75, 15);
+            this.lblChgLim.TabIndex = 2;
+            this.lblChgLim.Text = "Charge limit:";
             // 
             // numChgLim
             // 
+            this.numChgLim.Enabled = false;
             this.numChgLim.Location = new System.Drawing.Point(204, 3);
             this.numChgLim.Name = "numChgLim";
             this.numChgLim.Size = new System.Drawing.Size(60, 23);
@@ -684,5 +690,6 @@ namespace MSIFanControl.GUI
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem tsiProfDel;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+        private System.Windows.Forms.Label lblChgLim;
     }
 }

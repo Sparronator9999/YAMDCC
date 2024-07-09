@@ -371,7 +371,7 @@ namespace MSIFanControl.GUI
         }
         #endregion
 
-        #region About
+        #region Help
         private void tsiAbout_Click(object sender, EventArgs e) =>
             MessageBox.Show(Strings.GetString("About"), "About",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -399,7 +399,6 @@ namespace MSIFanControl.GUI
                 {
                     numFanSpds[i].Maximum = tbFanSpds[i].Maximum
                         = Math.Abs(config.MaxSpeed - config.MinSpeed);
-                    numFanSpds[i].Enabled = tbFanSpds[i].Enabled = true;
                 }
                 else
                 {
@@ -431,23 +430,25 @@ namespace MSIFanControl.GUI
             // Fan curve
             for (int i = 0; i < numFanSpds.Length; i++)
             {
-                if (numTempThresholds >= i)
+                if (i <= numTempThresholds)
                 {
                     numFanSpds[i].Value = tbFanSpds[i].Value
                         = curveConfig.TempThresholds[i].FanSpeed;
+
+                    numFanSpds[i].Enabled = tbFanSpds[i].Enabled = curveConfig.Name != "Default";                    
                 }
             }
 
             // Temp thresholds
             for (int i = 0; i < numUpTs.Length; i++)
             {
-                if (numTempThresholds >= i)
+                if (i <= numTempThresholds)
                 {
                     TempThreshold t = curveConfig.TempThresholds[i + 1];
                     numUpTs[i].Value = t.UpThreshold;
                     numDownTs[i].Value = t.DownThreshold;
 
-                    numUpTs[i].Enabled = numDownTs[i].Enabled = true;
+                    numUpTs[i].Enabled = numDownTs[i].Enabled = curveConfig.Name != "Default";
                 }
                 else
                 {
@@ -599,13 +600,13 @@ namespace MSIFanControl.GUI
             if (Config.ChargeLimitConfig is null)
             {
                 ttMain.SetToolTip(chkFullBlast, Strings.GetString("ttNotSupported"));
-                numChgLim.Enabled = false;
+                numChgLim.Enabled = lblChgLim.Enabled = false;
             }
             else
             {
                 ttMain.SetToolTip(numChgLim, Strings.GetString("ttChgLim"));
                 ChargeLimitConfig cfg = Config.ChargeLimitConfig;
-                numChgLim.Enabled = true;
+                numChgLim.Enabled = lblChgLim.Enabled = true;
                 numChgLim.Value = cfg.Value;
                 numChgLim.Maximum = Math.Abs(cfg.MaxValue - cfg.MinValue);
             }
@@ -616,6 +617,7 @@ namespace MSIFanControl.GUI
                 cboFanSel.Items.Add(Config.FanConfigs[i].Name);
             }
 
+            btnProfAdd.Enabled = true;
             cboFanSel.Enabled = true;
             cboFanSel.SelectedIndex = 0;
             tsiECMon.Enabled = true;
@@ -642,25 +644,28 @@ namespace MSIFanControl.GUI
 
         private void AddFanProfile()
         {
-            TextInputDialog dlg = new TextInputDialog("Please enter a name for your new fan profile:", "New Profile");
+            FanConfig fanConfig = Config.FanConfigs[cboFanSel.SelectedIndex];
+            FanCurveConfig oldCurveCfg = fanConfig.FanCurveConfigs[cboProfSel.SelectedIndex];
+
+            TextInputDialog dlg = new TextInputDialog(
+                "Please enter a name for your new fan profile:",
+                "New Profile", $"Copy of {oldCurveCfg.Name}");
             if (dlg.ShowDialog() == DialogResult.OK)
             {
-                FanConfig fanConfig = Config.FanConfigs[cboFanSel.SelectedIndex];
-
                 // Create a copy of the currently selected fan profile:
-                FanCurveConfig curveCfg = fanConfig.FanCurveConfigs[cboProfSel.SelectedIndex].Copy();
+                FanCurveConfig newCurveCfg = oldCurveCfg.Copy();
 
                 // Name it according to what the user specified
-                curveCfg.Name = dlg.Result;
-                curveCfg.Description = $"Copy of: {fanConfig.FanCurveConfigs[cboProfSel.SelectedIndex]}";
+                newCurveCfg.Name = dlg.Result;
+                newCurveCfg.Description = $"Copy of {oldCurveCfg.Name}";
 
                 // Add the new fan profile to the list
                 List<FanCurveConfig> curveCfgList = fanConfig.FanCurveConfigs.ToList();
-                curveCfgList.Add(curveCfg);
+                curveCfgList.Add(newCurveCfg);
                 fanConfig.FanCurveConfigs = curveCfgList.ToArray();
-                cboProfSel.Items.Add(dlg.Result);
 
-                // Select the new config
+                // Add the new fan profile to the list and select it:
+                cboProfSel.Items.Add(dlg.Result);
                 cboProfSel.SelectedIndex = cboProfSel.Items.Count - 1;
             }
         }
@@ -674,10 +679,12 @@ namespace MSIFanControl.GUI
                 "Delete fan profile?", MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning) == DialogResult.Yes)
             {
+                FanConfig fanConfig = Config.FanConfigs[cboFanSel.SelectedIndex];
+
                 // Remove the fan profile
-                List<FanCurveConfig> curveCfgList = Config.FanConfigs[cboFanSel.SelectedIndex].FanCurveConfigs.ToList();
+                List<FanCurveConfig> curveCfgList = fanConfig.FanCurveConfigs.ToList();
                 curveCfgList.RemoveAt(cboProfSel.SelectedIndex);
-                Config.FanConfigs[cboFanSel.SelectedIndex].FanCurveConfigs = curveCfgList.ToArray();
+                fanConfig.FanCurveConfigs = curveCfgList.ToArray();
 
                 // Remove from the list client-side, and select a different fan profile
                 int oldIndex = cboProfSel.SelectedIndex;
