@@ -1,5 +1,5 @@
 // This file is part of MSI Fan Control.
-// Copyright © Sparronator9999 2023-2024.
+// Copyright Â© Sparronator9999 2023-2024.
 //
 // MSI Fan Control is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -122,7 +122,9 @@ namespace MSIFanControl.ECAccess
             for (int i = 0; i < RW_MAX_RETRIES; i++)
             {
                 if (TryReadByte(register, out value))
+                {
                     return true;
+                }
             }
             return false;
         }
@@ -137,7 +139,9 @@ namespace MSIFanControl.ECAccess
             for (int i = 0; i < RW_MAX_RETRIES; i++)
             {
                 if (TryWriteByte(register, value))
+                {
                     return true;
+                }
             }
             return false;
         }
@@ -157,7 +161,9 @@ namespace MSIFanControl.ECAccess
             for (int i = 0; i < RW_MAX_RETRIES; i++)
             {
                 if (TryReadWord(register, bigEndian, out value))
+                {
                     return true;
+                }
             }
             return false;
         }
@@ -176,7 +182,9 @@ namespace MSIFanControl.ECAccess
             for (int i = 0; i < RW_MAX_RETRIES; i++)
             {
                 if (TryWriteWord(register, value, bigEndian))
+                {
                     return true;
+                }
             }
             return false;
         }
@@ -200,37 +208,35 @@ namespace MSIFanControl.ECAccess
         private bool TryReadByte(byte register, out byte value)
         {
             value = 0;
-
-            return WaitWrite() &&
-                WriteIOPort(PORT_COMMAND, (byte)ECCommand.Read) &&
-                WaitWrite() &&
-                WriteIOPort(PORT_DATA, register) &&
-                WaitWrite() &&
-                WaitRead() &&
-                ReadIOPort(PORT_DATA, out value);
+            return WaitWrite() && WriteIOPort(PORT_COMMAND, (byte)ECCommand.Read)
+                && WaitWrite() && WriteIOPort(PORT_DATA, register)
+                && WaitWrite() && WaitRead()
+                && ReadIOPort(PORT_DATA, out value);
         }
 
         private bool TryWriteByte(byte register, byte value)
         {
-            if (WaitWrite() && WriteIOPort(PORT_COMMAND, (byte)ECCommand.Write))
-                if (WaitWrite() && WriteIOPort(PORT_DATA, register))
-                    if (WaitWrite() && WriteIOPort(PORT_DATA, value))
-                        return true;
-            return false;
+            return WaitWrite() && WriteIOPort(PORT_COMMAND, (byte)ECCommand.Write)
+                && WaitWrite() && WriteIOPort(PORT_DATA, register)
+                && WaitWrite() && WriteIOPort(PORT_DATA, value);
         }
 
         private bool TryReadWord(byte register, bool bigEndian, out ushort value)
         {
             value = 0;
 
+            // read least-significant byte
             if (!TryReadByte(bigEndian ? (byte)(register + 1) : register, out byte result))
+            {
                 return false;
-
+            }
             value = result;
 
+            // read most-significant byte
             if (!TryReadByte(bigEndian ? register : (byte)(register + 1), out result))
+            {
                 return false;
-
+            }
             value |= (ushort)(result << 8);
 
             return true;
@@ -347,9 +353,9 @@ namespace MSIFanControl.ECAccess
         {
             // DeviceType, Function, Access (1 = Read, 2 = Write, 0 = Any)
             GetDriverVersion = 40000u << 16 | 0x800 << 2,
-            GetRefCount = 40000u << 16 | 0x801 << 2,
-            ReadIOPortByte = 40000u << 16 | 0x833 << 2 | 1 << 14,
-            WriteIOPortByte = 40000u << 16 | 0x836 << 2 | 2 << 14,
+            GetRefCount      = 40000u << 16 | 0x801 << 2,
+            ReadIOPortByte   = 40000u << 16 | 0x833 << 2 | 1 << 14,
+            WriteIOPortByte  = 40000u << 16 | 0x836 << 2 | 2 << 14,
         }
 
         [StructLayout(LayoutKind.Sequential)]

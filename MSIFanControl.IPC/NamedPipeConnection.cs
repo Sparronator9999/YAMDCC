@@ -1,4 +1,4 @@
-﻿using MSIFanControl.IPC.IO;
+using MSIFanControl.IPC.IO;
 using MSIFanControl.IPC.Threading;
 using System;
 using System.Collections.Concurrent;

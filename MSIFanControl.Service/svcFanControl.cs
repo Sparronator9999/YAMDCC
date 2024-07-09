@@ -1,4 +1,4 @@
-﻿// This file is part of MSI Fan Control.
+// This file is part of MSI Fan Control.
 // Copyright © Sparronator9999 2023-2024.
 //
 // MSI Fan Control is free software: you can redistribute it and/or modify it
@@ -81,7 +81,7 @@ namespace MSIFanControl.Service
             IPCServer = new Server<ServiceCommand, ServiceResponse>("MSIFC-Server", security);
         }
 
-        #region Service events
+        #region Events
         protected override void OnStart(string[] args)
         {
             Log.Info(Res.GetString("svcStarting"));
@@ -151,7 +151,6 @@ namespace MSIFanControl.Service
             }
             return true;
         }
-        #endregion
 
         private void IPCClientConnect(NamedPipeConnection<ServiceCommand, ServiceResponse> connection)
         {
@@ -219,6 +218,152 @@ namespace MSIFanControl.Service
                 default:
                     break;
             }
+        }
+        #endregion
+
+        private void LoadConf()
+        {
+            Log.Info(Res.GetString("cfgLoading"));
+
+            string confPath = Path.Combine(DataPath, "CurrentConfig.xml");
+
+            if (File.Exists(confPath))
+            {
+                try
+                {
+                    Config = FanControlConfig.Load(confPath);
+                }
+                catch
+                {
+                    ConfigLoaded = false;
+                    Log.Error(Res.GetString("cfgInvalid"));
+                }
+
+                ConfigLoaded = true;
+                Log.Info(Res.GetString("cfgLoadSuccess"));
+            }
+            else
+            {
+                Log.Warn(Res.GetString("cfgNotFound"));
+                ConfigLoaded = false;
+            }
+        }
+
+        private void ApplyCurve()
+        {
+            Log.Debug("Applying MSI Fan Control config...");
+            if (ConfigLoaded)
+            {
+                if (EC.AcquireLock(1000))
+                {
+                    // Write custom register values, if configured:
+                    if (Config.RegConfigs.Length > 0)
+                    {
+                        Log.Debug("Writing custom EC register configs...");
+                        foreach (RegConfig cfg in Config.RegConfigs)
+                        {
+                            _EC.ReadByte(cfg.Register, out byte oldVal);
+                            Log.Debug($"Writing value 0x{cfg.Value:X} to register 0x{cfg.Register:X} (old value: 0x{oldVal:X})...");
+
+                            _EC.WriteByte(cfg.Register, cfg.Value);
+                        }
+                    }
+
+                    // Write the fan curve to the appropriate registers for each fan:
+                    foreach (FanConfig cfg in Config.FanConfigs)
+                    {
+                        Log.Debug($"Writing fan curve configuration for {cfg.Name}...");
+                        FanCurveConfig curveCfg = cfg.FanCurveConfigs[cfg.CurveSel];
+
+                        for (int i = 0; i < curveCfg.TempThresholds.Length; i++)
+                        {
+                            _EC.ReadByte(cfg.FanCurveRegs[i], out byte oldVal);
+                            Log.Debug($"Writing value 0x{curveCfg.TempThresholds[i].FanSpeed:X} to register 0x{cfg.FanCurveRegs[i]:X} (old value: 0x{oldVal:X}, FanCurve)...");
+                            _EC.WriteByte(cfg.FanCurveRegs[i], curveCfg.TempThresholds[i].FanSpeed);
+
+                            if (i > 0)
+                            {
+                                _EC.ReadByte(cfg.UpThresholdRegs[i - 1], out oldVal);
+                                Log.Debug($"Writing value 0x{curveCfg.TempThresholds[i].UpThreshold:X} to register 0x{cfg.UpThresholdRegs[i - 1]:X} (old value: 0x{oldVal:X}, UpThreshold)...");
+                                _EC.WriteByte(cfg.UpThresholdRegs[i - 1], curveCfg.TempThresholds[i].UpThreshold);
+
+                                _EC.ReadByte(cfg.DownThresholdRegs[i - 1], out oldVal);
+                                byte downT = (byte)(curveCfg.TempThresholds[i].UpThreshold - curveCfg.TempThresholds[i].DownThreshold);
+                                Log.Debug($"Writing value 0x{downT:X} to register 0x{cfg.DownThresholdRegs[i - 1]:X} (old value: 0x{oldVal:X}, DownThreshold)...");
+                                _EC.WriteByte(cfg.DownThresholdRegs[i - 1], downT);
+                            }
+                        }
+                    }
+
+                    // Write the charge threshold:
+                    Log.Debug($"Writing charge limit configuration...");
+                    byte value = (byte)(Config.ChargeLimitConfig.MinValue + Config.ChargeLimitConfig.Value);
+                    Log.Debug($"Writing value 0x{value:X} to register 0x{Config.ChargeLimitConfig.Register:X}...");
+                    _EC.WriteByte(Config.ChargeLimitConfig.Register, value);
+
+                    EC.ReleaseLock();
+                }
+                else
+                {
+                    Log.Error(Res.GetString("errECLock"));
+                }
+            }
+            else
+            {
+                Log.Warn(Res.GetString("cfgNotLoaded"));
+            }
+        }
+
+        /// <summary>
+        /// Parse arguments from a given string.
+        /// </summary>
+        /// <param name="args_in">The string containing the space-delimited arguments.</param>
+        /// <param name="expected_args">The expected number of arguments. Must be zero or positive.</param>
+        /// <param name="args_out">The parsed arguments. Will be empty if parsing fails.</param>
+        /// <returns></returns>
+        private bool ParseArgs(string args_in, int expected_args, out int[] args_out)
+        {
+            args_out = new int[expected_args];
+
+            if (expected_args == 0)
+            {
+                if (!string.IsNullOrEmpty(args_in))
+                {
+                    Log.Warn(Res.GetString("warnArgsBadLength"));
+                }
+                return true;
+            }
+
+            if (!string.IsNullOrEmpty(args_in))
+            {
+                string[] args_str = args_in.Split(' ');
+                if (args_str.Length == expected_args)
+                {
+                    for (int i = 0; i < expected_args; i++)
+                    {
+                        if (int.TryParse(args_str[i], out int value))
+                        {
+                            args_out[i] = value;
+                        }
+                        else
+                        {
+                            Log.Error(Res.GetString("errArgsBadType"));
+                            return false;
+                        }
+                    }
+                    return true;
+                }
+                else
+                {
+                    Log.Error(Res.GetString("errArgsBadLength"));
+                }
+            }
+            else
+            {
+                Log.Error(Res.GetString("errArgsMissing"));
+            }
+
+            return false;
         }
 
         private int ReadECByte(string name, string args)
@@ -383,135 +528,6 @@ namespace MSIFanControl.Service
                 return 3;
             }
             return 2;
-        }
-
-        /// <summary>
-        /// Parse arguments from a given string.
-        /// </summary>
-        /// <param name="args_in">The string containing the space-delimited arguments.</param>
-        /// <param name="expected_args">The expected number of arguments. Must be zero or positive.</param>
-        /// <param name="args_out">The parsed arguments. Will be empty if parsing fails.</param>
-        /// <returns></returns>
-        private bool ParseArgs(string args_in, int expected_args, out int[] args_out)
-        {
-            args_out = new int[expected_args];
-
-            if (expected_args == 0)
-            {
-                if (!string.IsNullOrEmpty(args_in))
-                    Log.Warn(Res.GetString("warnArgsBadLength"));
-                return true;
-            }
-
-            if (!string.IsNullOrEmpty(args_in))
-            {
-                string[] args_str = args_in.Split(' ');
-                if (args_str.Length == expected_args)
-                {
-                    for (int i = 0; i < expected_args; i++)
-                    {
-                        if (int.TryParse(args_str[i], out int value))
-                            args_out[i] = value;
-                        else
-                        {
-                            Log.Error(Res.GetString("errArgsBadType"));
-                            return false;
-                        }
-                    }
-                    return true;
-                }
-                else Log.Error(Res.GetString("errArgsBadLength"));
-            }
-            else Log.Error(Res.GetString("errArgsMissing"));
-
-            return false;
-        }
-
-        private void LoadConf()
-        {
-            Log.Info(Res.GetString("cfgLoading"));
-
-            string confPath = Path.Combine(DataPath, "CurrentConfig.xml");
-
-            if (File.Exists(confPath))
-            {
-                try
-                {
-                    Config = FanControlConfig.Load(confPath);
-                }
-                catch
-                {
-                    ConfigLoaded = false;
-                    Log.Error(Res.GetString("cfgInvalid"));
-                }
-
-                ConfigLoaded = true;
-                Log.Info(Res.GetString("cfgLoadSuccess"));
-            }
-            else
-            {
-                Log.Warn(Res.GetString("cfgNotFound"));
-                ConfigLoaded = false;
-            }
-        }
-
-        private void ApplyCurve()
-        {
-            Log.Debug("Applying MSI Fan Control config...");
-            if (ConfigLoaded)
-            {
-                if (EC.AcquireLock(1000))
-                {
-                    // Write custom register values, if configured:
-                    if (Config.RegConfigs.Length > 0)
-                    {
-                        Log.Debug("Writing custom EC register configs...");
-                        foreach (RegConfig cfg in Config.RegConfigs)
-                        {
-                            _EC.ReadByte(cfg.Register, out byte oldVal);
-                            Log.Debug($"Writing value 0x{cfg.Value:X} to register 0x{cfg.Register:X} (old value: 0x{oldVal:X})...");
-
-                            _EC.WriteByte(cfg.Register, cfg.Value);
-                        }
-                    }
-
-                    // Write the fan curve to the appropriate registers for each fan:
-                    foreach (FanConfig cfg in Config.FanConfigs)
-                    {
-                        Log.Debug($"Writing fan curve configuration for {cfg.Name}...");
-                        FanCurveConfig curveCfg = cfg.FanCurveConfigs[cfg.CurveSel];
-
-                        for (int i = 0; i < curveCfg.TempThresholds.Length; i++)
-                        {
-                            _EC.ReadByte(cfg.FanCurveRegs[i], out byte oldVal);
-                            Log.Debug($"Writing value 0x{curveCfg.TempThresholds[i].FanSpeed:X} to register 0x{cfg.FanCurveRegs[i]:X} (old value: 0x{oldVal:X}, FanCurve)...");
-                            _EC.WriteByte(cfg.FanCurveRegs[i], curveCfg.TempThresholds[i].FanSpeed);
-
-                            if (i > 0)
-                            {
-                                _EC.ReadByte(cfg.UpThresholdRegs[i - 1], out oldVal);
-                                Log.Debug($"Writing value 0x{curveCfg.TempThresholds[i].UpThreshold:X} to register 0x{cfg.UpThresholdRegs[i - 1]:X} (old value: 0x{oldVal:X}, UpThreshold)...");
-                                _EC.WriteByte(cfg.UpThresholdRegs[i - 1], curveCfg.TempThresholds[i].UpThreshold);
-
-                                _EC.ReadByte(cfg.DownThresholdRegs[i - 1], out oldVal);
-                                byte downT = (byte)(curveCfg.TempThresholds[i].UpThreshold - curveCfg.TempThresholds[i].DownThreshold);
-                                Log.Debug($"Writing value 0x{downT:X} to register 0x{cfg.DownThresholdRegs[i - 1]:X} (old value: 0x{oldVal:X}, DownThreshold)...");
-                                _EC.WriteByte(cfg.DownThresholdRegs[i - 1], downT);
-                            }
-                        }
-                    }
-
-                    // Write the charge threshold:
-                    Log.Debug($"Writing charge limit configuration...");
-                    byte value = (byte)(Config.ChargeLimitConfig.MinValue + Config.ChargeLimitConfig.Value);
-                    Log.Debug($"Writing value 0x{value:X} to register 0x{Config.ChargeLimitConfig.Register:X}...");
-                    _EC.WriteByte(Config.ChargeLimitConfig.Register, value);
-
-                    EC.ReleaseLock();
-                }
-                else Log.Error(Res.GetString("errECLock"));
-            }
-            else Log.Warn(Res.GetString("cfgNotLoaded"));
         }
     }
 }

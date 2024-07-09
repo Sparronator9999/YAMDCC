@@ -1,4 +1,4 @@
-﻿// This file is part of MSI Fan Control.
+// This file is part of MSI Fan Control.
 // Copyright © Sparronator9999 2023-2024.
 //
 // MSI Fan Control is free software: you can redistribute it and/or modify it
@@ -16,34 +16,34 @@
 
 namespace MSIFanControl.GUI
 {
-	partial class MainWindow
-	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+    partial class MainWindow
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && (components != null))
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Windows Form Designer generated code
+        #region Windows Form Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.MenuStrip menuStrip;
             System.Windows.Forms.ToolStripMenuItem tsiFile;
@@ -132,6 +132,7 @@ namespace MSIFanControl.GUI
             tsiHelp});
             menuStrip.Location = new System.Drawing.Point(0, 0);
             menuStrip.Name = "menuStrip";
+            menuStrip.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
             menuStrip.Size = new System.Drawing.Size(540, 24);
             menuStrip.TabIndex = 0;
             // 
@@ -154,14 +155,14 @@ namespace MSIFanControl.GUI
             this.tsiLoadConf.Name = "tsiLoadConf";
             this.tsiLoadConf.Size = new System.Drawing.Size(154, 22);
             this.tsiLoadConf.Text = "Load config";
-            this.tsiLoadConf.Click += new System.EventHandler(this.LoadConfClick);
+            this.tsiLoadConf.Click += new System.EventHandler(this.tsiLoadConf_Click);
             // 
             // tsiSaveConf
             // 
             this.tsiSaveConf.Name = "tsiSaveConf";
             this.tsiSaveConf.Size = new System.Drawing.Size(154, 22);
             this.tsiSaveConf.Text = "Save config";
-            this.tsiSaveConf.Click += new System.EventHandler(this.SaveConfClick);
+            this.tsiSaveConf.Click += new System.EventHandler(this.tsiSaveConf_Click);
             // 
             // sep1
             // 
@@ -173,12 +174,14 @@ namespace MSIFanControl.GUI
             this.tsiApply.Name = "tsiApply";
             this.tsiApply.Size = new System.Drawing.Size(154, 22);
             this.tsiApply.Text = "Apply changes";
+            this.tsiApply.Click += new System.EventHandler(this.tsiApply_Click);
             // 
             // tsiRevert
             // 
             this.tsiRevert.Name = "tsiRevert";
             this.tsiRevert.Size = new System.Drawing.Size(154, 22);
             this.tsiRevert.Text = "Revert changes";
+            this.tsiRevert.Click += new System.EventHandler(this.tsiRevert_Click);
             // 
             // sep2
             // 
@@ -190,7 +193,7 @@ namespace MSIFanControl.GUI
             this.tsiExit.Name = "tsiExit";
             this.tsiExit.Size = new System.Drawing.Size(154, 22);
             this.tsiExit.Text = "Exit";
-            this.tsiExit.Click += new System.EventHandler(this.tsiExitClick);
+            this.tsiExit.Click += new System.EventHandler(this.tsiExit_Click);
             // 
             // tsiOptions
             // 
@@ -226,26 +229,26 @@ namespace MSIFanControl.GUI
             // tsiProfRename
             // 
             this.tsiProfRename.Name = "tsiProfRename";
-            this.tsiProfRename.Size = new System.Drawing.Size(180, 22);
+            this.tsiProfRename.Size = new System.Drawing.Size(178, 22);
             this.tsiProfRename.Text = "Change Name";
             this.tsiProfRename.Click += new System.EventHandler(this.tsiProfRename_Click);
             // 
             // tsiProfChangeDesc
             // 
             this.tsiProfChangeDesc.Name = "tsiProfChangeDesc";
-            this.tsiProfChangeDesc.Size = new System.Drawing.Size(180, 22);
+            this.tsiProfChangeDesc.Size = new System.Drawing.Size(178, 22);
             this.tsiProfChangeDesc.Text = "Change Description";
             this.tsiProfChangeDesc.Click += new System.EventHandler(this.tsiProfChangeDesc_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(175, 6);
             // 
             // tsiProfDel
             // 
             this.tsiProfDel.Name = "tsiProfDel";
-            this.tsiProfDel.Size = new System.Drawing.Size(180, 22);
+            this.tsiProfDel.Size = new System.Drawing.Size(178, 22);
             this.tsiProfDel.Text = "Delete";
             this.tsiProfDel.Click += new System.EventHandler(this.tsiProfDel_Click);
             // 
@@ -260,7 +263,7 @@ namespace MSIFanControl.GUI
             this.tsiECMon.Name = "tsiECMon";
             this.tsiECMon.Size = new System.Drawing.Size(192, 22);
             this.tsiECMon.Text = "Enable EC monitoring";
-            this.tsiECMon.Click += new System.EventHandler(this.tsiECMonClick);
+            this.tsiECMon.Click += new System.EventHandler(this.tsiECMon_Click);
             // 
             // sep3
             // 
@@ -288,14 +291,14 @@ namespace MSIFanControl.GUI
             this.tsiAbout.Name = "tsiAbout";
             this.tsiAbout.Size = new System.Drawing.Size(141, 22);
             this.tsiAbout.Text = "About";
-            this.tsiAbout.Click += new System.EventHandler(this.tsiAboutClick);
+            this.tsiAbout.Click += new System.EventHandler(this.tsiAbout_Click);
             // 
             // tsiSource
             // 
             this.tsiSource.Name = "tsiSource";
             this.tsiSource.Size = new System.Drawing.Size(141, 22);
             this.tsiSource.Text = "Source Code";
-            this.tsiSource.Click += new System.EventHandler(this.tsiSrcClick);
+            this.tsiSource.Click += new System.EventHandler(this.tsiSrc_Click);
             // 
             // tblMain
             // 
@@ -350,7 +353,7 @@ namespace MSIFanControl.GUI
             this.cboFanSel.Name = "cboFanSel";
             this.cboFanSel.Size = new System.Drawing.Size(121, 23);
             this.cboFanSel.TabIndex = 1;
-            this.cboFanSel.SelectedIndexChanged += new System.EventHandler(this.FanSelIndexChanged);
+            this.cboFanSel.SelectedIndexChanged += new System.EventHandler(this.cboFanSel_IndexChanged);
             // 
             // lblProfSel
             // 
@@ -370,7 +373,7 @@ namespace MSIFanControl.GUI
             this.cboProfSel.Name = "cboProfSel";
             this.cboProfSel.Size = new System.Drawing.Size(121, 23);
             this.cboProfSel.TabIndex = 3;
-            this.cboProfSel.SelectedIndexChanged += new System.EventHandler(this.ProfSelIndexChanged);
+            this.cboProfSel.SelectedIndexChanged += new System.EventHandler(this.cboProfSel_IndexChanged);
             // 
             // btnProfAdd
             // 
@@ -412,7 +415,7 @@ namespace MSIFanControl.GUI
             // 
             this.lblStatus.AutoSize = true;
             this.lblStatus.Location = new System.Drawing.Point(3, 3);
-            this.lblStatus.Margin = new System.Windows.Forms.Padding(3);
+            this.lblStatus.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(39, 15);
             this.lblStatus.TabIndex = 0;
@@ -422,7 +425,7 @@ namespace MSIFanControl.GUI
             // 
             this.lblFanSpd.AutoSize = true;
             this.lblFanSpd.Location = new System.Drawing.Point(48, 3);
-            this.lblFanSpd.Margin = new System.Windows.Forms.Padding(3);
+            this.lblFanSpd.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.lblFanSpd.Name = "lblFanSpd";
             this.lblFanSpd.Size = new System.Drawing.Size(86, 15);
             this.lblFanSpd.TabIndex = 1;
@@ -433,7 +436,7 @@ namespace MSIFanControl.GUI
             // 
             this.lblFanRPM.AutoSize = true;
             this.lblFanRPM.Location = new System.Drawing.Point(140, 3);
-            this.lblFanRPM.Margin = new System.Windows.Forms.Padding(3);
+            this.lblFanRPM.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.lblFanRPM.Name = "lblFanRPM";
             this.lblFanRPM.Size = new System.Drawing.Size(58, 15);
             this.lblFanRPM.TabIndex = 2;
@@ -444,7 +447,7 @@ namespace MSIFanControl.GUI
             // 
             this.lblTemp.AutoSize = true;
             this.lblTemp.Location = new System.Drawing.Point(204, 3);
-            this.lblTemp.Margin = new System.Windows.Forms.Padding(3);
+            this.lblTemp.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.lblTemp.Name = "lblTemp";
             this.lblTemp.Size = new System.Drawing.Size(65, 15);
             this.lblTemp.TabIndex = 3;
@@ -505,7 +508,7 @@ namespace MSIFanControl.GUI
             this.chkFullBlast.TabIndex = 1;
             this.chkFullBlast.Text = "Full Blast";
             this.chkFullBlast.UseVisualStyleBackColor = true;
-            this.chkFullBlast.CheckedChanged += new System.EventHandler(this.FullBlastToggled);
+            this.chkFullBlast.CheckedChanged += new System.EventHandler(this.chkFullBlastToggled);
             // 
             // lblChgLim
             // 
@@ -523,18 +526,18 @@ namespace MSIFanControl.GUI
             this.numChgLim.Name = "numChgLim";
             this.numChgLim.Size = new System.Drawing.Size(60, 23);
             this.numChgLim.TabIndex = 3;
-            this.numChgLim.ValueChanged += new System.EventHandler(this.ChargeLimChanged);
+            this.numChgLim.ValueChanged += new System.EventHandler(this.numChargeLimChanged);
             // 
             // btnApply
             // 
             this.btnApply.Enabled = false;
             this.btnApply.Location = new System.Drawing.Point(462, 3);
             this.btnApply.Name = "btnApply";
-            this.btnApply.Size = new System.Drawing.Size(75, 23);
+            this.btnApply.Size = new System.Drawing.Size(75, 22);
             this.btnApply.TabIndex = 4;
             this.btnApply.Text = "Apply";
             this.btnApply.UseVisualStyleBackColor = true;
-            this.btnApply.Click += new System.EventHandler(this.ApplyClick);
+            this.btnApply.Click += new System.EventHandler(this.btnApply_Click);
             // 
             // btnRevert
             // 
@@ -542,10 +545,11 @@ namespace MSIFanControl.GUI
             this.btnRevert.Enabled = false;
             this.btnRevert.Location = new System.Drawing.Point(381, 3);
             this.btnRevert.Name = "btnRevert";
-            this.btnRevert.Size = new System.Drawing.Size(75, 23);
+            this.btnRevert.Size = new System.Drawing.Size(75, 22);
             this.btnRevert.TabIndex = 5;
             this.btnRevert.Text = "Revert";
             this.btnRevert.UseVisualStyleBackColor = true;
+            this.btnRevert.Click += new System.EventHandler(this.btnRevert_Click);
             // 
             // tblCurve
             // 
@@ -625,7 +629,7 @@ namespace MSIFanControl.GUI
             this.Name = "MainWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MSI Fan Control";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindowFormClosing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindowClosing);
             this.Load += new System.EventHandler(this.MainWindowLoad);
             menuStrip.ResumeLayout(false);
             menuStrip.PerformLayout();
@@ -645,40 +649,40 @@ namespace MSIFanControl.GUI
             this.ResumeLayout(false);
             this.PerformLayout();
 
-		}
+        }
 
-		#endregion
+        #endregion
 
-		private System.Windows.Forms.ToolStripMenuItem tsiECMon;
-		private System.Windows.Forms.ComboBox cboFanSel;
-		private System.Windows.Forms.ComboBox cboProfSel;
-		private System.Windows.Forms.CheckBox chkFullBlast;
-		private System.Windows.Forms.NumericUpDown numChgLim;
-		private System.Windows.Forms.Button btnApply;
-		private System.Windows.Forms.TableLayoutPanel tblCurve;
-		private System.Windows.Forms.Timer tmrPoll;
-		private System.Windows.Forms.Label lblFanSpd;
-		private System.Windows.Forms.Label lblFanRPM;
-		private System.Windows.Forms.Label lblTemp;
-		private System.Windows.Forms.ToolStripMenuItem tsiLoadConf;
-		private System.Windows.Forms.ToolStripMenuItem tsiSaveConf;
-		private System.Windows.Forms.Label lblStatus;
-		private System.Windows.Forms.ToolStripMenuItem tsiExit;
-		private System.Windows.Forms.ToolStripMenuItem tsiApply;
-		private System.Windows.Forms.Button btnRevert;
-		private System.Windows.Forms.ToolStripMenuItem tsiRevert;
-		private System.Windows.Forms.ToolStripMenuItem tsiAbout;
-		private System.Windows.Forms.ToolStripMenuItem tsiSource;
-		private System.Windows.Forms.ToolStripSeparator sep3;
-		private System.Windows.Forms.ToolStripMenuItem tsiUninstall;
-		private System.Windows.Forms.Button btnProfAdd;
-		private System.Windows.Forms.Button btnProfDel;
-		private System.Windows.Forms.ToolStripMenuItem tsiProfAdd;
-		private System.Windows.Forms.ToolStripMenuItem tsiProfEdit;
-		private System.Windows.Forms.ToolStripMenuItem tsiProfRename;
-		private System.Windows.Forms.ToolStripMenuItem tsiProfChangeDesc;
-		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
-		private System.Windows.Forms.ToolStripMenuItem tsiProfDel;
-		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
-	}
+        private System.Windows.Forms.ToolStripMenuItem tsiECMon;
+        private System.Windows.Forms.ComboBox cboFanSel;
+        private System.Windows.Forms.ComboBox cboProfSel;
+        private System.Windows.Forms.CheckBox chkFullBlast;
+        private System.Windows.Forms.NumericUpDown numChgLim;
+        private System.Windows.Forms.Button btnApply;
+        private System.Windows.Forms.TableLayoutPanel tblCurve;
+        private System.Windows.Forms.Timer tmrPoll;
+        private System.Windows.Forms.Label lblFanSpd;
+        private System.Windows.Forms.Label lblFanRPM;
+        private System.Windows.Forms.Label lblTemp;
+        private System.Windows.Forms.ToolStripMenuItem tsiLoadConf;
+        private System.Windows.Forms.ToolStripMenuItem tsiSaveConf;
+        private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.ToolStripMenuItem tsiExit;
+        private System.Windows.Forms.ToolStripMenuItem tsiApply;
+        private System.Windows.Forms.Button btnRevert;
+        private System.Windows.Forms.ToolStripMenuItem tsiRevert;
+        private System.Windows.Forms.ToolStripMenuItem tsiAbout;
+        private System.Windows.Forms.ToolStripMenuItem tsiSource;
+        private System.Windows.Forms.ToolStripSeparator sep3;
+        private System.Windows.Forms.ToolStripMenuItem tsiUninstall;
+        private System.Windows.Forms.Button btnProfAdd;
+        private System.Windows.Forms.Button btnProfDel;
+        private System.Windows.Forms.ToolStripMenuItem tsiProfAdd;
+        private System.Windows.Forms.ToolStripMenuItem tsiProfEdit;
+        private System.Windows.Forms.ToolStripMenuItem tsiProfRename;
+        private System.Windows.Forms.ToolStripMenuItem tsiProfChangeDesc;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem tsiProfDel;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+    }
 }

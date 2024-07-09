@@ -1,5 +1,5 @@
 // This file is part of MSI Fan Control.
-// Copyright © Sparronator9999 2023-2024.
+// Copyright Â© Sparronator9999 2023-2024.
 //
 // MSI Fan Control is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free

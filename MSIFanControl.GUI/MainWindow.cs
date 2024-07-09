@@ -23,7 +23,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Resources;
 using System.Windows.Forms;
 
 namespace MSIFanControl.GUI
@@ -94,7 +93,7 @@ namespace MSIFanControl.GUI
                     Margin = new Padding(2),
                     Tag = i,
                 };
-                numFanSpds[i].ValueChanged += FanSpdChanged;
+                numFanSpds[i].ValueChanged += numFanSpd_Changed;
                 tblCurve.Controls.Add(numFanSpds[i], i + 1, 0);
 
                 tbFanSpds[i] = new TrackBar()
@@ -106,7 +105,7 @@ namespace MSIFanControl.GUI
                     TickFrequency = 5,
                     TickStyle = TickStyle.Both,
                 };
-                tbFanSpds[i].ValueChanged += FanSpdScroll;
+                tbFanSpds[i].ValueChanged += tbFanSpd_Scroll;
                 tblCurve.Controls.Add(tbFanSpds[i], i + 1, 1);
 
                 if (i != 0)
@@ -119,7 +118,7 @@ namespace MSIFanControl.GUI
                         Margin = new Padding(2),
                         Tag = i - 1,
                     };
-                    numUpTs[i - 1].ValueChanged += UpTChanged;
+                    numUpTs[i - 1].ValueChanged += numUpT_Changed;
                     tblCurve.Controls.Add(numUpTs[i - 1], i + 1, 2);
                 }
                 else
@@ -144,7 +143,7 @@ namespace MSIFanControl.GUI
                         Margin = new Padding(2),
                         Tag = i,
                     };
-                    numDownTs[i].ValueChanged += DownTChanged;
+                    numDownTs[i].ValueChanged += numDownT_Changed;
                     tblCurve.Controls.Add(numDownTs[i], i + 1, 3);
                 }
                 else
@@ -161,6 +160,7 @@ namespace MSIFanControl.GUI
             }
         }
 
+        #region Events
         private void MainWindowLoad(object sender, EventArgs e)
         {
             try
@@ -179,27 +179,13 @@ namespace MSIFanControl.GUI
             LoadConf(Path.Combine(DataPath, "CurrentConfig.xml"));
         }
 
-        private void IPCMessageReceived(
-            NamedPipeConnection<ServiceResponse, ServiceCommand> connection, ServiceResponse message)
+        private void MainWindowClosing(object sender, FormClosingEventArgs e)
         {
-            string[] args = message.Value.Split(' ');
-            if (args.Length == 1)
+            // Disable Full Blast if it was enabled while the program was running:
+            if (chkFullBlast.Checked)
             {
-                switch (message.Response)
-                {
-                    case Response.Temp:
-                        if (int.TryParse(args[0], out int value))
-                            UpdateFanMon(value, 0);
-                        break;
-                    case Response.FanSpeed:
-                        if (int.TryParse(args[0], out value))
-                            UpdateFanMon(value, 1);
-                        break;
-                    case Response.FanRPM:
-                        if (int.TryParse(args[0], out value))
-                            UpdateFanMon(value, 2);
-                        break;
-                }
+                ServiceCommand command = new ServiceCommand(Command.FullBlast, "0");
+                IPCClient.PushMessage(command);
             }
         }
 
@@ -210,6 +196,352 @@ namespace MSIFanControl.GUI
             IPCClient.Stop();
         }
 
+        private void IPCMessageReceived(NamedPipeConnection<ServiceResponse, ServiceCommand> connection, ServiceResponse message)
+        {
+            string[] args = message.Value.Split(' ');
+            if (args.Length == 1)
+            {
+                switch (message.Response)
+                {
+                    case Response.Temp:
+                        if (int.TryParse(args[0], out int value))
+                        {
+                            UpdateFanMon(value, 0);
+                        }
+                        break;
+                    case Response.FanSpeed:
+                        if (int.TryParse(args[0], out value))
+                        {
+                            UpdateFanMon(value, 1);
+                        }
+                        break;
+                    case Response.FanRPM:
+                        if (int.TryParse(args[0], out value))
+                        {
+                            UpdateFanMon(value, 2);
+                        }
+                        break;
+                }
+            }
+        }
+
+        #region Tool strip menu items
+
+        #region File
+        private void tsiLoadConf_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog ofd = new OpenFileDialog()
+            {
+                AddExtension = true,
+                CheckFileExists = true,
+                Filter = "MSI Fan Control config files|*.xml",
+                Title = "Load config",
+            };
+
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                LoadConf(ofd.FileName);
+            }
+        }
+
+        private void tsiSaveConf_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog sfd = new SaveFileDialog()
+            {
+                AddExtension = true,
+                Filter = "MSI Fan Control config files|*.xml",
+                Title = "Save config",
+            };
+
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                Config.Save(sfd.FileName);
+            }
+        }
+
+        private void tsiApply_Click(object sender, EventArgs e)
+        {
+            ApplyConf();
+        }
+
+        private void tsiRevert_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tsiExit_Click(object sender, EventArgs e) =>
+            Close();
+        #endregion
+
+        #region Options
+        private void tsiProfAdd_Click(object sender, EventArgs e)
+        {
+            AddFanProfile();
+        }
+
+        private void tsiProfRename_Click(object sender, EventArgs e)
+        {
+            FanCurveConfig curveCfg = Config.FanConfigs[cboFanSel.SelectedIndex]
+                .FanCurveConfigs[cboProfSel.SelectedIndex];
+
+            TextInputDialog dlg = new TextInputDialog(
+                "Please enter a new name for your fan profile:",
+                "Change Profile Name", curveCfg.Name);
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                curveCfg.Name = dlg.Result;
+                cboProfSel.Items[cboProfSel.SelectedIndex] = dlg.Result;
+            }
+        }
+
+        private void tsiProfChangeDesc_Click(object sender, EventArgs e)
+        {
+            FanCurveConfig curveCfg = Config.FanConfigs[cboFanSel.SelectedIndex]
+                .FanCurveConfigs[cboProfSel.SelectedIndex];
+            TextInputDialog dlg = new TextInputDialog(
+                "Please enter a new description for your fan profile:",
+                "Change Profile Description", curveCfg.Description);
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                curveCfg.Description = dlg.Result;
+                ttMain.SetToolTip(cboProfSel, dlg.Result);
+            }
+        }
+
+        private void tsiProfDel_Click(object sender, EventArgs e)
+        {
+            DeleteFanProfile();
+        }
+
+        private void tsiECMon_Click(object sender, EventArgs e)
+        {
+            if (tsiECMon.Checked)
+            {
+                tmrPoll.Start();
+                PollEC();
+                lblFanSpd.Visible = true;
+                lblFanRPM.Visible = true;
+                lblTemp.Visible = true;
+            }
+            else
+            {
+                tmrPoll.Stop();
+                lblFanSpd.Visible = false;
+                lblFanRPM.Visible = false;
+                lblTemp.Visible = false;
+            }
+        }
+
+        private void tsiUninstallClick(object sender, EventArgs e)
+        {
+            MessageBox.Show("TODO");
+            return;
+
+            if (MessageBox.Show(
+                "This will uninstall the MSI Fan Control service from your computer.\n\n" +
+                "Only proceed if you would like to delete MSI Fan Control" +
+                "from your computer.\n\n" +
+                "MSI Fan Control will close once the uninstall is complete.\n\n" +
+                "Proceed?", "Uninstall Service",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            {
+                bool delData = MessageBox.Show(
+                    "Also delete the MSI Fan Control data directory\n" +
+                    $"(located at {DataPath})?\n\n" +
+                    "This directory includes service logs, program-specific " +
+                    "configuration, and a copy of the MSI Fan Control config that gets " +
+                    "applied automatically by the service.\n\n" +
+                    "WARNING:\n" +
+                    "Make sure you saved your currently applied fan config elsewhere!",
+                    "Delete configuration?",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
+
+                if (delData)
+                {
+                    Directory.Delete(DataPath, true);
+                }
+
+                IPCClient.Stop();
+
+                // TODO: actually uninstall the MSI Fan Control service
+
+                Application.Exit();
+            }
+        }
+        #endregion
+
+        #region About
+        private void tsiAbout_Click(object sender, EventArgs e) =>
+            MessageBox.Show(Strings.GetString("About"), "About",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+        private void tsiSrc_Click(object sender, EventArgs e) =>
+            // TODO: add GitHub project link
+            Process.Start("https://youtu.be/dQw4w9WgXcQ");
+        #endregion
+
+        #endregion
+
+        private void cboFanSel_IndexChanged(object sender, EventArgs e)
+        {
+            FanConfig config = Config.FanConfigs[cboFanSel.SelectedIndex];
+
+            cboProfSel.Items.Clear();
+            foreach (FanCurveConfig curve in config.FanCurveConfigs)
+            {
+                cboProfSel.Items.Add(curve.Name);
+            }
+
+            for (int i = 0; i < numFanSpds.Length; i++)
+            {
+                if (config.FanCurveRegs.Length >= i)
+                {
+                    numFanSpds[i].Maximum = tbFanSpds[i].Maximum
+                        = Math.Abs(config.MaxSpeed - config.MinSpeed);
+                    numFanSpds[i].Enabled = tbFanSpds[i].Enabled = true;
+                }
+                else
+                {
+                    numFanSpds[i].Enabled = tbFanSpds[i].Enabled = false;
+                }
+            }
+
+            cboProfSel.Enabled = true;
+            cboProfSel.SelectedIndex = config.CurveSel;
+
+            if (tsiECMon.Checked)
+            {
+                tmrPoll.Stop();
+                PollEC();
+                tmrPoll.Start();
+            }
+        }
+
+        private void cboProfSel_IndexChanged(object sender, EventArgs e)
+        {
+            FanConfig config = Config.FanConfigs[cboFanSel.SelectedIndex];
+            FanCurveConfig curveConfig = config.FanCurveConfigs[cboProfSel.SelectedIndex];
+
+            config.CurveSel = cboProfSel.SelectedIndex;
+            ttMain.SetToolTip(cboProfSel, config.FanCurveConfigs[config.CurveSel].Description);
+
+            int numTempThresholds = config.UpThresholdRegs.Length;
+
+            // Fan curve
+            for (int i = 0; i < numFanSpds.Length; i++)
+            {
+                if (numTempThresholds >= i)
+                {
+                    numFanSpds[i].Value = tbFanSpds[i].Value
+                        = curveConfig.TempThresholds[i].FanSpeed;
+                }
+            }
+
+            // Temp thresholds
+            for (int i = 0; i < numUpTs.Length; i++)
+            {
+                if (numTempThresholds >= i)
+                {
+                    TempThreshold t = curveConfig.TempThresholds[i + 1];
+                    numUpTs[i].Value = t.UpThreshold;
+                    numDownTs[i].Value = t.DownThreshold;
+
+                    numUpTs[i].Enabled = numDownTs[i].Enabled = true;
+                }
+                else
+                {
+                    numUpTs[i].Enabled = numDownTs[i].Enabled = false;
+                }
+            }
+            btnApply.Enabled = true;
+            btnProfDel.Enabled = curveConfig.Name != "Default";
+        }
+
+        private void btnProfAdd_Click(object sender, EventArgs e)
+        {
+            AddFanProfile();
+        }
+
+        private void btnProfDel_Click(object sender, EventArgs e)
+        {
+            DeleteFanProfile();
+        }
+
+        private void numFanSpd_Changed(object sender, EventArgs e)
+        {
+            NumericUpDown nud = (NumericUpDown)sender;
+            int i = (int)nud.Tag;
+            tbFanSpds[i].Value = (int)numFanSpds[i].Value;
+
+            Config.FanConfigs[cboFanSel.SelectedIndex]
+                .FanCurveConfigs[cboProfSel.SelectedIndex]
+                .TempThresholds[i].FanSpeed = (byte)numFanSpds[i].Value;
+        }
+
+        private void tbFanSpd_Scroll(object sender, EventArgs e)
+        {
+            TrackBar tb = (TrackBar)sender;
+            int i = (int)tb.Tag;
+            numFanSpds[i].Value = tbFanSpds[i].Value;
+
+            Config.FanConfigs[cboFanSel.SelectedIndex]
+                .FanCurveConfigs[cboProfSel.SelectedIndex]
+                .TempThresholds[i].FanSpeed = (byte)numFanSpds[i].Value;
+        }
+
+        private void numUpT_Changed(object sender, EventArgs e)
+        {
+            NumericUpDown nud = (NumericUpDown)sender;
+            int i = (int)nud.Tag;
+
+            TempThreshold threshold = Config.FanConfigs[cboFanSel.SelectedIndex]
+                .FanCurveConfigs[cboProfSel.SelectedIndex]
+                .TempThresholds[i + 1];
+
+            // Update associated down threshold slider
+            numDownTs[i].Value += nud.Value - threshold.UpThreshold;
+
+            threshold.UpThreshold = (byte)numUpTs[i].Value;
+        }
+
+        private void numDownT_Changed(object sender, EventArgs e)
+        {
+            NumericUpDown nud = (NumericUpDown)sender;
+            int i = (int)nud.Tag;
+
+            Config.FanConfigs[cboFanSel.SelectedIndex]
+                .FanCurveConfigs[cboProfSel.SelectedIndex]
+                .TempThresholds[i + 1].DownThreshold = (byte)numDownTs[i].Value;
+        }
+
+        private void chkFullBlastToggled(object sender, EventArgs e)
+        {
+            ServiceCommand command = new ServiceCommand(Command.FullBlast, chkFullBlast.Checked ? "1" : "0");
+            IPCClient.PushMessage(command);
+        }
+
+        private void numChargeLimChanged(object sender, EventArgs e)
+        {
+            Config.ChargeLimitConfig.Value = (byte)numChgLim.Value;
+        }
+
+        private void btnRevert_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnApply_Click(object sender, EventArgs e)
+        {
+            ApplyConf();
+        }
+
+        private void tmrPollTick(object sender, EventArgs e)
+        {
+            PollEC();
+        }
+        #endregion
+
+        #region Private methods
         private void UpdateFanMon(int value, int i)
         {
             switch (i)
@@ -237,121 +569,6 @@ namespace MSIFanControl.GUI
             }
         }
 
-        #region Events
-        private void MainWindowFormClosing(object sender, FormClosingEventArgs e)
-        {
-            // Disable Full Blast if it was enabled while the program was running:
-            if (chkFullBlast.Checked)
-            {
-                ServiceCommand command = new ServiceCommand(Command.FullBlast, "0");
-                IPCClient.PushMessage(command);
-            }
-        }
-
-        #region Tool Strip Menu Items
-        private void tsiExitClick(object sender, EventArgs e) =>
-            Close();
-
-        private void tsiAboutClick(object sender, EventArgs e) =>
-            MessageBox.Show(Strings.GetString("About"), "About",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-        private void tsiSrcClick(object sender, EventArgs e) =>
-            // TODO: add GitHub project link
-            Process.Start("https://youtu.be/dQw4w9WgXcQ");
-        #endregion
-
-        #region Fan and Temp Threshold sliders
-        private void FanSpdChanged(object sender, EventArgs e)
-        {
-            NumericUpDown nud = (NumericUpDown)sender;
-            int i = (int)nud.Tag;
-            tbFanSpds[i].Value = (int)numFanSpds[i].Value;
-
-            Config.FanConfigs[cboFanSel.SelectedIndex]
-                .FanCurveConfigs[cboProfSel.SelectedIndex]
-                .TempThresholds[i].FanSpeed = (byte)numFanSpds[i].Value;
-        }
-
-        private void FanSpdScroll(object sender, EventArgs e)
-        {
-            TrackBar tb = (TrackBar)sender;
-            int i = (int)tb.Tag;
-            numFanSpds[i].Value = tbFanSpds[i].Value;
-
-            Config.FanConfigs[cboFanSel.SelectedIndex]
-                .FanCurveConfigs[cboProfSel.SelectedIndex]
-                .TempThresholds[i].FanSpeed = (byte)numFanSpds[i].Value;
-        }
-
-        private void UpTChanged(object sender, EventArgs e)
-        {
-            NumericUpDown nud = (NumericUpDown)sender;
-            int i = (int)nud.Tag;
-
-            TempThreshold threshold = Config.FanConfigs[cboFanSel.SelectedIndex]
-                .FanCurveConfigs[cboProfSel.SelectedIndex]
-                .TempThresholds[i + 1];
-
-            // Update associated down threshold slider
-            numDownTs[i].Value += nud.Value - threshold.UpThreshold;
-
-            threshold.UpThreshold = (byte)numUpTs[i].Value;
-        }
-
-        private void DownTChanged(object sender, EventArgs e)
-        {
-            NumericUpDown nud = (NumericUpDown)sender;
-            int i = (int)nud.Tag;
-
-            Config.FanConfigs[cboFanSel.SelectedIndex]
-                .FanCurveConfigs[cboProfSel.SelectedIndex]
-                .TempThresholds[i + 1].DownThreshold = (byte)numDownTs[i].Value;
-        }
-        #endregion
-
-        private void ApplyClick(object sender, EventArgs e)
-        {
-            // Save the updated config
-            Config.Save(Path.Combine(DataPath, "CurrentConfig.xml"));
-
-            // Tell the service to reload and apply the updated config
-            ServiceCommand command = new ServiceCommand(Command.ApplyConfig, null);
-            IPCClient.PushMessage(command);
-        }
-
-        private void LoadConfClick(object sender, EventArgs e)
-        {
-            OpenFileDialog ofd = new OpenFileDialog()
-            {
-                AddExtension = true,
-                CheckFileExists = true,
-                Filter = "MSI Fan Control config files|*.xml",
-                Title = "Load config",
-            };
-
-            if (ofd.ShowDialog() == DialogResult.OK)
-            {
-                LoadConf(ofd.FileName);
-            }
-        }
-
-        private void SaveConfClick(object sender, EventArgs e)
-        {
-            SaveFileDialog sfd = new SaveFileDialog()
-            {
-                AddExtension = true,
-                Filter = "MSI Fan Control config files|*.xml",
-                Title = "Save config",
-            };
-
-            if (sfd.ShowDialog() == DialogResult.OK)
-            {
-                Config.Save(sfd.FileName);
-            }
-        }
-
-        #region Fan config and profiles
         private void LoadConf(string configPath)
         {
             lblStatus.Text = "Loading config, please wait...";
@@ -394,7 +611,9 @@ namespace MSIFanControl.GUI
 
             cboFanSel.Items.Clear();
             for (int i = 0; i < Config.FanConfigs.Length; i++)
+            {
                 cboFanSel.Items.Add(Config.FanConfigs[i].Name);
+            }
 
             cboFanSel.Enabled = true;
             cboFanSel.SelectedIndex = 0;
@@ -403,94 +622,14 @@ namespace MSIFanControl.GUI
             lblStatus.Text = "Ready";
         }
 
-        private void FanSelIndexChanged(object sender, EventArgs e)
+        private void ApplyConf()
         {
-            FanConfig config = Config.FanConfigs[cboFanSel.SelectedIndex];
+            // Save the updated config
+            Config.Save(Path.Combine(DataPath, "CurrentConfig.xml"));
 
-            cboProfSel.Items.Clear();
-            foreach (FanCurveConfig curve in config.FanCurveConfigs)
-                cboProfSel.Items.Add(curve.Name);
-
-            for (int i = 0; i < numFanSpds.Length; i++)
-            {
-                if (config.FanCurveRegs.Length >= i)
-                {
-                    numFanSpds[i].Maximum = tbFanSpds[i].Maximum
-                        = Math.Abs(config.MaxSpeed - config.MinSpeed);
-                    numFanSpds[i].Enabled = tbFanSpds[i].Enabled = true;
-                }
-                else
-                {
-                    numFanSpds[i].Enabled = tbFanSpds[i].Enabled = false;
-                }
-            }
-
-            cboProfSel.Enabled = true;
-            cboProfSel.SelectedIndex = config.CurveSel;
-
-            if (tsiECMon.Checked)
-            {
-                tmrPoll.Stop();
-                PollEC();
-                tmrPoll.Start();
-            }
-        }
-
-        private void ProfSelIndexChanged(object sender, EventArgs e)
-        {
-            FanConfig config = Config.FanConfigs[cboFanSel.SelectedIndex];
-            FanCurveConfig curveConfig = config.FanCurveConfigs[cboProfSel.SelectedIndex];
-
-            config.CurveSel = cboProfSel.SelectedIndex;
-            ttMain.SetToolTip(cboProfSel, config.FanCurveConfigs[config.CurveSel].Description);
-
-            int numTempThresholds = config.UpThresholdRegs.Length;
-
-            // Fan curve
-            for (int i = 0; i < numFanSpds.Length; i++)
-            {
-                if (numTempThresholds >= i)
-                {
-                    numFanSpds[i].Value = tbFanSpds[i].Value
-                        = curveConfig.TempThresholds[i].FanSpeed;
-                }
-            }
-
-            // Temp thresholds
-            for (int i = 0; i < numUpTs.Length; i++)
-            {
-                if (numTempThresholds >= i)
-                {
-                    TempThreshold t = curveConfig.TempThresholds[i + 1];
-                    numUpTs[i].Value = t.UpThreshold;
-                    numDownTs[i].Value = t.DownThreshold;
-
-                    numUpTs[i].Enabled = numDownTs[i].Enabled = true;
-                }
-                else
-                {
-                    numUpTs[i].Enabled = numDownTs[i].Enabled = false;
-                }
-            }
-            btnApply.Enabled = true;
-            btnProfDel.Enabled = curveConfig.Name != "Default";
-        }
-        #endregion
-
-        private void FullBlastToggled(object sender, EventArgs e)
-        {
-            ServiceCommand command = new ServiceCommand(Command.FullBlast, chkFullBlast.Checked ? "1" : "0");
+            // Tell the service to reload and apply the updated config
+            ServiceCommand command = new ServiceCommand(Command.ApplyConfig, null);
             IPCClient.PushMessage(command);
-        }
-
-        private void ChargeLimChanged(object sender, EventArgs e)
-        {
-            Config.ChargeLimitConfig.Value = (byte)numChgLim.Value;
-        }
-
-        private void tmrPollTick(object sender, EventArgs e)
-        {
-            PollEC();
         }
 
         private void PollEC()
@@ -498,112 +637,6 @@ namespace MSIFanControl.GUI
             IPCClient.PushMessage(new ServiceCommand(Command.GetTemp, cboFanSel.SelectedIndex.ToString()));
             IPCClient.PushMessage(new ServiceCommand(Command.GetFanSpeed, cboFanSel.SelectedIndex.ToString()));
             IPCClient.PushMessage(new ServiceCommand(Command.GetFanRPM, cboFanSel.SelectedIndex.ToString()));
-        }
-
-        private void tsiECMonClick(object sender, EventArgs e)
-        {
-            if (tsiECMon.Checked)
-            {
-                tmrPoll.Start();
-                PollEC();
-                lblFanSpd.Visible = true;
-                lblFanRPM.Visible = true;
-                lblTemp.Visible = true;
-            }
-            else
-            {
-                tmrPoll.Stop();
-                lblFanSpd.Visible = false;
-                lblFanRPM.Visible = false;
-                lblTemp.Visible = false;
-            }
-        }
-        #endregion
-
-        private void tsiUninstallClick(object sender, EventArgs e)
-        {
-            MessageBox.Show("TODO");
-            return;
-
-            if (MessageBox.Show(
-                "This will uninstall the MSI Fan Control service from your computer.\n\n" +
-                "Only proceed if you would like to delete MSI Fan Control" +
-                "from your computer.\n\n" +
-                "MSI Fan Control will close once the uninstall is complete.\n\n" +
-                "Proceed?", "Uninstall Service",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-            {
-                bool delData = MessageBox.Show(
-                    "Also delete the MSI Fan Control data directory\n" +
-                    $"(located at {DataPath})?\n\n" +
-                    "This directory includes service logs, program-specific " +
-                    "configuration, and a copy of the MSI Fan Control config that gets " +
-                    "applied automatically by the service.\n\n" +
-                    "WARNING:\n" +
-                    "Make sure you saved your currently applied fan config elsewhere!",
-                    "Delete configuration?",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
-
-                if (delData)
-                {
-                    Directory.Delete(DataPath, true);
-                }
-
-                IPCClient.Stop();
-
-                // TODO: actually uninstall the MSI Fan Control service
-
-                Application.Exit();
-            }
-        }
-
-        private void btnProfAdd_Click(object sender, EventArgs e)
-        {
-            AddFanProfile();
-        }
-
-        private void tsiProfAdd_Click(object sender, EventArgs e)
-        {
-            AddFanProfile();
-        }
-
-        private void btnProfDel_Click(object sender, EventArgs e)
-        {
-            DeleteFanProfile();
-        }
-
-        private void tsiProfDel_Click(object sender, EventArgs e)
-        {
-            DeleteFanProfile();
-        }
-
-        private void tsiProfRename_Click(object sender, EventArgs e)
-        {
-            FanCurveConfig curveCfg = Config.FanConfigs[cboFanSel.SelectedIndex]
-                .FanCurveConfigs[cboProfSel.SelectedIndex];
-
-            TextInputDialog dlg = new TextInputDialog(
-                "Please enter a new name for your fan profile:",
-                "Change Profile Name", curveCfg.Name);
-            if (dlg.ShowDialog() == DialogResult.OK)
-            {
-                curveCfg.Name = dlg.Result;
-                cboProfSel.Items[cboProfSel.SelectedIndex] = dlg.Result;
-            }
-        }
-
-        private void tsiProfChangeDesc_Click(object sender, EventArgs e)
-        {
-            FanCurveConfig curveCfg = Config.FanConfigs[cboFanSel.SelectedIndex]
-                .FanCurveConfigs[cboProfSel.SelectedIndex];
-            TextInputDialog dlg = new TextInputDialog(
-                "Please enter a new description for your fan profile:",
-                "Change Profile Description", curveCfg.Description);
-            if (dlg.ShowDialog() == DialogResult.OK)
-            {
-                curveCfg.Description = dlg.Result;
-                ttMain.SetToolTip(cboProfSel, dlg.Result);
-            }
         }
 
         private void AddFanProfile()
@@ -651,5 +684,6 @@ namespace MSIFanControl.GUI
                 cboProfSel.SelectedIndex = oldIndex == 1 ? 1 : oldIndex - 1;
             }
         }
+        #endregion
     }
 }

@@ -1,5 +1,5 @@
 // This file is part of MSI Fan Control.
-// Copyright © Sparronator9999 2023-2024.
+// Copyright Â© Sparronator9999 2023-2024.
 //
 // MSI Fan Control is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -128,11 +128,16 @@ namespace MSIFanControl.Config
             // Check config version:
             // if the loaded config is older/newer than the version expected
             // by the config library, don't bother checking anything else
-            if (Version != ExpectedVer) return false;
+            if (Version != ExpectedVer)
+            {
+                return false;
+            }
 
             if (string.IsNullOrEmpty(Model) ||
                 string.IsNullOrEmpty(Author))
+            {
                 return false;
+            }
 
             // 1. Check if FanConfigs is not null
             // 2. Check if there's at least 1 FanConfig
@@ -143,7 +148,9 @@ namespace MSIFanControl.Config
                     FanConfig cfg = FanConfigs[i];
 
                     if (string.IsNullOrEmpty(cfg.Name))
+                    {
                         return false;
+                    }
 
                     if (cfg.UpThresholdRegs?.Length >= 1 &&
                         cfg.DownThresholdRegs?.Length >= 1 &&
@@ -158,18 +165,28 @@ namespace MSIFanControl.Config
                                 // there should be exactly one temperature threshold
                                 // per fan curve register; if there isn't, return false
                                 curveCfg.TempThresholds?.Length != cfg.FanCurveRegs.Length)
+                            {
                                 return false;
+                            }
                         }
                     }
-                    else return false;
+                    else
+                    {
+                        return false;
+                    }
                 }
             }
-            else return false;
+            else
+            {
+                return false;
+            }
 
             // If the RegConfigs tag is defined in the XML,
             // but has no elements, return false
             if (RegConfigs?.Length == 0)
+            {
                 return false;
+            }
 
             // All other values are considered to be valid; return true
             return true;

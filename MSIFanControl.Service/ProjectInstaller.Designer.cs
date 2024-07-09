@@ -1,4 +1,4 @@
-﻿// This file is part of MSI Fan Control.
+// This file is part of MSI Fan Control.
 // Copyright © Sparronator9999 2023-2024.
 //
 // MSI Fan Control is free software: you can redistribute it and/or modify it
@@ -16,60 +16,60 @@
 
 namespace MSIFanControl.Service
 {
-	partial class ProjectInstaller
-	{
-		/// <summary>
-		/// Required designer variable.
-		/// </summary>
-		private System.ComponentModel.IContainer components = null;
+    partial class ProjectInstaller
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
 
-		/// <summary> 
-		/// Clean up any resources being used.
-		/// </summary>
-		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && (components != null))
-			{
-				components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
+        /// <summary> 
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
-		#region Component Designer generated code
+        #region Component Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
-			this.svcPInstaller = new System.ServiceProcess.ServiceProcessInstaller();
-			this.svcInstaller = new System.ServiceProcess.ServiceInstaller();
-			// 
-			// svcPInstaller
-			// 
-			this.svcPInstaller.Account = System.ServiceProcess.ServiceAccount.LocalSystem;
-			this.svcPInstaller.Password = null;
-			this.svcPInstaller.Username = null;
-			// 
-			// svcInstaller
-			// 
-			this.svcInstaller.DisplayName = "MSI Fan Control Service";
-			this.svcInstaller.ServiceName = "msifcsvc";
-			this.svcInstaller.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
-			// 
-			// ProjectInstaller
-			// 
-			this.Installers.AddRange(new System.Configuration.Install.Installer[] {
-			this.svcPInstaller,
-			this.svcInstaller});
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.svcPInstaller = new System.ServiceProcess.ServiceProcessInstaller();
+            this.svcInstaller = new System.ServiceProcess.ServiceInstaller();
+            // 
+            // svcPInstaller
+            // 
+            this.svcPInstaller.Account = System.ServiceProcess.ServiceAccount.LocalSystem;
+            this.svcPInstaller.Password = null;
+            this.svcPInstaller.Username = null;
+            // 
+            // svcInstaller
+            // 
+            this.svcInstaller.DisplayName = "MSI Fan Control Service";
+            this.svcInstaller.ServiceName = "msifcsvc";
+            this.svcInstaller.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
+            // 
+            // ProjectInstaller
+            // 
+            this.Installers.AddRange(new System.Configuration.Install.Installer[] {
+            this.svcPInstaller,
+            this.svcInstaller});
 
-		}
+        }
 
-		#endregion
+        #endregion
 
-		private System.ServiceProcess.ServiceProcessInstaller svcPInstaller;
-		private System.ServiceProcess.ServiceInstaller svcInstaller;
-	}
+        private System.ServiceProcess.ServiceProcessInstaller svcPInstaller;
+        private System.ServiceProcess.ServiceInstaller svcInstaller;
+    }
 }

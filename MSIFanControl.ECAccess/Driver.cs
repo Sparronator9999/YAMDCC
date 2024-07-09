@@ -1,4 +1,4 @@
-﻿// This file is part of MSI Fan Control.
+// This file is part of MSI Fan Control.
 // Copyright © Sparronator9999 2023-2024.
 //
 // MSI Fan Control is free software: you can redistribute it and/or modify it
@@ -183,7 +183,9 @@ namespace MSIFanControl.ECAccess
                 int error = Marshal.GetLastWin32Error();
                 bool success = error == 1060;
                 if (success)
+                {
                     Status &= ~DriverStatus.Installed;
+                }
                 else
                 {
                     ErrorCode = error;
@@ -253,7 +255,9 @@ namespace MSIFanControl.ECAccess
         public bool IOControl(uint ctlCode, object inBuffer, object outBuffer)
         {
             if (hDevice == IntPtr.Zero)
+            {
                 return false;
+            }
 
             bool success = Kernel32.DeviceIoControl(
                 hDevice, ctlCode,
@@ -272,7 +276,10 @@ namespace MSIFanControl.ECAccess
         {
             outBuffer = 0;
             if (hDevice == IntPtr.Zero)
+            {
                 return false;
+            }
+
             bool success = Kernel32.DeviceIoControl(
                 hDevice, ctlCode,
                 ref inBuffer, sizeof(byte),
@@ -290,7 +297,10 @@ namespace MSIFanControl.ECAccess
         {
             outBuffer = 0;
             if (hDevice == IntPtr.Zero)
+            {
                 return false;
+            }
+
             bool success = Kernel32.DeviceIoControl(
                 hDevice, ctlCode,
                 ref inBuffer, sizeof(ushort),
@@ -308,7 +318,10 @@ namespace MSIFanControl.ECAccess
         {
             outBuffer = 0;
             if (hDevice == IntPtr.Zero)
+            {
                 return false;
+            }
+
             bool success = Kernel32.DeviceIoControl(
                 hDevice, ctlCode,
                 ref inBuffer, sizeof(uint),
@@ -341,7 +354,9 @@ namespace MSIFanControl.ECAccess
         {
             // Don't do anything if we already called Dispose:
             if (Disposed)
+            {
                 return;
+            }
 
             if (disposing)
             {

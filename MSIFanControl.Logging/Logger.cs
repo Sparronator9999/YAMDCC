@@ -1,4 +1,4 @@
-﻿// This file is part of MSI Fan Control.
+// This file is part of MSI Fan Control.
 // Copyright © Sparronator9999 2023-2024.
 //
 // MSI Fan Control is free software: you can redistribute it and/or modify it
@@ -88,10 +88,14 @@ namespace MSIFanControl.Logs
         public void Debug(string message)
         {
             if (FileLogLevel >= LogLevel.Debug)
+            {
                 WriteFile(message, LogLevel.Debug);
+            }
 
             if (ConsoleLogLevel >= LogLevel.Debug)
+            {
                 WriteConsole(message, LogLevel.Debug);
+            }
         }
 
         /// <summary>
@@ -116,10 +120,14 @@ namespace MSIFanControl.Logs
         public void Info(string message)
         {
             if (FileLogLevel >= LogLevel.Info)
+            {
                 WriteFile(message, LogLevel.Info);
+            }
 
             if (ConsoleLogLevel >= LogLevel.Info)
+            {
                 WriteConsole(message, LogLevel.Info);
+            }
         }
 
         /// <summary>
@@ -144,10 +152,14 @@ namespace MSIFanControl.Logs
         public void Warn(string message)
         {
             if (FileLogLevel >= LogLevel.Warn)
+            {
                 WriteFile(message, LogLevel.Warn);
+            }
 
             if (ConsoleLogLevel >= LogLevel.Warn)
+            {
                 WriteConsole(message, LogLevel.Warn);
+            }
         }
 
         /// <summary>
@@ -172,10 +184,14 @@ namespace MSIFanControl.Logs
         public void Error(string message)
         {
             if (FileLogLevel >= LogLevel.Error)
+            {
                 WriteFile(message, LogLevel.Error);
+            }
 
             if (ConsoleLogLevel >= LogLevel.Error)
+            {
                 WriteConsole(message, LogLevel.Error);
+            }
         }
 
         /// <summary>
@@ -201,10 +217,14 @@ namespace MSIFanControl.Logs
         public void Fatal(string message)
         {
             if (FileLogLevel >= LogLevel.Fatal)
+            {
                 WriteFile(message, LogLevel.Fatal);
+            }
 
             if (ConsoleLogLevel >= LogLevel.Fatal)
+            {
                 WriteConsole(message, LogLevel.Fatal);
+            }
         }
 
         /// <summary>
@@ -243,7 +263,9 @@ namespace MSIFanControl.Logs
             lock (fileLock)
             {
                 if (LogWriter is null)
+                {
                     InitLogFile();
+                }
 
                 foreach (string str in message.Split(NewlineChars, StringSplitOptions.RemoveEmptyEntries))
                 {
@@ -304,9 +326,13 @@ namespace MSIFanControl.Logs
                     try
                     {
                         if (i == MaxArchivedLogs)
+                        {
                             File.Delete($"{LogPath}.{i}.log.gz");
+                        }
                         else
+                        {
                             File.Move($"{LogPath}.{i}.log.gz", $"{LogPath}.{i + 1}.log.gz");
+                        }
                     }
                     catch (FileNotFoundException) { }
                     catch (DirectoryNotFoundException) { }
