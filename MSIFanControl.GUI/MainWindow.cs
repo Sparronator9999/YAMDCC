@@ -1,4 +1,4 @@
-﻿// This file is part of MSI Fan Control.
+// This file is part of MSI Fan Control.
 // Copyright © Sparronator9999 2023-2024.
 //
 // MSI Fan Control is free software: you can redistribute it and/or modify it
@@ -49,8 +49,6 @@ namespace MSIFanControl.GUI
         private readonly NamedPipeClient<ServiceResponse, ServiceCommand> IPCClient =
             new NamedPipeClient<ServiceResponse, ServiceCommand>("MSIFC-Server");
 
-        private readonly ResourceManager Resources;
-
         private readonly NumericUpDown[] numUpTs = new NumericUpDown[6];
         private readonly NumericUpDown[] numDownTs = new NumericUpDown[6];
         private readonly NumericUpDown[] numFanSpds = new NumericUpDown[7];
@@ -59,27 +57,26 @@ namespace MSIFanControl.GUI
         private readonly ToolTip ttMain = new ToolTip();
         #endregion
 
-        public MainWindow(ResourceManager resMan)
+        public MainWindow()
         {
             InitializeComponent();
-            Resources = resMan;
 
             // Set the window icon using the application icon.
             // Saves about 8-9 KB from not having to embed the same icon twice.
             Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
 
             // set literally every tooltip
-            tsiLoadConf.ToolTipText = Resources.GetString("ttLoadConf");
-            tsiSaveConf.ToolTipText = Resources.GetString("ttSaveConf");
-            tsiApply.ToolTipText = Resources.GetString("ttApply");
-            tsiRevert.ToolTipText = Resources.GetString("ttRevert");
-            tsiExit.ToolTipText = Resources.GetString("ttSelfExplan");
-            tsiECMon.ToolTipText = Resources.GetString("ttECMon");
-            tsiAbout.ToolTipText = Resources.GetString("ttAbout");
-            tsiSource.ToolTipText = Resources.GetString("ttSource");
-            ttMain.SetToolTip(cboFanSel, Resources.GetString("ttFanSel"));
-            ttMain.SetToolTip(btnApply, Resources.GetString("ttApply"));
-            ttMain.SetToolTip(btnRevert, Resources.GetString("ttRevert"));
+            tsiLoadConf.ToolTipText = Strings.GetString("ttLoadConf");
+            tsiSaveConf.ToolTipText = Strings.GetString("ttSaveConf");
+            tsiApply.ToolTipText = Strings.GetString("ttApply");
+            tsiRevert.ToolTipText = Strings.GetString("ttRevert");
+            tsiExit.ToolTipText = Strings.GetString("ttSelfExplan");
+            tsiECMon.ToolTipText = Strings.GetString("ttECMon");
+            tsiAbout.ToolTipText = Strings.GetString("ttAbout");
+            tsiSource.ToolTipText = Strings.GetString("ttSource");
+            ttMain.SetToolTip(cboFanSel, Strings.GetString("ttFanSel"));
+            ttMain.SetToolTip(btnApply, Strings.GetString("ttApply"));
+            ttMain.SetToolTip(btnRevert, Strings.GetString("ttRevert"));
 
             float scale = CurrentAutoScaleDimensions.Height / 72;
 
@@ -174,7 +171,7 @@ namespace MSIFanControl.GUI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format(Resources.GetString("svcErrorConnect"), ex),
+                MessageBox.Show(string.Format(Strings.GetString("svcErrorConnect"), ex),
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
             }
@@ -256,7 +253,7 @@ namespace MSIFanControl.GUI
             Close();
 
         private void tsiAboutClick(object sender, EventArgs e) =>
-            MessageBox.Show(Resources.GetString("About"), "About",
+            MessageBox.Show(Strings.GetString("About"), "About",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
 
         private void tsiSrcClick(object sender, EventArgs e) =>
@@ -372,23 +369,23 @@ namespace MSIFanControl.GUI
 
             if (Config.FullBlastConfig is null)
             {
-                ttMain.SetToolTip(chkFullBlast, Resources.GetString("ttNotSupported"));
+                ttMain.SetToolTip(chkFullBlast, Strings.GetString("ttNotSupported"));
                 chkFullBlast.Enabled = false;
             }
             else
             {
-                ttMain.SetToolTip(chkFullBlast, Resources.GetString("ttFullBlast"));
+                ttMain.SetToolTip(chkFullBlast, Strings.GetString("ttFullBlast"));
                 chkFullBlast.Enabled = true;
             }
 
             if (Config.ChargeLimitConfig is null)
             {
-                ttMain.SetToolTip(chkFullBlast, Resources.GetString("ttNotSupported"));
+                ttMain.SetToolTip(chkFullBlast, Strings.GetString("ttNotSupported"));
                 numChgLim.Enabled = false;
             }
             else
             {
-                ttMain.SetToolTip(numChgLim, Resources.GetString("ttChgLim"));
+                ttMain.SetToolTip(numChgLim, Strings.GetString("ttChgLim"));
                 ChargeLimitConfig cfg = Config.ChargeLimitConfig;
                 numChgLim.Enabled = true;
                 numChgLim.Value = cfg.Value;

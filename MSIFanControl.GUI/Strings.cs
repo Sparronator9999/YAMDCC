@@ -27,7 +27,9 @@ namespace MSIFanControl.GUI
         internal static string GetString(string name)
         {
             if (resMan is null)
+            {
                 resMan = new ResourceManager(typeof(Strings));
+            }
             return resMan.GetString(name, CultureInfo.InvariantCulture);
         }
 

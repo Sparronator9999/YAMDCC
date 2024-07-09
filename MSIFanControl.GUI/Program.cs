@@ -1,5 +1,5 @@
 // This file is part of MSI Fan Control.
-// Copyright © Sparronator9999 2023-2024.
+// Copyright Â© Sparronator9999 2023-2024.
 //
 // MSI Fan Control is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -18,7 +18,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Resources;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
 using System.Windows.Forms;
@@ -27,8 +26,6 @@ namespace MSIFanControl.GUI
 {
     internal static class Program
     {
-        private static ResourceManager Resources;
-
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -37,8 +34,6 @@ namespace MSIFanControl.GUI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
-            Resources = new ResourceManager(typeof(Program));
 
             if (ServiceExists("msifcsvc"))
             {
@@ -50,13 +45,13 @@ namespace MSIFanControl.GUI
                     if (msifcSvc.Status == ServiceControllerStatus.Stopped)
                     {
                         if (MessageBox.Show(
-                            Resources.GetString("svcNotRunning"),
+                            Strings.GetString("svcNotRunning"),
                             "Service not running", MessageBoxButtons.YesNo,
                             MessageBoxIcon.Information) == DialogResult.Yes)
                         {
                             if (RunCmd("net", "start msifcsvc") != 0)
                             {
-                                MessageBox.Show(Resources.GetString("svcErrorCrash"),
+                                MessageBox.Show(Strings.GetString("svcErrorCrash"),
                                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 return;
                             }
@@ -67,7 +62,7 @@ namespace MSIFanControl.GUI
                 catch (Exception ex)
                 {
                     MessageBox.Show(
-                        string.Format(Resources.GetString("svcErrorStart"), ex),
+                        string.Format(Strings.GetString("svcErrorStart"), ex),
                         "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
@@ -81,33 +76,33 @@ namespace MSIFanControl.GUI
                 if (File.Exists("msifcsvc.exe"))
                 {
                     if (MessageBox.Show(
-                        Resources.GetString("svcNotInstalled"),
+                        Strings.GetString("svcNotInstalled"),
                         "Service not installed",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Information) == DialogResult.Yes)
                     {
                         if (InstallService("msifcsvc"))
                         {
-                            MessageBox.Show(Resources.GetString("svcInstallSuccess"),
+                            MessageBox.Show(Strings.GetString("svcInstallSuccess"),
                                 "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
-                            MessageBox.Show(Resources.GetString("svcInstallFail"),
+                            MessageBox.Show(Strings.GetString("svcInstallFail"),
                                 "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                 }
                 else
                 {
-                    MessageBox.Show(Resources.GetString("svcNotFound"),
+                    MessageBox.Show(Strings.GetString("svcNotFound"),
                         "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 return;
             }
 
             // Start the program when the service finishes starting:
-            Application.Run(new MainWindow(Resources));
+            Application.Run(new MainWindow());
         }
 
         private static bool ServiceExists(string svcName) =>
