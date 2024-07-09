@@ -71,11 +71,11 @@ namespace MSIFanControl.GUI
             this.tsiProfEdit = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiProfRename = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiProfChangeDesc = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsiProfDel = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsiECMon = new System.Windows.Forms.ToolStripMenuItem();
             this.sep3 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsiProfDel = new System.Windows.Forms.ToolStripMenuItem();
+            this.sep4 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsiECMon = new System.Windows.Forms.ToolStripMenuItem();
+            this.sep5 = new System.Windows.Forms.ToolStripSeparator();
             this.tsiUninstall = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiSource = new System.Windows.Forms.ToolStripMenuItem();
@@ -94,6 +94,7 @@ namespace MSIFanControl.GUI
             this.btnRevert = new System.Windows.Forms.Button();
             this.tblCurve = new System.Windows.Forms.TableLayoutPanel();
             this.tmrPoll = new System.Windows.Forms.Timer(this.components);
+            this.tsiStopSvc = new System.Windows.Forms.ToolStripMenuItem();
             menuStrip = new System.Windows.Forms.MenuStrip();
             tsiFile = new System.Windows.Forms.ToolStripMenuItem();
             sep1 = new System.Windows.Forms.ToolStripSeparator();
@@ -152,45 +153,45 @@ namespace MSIFanControl.GUI
             // tsiLoadConf
             // 
             this.tsiLoadConf.Name = "tsiLoadConf";
-            this.tsiLoadConf.Size = new System.Drawing.Size(154, 22);
+            this.tsiLoadConf.Size = new System.Drawing.Size(180, 22);
             this.tsiLoadConf.Text = "Load config";
             this.tsiLoadConf.Click += new System.EventHandler(this.tsiLoadConf_Click);
             // 
             // tsiSaveConf
             // 
             this.tsiSaveConf.Name = "tsiSaveConf";
-            this.tsiSaveConf.Size = new System.Drawing.Size(154, 22);
+            this.tsiSaveConf.Size = new System.Drawing.Size(180, 22);
             this.tsiSaveConf.Text = "Save config";
             this.tsiSaveConf.Click += new System.EventHandler(this.tsiSaveConf_Click);
             // 
             // sep1
             // 
             sep1.Name = "sep1";
-            sep1.Size = new System.Drawing.Size(151, 6);
+            sep1.Size = new System.Drawing.Size(177, 6);
             // 
             // tsiApply
             // 
             this.tsiApply.Name = "tsiApply";
-            this.tsiApply.Size = new System.Drawing.Size(154, 22);
+            this.tsiApply.Size = new System.Drawing.Size(180, 22);
             this.tsiApply.Text = "Apply changes";
             this.tsiApply.Click += new System.EventHandler(this.tsiApply_Click);
             // 
             // tsiRevert
             // 
             this.tsiRevert.Name = "tsiRevert";
-            this.tsiRevert.Size = new System.Drawing.Size(154, 22);
+            this.tsiRevert.Size = new System.Drawing.Size(180, 22);
             this.tsiRevert.Text = "Revert changes";
             this.tsiRevert.Click += new System.EventHandler(this.tsiRevert_Click);
             // 
             // sep2
             // 
             sep2.Name = "sep2";
-            sep2.Size = new System.Drawing.Size(151, 6);
+            sep2.Size = new System.Drawing.Size(177, 6);
             // 
             // tsiExit
             // 
             this.tsiExit.Name = "tsiExit";
-            this.tsiExit.Size = new System.Drawing.Size(154, 22);
+            this.tsiExit.Size = new System.Drawing.Size(180, 22);
             this.tsiExit.Text = "Exit";
             this.tsiExit.Click += new System.EventHandler(this.tsiExit_Click);
             // 
@@ -199,9 +200,10 @@ namespace MSIFanControl.GUI
             tsiOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsiProfAdd,
             this.tsiProfEdit,
-            this.toolStripMenuItem2,
+            this.sep4,
             this.tsiECMon,
-            this.sep3,
+            this.sep5,
+            this.tsiStopSvc,
             this.tsiUninstall});
             tsiOptions.Name = "tsiOptions";
             tsiOptions.Size = new System.Drawing.Size(61, 20);
@@ -210,7 +212,7 @@ namespace MSIFanControl.GUI
             // tsiProfAdd
             // 
             this.tsiProfAdd.Name = "tsiProfAdd";
-            this.tsiProfAdd.Size = new System.Drawing.Size(192, 22);
+            this.tsiProfAdd.Size = new System.Drawing.Size(204, 22);
             this.tsiProfAdd.Text = "New fan profile...";
             this.tsiProfAdd.Click += new System.EventHandler(this.tsiProfAdd_Click);
             // 
@@ -219,62 +221,62 @@ namespace MSIFanControl.GUI
             this.tsiProfEdit.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsiProfRename,
             this.tsiProfChangeDesc,
-            this.toolStripMenuItem1,
+            this.sep3,
             this.tsiProfDel});
             this.tsiProfEdit.Name = "tsiProfEdit";
-            this.tsiProfEdit.Size = new System.Drawing.Size(192, 22);
+            this.tsiProfEdit.Size = new System.Drawing.Size(204, 22);
             this.tsiProfEdit.Text = "Edit current fan profile";
             // 
             // tsiProfRename
             // 
             this.tsiProfRename.Name = "tsiProfRename";
-            this.tsiProfRename.Size = new System.Drawing.Size(178, 22);
+            this.tsiProfRename.Size = new System.Drawing.Size(180, 22);
             this.tsiProfRename.Text = "Change Name";
             this.tsiProfRename.Click += new System.EventHandler(this.tsiProfRename_Click);
             // 
             // tsiProfChangeDesc
             // 
             this.tsiProfChangeDesc.Name = "tsiProfChangeDesc";
-            this.tsiProfChangeDesc.Size = new System.Drawing.Size(178, 22);
+            this.tsiProfChangeDesc.Size = new System.Drawing.Size(180, 22);
             this.tsiProfChangeDesc.Text = "Change Description";
             this.tsiProfChangeDesc.Click += new System.EventHandler(this.tsiProfChangeDesc_Click);
             // 
-            // toolStripMenuItem1
+            // sep3
             // 
-            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(175, 6);
+            this.sep3.Name = "sep3";
+            this.sep3.Size = new System.Drawing.Size(177, 6);
             // 
             // tsiProfDel
             // 
             this.tsiProfDel.Name = "tsiProfDel";
-            this.tsiProfDel.Size = new System.Drawing.Size(178, 22);
+            this.tsiProfDel.Size = new System.Drawing.Size(180, 22);
             this.tsiProfDel.Text = "Delete";
             this.tsiProfDel.Click += new System.EventHandler(this.tsiProfDel_Click);
             // 
-            // toolStripMenuItem2
+            // sep4
             // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(189, 6);
+            this.sep4.Name = "sep4";
+            this.sep4.Size = new System.Drawing.Size(201, 6);
             // 
             // tsiECMon
             // 
             this.tsiECMon.CheckOnClick = true;
             this.tsiECMon.Name = "tsiECMon";
-            this.tsiECMon.Size = new System.Drawing.Size(192, 22);
+            this.tsiECMon.Size = new System.Drawing.Size(204, 22);
             this.tsiECMon.Text = "Enable EC monitoring";
             this.tsiECMon.Click += new System.EventHandler(this.tsiECMon_Click);
             // 
-            // sep3
+            // sep5
             // 
-            this.sep3.Name = "sep3";
-            this.sep3.Size = new System.Drawing.Size(189, 6);
+            this.sep5.Name = "sep5";
+            this.sep5.Size = new System.Drawing.Size(201, 6);
             // 
             // tsiUninstall
             // 
             this.tsiUninstall.Name = "tsiUninstall";
-            this.tsiUninstall.Size = new System.Drawing.Size(192, 22);
-            this.tsiUninstall.Text = "Uninstall service";
-            this.tsiUninstall.Click += new System.EventHandler(this.tsiUninstallClick);
+            this.tsiUninstall.Size = new System.Drawing.Size(204, 22);
+            this.tsiUninstall.Text = "Uninstall service and exit";
+            this.tsiUninstall.Click += new System.EventHandler(this.tsiUninstall_Click);
             // 
             // tsiHelp
             // 
@@ -288,14 +290,14 @@ namespace MSIFanControl.GUI
             // tsiAbout
             // 
             this.tsiAbout.Name = "tsiAbout";
-            this.tsiAbout.Size = new System.Drawing.Size(141, 22);
+            this.tsiAbout.Size = new System.Drawing.Size(180, 22);
             this.tsiAbout.Text = "About";
             this.tsiAbout.Click += new System.EventHandler(this.tsiAbout_Click);
             // 
             // tsiSource
             // 
             this.tsiSource.Name = "tsiSource";
-            this.tsiSource.Size = new System.Drawing.Size(141, 22);
+            this.tsiSource.Size = new System.Drawing.Size(180, 22);
             this.tsiSource.Text = "Source Code";
             this.tsiSource.Click += new System.EventHandler(this.tsiSrc_Click);
             // 
@@ -512,7 +514,7 @@ namespace MSIFanControl.GUI
             this.chkFullBlast.TabIndex = 1;
             this.chkFullBlast.Text = "Full Blast";
             this.chkFullBlast.UseVisualStyleBackColor = true;
-            this.chkFullBlast.CheckedChanged += new System.EventHandler(this.chkFullBlastToggled);
+            this.chkFullBlast.CheckedChanged += new System.EventHandler(this.chkFullBlast_Toggled);
             // 
             // lblChgLim
             // 
@@ -532,7 +534,7 @@ namespace MSIFanControl.GUI
             this.numChgLim.Name = "numChgLim";
             this.numChgLim.Size = new System.Drawing.Size(60, 23);
             this.numChgLim.TabIndex = 3;
-            this.numChgLim.ValueChanged += new System.EventHandler(this.numChargeLimChanged);
+            this.numChgLim.ValueChanged += new System.EventHandler(this.numChargeLim_Changed);
             // 
             // btnApply
             // 
@@ -617,7 +619,14 @@ namespace MSIFanControl.GUI
             // tmrPoll
             // 
             this.tmrPoll.Interval = 1000;
-            this.tmrPoll.Tick += new System.EventHandler(this.tmrPollTick);
+            this.tmrPoll.Tick += new System.EventHandler(this.tmrPoll_Tick);
+            // 
+            // tsiStopSvc
+            // 
+            this.tsiStopSvc.Name = "tsiStopSvc";
+            this.tsiStopSvc.Size = new System.Drawing.Size(204, 22);
+            this.tsiStopSvc.Text = "Stop service and exit";
+            this.tsiStopSvc.Click += new System.EventHandler(this.tsiStopSvc_Click);
             // 
             // MainWindow
             // 
@@ -635,8 +644,8 @@ namespace MSIFanControl.GUI
             this.Name = "MainWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MSI Fan Control";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindowClosing);
-            this.Load += new System.EventHandler(this.MainWindowLoad);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_Closing);
+            this.Load += new System.EventHandler(this.MainWindow_Load);
             menuStrip.ResumeLayout(false);
             menuStrip.PerformLayout();
             tblMain.ResumeLayout(false);
@@ -679,7 +688,7 @@ namespace MSIFanControl.GUI
         private System.Windows.Forms.ToolStripMenuItem tsiRevert;
         private System.Windows.Forms.ToolStripMenuItem tsiAbout;
         private System.Windows.Forms.ToolStripMenuItem tsiSource;
-        private System.Windows.Forms.ToolStripSeparator sep3;
+        private System.Windows.Forms.ToolStripSeparator sep5;
         private System.Windows.Forms.ToolStripMenuItem tsiUninstall;
         private System.Windows.Forms.Button btnProfAdd;
         private System.Windows.Forms.Button btnProfDel;
@@ -687,9 +696,10 @@ namespace MSIFanControl.GUI
         private System.Windows.Forms.ToolStripMenuItem tsiProfEdit;
         private System.Windows.Forms.ToolStripMenuItem tsiProfRename;
         private System.Windows.Forms.ToolStripMenuItem tsiProfChangeDesc;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator sep3;
         private System.Windows.Forms.ToolStripMenuItem tsiProfDel;
-        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripSeparator sep4;
         private System.Windows.Forms.Label lblChgLim;
+        private System.Windows.Forms.ToolStripMenuItem tsiStopSvc;
     }
 }

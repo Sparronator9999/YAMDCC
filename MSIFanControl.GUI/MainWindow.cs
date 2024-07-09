@@ -162,11 +162,11 @@ namespace MSIFanControl.GUI
         }
 
         #region Events
-        private void MainWindowLoad(object sender, EventArgs e)
+        private void MainWindow_Load(object sender, EventArgs e)
         {
             try
             {
-                IPCClient.ServerMessage += IPCMessageReceived;
+                IPCClient.ServerMessage += IPC_MessageReceived;
                 IPCClient.Start();
                 AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
             }
@@ -180,7 +180,7 @@ namespace MSIFanControl.GUI
             LoadConf(Path.Combine(DataPath, "CurrentConfig.xml"));
         }
 
-        private void MainWindowClosing(object sender, FormClosingEventArgs e)
+        private void MainWindow_Closing(object sender, FormClosingEventArgs e)
         {
             // Disable Full Blast if it was enabled while the program was running:
             if (chkFullBlast.Checked)
@@ -197,7 +197,7 @@ namespace MSIFanControl.GUI
             IPCClient.Stop();
         }
 
-        private void IPCMessageReceived(NamedPipeConnection<ServiceResponse, ServiceCommand> connection, ServiceResponse message)
+        private void IPC_MessageReceived(NamedPipeConnection<ServiceResponse, ServiceCommand> connection, ServiceResponse message)
         {
             string[] args = message.Value.Split(' ');
             if (args.Length == 1)
@@ -333,14 +333,26 @@ namespace MSIFanControl.GUI
             }
         }
 
-        private void tsiUninstallClick(object sender, EventArgs e)
+        private void tsiStopSvc_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("TODO");
-            return;
+            if (MessageBox.Show(
+                "This will stop the MSI Fan Control service,\n" +
+                "and MSI Fan Control will close.\n\n" +
+                "Proceed?", "Stop Service",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+            {
 
+                IPCClient.Stop();
+                Close();
+                Utils.StopService("msifcsvc");
+            }
+        }
+
+        private void tsiUninstall_Click(object sender, EventArgs e)
+        {
             if (MessageBox.Show(
                 "This will uninstall the MSI Fan Control service from your computer.\n\n" +
-                "Only proceed if you would like to delete MSI Fan Control" +
+                "Only proceed if you would like to delete MSI Fan Control " +
                 "from your computer.\n\n" +
                 "MSI Fan Control will close once the uninstall is complete.\n\n" +
                 "Proceed?", "Uninstall Service",
@@ -349,12 +361,12 @@ namespace MSIFanControl.GUI
                 bool delData = MessageBox.Show(
                     "Also delete the MSI Fan Control data directory\n" +
                     $"(located at {DataPath})?\n\n" +
-                    "This directory includes service logs, program-specific " +
-                    "configuration, and a copy of the MSI Fan Control config that gets " +
-                    "applied automatically by the service.\n\n" +
+                    "This directory includes program logs and the current " +
+                    "MSI Fan Control fan settings.\n\n" +
                     "WARNING:\n" +
-                    "Make sure you saved your currently applied fan config elsewhere!",
-                    "Delete configuration?",
+                    "Make sure you save your config using the \"Save config\"" +
+                    "button before clicking \"Yes\" here!",
+                    "Delete configuration data?",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
 
                 if (delData)
@@ -363,10 +375,8 @@ namespace MSIFanControl.GUI
                 }
 
                 IPCClient.Stop();
-
-                // TODO: actually uninstall the MSI Fan Control service
-
-                Application.Exit();
+                Close();
+                Utils.UninstallService("msifcsvc");
             }
         }
         #endregion
@@ -516,13 +526,13 @@ namespace MSIFanControl.GUI
                 .TempThresholds[i + 1].DownThreshold = (byte)numDownTs[i].Value;
         }
 
-        private void chkFullBlastToggled(object sender, EventArgs e)
+        private void chkFullBlast_Toggled(object sender, EventArgs e)
         {
             ServiceCommand command = new ServiceCommand(Command.FullBlast, chkFullBlast.Checked ? "1" : "0");
             IPCClient.PushMessage(command);
         }
 
-        private void numChargeLimChanged(object sender, EventArgs e)
+        private void numChargeLim_Changed(object sender, EventArgs e)
         {
             Config.ChargeLimitConfig.Value = (byte)numChgLim.Value;
         }
@@ -537,7 +547,7 @@ namespace MSIFanControl.GUI
             ApplyConf();
         }
 
-        private void tmrPollTick(object sender, EventArgs e)
+        private void tmrPoll_Tick(object sender, EventArgs e)
         {
             PollEC();
         }
