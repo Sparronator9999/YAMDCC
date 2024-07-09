@@ -121,11 +121,11 @@ on anything, so your issue may remain open for a while before I answer it.
 
 ## Roadmap
 
-- [x] Make sure GitHub didn't break anything after the initial upload
-- [ ] Config UI fixes:
+- [x] Config UI fixes:
   - [x] Add button to create and delete fan profiles
-  - [ ] Add option to uninstall service
-  - [ ] Probably more that I haven't thought of yet
+  - [x] Add option to uninstall service
+  - [ ] Actually implement the "revert to last saved config" functionality
+- [ ] Give the program code a once-over before doing anything else
 - [ ] Config generation for MSI laptops
   - This would only work because many MSI laptops have almost identical EC register locations
     for all the relevent settings we change
