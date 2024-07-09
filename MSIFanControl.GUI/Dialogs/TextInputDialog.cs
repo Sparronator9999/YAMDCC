@@ -16,20 +16,22 @@
 
 using System.Windows.Forms;
 
-namespace MSIFanControl.GUI
+namespace MSIFanControl.GUI.Dialogs
 {
-    public partial class TextInputDialog : Form
+    internal partial class TextInputDialog : Form
     {
         /// <summary>
         /// The text that the user entered in this dialog.
         /// </summary>
         public string Result;
 
-        public TextInputDialog(string caption, string title = "", string text = "")
+        internal TextInputDialog(string caption, string title = "", string text = "", bool multiline = false)
         {
             InitializeComponent();
             lblCaption.Text = caption;
             txtInput.Text = text;
+            txtInput.Multiline = multiline;
+            txtInput.Height = (int)((AutoScaleDimensions.Height / 96) * 69);
             Text = title;
         }
 

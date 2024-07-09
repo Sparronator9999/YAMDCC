@@ -15,6 +15,7 @@
 // MSI Fan Control. If not, see <https://www.gnu.org/licenses/>.
 
 using MSIFanControl.Config;
+using MSIFanControl.GUI.Dialogs;
 using MSIFanControl.IPC;
 using System;
 using System.Collections.Generic;
@@ -300,7 +301,7 @@ namespace MSIFanControl.GUI
                 .FanCurveConfigs[cboProfSel.SelectedIndex];
             TextInputDialog dlg = new TextInputDialog(
                 "Please enter a new description for your fan profile:",
-                "Change Profile Description", curveCfg.Description);
+                "Change Profile Description", curveCfg.Description, true);
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 curveCfg.Description = dlg.Result;

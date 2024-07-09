@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License along with
 // MSI Fan Control. If not, see <https://www.gnu.org/licenses/>.
 
-namespace MSIFanControl.GUI
+namespace MSIFanControl.GUI.Dialogs
 {
     partial class TextInputDialog
     {
@@ -89,6 +89,7 @@ namespace MSIFanControl.GUI
             this.txtInput.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtInput.Location = new System.Drawing.Point(9, 24);
             this.txtInput.Name = "txtInput";
+            this.txtInput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtInput.Size = new System.Drawing.Size(282, 23);
             this.txtInput.TabIndex = 2;
             // 
