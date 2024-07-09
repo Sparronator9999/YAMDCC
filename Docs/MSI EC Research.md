@@ -1,15 +1,12 @@
 # MSI EC Research
 This document describes some of the registers and their functions in the EC
-(Embedded Controller) of the MSI GF63 Thin 11SC laptop, however some of this
-research should apply to other MSI laptops as well.
+(Embedded Controller) of the MSI GF63 Thin 11SC laptop, however many registers'
+functions appear to be shared across most other MSI laptops as well.
 
-Some register functions found thanks to
-[this image](https://github.com/YoyPa/isw/raw/master/wiki/msi%20ec.png),
-from https://github.com/YoyPa/isw/.
-
-I used MSI Center and [NoteBook FanControl](https://github.com/hirschmann/nbfc)'s
-`ec-probe` to reverse-engineer many of these registers, as well as to confirm
-some information in the image above.
+I used MSI Center, [NoteBook FanControl](https://github.com/hirschmann/nbfc)'s
+`ec-probe` utility, and [this image](https://github.com/YoyPa/isw/raw/master/wiki/msi%20ec.png),
+from YoyPa's [Ice-Sealed Wyvern](https://github.com/YoyPa/isw/) (a fan control
+utility for MSI laptops running Linux) to reverse-engineer these registers.
 
 Any registers not listed here are either unused, or their function is simply
 unknown.
