@@ -1,3 +1,16 @@
+root = false
+
+[*]
+charset = utf-8
+tab_width = 4
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{md,xml,resx,config}]
+trim_trailing_whitespace = false
+
 [*.manifest]
 insert_final_newline = false
 
@@ -53,11 +66,6 @@ dotnet_naming_style.pascal_case.required_suffix =
 dotnet_naming_style.pascal_case.word_separator = 
 dotnet_naming_style.pascal_case.capitalization = pascal_case
 dotnet_style_operator_placement_when_wrapping = beginning_of_line
-tab_width = 4
-indent_size = 4
-end_of_line = lf
-indent_style = space
-insert_final_newline = true
 dotnet_style_coalesce_expression = true:suggestion
 dotnet_style_null_propagation = true:suggestion
 dotnet_style_prefer_is_null_check_over_reference_equality_method = true:suggestion
