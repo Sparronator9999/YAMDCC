@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License along with
 // MSI Fan Control. If not, see <https://www.gnu.org/licenses/>.
 
+using MSIFanControl.GUI.Dialogs;
 using System;
 using System.IO;
 using System.ServiceProcess;
@@ -31,6 +32,10 @@ namespace MSIFanControl.GUI
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+            Application.ThreadException += Application_ThreadException;
+            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             if (Utils.ServiceExists("msifcsvc"))
             {
@@ -101,5 +106,22 @@ namespace MSIFanControl.GUI
             // Start the program when the service finishes starting:
             Application.Run(new MainWindow());
         }
+
+        #region Global exception handlers
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            if (e.ExceptionObject is Exception ex)
+            {
+                CrashDialog dlg = new CrashDialog(ex, false);
+                dlg.ShowDialog();
+            }
+        }
+
+        private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
+        {
+            CrashDialog dlg = new CrashDialog(e.Exception, true);
+            dlg.ShowDialog();
+        }
+        #endregion
     }
 }
