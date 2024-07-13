@@ -17,6 +17,7 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Security.AccessControl;
 
 namespace MSIFanControl.ECAccess
 {
@@ -148,6 +149,15 @@ namespace MSIFanControl.ECAccess
             // Perform some cleanup:
             AdvApi32.CloseServiceHandle(hSvc);
             AdvApi32.CloseServiceHandle(hSCM);
+
+            // Security fix for WinRing0 access from unprivileged processes.
+            // This fix is present in the WinRing0 driver itself (WinRing0.sys)
+            // in the updated fork (https://github.com/GermanAizek/WinRing0), but
+            // no public production-signed build of the driver exists with the fixes.
+            FileInfo fi = new FileInfo($"\\\\.\\{DriverName}");
+            FileSecurity security = fi.GetAccessControl();
+            security.SetSecurityDescriptorSddlForm("O:BAG:SYD:(A;;FA;;;SY)(A;;FA;;;BA)");
+            fi.SetAccessControl(security);
 
             return true;
         }
