@@ -20,7 +20,7 @@ jobs:
       uses: microsoft/setup-msbuild@v2
   
     - name: Setup NuGet
-    - uses: nuget/setup-nuget@v2
+      uses: nuget/setup-nuget@v2
 
     - name: Restore NuGet Packages
       run: nuget restore MSIFanControl.sln
