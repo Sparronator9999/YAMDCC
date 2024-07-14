@@ -7,14 +7,10 @@ assignees: Sparronator9999
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+### Prerequisites
+- [ ] I am using the correct [issue template](https://github.com/Sparronator9999/MSIFanControl/issues/new/choose), i.e. I am requesting a feature be added to MSI Fan Control. Bug reports and questions should be opened using their respective templates.
+- [ ] I have searched the [issue tracker](https://github.com/Sparronator9999/MSIFanControl/issues?q=label:"type:+enhancement") for duplicate or similar feature requests. Your issue will be closed if it is a duplicate of another issue.
+- [ ] I have not answered truthfully to the above questions.
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
-
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
-
-**Additional context**
-Add any other context or screenshots about the feature request here.
+### Feature request
+Please describe the feature you want to be added to MSI Fan Control, replacing this placeholder.
