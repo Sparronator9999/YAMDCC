@@ -95,6 +95,12 @@ the fan speed using a backgronud service.
 
 Due to WinForms limitations, no.
 
+### .NET (Core) 5/6/8/<insert latest .NET version>!
+
+Converting to .NET *should* be simple for most components, except for the fan control service.
+
+.NET support will come when I'm ready.
+
 ### Doesn't WinRing0 have security issues?
 
 [Yes](https://voidsec.com/crucial-mod-utility-lpe-cve-2021-41285/), that is correct.
@@ -121,10 +127,9 @@ on anything, so your issue may remain open for a while before I answer it.
 
 ## Roadmap
 
-- [x] Config UI fixes:
-  - [x] Add button to create and delete fan profiles
-  - [x] Add option to uninstall service
+- [ ] Config UI fixes:
   - [ ] Actually implement the "revert to last saved config" functionality
+  - [ ] Implement missing tooltips
 - [ ] Give the program code a once-over before doing anything else
 - [ ] Config generation for MSI laptops
   - This would only work because many MSI laptops have almost identical EC register locations
@@ -133,6 +138,8 @@ on anything, so your issue may remain open for a while before I answer it.
     it to the default fan profile.
 - [ ] Command line support
   - The beginning of a CLI for MSI Fan Control exists, just not publicly yet
+- [ ] .NET support
+  - As of writing, .NET 8 is the current LTS, and will be targeted should I decide to tackle .NET.
 - [ ] Support for editing laptop config registers using the GUI interface
   - This would allow for creating configs for other laptop brands from the config UI
   - Currently, the only way to do this is to edit the XML directly
