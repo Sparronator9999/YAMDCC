@@ -9,9 +9,9 @@ jobs:
     strategy:
       matrix:
         configuration: [Debug, Release]
-        
+  
     runs-on: windows-latest
- 
+
     steps:
     - name: Checkout Code
       uses: actions/checkout@v1
@@ -27,13 +27,11 @@ jobs:
  
     - name: Build Solution
       run: |
-        msbuild.exe MSIFanControl.sln /nologo /nr:false /p:DeployOnBuild=true /p:platform="Any CPU" /p:configuration="$env:Configuration"
-      env:
-        Configuration: ${{ matrix.Configuration }}
-    
+        msbuild.exe MSIFanControl.sln /nologo /nr:false /p:DeployOnBuild=true /p:platform="Any CPU" /p:configuration="${{ matrix.configuration }}"
+
     - name: Upload Artifact
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: "MSIFanControl-${{ matrix.Configuration }}"
-        path: "./MSIFanControl.GUI/bin/${{ matrix.Configuration }}/"
+        name: "MSIFanControl-${{ matrix.configuration }}"
+        path: "./MSIFanControl.GUI/bin/${{ matrix.configuration }}/"
         compression-level: 9
