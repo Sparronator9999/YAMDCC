@@ -151,6 +151,16 @@ or new configs, feel free to open a pull request. Please include the following:
   - Make sure the config doesn't need any third-party software (**MSI Center**)
     for it to work.
 
+## Download
+
+Development builds are availabe through [GitHub Actions](https://github.com/Sparronator9999/MSIFanControl/actions).
+
+Alternatively, if you don't have a GitHub account, you can download the latest build from [nightly.link](https://nightly.link/Sparronator9999/MSIFanControl/workflows/build/main?preview).
+
+(You probably want the `Release` build, unless you're debugging issues with the program)
+
+Alternatively, you can [build the program yourself](#build).
+
 ## Build
 
 ### Using Visual Studio
