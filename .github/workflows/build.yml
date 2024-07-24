@@ -7,6 +7,7 @@ on:
       - "**.cs"
       - "**.csproj"
       - "**.resx"
+      - "**build.yml"
 
 jobs:
   build:
@@ -33,7 +34,7 @@ jobs:
       run: msbuild.exe MSIFanControl.sln /nologo /nr:false /p:DeployOnBuild=true /p:platform="Any CPU" /p:configuration="${{ matrix.configuration }}"
 
     - name: Copy fan configs to build path
-      run: mkdir MSIFanControl.GUI\bin\${{ matrix.configuration }}\net48\Configs && copy Configs\* MSIFanControl.GUI\bin\${{ matrix.configuration }}\Configs\net48
+      run: mkdir MSIFanControl.GUI\bin\${{ matrix.configuration }}\net48\Configs && copy Configs\* MSIFanControl.GUI\bin\${{ matrix.configuration }}\net48\Configs
 
     - name: Upload build artifact
       uses: actions/upload-artifact@v4
