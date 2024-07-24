@@ -103,12 +103,21 @@ Converting to .NET *should* be simple for most components, except for the fan co
 
 ### Doesn't WinRing0 have security issues?
 
-[Yes](https://voidsec.com/crucial-mod-utility-lpe-cve-2021-41285/), that is correct.
+[Yes](https://voidsec.com/crucial-mod-utility-lpe-cve-2021-41285/), however MSI Fan Control
+installs the driver such that only programs with administrator privileges can access the driver
+functions (something that should have been done in the first place by the driver itself),
+largely mitigating this vulnerability.
 
-I would use the [updated fork](https://github.com/GermanAizek/WinRing0), but they don't provide
-binary releases due to Microsoft's driver signing requirements, and I'm too smooth-brained
-to write my own EC access kernel driver (plus, I'd have to get it signed, which costs my time
-and money).
+However, if MSI Fan Control finds the driver already installed, it will use that
+(potentially vulnerable) version instead. If it was installed with, e.g.
+[LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor),
+you should be fine, as they implement the same fix.
+
+The [updated fork of WinRing0](https://github.com/GermanAizek/WinRing0) updates the driver itself
+(`WinRing0.sys`) to apply this fix, however binary releases of the driver aren't provided due to
+Microsoft's driver signing requirements, and I'm too smooth-brained to write my own EC access
+kernel driver (but apparently not an entire fan control utility from scratch, including the
+WinRing0 interface code...), and I'd have to get it signed anyways.
 
 Please read the [disclaimer](#disclaimers), especially the bold text, if you haven't already.
 

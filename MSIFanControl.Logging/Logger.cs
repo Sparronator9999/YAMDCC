@@ -50,10 +50,12 @@ namespace MSIFanControl.Logs
         /// <summary>
         /// The path to which the log file will be written.
         /// </summary>
-        public string LogPath = Path.Combine(
+        public string LogDir = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-            "Sparronator9999", "MSI Fan Control", "Logs",
-            AppDomain.CurrentDomain.FriendlyName);
+            "Sparronator9999", "MSI Fan Control", "Logs");
+
+        private string LogPath => Path.Combine(LogDir, AppDomain.CurrentDomain.FriendlyName);
+
         //public string LogPath = Process.GetCurrentProcess().MainModule.FileName;
 
         /// <summary>
@@ -317,56 +319,56 @@ namespace MSIFanControl.Logs
         /// </summary>
         private void InitLogFile()
         {
-            void ArchiveOldLogs()
+            // Rename old log files, and delete the oldest file if
+            // there's too many log files
+            for (int i = MaxArchivedLogs; i >= 0; i--)
             {
-                // Rename old log files, and delete the oldest file if
-                // there's too many log files
-                for (int i = MaxArchivedLogs; i >= 0; i--)
-                {
-                    try
-                    {
-                        if (i == MaxArchivedLogs)
-                        {
-                            File.Delete($"{LogPath}.{i}.log.gz");
-                        }
-                        else
-                        {
-                            File.Move($"{LogPath}.{i}.log.gz", $"{LogPath}.{i + 1}.log.gz");
-                        }
-                    }
-                    catch (FileNotFoundException) { }
-                    catch (DirectoryNotFoundException) { }
-                }
-
                 try
                 {
-                    FileInfo fi = new FileInfo($"{LogPath}.log");
-
-                    // Set up file streams
-                    FileStream original = fi.OpenRead();
-                    FileStream compressed = File.Create($"{LogPath}.{1}.log.gz");
-                    GZipStream gzStream = new GZipStream(compressed, CompressionLevel.Optimal);
-
-                    // Compress the file
-                    original.CopyTo(gzStream);
-
-                    // Close file streams
-                    gzStream.Close();
-                    compressed.Close();
-                    original.Close();
-
-                    // Delete the unarchived copy of the log
-                    fi.Delete();
+                    if (i == MaxArchivedLogs)
+                    {
+                        File.Delete($"{LogPath}.{i}.log.gz");
+                    }
+                    else
+                    {
+                        File.Move($"{LogPath}.{i}.log.gz", $"{LogPath}.{i + 1}.log.gz");
+                    }
                 }
-                catch (FileNotFoundException)
-                {
-                    // Log files probably don't exist yet,
-                    // return without renaming old logs
-                    return;
-                }
+                catch (FileNotFoundException) { }
+                catch (DirectoryNotFoundException) { }
             }
 
-            ArchiveOldLogs();
+            try
+            {
+                FileInfo fi = new FileInfo($"{LogPath}.log");
+
+                // Set up file streams
+                FileStream original = fi.OpenRead();
+                FileStream compressed = File.Create($"{LogPath}.{1}.log.gz");
+                GZipStream gzStream = new GZipStream(compressed, CompressionLevel.Optimal);
+
+                // Compress the file
+                original.CopyTo(gzStream);
+
+                // Close file streams
+                gzStream.Close();
+                compressed.Close();
+                original.Close();
+
+                // Delete the unarchived copy of the log
+                fi.Delete();
+            }
+            catch (FileNotFoundException)
+            {
+                // Log files probably don't exist yet,
+                // return without renaming old logs
+                return;
+            }
+
+            // why can't windows just create the
+            // directory structure for me >:(
+            Directory.CreateDirectory(LogDir);
+
             LogWriter = new StreamWriter($"{LogPath}.log")
             {
                 AutoFlush = true
