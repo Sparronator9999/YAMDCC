@@ -13,7 +13,7 @@ jobs:
   build:
     strategy:
       matrix:
-        configuration: [Debug, Release]
+        config: [Debug, Release]
 
     runs-on: windows-latest
 
@@ -28,7 +28,7 @@ jobs:
       uses: nuget/setup-nuget@v2
 
     - name: Restore cached NuGet packages
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.nuget/packages
         key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -39,14 +39,14 @@ jobs:
       run: msbuild.exe /t:restore /p:RestoreLockedMode=true
 
     - name: Build solution
-      run: msbuild.exe MSIFanControl.sln /nologo /nr:false /p:DeployOnBuild=true /p:platform="Any CPU" /p:configuration="${{ matrix.configuration }}"
+      run: msbuild.exe MSIFanControl.sln /nologo /nr:false /p:DeployOnBuild=true /p:platform="Any CPU" /p:configuration="${{ matrix.config }}"
 
     - name: Copy fan configs to build path
-      run: mkdir MSIFanControl.GUI\bin\${{ matrix.configuration }}\net48\Configs && copy Configs\* MSIFanControl.GUI\bin\${{ matrix.configuration }}\net48\Configs
+      run: mkdir MSIFanControl.GUI\bin\${{ matrix.config }}\net48\Configs && copy Configs\* MSIFanControl.GUI\bin\${{ matrix.config }}\net48\Configs
 
     - name: Upload build artifact
       uses: actions/upload-artifact@v4
       with:
-        name: "MSIFanControl-${{ matrix.configuration }}"
-        path: "./MSIFanControl.GUI/bin/${{ matrix.configuration }}/net48/"
+        name: "MSIFanControl-${{ matrix.config }}"
+        path: "./MSIFanControl.GUI/bin/${{ matrix.config }}/net48/"
         compression-level: 9
