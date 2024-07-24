@@ -1,34 +1,41 @@
 name: Build Program
- 
-on: 
+
+on:
   push:
     branches: ["main"]
- 
+    paths:
+      - "**.cs"
+      - "**.csproj"
+      - "**.resx"
+
 jobs:
   build:
     strategy:
       matrix:
         configuration: [Debug, Release]
-  
+
     runs-on: windows-latest
 
     steps:
-    - name: Checkout Code
+    - name: Checkout repository
       uses: actions/checkout@v1
-     
-    - name: Setup MSBuild Path
+
+    - name: Setup MSBuild path
       uses: microsoft/setup-msbuild@v2
-  
+
     - name: Setup NuGet
       uses: nuget/setup-nuget@v2
 
-    - name: Restore NuGet Packages
+    - name: Restore NuGet packages for solution
       run: nuget restore MSIFanControl.sln
- 
-    - name: Build Solution
+
+    - name: Build solution
       run: msbuild.exe MSIFanControl.sln /nologo /nr:false /p:DeployOnBuild=true /p:platform="Any CPU" /p:configuration="${{ matrix.configuration }}"
 
-    - name: Upload Artifact
+    - name: Copy fan configs to build path
+      run: mkdir MSIFanControl.GUI\bin\${{ matrix.configuration }}\Configs && copy Configs\* MSIFanControl.GUI\bin\${{ matrix.configuration }}\Configs
+
+    - name: Upload build artifact
       uses: actions/upload-artifact@v4
       with:
         name: "MSIFanControl-${{ matrix.configuration }}"
