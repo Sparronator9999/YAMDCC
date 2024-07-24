@@ -8,17 +8,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSIFanControl.Config", "MSIFanControl.Config\MSIFanControl.Config.csproj", "{F4FD34BF-5F9A-4271-A1E4-515C82A189F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MSIFanControl.Config", "MSIFanControl.Config\MSIFanControl.Config.csproj", "{F4FD34BF-5F9A-4271-A1E4-515C82A189F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSIFanControl.ECAccess", "MSIFanControl.ECAccess\MSIFanControl.ECAccess.csproj", "{EDCEB6F6-B97C-4343-969E-AA58F887A0FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MSIFanControl.ECAccess", "MSIFanControl.ECAccess\MSIFanControl.ECAccess.csproj", "{EDCEB6F6-B97C-4343-969E-AA58F887A0FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSIFanControl.GUI", "MSIFanControl.GUI\MSIFanControl.GUI.csproj", "{5025D7BC-1BE1-4B72-B30A-893B25F73596}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MSIFanControl.GUI", "MSIFanControl.GUI\MSIFanControl.GUI.csproj", "{5025D7BC-1BE1-4B72-B30A-893B25F73596}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSIFanControl.IPC", "MSIFanControl.IPC\MSIFanControl.IPC.csproj", "{73152691-3CDE-46DF-8D04-7117747DFFE7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MSIFanControl.IPC", "MSIFanControl.IPC\MSIFanControl.IPC.csproj", "{73152691-3CDE-46DF-8D04-7117747DFFE7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSIFanControl.Logs", "MSIFanControl.Logging\MSIFanControl.Logs.csproj", "{5C611048-093E-48AC-B525-5C24817081BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MSIFanControl.Service", "MSIFanControl.Service\MSIFanControl.Service.csproj", "{D99C674A-7949-4402-A9DE-088C1F7BB361}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSIFanControl.Service", "MSIFanControl.Service\MSIFanControl.Service.csproj", "{D99C674A-7949-4402-A9DE-088C1F7BB361}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MSIFanControl.Logs", "MSIFanControl.Logs\MSIFanControl.Logs.csproj", "{46F94C80-4C0D-43E4-9970-D1925024C99E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,14 +42,14 @@ Global
 		{73152691-3CDE-46DF-8D04-7117747DFFE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73152691-3CDE-46DF-8D04-7117747DFFE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73152691-3CDE-46DF-8D04-7117747DFFE7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5C611048-093E-48AC-B525-5C24817081BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5C611048-093E-48AC-B525-5C24817081BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5C611048-093E-48AC-B525-5C24817081BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5C611048-093E-48AC-B525-5C24817081BB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D99C674A-7949-4402-A9DE-088C1F7BB361}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D99C674A-7949-4402-A9DE-088C1F7BB361}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D99C674A-7949-4402-A9DE-088C1F7BB361}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D99C674A-7949-4402-A9DE-088C1F7BB361}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46F94C80-4C0D-43E4-9970-D1925024C99E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46F94C80-4C0D-43E4-9970-D1925024C99E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46F94C80-4C0D-43E4-9970-D1925024C99E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46F94C80-4C0D-43E4-9970-D1925024C99E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

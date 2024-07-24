@@ -33,11 +33,11 @@ jobs:
       run: msbuild.exe MSIFanControl.sln /nologo /nr:false /p:DeployOnBuild=true /p:platform="Any CPU" /p:configuration="${{ matrix.configuration }}"
 
     - name: Copy fan configs to build path
-      run: mkdir MSIFanControl.GUI\bin\${{ matrix.configuration }}\Configs && copy Configs\* MSIFanControl.GUI\bin\${{ matrix.configuration }}\Configs
+      run: mkdir MSIFanControl.GUI\bin\${{ matrix.configuration }}\net48\Configs && copy Configs\* MSIFanControl.GUI\bin\${{ matrix.configuration }}\Configs\net48
 
     - name: Upload build artifact
       uses: actions/upload-artifact@v4
       with:
         name: "MSIFanControl-${{ matrix.configuration }}"
-        path: "./MSIFanControl.GUI/bin/${{ matrix.configuration }}/"
+        path: "./MSIFanControl.GUI/bin/${{ matrix.configuration }}/net48/"
         compression-level: 9
