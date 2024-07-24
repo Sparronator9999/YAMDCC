@@ -108,15 +108,12 @@ RPMs are stored at `0xCA..0xCB` for the GPU fan and `0xCC..0xCD` for the CPU
 fan.
 
 ## `0xD2`
-Controls the Performance Level of the laptop:
+Controls the performance level of the laptop:
 
-- `0xC4`: Turbo
+- `0xC4`: Turbo. The `MSI GF63 Thin 11SC.xml` config sets this value when loaded.
 - `0xC0`: High
-- `0xC1`: Medium (default)
-- `0xC2`: Low
-
-The MSI GF63 Thin profile for MSI Fan Control sets this to `0xC4` (Turbo), as
-the Medium or Low settings appear to cap the maximum fan speed at ~60%.
+- `0xC1`: Medium (default). Causes maximum fan speeds to be capped at 60%.
+- `0xC2`: Low. Causes fan settings set by MSI Fan Control to be ignored.
 
 ## `0xD3`
 Controls the keyboard backlight. The brightness level can be set using
