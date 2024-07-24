@@ -27,8 +27,16 @@ jobs:
     - name: Setup NuGet
       uses: nuget/setup-nuget@v2
 
-    - name: Restore NuGet packages for solution
-      run: nuget restore MSIFanControl.sln
+    - name: Restore cached NuGet packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.nuget/packages
+        key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nuget-
+
+    - name: Restore solution (including NuGet packages for solution)
+      run: msbuild.exe /t:restore /p:RestoreLockedMode=true
 
     - name: Build solution
       run: msbuild.exe MSIFanControl.sln /nologo /nr:false /p:DeployOnBuild=true /p:platform="Any CPU" /p:configuration="${{ matrix.configuration }}"
