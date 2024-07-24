@@ -1,4 +1,4 @@
-using System;
+using MessagePack;
 
 namespace MSIFanControl.IPC
 {
@@ -110,12 +110,13 @@ namespace MSIFanControl.IPC
     /// <summary>
     /// Represents a command to send to the MSI Fan Control Service.
     /// </summary>
-    [Serializable]
+    [MessagePackObject]
     public class ServiceCommand
     {
         /// <summary>
         /// The <see cref="Command"/> to send to the service.
         /// </summary>
+        [Key(0)]
         public Command Command;
 
         /// <summary>
@@ -123,6 +124,7 @@ namespace MSIFanControl.IPC
         /// The number of parameters for a service command vary depending on the
         /// specific command sent to the service.
         /// </summary>
+        [Key(1)]
         public string Arguments;
 
         public ServiceCommand(Command command, string args)

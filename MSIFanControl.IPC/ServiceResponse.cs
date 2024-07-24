@@ -1,4 +1,4 @@
-using System;
+using MessagePack;
 
 namespace MSIFanControl.IPC
 {
@@ -40,17 +40,19 @@ namespace MSIFanControl.IPC
     /// <summary>
     /// Represents a response to a <see cref="ServiceCommand"/>.
     /// </summary>
-    [Serializable]
+    [MessagePackObject]
     public class ServiceResponse
     {
         /// <summary>
         /// The <see cref="NamedPipeWrapper.Response"/> to send to the service.
         /// </summary>
+        [Key(0)]
         public Response Response;
 
         /// <summary>
         /// The value associated with the <see cref="Response"/>.
         /// </summary>
+        [Key(1)]
         public string Value;
 
         /// <summary>

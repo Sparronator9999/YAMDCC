@@ -3,7 +3,7 @@ using System.IO;
 using System.IO.Pipes;
 using System.Net;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
+using MessagePack;
 
 namespace MSIFanControl.IPC.IO
 {
@@ -21,8 +21,6 @@ namespace MSIFanControl.IPC.IO
         /// </summary>
         public PipeStream BaseStream { get; }
 
-        private readonly BinaryFormatter _binaryFormatter = new BinaryFormatter();
-
         /// <summary>
         /// Constructs a new <c>PipeStreamWriter</c> object
         /// that writes to given <paramref name="stream"/>.
@@ -38,7 +36,7 @@ namespace MSIFanControl.IPC.IO
             {
                 using (MemoryStream memoryStream = new MemoryStream())
                 {
-                    _binaryFormatter.Serialize(memoryStream, obj);
+                    MessagePackSerializer.Serialize(memoryStream, obj);
                     return memoryStream.ToArray();
                 }
             }

@@ -3,7 +3,7 @@ using System.IO;
 using System.IO.Pipes;
 using System.Net;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
+using MessagePack;
 
 namespace MSIFanControl.IPC.IO
 {
@@ -24,8 +24,6 @@ namespace MSIFanControl.IPC.IO
         /// Gets a value indicating whether the pipe is connected or not.
         /// </summary>
         public bool IsConnected { get; private set; }
-
-        private readonly BinaryFormatter _binaryFormatter = new BinaryFormatter();
 
         /// <summary>
         /// Constructs a new <c>PipeStreamReader</c> object that
@@ -65,9 +63,10 @@ namespace MSIFanControl.IPC.IO
         {
             byte[] data = new byte[len];
             BaseStream.Read(data, 0, len);
+
             using (MemoryStream memoryStream = new MemoryStream(data))
             {
-                return (T)_binaryFormatter.Deserialize(memoryStream);
+                return MessagePackSerializer.Deserialize<T>(memoryStream);
             }
         }
 
