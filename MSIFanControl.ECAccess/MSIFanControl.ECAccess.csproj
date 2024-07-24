@@ -64,6 +64,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MSIFanControl.Logging\MSIFanControl.Logs.csproj">
+      <Project>{5c611048-093e-48ac-b525-5c24817081bb}</Project>
+      <Name>MSIFanControl.Logs</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

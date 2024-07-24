@@ -96,7 +96,21 @@ namespace MSIFanControl.ECAccess
         /// </returns>
         public bool LoadDriver()
         {
-            return _Driver.Install() && _Driver.Open();
+            // Attempt to open an already installed WinRing0 driver first
+            if (_Driver.Open())
+            {
+                return true;
+            }
+
+            // If opening the driver fails, uninstall (if installed) and reinstall it
+            _Driver.Uninstall();
+            if (!_Driver.Install())
+            {
+                _Driver.Uninstall();
+                return false;
+            }
+
+            return _Driver.Open();
         }
 
         /// <summary>
@@ -108,7 +122,17 @@ namespace MSIFanControl.ECAccess
         /// </remarks>
         public void UnloadDriver()
         {
-            _Driver.Uninstall();
+            if (GetRefCount() <= 1)
+            {
+                // only uninstall the driver if we're the last program using it
+                // (Driver.Uninstall() calles Driver.Close() internally)
+                _Driver.Uninstall();
+            }
+            else
+            {
+                // otherwise, just close the handle to the driver
+                _Driver.Close();
+            }
         }
 
         /// <summary>
@@ -119,11 +143,16 @@ namespace MSIFanControl.ECAccess
         public bool ReadByte(byte register, out byte value)
         {
             value = 0;
-            for (int i = 0; i < RW_MAX_RETRIES; i++)
+
+            // only attempt to read EC if driver connection has been opened
+            if ((_Driver.Status & DriverStatus.Open) == DriverStatus.Open)
             {
-                if (TryReadByte(register, out value))
+                for (int i = 0; i < RW_MAX_RETRIES; i++)
                 {
-                    return true;
+                    if (TryReadByte(register, out value))
+                    {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -136,13 +165,18 @@ namespace MSIFanControl.ECAccess
         /// <param name="value">The value to write at the register.</param>
         public bool WriteByte(byte register, byte value)
         {
-            for (int i = 0; i < RW_MAX_RETRIES; i++)
+            // only attempt to write EC if driver connection has been opened
+            if ((_Driver.Status & DriverStatus.Open) == DriverStatus.Open)
             {
-                if (TryWriteByte(register, value))
+                for (int i = 0; i < RW_MAX_RETRIES; i++)
                 {
-                    return true;
+                    if (TryWriteByte(register, value))
+                    {
+                        return true;
+                    }
                 }
             }
+
             return false;
         }
 
@@ -158,13 +192,19 @@ namespace MSIFanControl.ECAccess
         public bool ReadWord(byte register, out ushort value, bool bigEndian = false)
         {
             value = 0;
-            for (int i = 0; i < RW_MAX_RETRIES; i++)
+
+            // only attempt to read EC if driver connection has been opened
+            if ((_Driver.Status & DriverStatus.Open) == DriverStatus.Open)
             {
-                if (TryReadWord(register, bigEndian, out value))
+                for (int i = 0; i < RW_MAX_RETRIES; i++)
                 {
-                    return true;
+                    if (TryReadWord(register, bigEndian, out value))
+                    {
+                        return true;
+                    }
                 }
             }
+
             return false;
         }
 
@@ -179,13 +219,18 @@ namespace MSIFanControl.ECAccess
         /// </param>
         public bool WriteWord(byte register, ushort value, bool bigEndian = false)
         {
-            for (int i = 0; i < RW_MAX_RETRIES; i++)
+            // only attempt to write EC if driver connection has been opened
+            if ((_Driver.Status & DriverStatus.Open) == DriverStatus.Open)
             {
-                if (TryWriteWord(register, value, bigEndian))
+                for (int i = 0; i < RW_MAX_RETRIES; i++)
                 {
-                    return true;
+                    if (TryWriteWord(register, value, bigEndian))
+                    {
+                        return true;
+                    }
                 }
             }
+
             return false;
         }
 
@@ -335,6 +380,12 @@ namespace MSIFanControl.ECAccess
         {
             WriteIOPortInput input = new WriteIOPortInput(port, value);
             return _Driver.IOControl((uint)Ring0Control.WriteIOPortByte, input, null);
+        }
+
+        private uint GetRefCount()
+        {
+            uint refCount = 0;
+            return _Driver.IOControl((uint)Ring0Control.GetRefCount, ref refCount, out refCount) ? refCount : 0;
         }
 
         /// <summary>

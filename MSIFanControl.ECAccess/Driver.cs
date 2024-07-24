@@ -81,6 +81,7 @@ namespace MSIFanControl.ECAccess
         {
             ErrorCode = 0;
 
+            // Make sure the file we're trying to install actually exists:
             try
             {
                 string fullPath = Path.GetFullPath(DriverPath);
@@ -91,7 +92,6 @@ namespace MSIFanControl.ECAccess
                 return false;
             }
 
-            // Otherwise, we need to install the service ourselves.
             // Try to open the Service Control Manager:
             IntPtr hSCM = AdvApi32.OpenSCManager(null, null, AdvApi32.SCMAccess.All);
             if (hSCM == IntPtr.Zero)
@@ -238,13 +238,16 @@ namespace MSIFanControl.ECAccess
                     FileAttributes.Normal,
                     IntPtr.Zero);
 
-                if (hDevice != IntPtr.Zero)
+                // Apparently CreateFileW() can return -1 instead of 0 for some reason
+                if (hDevice == IntPtr.Zero || hDevice == new IntPtr(-1))
                 {
-                    Status |= DriverStatus.Open;
-                    return true;
+                    ErrorCode = Marshal.GetLastWin32Error();
+                    return false;
                 }
-                ErrorCode = Marshal.GetLastWin32Error();
-                return false;
+
+
+                Status |= DriverStatus.Open;
+                return true;
             }
             return true;
         }
@@ -252,7 +255,7 @@ namespace MSIFanControl.ECAccess
         /// <summary>
         /// Closes the connection to the device driver, if open.
         /// </summary>
-        private void Close()
+        public void Close()
         {
             if (hDevice != IntPtr.Zero)
             {
