@@ -22,19 +22,24 @@ A fast, lightweight, and highly configurable fan control utility for MSI laptops
 
 ![A screenshot of MSI Fan Control's main interface](Media/MSIFC-MainWindow.png)
 
+*Note: this screenshot is a little outdated right now. I will update it Soon™, after other features are finished.*
+
 ## Supported Laptops
 
-Please see the `Configs` folder for a list of supported laptops.
+Currently, only the MSI GF63 Thin 11SC is supported, with more MSI laptop support Coming Soon™.
 
-If your laptop is not listed, you must make your own config (tutorial Coming Soon™).
+In the meantime, you must make your own config for your laptop (tutorial Coming Soon™).
 
-For MSI laptops, this is as easy as supplying your laptop's default fan curves to the Defaut profile in a copy of an existing MSI laptop config.
+This should be as easy as supplying your laptop's default fan curves to the Defaut profile in a copy of
+an existing MSI laptop config, however some MSI laptops have a few extra setting located at different EC
+registers. Try looking up similar fan control utilities (most are written for Linux).
 
-Other laptop brands will require you to figure out which EC registers store the fan curve (or just use NoteBook FanControl if your laptop's supported).
+Other laptop brands are not officially supported. You can still try and make your own config, but chances
+are you're looking for [NoteBook FanControl](https://github.com/UraniumDonut/nbfc-revive) instead.
 
-**Please also avoid asking me (or other people) in the issue tracker to create a config for you.**
-**Unless we have your specific laptop model (which we probably don't), we will not be able to help**
-**you outside of the general instructions.**
+**Please avoid asking me (or other people) in the issue tracker to create a config for you.**
+**Unless we have your specific laptop model (which we probably don't), we will not be able to**
+**help you outside of the general instructions.**
 
 ## FAQ
 
@@ -56,9 +61,9 @@ Older versions of Windows may also work, but with no support from me.
 
 ### Why do I need administrator privileges to run this program?
 
-The MSI Fan Control service requires administrator privileges to install and
-communicate with the WinRing0 driver, which allows for low-level hardware
-access. This is restricted to privileged programs for obvious reasons.
+The MSI Fan Control service requires administrator privileges to install and communicate with
+the WinRing0 driver, which allows for low-level hardware access (required for EC access).
+This is restricted to privileged programs for obvious reasons.
 
 ### My laptop isn't supported! What do I do?
 
@@ -70,23 +75,24 @@ Again, [see above](#supported-laptops).
 
 ### Help! My laptop stopped booting/is doing weird stuff!
 
-Try resetting your EC if you have an MSI laptop:
+Reset your EC (MSI laptops only):
 
 Shut down the laptop if it's on (force shut down if needed), then find the EC reset button
 (on the GF63 Thin 11SC, it's a small hole located on the bottom of the laptop next to the charge port)
 and press it with the end of a paperclip (or similarly small object, e.g. SIM eject tool)
 for at least 5 seconds. Try rebooting.
 
-If all else fails, you can try unplugging the laptop's battery (including any CMOS/clock
-batteries, if present) for a few seconds (requires disassembly of laptop), then re-plugging,
-re-assembing and attempting another boot. This will clear all of your BIOS settings.
+If the issue persists, try unplugging all power sources, including the laptop battery and
+CMOS/clock battery (requires disassembly of laptop), for a few seconds. Re-connect everything,
+then re-assemble and attempt another reboot. This will reset your BIOS settings.
 
-For other laptop brands, you will need to find instructions for your laptop.
+Users of other laptop brands will need to look up instructions for their laptop.
 
 ### How does this program work?
 
 MSI Fan Control works by writing a fan curve to your laptop's embedded controller (aka, the EC).
-This is a feature that, as far as I know, is only supported by MSI laptops.
+This is a feature that, as far as I know, is only supported by MSI laptops (and is supported by
+the official MSI Center).
 
 This is unlike NoteBook FanControl, which monitors the CPU temperature and directly controls
 the fan speed using a backgronud service.
@@ -95,11 +101,18 @@ the fan speed using a backgronud service.
 
 Due to WinForms limitations, no.
 
+Technical explanation: A few specific WinForms controls used by MSI Fan Control look really bad
+when trying to recolour them to be dark themed. Also, built-in dialog boxes (for C# programmers,
+think `MessageBox.Show`) cannot be recoloured from their default white theme.
+
 ### .NET (Core) 5/6/8/<insert latest .NET version>!
 
-Converting to .NET *should* be simple for most components, except for the fan control service.
+Converting to .NET *should* be easy, but last time I attempted it, the MSI Fan Control service
+broke horribly (even when installing the [`Microsoft.Windows.Compatibility`](https://www.nuget.org/packages/Microsoft.Windows.Compatibility/)
+NuGet package).
 
-.NET support will come when I'm ready.
+.NET support will come when I'm ready, and when I've figured out how to write a Windows service
+in .NET.
 
 ### Doesn't WinRing0 have security issues?
 
@@ -131,7 +144,7 @@ request. Please state the following in your issue request:
 - Steps to reproduce the issue
 - Relevant screenshots when needed
 
-However, know that I **don't check my GitHub page very often** when I'm not working
+However, know that I **may not check my GitHub page very often** when I'm not working
 on anything, so your issue may remain open for a while before I answer it.
 
 ## Roadmap
@@ -139,7 +152,10 @@ on anything, so your issue may remain open for a while before I answer it.
 - [ ] Config UI fixes:
   - [ ] Actually implement the "revert to last saved config" functionality
   - [ ] Implement missing tooltips
-- [ ] Give the program code a once-over before doing anything else
+- [ ] Give the program code a once-over before doing anything else *(Started)*
+- [ ] Add more extra options for MSI laptops (from MSI Center):
+  - [ ] Performance mode selection
+  - [ ] Fn/Win key swap
 - [ ] Config generation for MSI laptops
   - This would only work because many MSI laptops have almost identical EC register locations
     for all the relevent settings we change
