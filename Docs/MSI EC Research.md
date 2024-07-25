@@ -8,8 +8,7 @@ I used MSI Center, [NoteBook FanControl](https://github.com/hirschmann/nbfc)'s
 from YoyPa's [Ice-Sealed Wyvern](https://github.com/YoyPa/isw/) (a fan control
 utility for MSI laptops running Linux) to reverse-engineer these registers.
 
-Any registers not listed here are either unused, or their function is simply
-unknown.
+Any registers not listed here are either unused or have an unknown function.
 
 ## `0x2E`
 Controls whether the webcam is enabled (0x0B) or disabled (0x09).
@@ -113,7 +112,8 @@ Controls the performance level of the laptop:
 - `0xC4`: Turbo. The `MSI GF63 Thin 11SC.xml` config sets this value when loaded.
 - `0xC0`: High
 - `0xC1`: Medium (default). Causes maximum fan speeds to be capped at 60%.
-- `0xC2`: Low. Causes fan settings set by MSI Fan Control to be ignored.
+- `0xC2`: Low. Causes fan settings set by MSI Fan Control to be ignored,'
+  and a different default fan curve to be set (not in EC, as far as I know).
 
 ## `0xD3`
 Controls the keyboard backlight. The brightness level can be set using
@@ -132,6 +132,12 @@ start charging again when it reaches 70%).
 
 The default value is `0x80` (128), which disables the charging threshold
 (battery will always charge to 100% when plugged in).
+
+## `0xE8`
+Controls whether the Win and Fn keys are swapped. `0x10` means enabled, and `0x00` means disabled.
+
+([Source](https://github.com/BeardOverflow/msi-ec/blob/853ffe3dc74f4dea1e0daeafed1a4562b4bf0130/msi-ec.c#L1036).
+I know it's for a different laptop, but this works on my machine as well)
 
 ## `0xEB`
 Unknown, but this register seems to be tied to `0xD2`, as `0xEB` gets set to
