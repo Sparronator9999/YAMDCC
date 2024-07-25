@@ -23,7 +23,8 @@ jobs:
 
     - name: Get short commit hash for environment variable
       run: |
-        echo "sha_short=$(git rev-parse --short "${{ github.sha }}")" >> "$GITHUB_ENV"
+        echo "sha_short=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
+        echo "Short commit hash: ${{ env.sha_short }}"
 
     - name: Setup MSBuild path
       uses: microsoft/setup-msbuild@v2
