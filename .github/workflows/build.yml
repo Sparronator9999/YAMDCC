@@ -24,7 +24,7 @@ jobs:
     - name: Get short commit hash
       uses: benjlevesque/short-sha@v3.0
       with:
-        - variable_name: sha_short
+        variable_name: sha_short
 
     - name: Setup MSBuild path
       uses: microsoft/setup-msbuild@v2
