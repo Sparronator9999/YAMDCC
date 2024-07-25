@@ -23,7 +23,8 @@ jobs:
 
     - name: Get short commit hash for artifact name
       run: |
-        echo "sha_short=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
+        SHA_SHORT=$(echo $GITHUB_SHA | cut -c1-7)
+        echo "sha_short=$SHA_SHORT" >> "$GITHUB_ENV"
         echo "Short commit hash: ${{ env.sha_short }}"
 
     - name: Setup MSBuild path
