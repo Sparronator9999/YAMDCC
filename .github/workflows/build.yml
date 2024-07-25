@@ -21,6 +21,10 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v1
 
+    - name: Get short commit hash for environment variable
+      run: |
+        echo "sha_short=$(git rev-parse --short "${{ github.sha }}")" >> "$GITHUB_ENV"
+
     - name: Setup MSBuild path
       uses: microsoft/setup-msbuild@v2
 
@@ -39,14 +43,14 @@ jobs:
       run: msbuild.exe /t:restore /p:RestoreLockedMode=true
 
     - name: Build solution
-      run: msbuild.exe MSIFanControl.sln /nologo /nr:false /p:DeployOnBuild=true /p:platform="Any CPU" /p:configuration="${{ matrix.config }}"
+      run: msbuild.exe YAMDCC.sln /nologo /nr:false /p:DeployOnBuild=true /p:platform="Any CPU" /p:configuration="${{ matrix.config }}"
 
     - name: Copy fan configs to build path
-      run: mkdir MSIFanControl.GUI\bin\${{ matrix.config }}\net48\Configs && copy Configs\* MSIFanControl.GUI\bin\${{ matrix.config }}\net48\Configs
+      run: mkdir YAMDCC.GUI\bin\${{ matrix.config }}\net48\Configs && copy Configs\* YAMDCC.GUI\bin\${{ matrix.config }}\net48\Configs
 
     - name: Upload build artifact
       uses: actions/upload-artifact@v4
       with:
-        name: "MSIFanControl-${{ matrix.config }}"
-        path: "./MSIFanControl.GUI/bin/${{ matrix.config }}/net48/"
+        name: "YAMDCC-${{ github.ref_name }}-${{ env.sha_short }}-${{ matrix.config }}"
+        path: "./YAMDCC.GUI/bin/${{ matrix.config }}/net48/"
         compression-level: 9
