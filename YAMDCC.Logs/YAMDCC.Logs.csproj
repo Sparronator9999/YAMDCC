@@ -1,19 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
-    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <OutputType>Library</OutputType>
-    <Title>YAMDCC log library</Title>
-    <Authors>Sparronator9999</Authors>
-    <Copyright>Copyright © 2023-2024 Sparronator9999</Copyright>
-    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
-    <AssemblyVersion>0.6.9.420</AssemblyVersion>
-    <FileVersion>0.6.9.420</FileVersion>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-  </ItemGroup>
+    <PropertyGroup>
+        <TargetFramework>net48</TargetFramework>
+        <OutputType>Library</OutputType>
+        <Title>YAMDCC logging library</Title>
+        <AssemblyTitle>YAMDCC logging library</AssemblyTitle>
+        <Authors>Sparronator9999</Authors>
+        <Copyright>Copyright © 2023-2024 Sparronator9999</Copyright>
+        <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+        <AssemblyVersion>0.6.9.420</AssemblyVersion>
+        <FileVersion>0.6.9.420</FileVersion>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+        <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    </ItemGroup>
 </Project>

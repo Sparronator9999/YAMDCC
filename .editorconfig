@@ -97,10 +97,11 @@ dotnet_style_qualification_for_property = false:suggestion
 dotnet_style_qualification_for_method = false:suggestion
 dotnet_style_qualification_for_event = false:suggestion
 dotnet_style_prefer_collection_expression = when_types_loosely_match:suggestion
+end_of_line = crlf
 
 [*.cs]
 csharp_using_directive_placement = outside_namespace:suggestion
-csharp_prefer_simple_using_statement = true:suggestion
+csharp_prefer_simple_using_statement = false:suggestion
 csharp_prefer_braces = true:suggestion
 csharp_style_namespace_declarations = block_scoped:silent
 csharp_style_prefer_method_group_conversion = true:silent

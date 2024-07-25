@@ -16,7 +16,6 @@
 
 using System.ComponentModel;
 using System.Configuration.Install;
-using System.Resources;
 
 namespace YAMDCC.Service
 {
@@ -26,9 +25,7 @@ namespace YAMDCC.Service
         public ProjectInstaller()
         {
             InitializeComponent();
-
-            ResourceManager res = new ResourceManager(typeof(Program));
-            svcInstaller.Description = res.GetString("svcDesc");
+            svcInstaller.Description = Strings.GetString("svcDesc");
         }
     }
 }

@@ -22,7 +22,6 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.IO.Pipes;
-using System.Resources;
 using System.Security.AccessControl;
 using System.ServiceProcess;
 
@@ -54,12 +53,11 @@ namespace YAMDCC.Service
         /// <summary>
         /// The <see cref="Logger"/> instance to write logs to.
         /// </summary>
-        private readonly Logger Log;
-
-        /// <summary>
-        /// The <see cref="ResourceManager"/> instance to obtain resources from.
-        /// </summary>
-        private readonly ResourceManager Res;
+        private static readonly Logger Log = new Logger
+        {
+            ConsoleLogLevel = LogLevel.None,
+            FileLogLevel = LogLevel.Debug,
+        };
 
         private readonly EC _EC;
         #endregion
@@ -68,11 +66,11 @@ namespace YAMDCC.Service
         /// Initialises a new instance of the <see cref="svcFanControl"/> class.
         /// </summary>
         /// <param name="logger">The <see cref="Logger"/> instance to write logs to.</param>
-        internal svcFanControl(Logger logger, ResourceManager res)
+        internal svcFanControl()
         {
             InitializeComponent();
-            Log = logger;
-            Res = res;
+            AppDomain.CurrentDomain.UnhandledException += LogUnhandledException;
+
             _EC = new EC();
 
             PipeSecurity security = new PipeSecurity();
@@ -84,7 +82,7 @@ namespace YAMDCC.Service
         #region Events
         protected override void OnStart(string[] args)
         {
-            Log.Info(Res.GetString("svcStarting"));
+            Log.Info(Strings.GetString("svcStarting"));
 
             // Load the service config.
             LoadConf();
@@ -92,20 +90,20 @@ namespace YAMDCC.Service
             // Install WinRing0 to get EC access
             try
             {
-                Log.Info(Res.GetString("drvLoad"));
+                Log.Info(Strings.GetString("drvLoad"));
                 if (!_EC.LoadDriver())
                 {
-                    throw new ApplicationException(string.Format(Res.GetString("drvLoadFailS"), new Win32Exception(_EC.GetDriverError()).Message));
+                    throw new ApplicationException(string.Format(Strings.GetString("drvLoadFailS"), new Win32Exception(_EC.GetDriverError()).Message));
                 }
             }
             catch (ApplicationException)
             {
-                Log.Fatal(Res.GetString("drvLoadFail"));
+                Log.Fatal(Strings.GetString("drvLoadFail"));
                 _EC.UnloadDriver();
                 ExitCode = 1;
                 throw;
             }
-            Log.Info(Res.GetString("drvLoadSuccess"));
+            Log.Info(Strings.GetString("drvLoadSuccess"));
 
             // Set up IPC server
             Log.Debug("Starting IPC server...");
@@ -113,7 +111,7 @@ namespace YAMDCC.Service
             IPCServer.ClientDisconnected += IPCClientDisconnect;
             IPCServer.Start();
 
-            Log.Info(Res.GetString("svcStarted"));
+            Log.Info(Strings.GetString("svcStarted"));
 
             // Apply the fan curve and charging threshold:
             ApplyCurve();
@@ -121,7 +119,7 @@ namespace YAMDCC.Service
 
         protected override void OnStop()
         {
-            Log.Info(Res.GetString("svcStopping"));
+            Log.Info(Strings.GetString("svcStopping"));
 
             // Stop the IPC server:
             Log.Debug("Stopping IPC server...");
@@ -130,10 +128,10 @@ namespace YAMDCC.Service
             IPCServer.ClientDisconnected -= IPCClientDisconnect;
 
             // Uninstall WinRing0 to keep things clean
-            Log.Debug(Res.GetString("drvUnload"));
+            Log.Debug(Strings.GetString("drvUnload"));
             _EC.UnloadDriver();
 
-            Log.Info(Res.GetString("svcStopped"));
+            Log.Info(Strings.GetString("svcStopped"));
         }
 
         protected override bool OnPowerEvent(PowerBroadcastStatus powerStatus)
@@ -155,18 +153,18 @@ namespace YAMDCC.Service
         private void IPCClientConnect(NamedPipeConnection<ServiceCommand, ServiceResponse> connection)
         {
             connection.ReceiveMessage += IPCClientMessage;
-            Log.Info(Res.GetString("ipcConnect"), connection.ID);
+            Log.Info(Strings.GetString("ipcConnect"), connection.ID);
         }
 
         private void IPCClientDisconnect(NamedPipeConnection<ServiceCommand, ServiceResponse> connection)
         {
             connection.ReceiveMessage -= IPCClientMessage;
-            Log.Info(Res.GetString("ipcDC"), connection.ID);
+            Log.Info(Strings.GetString("ipcDC"), connection.ID);
         }
 
         private void IPCClientMessage(NamedPipeConnection<ServiceCommand, ServiceResponse> connection, ServiceCommand message)
         {
-            int error;
+            int error = 0;
 
             switch (message.Command)
             {
@@ -194,26 +192,17 @@ namespace YAMDCC.Service
                     error = SetFullBlast(connection.Name, message.Arguments);
                     break;
                 default:    // Unknown command
-                    error = 1;
+                    Log.Error(Strings.GetString("errBadCmd"), message);
                     break;
             }
 
             switch (error)
             {
-                case 1:
-                    Log.Error(Res.GetString("errBadCmd"), message);
-                    break;
                 case 2:
-                    Log.Error(Res.GetString("errOffendingCmd"), message.Command, message.Arguments);
+                    Log.Error(Strings.GetString("errOffendingCmd"), message.Command, message.Arguments);
                     break;
                 case 3:
-                    Log.Error(Res.GetString("errECLock"));
-                    break;
-                case 4:
-                    Log.Error(Res.GetString("errECRead"));
-                    break;
-                case 5:
-                    Log.Error(Res.GetString("errECWrite"));
+                    Log.Error(Strings.GetString("errECLock"));
                     break;
                 default:
                     break;
@@ -221,9 +210,19 @@ namespace YAMDCC.Service
         }
         #endregion
 
+        private void LogECReadError(int reg)
+        {
+            Log.Error(Strings.GetString("errECRead"), $"0x{reg:X}", new Win32Exception(_EC.GetDriverError()).Message);
+        }
+
+        private void LogECWriteError(int reg)
+        {
+            Log.Error(Strings.GetString("errECWrite"), $"0x{reg:X}", new Win32Exception(_EC.GetDriverError()).Message);
+        }
+
         private void LoadConf()
         {
-            Log.Info(Res.GetString("cfgLoading"));
+            Log.Info(Strings.GetString("cfgLoading"));
 
             string confPath = Path.Combine(DataPath, "CurrentConfig.xml");
 
@@ -236,61 +235,66 @@ namespace YAMDCC.Service
                 catch
                 {
                     ConfigLoaded = false;
-                    Log.Error(Res.GetString("cfgInvalid"));
+                    Log.Error(Strings.GetString("cfgInvalid"));
                 }
 
                 ConfigLoaded = true;
-                Log.Info(Res.GetString("cfgLoadSuccess"));
+                Log.Info(Strings.GetString("cfgLoadSuccess"));
             }
             else
             {
-                Log.Warn(Res.GetString("cfgNotFound"));
+                Log.Warn(Strings.GetString("cfgNotFound"));
                 ConfigLoaded = false;
             }
         }
 
         private void ApplyCurve()
         {
-            Log.Debug("Applying YAMDCC config...");
             if (ConfigLoaded)
             {
+                Log.Debug(Strings.GetString("cfgApplying"));
                 if (EC.AcquireLock(1000))
                 {
                     // Write custom register values, if configured:
                     if (Config.RegConfs.Length > 0)
                     {
-                        Log.Debug("Writing custom EC register configs...");
-                        foreach (RegConf cfg in Config.RegConfs)
+                        for (int i = 0; i < Config.RegConfs.Length; i++)
                         {
-                            _EC.ReadByte(cfg.Reg, out byte oldVal);
-                            Log.Debug($"Writing value 0x{cfg.Value:X} to register 0x{cfg.Reg:X} (old value: 0x{oldVal:X})...");
-
-                            _EC.WriteByte(cfg.Reg, cfg.Value);
+                            RegConf cfg = Config.RegConfs[i];
+                            Log.Debug($"Writing custom EC register configs ({i + 1}/{Config.RegConfs.Length})...");
+                            if (!_EC.WriteByte(cfg.Reg, cfg.Value))
+                            {
+                                LogECWriteError(cfg.Reg);
+                            }
                         }
                     }
 
                     // Write the fan curve to the appropriate registers for each fan:
-                    foreach (FanConf cfg in Config.FanConfs)
+                    for (int i = 0; i < Config.FanConfs.Length; i++)
                     {
-                        Log.Debug($"Writing fan curve configuration for {cfg.Name}...");
+                        FanConf cfg = Config.FanConfs[i];
+                        Log.Debug($"Writing fan curve configuration for {cfg.Name} ({i + 1}/{Config.FanConfs.Length})...");
                         FanCurveConf curveCfg = cfg.FanCurveConfs[cfg.CurveSel];
 
-                        for (int i = 0; i < curveCfg.TempThresholds.Length; i++)
+                        for (int j = 0; j < curveCfg.TempThresholds.Length; j++)
                         {
-                            _EC.ReadByte(cfg.FanCurveRegs[i], out byte oldVal);
-                            Log.Debug($"Writing value 0x{curveCfg.TempThresholds[i].FanSpeed:X} to register 0x{cfg.FanCurveRegs[i]:X} (old value: 0x{oldVal:X}, FanCurve)...");
-                            _EC.WriteByte(cfg.FanCurveRegs[i], curveCfg.TempThresholds[i].FanSpeed);
-
-                            if (i > 0)
+                            if (!_EC.WriteByte(cfg.FanCurveRegs[j], curveCfg.TempThresholds[j].FanSpeed))
                             {
-                                _EC.ReadByte(cfg.UpThresholdRegs[i - 1], out oldVal);
-                                Log.Debug($"Writing value 0x{curveCfg.TempThresholds[i].UpThreshold:X} to register 0x{cfg.UpThresholdRegs[i - 1]:X} (old value: 0x{oldVal:X}, UpThreshold)...");
-                                _EC.WriteByte(cfg.UpThresholdRegs[i - 1], curveCfg.TempThresholds[i].UpThreshold);
+                                LogECWriteError(cfg.FanCurveRegs[j]);
+                            }
 
-                                _EC.ReadByte(cfg.DownThresholdRegs[i - 1], out oldVal);
-                                byte downT = (byte)(curveCfg.TempThresholds[i].UpThreshold - curveCfg.TempThresholds[i].DownThreshold);
-                                Log.Debug($"Writing value 0x{downT:X} to register 0x{cfg.DownThresholdRegs[i - 1]:X} (old value: 0x{oldVal:X}, DownThreshold)...");
-                                _EC.WriteByte(cfg.DownThresholdRegs[i - 1], downT);
+                            if (j > 0)
+                            {
+                                if (!_EC.WriteByte(cfg.UpThresholdRegs[j - 1], curveCfg.TempThresholds[j].UpThreshold))
+                                {
+                                    LogECWriteError(cfg.UpThresholdRegs[j - 1]);
+                                }
+
+                                byte downT = (byte)(curveCfg.TempThresholds[j].UpThreshold - curveCfg.TempThresholds[j].DownThreshold);
+                                if (!_EC.WriteByte(cfg.DownThresholdRegs[j - 1], downT))
+                                {
+                                    LogECWriteError(cfg.DownThresholdRegs[j - 1]);
+                                }
                             }
                         }
                     }
@@ -298,19 +302,17 @@ namespace YAMDCC.Service
                     // Write the charge threshold:
                     Log.Debug($"Writing charge limit configuration...");
                     byte value = (byte)(Config.ChargeLimitConf.MinVal + Config.ChargeLimitConf.CurVal);
-                    Log.Debug($"Writing value 0x{value:X} to register 0x{Config.ChargeLimitConf.Reg:X}...");
-                    _EC.WriteByte(Config.ChargeLimitConf.Reg, value);
+                    if (!_EC.WriteByte(Config.ChargeLimitConf.Reg, value))
+                    {
+                        LogECWriteError(Config.ChargeLimitConf.Reg);
+                    }
 
                     EC.ReleaseLock();
                 }
                 else
                 {
-                    Log.Error(Res.GetString("errECLock"));
+                    Log.Error(Strings.GetString("errECLock"));
                 }
-            }
-            else
-            {
-                Log.Warn(Res.GetString("cfgNotLoaded"));
             }
         }
 
@@ -329,7 +331,7 @@ namespace YAMDCC.Service
             {
                 if (!string.IsNullOrEmpty(args_in))
                 {
-                    Log.Warn(Res.GetString("warnArgsBadLength"));
+                    Log.Warn(Strings.GetString("warnArgsBadLength"));
                 }
                 return true;
             }
@@ -347,7 +349,7 @@ namespace YAMDCC.Service
                         }
                         else
                         {
-                            Log.Error(Res.GetString("errArgsBadType"));
+                            Log.Error(Strings.GetString("errArgsBadType"));
                             return false;
                         }
                     }
@@ -355,12 +357,12 @@ namespace YAMDCC.Service
                 }
                 else
                 {
-                    Log.Error(Res.GetString("errArgsBadLength"));
+                    Log.Error(Strings.GetString("errArgsBadLength"));
                 }
             }
             else
             {
-                Log.Error(Res.GetString("errArgsMissing"));
+                Log.Error(Strings.GetString("errArgsMissing"));
             }
 
             return false;
@@ -372,16 +374,21 @@ namespace YAMDCC.Service
             {
                 if (EC.AcquireLock(1000))
                 {
-                    Log.Debug($"Reading EC register {pArgs[0]:X}...");
+                    Log.Debug(Strings.GetString("svcECReading"), pArgs[0].ToString("X"));
                     bool success = _EC.ReadByte((byte)pArgs[0], out byte value);
+                    EC.ReleaseLock();
+
                     if (success)
                     {
                         ServiceResponse response = new ServiceResponse(Response.ReadResult, $"{pArgs[0]} {value}");
                         IPCServer.PushMessage(response, name);
-                        Log.Debug($"EC register {pArgs[1]:X} has value of {value:X}");
+                        Log.Debug(Strings.GetString("svcECReadSuccess"), pArgs[1].ToString("X"), value.ToString("X"));
                     }
-                    EC.ReleaseLock();
-                    return success ? 0 : 4;
+                    else
+                    {
+                        LogECReadError(pArgs[0]);
+                    }
+                    return 0;
                 }
                 return 3;
             }
@@ -394,12 +401,19 @@ namespace YAMDCC.Service
             {
                 if (EC.AcquireLock(1000))
                 {
-                    Log.Debug($"Writing {pArgs[1]:X} to EC register {pArgs[0]:X}...");
+                    Log.Debug(Strings.GetString("svcECWriting"), pArgs[1].ToString("X"), pArgs[0].ToString("X"));
                     bool success = _EC.WriteByte((byte)pArgs[0], (byte)pArgs[1]);
-                    if (success)
-                        Log.Debug($"Wrote {pArgs[1]:X} to {pArgs[0]:X} successfully");
                     EC.ReleaseLock();
-                    return success ? 0 : 5;
+
+                    if (success)
+                    {
+                        Log.Debug(Strings.GetString("svcECWriteSuccess"), pArgs[0].ToString("X"));
+                    }
+                    else
+                    {
+                        LogECWriteError(pArgs[0]);
+                    }
+                    return 0;
                 }
                 return 3;
             }
@@ -414,13 +428,18 @@ namespace YAMDCC.Service
                 {
                     FanConf cfg = Config.FanConfs[pArgs[0]];
                     bool success = _EC.ReadByte(cfg.SpeedReadReg, out byte speed);
+                    EC.ReleaseLock();
+
                     if (success)
                     {
                         ServiceResponse response = new ServiceResponse(Response.FanSpeed, speed.ToString());
                         IPCServer.PushMessage(response, name);
                     }
-                    EC.ReleaseLock();
-                    return success ? 0 : 4;
+                    else
+                    {
+                        LogECReadError(pArgs[0]);
+                    }
+                    return 0;
                 }
                 return 3;
             }
@@ -440,12 +459,15 @@ namespace YAMDCC.Service
                         bool success;
                         ushort rpmValue;
                         if (cfg.RPMConf.Is16Bit)
+                        {
                             success = _EC.ReadWord(cfg.RPMConf.ReadReg, out rpmValue, cfg.RPMConf.IsBigEndian);
+                        }
                         else
                         {
                             success = _EC.ReadByte(cfg.RPMConf.ReadReg, out byte rpmValByte);
                             rpmValue = rpmValByte;
                         }
+                        EC.ReleaseLock();
 
                         if (success)
                         {
@@ -454,22 +476,35 @@ namespace YAMDCC.Service
                             if (cfg.RPMConf.Invert)
                             {
                                 if (rpmValue == 0)
+                                {
                                     rpm = -1;
+                                }
                                 else if (cfg.RPMConf.DivideByMult)
+                                {
                                     rpm = cfg.RPMConf.RPMMult / rpmValue;
+                                }
                                 else
+                                {
                                     rpm = 1 / (rpmValue * cfg.RPMConf.RPMMult);
+                                }
                             }
                             else if (cfg.RPMConf.DivideByMult)
+                            {
                                 rpm = rpmValue / cfg.RPMConf.RPMMult;
+                            }
                             else
+                            {
                                 rpm = rpmValue * cfg.RPMConf.RPMMult;
+                            }
 #pragma warning restore IDE0045
                             ServiceResponse response = new ServiceResponse(Response.FanRPM, $"{rpm}");
                             IPCServer.PushMessage(response, name);
                         }
-                        EC.ReleaseLock();
-                        return success ? 0 : 4;
+                        else
+                        {
+                            LogECReadError(pArgs[0]);
+                        }
+                        return 0;
                     }
                     return 3;
                 }
@@ -486,13 +521,17 @@ namespace YAMDCC.Service
                 {
                     FanConf cfg = Config.FanConfs[pArgs[0]];
                     bool success = _EC.ReadByte(cfg.TempReadReg, out byte temp);
+                    EC.ReleaseLock();
                     if (success)
                     {
                         ServiceResponse response = new ServiceResponse(Response.Temp, temp.ToString());
                         IPCServer.PushMessage(response, name);
                     }
-                    EC.ReleaseLock();
-                    return success ? 0 : 4;
+                    else
+                    {
+                        LogECReadError(pArgs[0]);
+                    }
+                    return 0;
                 }
                 return 3;
             }
@@ -519,15 +558,21 @@ namespace YAMDCC.Service
                             Config.FullBlastConf.OffVal);
                     }
                     EC.ReleaseLock();
+
                     if (!success)
                     {
-                        Log.Error($"Error writing to EC: {new Win32Exception(_EC.GetDriverError()).Message}");
+                        LogECReadError(Config.FullBlastConf.Reg);
                     }
-                    return success ? 0 : 5;
+                    return 0;
                 }
                 return 3;
             }
             return 2;
+        }
+
+        private static void LogUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Log.Fatal(Strings.GetString("svcException"), e.ExceptionObject);
         }
     }
 }

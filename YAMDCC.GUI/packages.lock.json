@@ -145,7 +145,6 @@
           "YAMDCC.Logs": "[1.0.0, )"
         }
       }
-    },
-    ".NETFramework,Version=v4.8/win7-x86": {}
+    }
   }
 }

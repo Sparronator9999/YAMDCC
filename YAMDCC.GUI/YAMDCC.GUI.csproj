@@ -1,58 +1,57 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
-    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
-    <OutputType>WinExe</OutputType>
-    <AssemblyName>YAMDCC</AssemblyName>
-    <Title>YAMDCC configuration utility</Title>
-    <Authors>Sparronator9999</Authors>
-    <Copyright>Copyright © 2023-2024 Sparronator9999</Copyright>
-    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
-    <PublishUrl>publish\</PublishUrl>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>fan.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup>
-    <StartupObject></StartupObject>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.ServiceProcess" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="fan.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\YAMDCC.Config\YAMDCC.Config.csproj" />
-    <ProjectReference Include="..\YAMDCC.Service\YAMDCC.Service.csproj" />
-    <ProjectReference Include="..\YAMDCC.IPC\YAMDCC.IPC.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-  </ItemGroup>
+    <PropertyGroup>
+        <TargetFramework>net48</TargetFramework>
+        <OutputType>WinExe</OutputType>
+        <AssemblyName>YAMDCC</AssemblyName>
+        <AssemblyTitle>YAMDCC configuration utility</AssemblyTitle>
+        <Title>YAMDCC configuration utility</Title>
+        <Authors>Sparronator9999</Authors>
+        <Copyright>Copyright © 2023-2024 Sparronator9999</Copyright>
+        <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+        <PublishUrl>publish\</PublishUrl>
+        <BootstrapperEnabled>true</BootstrapperEnabled>
+        <UseWindowsForms>true</UseWindowsForms>
+        <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    </PropertyGroup>
+    <PropertyGroup>
+        <ApplicationIcon>fan.ico</ApplicationIcon>
+    </PropertyGroup>
+    <PropertyGroup>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <AssemblyVersion>0.6.9.420</AssemblyVersion>
+        <FileVersion>0.6.9.420</FileVersion>
+        <PlatformTarget>AnyCPU</PlatformTarget>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="System.IO.Compression" />
+        <Reference Include="System.ServiceProcess" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="fan.ico" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\YAMDCC.Config\YAMDCC.Config.csproj" />
+        <ProjectReference Include="..\YAMDCC.Service\YAMDCC.Service.csproj" />
+        <ProjectReference Include="..\YAMDCC.IPC\YAMDCC.IPC.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <WCFMetadata Include="Connected Services\" />
+    </ItemGroup>
+    <ItemGroup>
+        <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
+            <Visible>False</Visible>
+            <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
+            <Install>true</Install>
+        </BootstrapperPackage>
+        <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+            <Visible>False</Visible>
+            <ProductName>.NET Framework 3.5 SP1</ProductName>
+            <Install>false</Install>
+        </BootstrapperPackage>
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+        <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    </ItemGroup>
 </Project>
