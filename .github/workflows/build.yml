@@ -21,9 +21,9 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v1
 
-    - name: Get short commit hash for environment variable
+    - name: Get short commit hash for artifact name
       run: |
-        echo "sha_short=$(git rev-parse --short "$GITHUB_SHA")" >> "$GITHUB_ENV"
+        echo "sha_short=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
         echo "Short commit hash: ${{ env.sha_short }}"
 
     - name: Setup MSBuild path
