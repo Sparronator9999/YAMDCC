@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <!-- 
+        Microsoft ResX Schema
+
+        Version 1.3
+
+        The primary goals of this format is to allow a simple XML format 
+        that is mostly human readable. The generation and parsing of the 
+        various data types are done through the TypeConverter classes 
+        associated with the data types.
+
+        Example:
+
+        ... ado.net/XML headers & schema ...
+        <resheader name="resmimetype">text/microsoft-resx</resheader>
+        <resheader name="version">1.3</resheader>
+        <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+        <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+        <data name="Name1">this is my long string</data>
+        <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+        <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+            [base64 mime encoded serialized .NET Framework object]
+        </data>
+        <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+            [base64 mime encoded string representing a byte array form of the .NET Framework object]
+        </data>
+
+        There are any number of "resheader" rows that contain simple 
+        name/value pairs.
+
+        Each data row contains a name, and value. The row also contains a 
+        type or mimetype. Type corresponds to a .NET class that support 
+        text/value conversion through the TypeConverter architecture. 
+        Classes that don't support this are serialized and stored with the 
+        mimetype set.
+
+        The mimetype is used for serialized objects, and tells the 
+        ResXResourceReader how to depersist the object. This is currently not 
+        extensible. For a given mimetype the value must be set accordingly:
+
+        Note - application/x-microsoft.net.object.binary.base64 is the format 
+        that the ResXResourceWriter will generate, however the reader can 
+        read any of the formats listed below.
+
+        mimetype: application/x-microsoft.net.object.binary.base64
+        value   : The object must be serialized with 
+            : System.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+
+        mimetype: application/x-microsoft.net.object.soap.base64
+        value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+        mimetype: application/x-microsoft.net.object.bytearray.base64
+        value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+    
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            <xsd:complexType>
+                <xsd:choice maxOccurs="unbounded">
+                    <xsd:element name="data">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+                            <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+                            <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="resheader">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                            </xsd:sequence>
+                            <xsd:attribute name="name" type="xsd:string" use="required" />
+                        </xsd:complexType>
+                    </xsd:element>
+                </xsd:choice>
+            </xsd:complexType>
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="About" xml:space="preserve">
+        <value>YAMDCC - Yet Another MSI Dragon Center Clone
+A fast, lightweight alternative to MSI Center for MSI laptops, written in C#.
+Copyright © Sparronator9999, 2023-2024
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program. If not, visit &lt;https://www.gnu.org/licenses/gpl-3.0.html&gt; for a copy.</value>
+    </data>
+    <data name="svcErrorConnect" xml:space="preserve">
+        <value>Failed to connect to the YAMDCC service.
+Make sure the service is running, then try again.
+
+Details (provide this when reporting bugs):
+{0}</value>
+    </data>
+    <data name="svcErrorCrash" xml:space="preserve">
+        <value>The YAMDCC Service crashed while starting.
+Check the Event viewer and service log for crash details.</value>
+    </data>
+    <data name="svcErrorStart" xml:space="preserve">
+        <value>The YAMDCC service failed to start.
+
+If the service continues to fail to start, the service may not be installed or is crashing on start (due to a programming bug).
+
+Details (provide this when reporting bugs):
+{0}</value>
+    </data>
+    <data name="svcInstallFail" xml:space="preserve">
+        <value>The service failed to install.
+Try running the YAMDCC configurator again, and if the
+service installation fails again, open a bug report with
+this error.</value>
+    </data>
+    <data name="svcInstallSuccess" xml:space="preserve">
+        <value>Service installed successfully!
+Please run YAMDCC again to start using it.</value>
+    </data>
+    <data name="svcNotFound" xml:space="preserve">
+        <value>The YAMDCC Service is not installed.
+
+Additionally, the executable for the YAMDCC Service (yamdccsvc.exe) was not found in the same folder as this program.
+
+Try re-installing/re-downloading YAMDCC to fix this.</value>
+    </data>
+    <data name="svcNotInstalled" xml:space="preserve">
+        <value>The YAMDCC Service is not installed yet.
+Would you like to install it now?</value>
+    </data>
+    <data name="svcNotRunning" xml:space="preserve">
+        <value>The YAMDCC Service is currently not running.
+Would you like to start it now?
+(Clicking "No" will quit the program.)</value>
+    </data>
+    <data name="ttAbout" xml:space="preserve">
+        <value>Show information about this program, including
+copyright and licensing information.</value>
+    </data>
+    <data name="ttApply" xml:space="preserve">
+        <value>Applies the currently loaded config to the system.</value>
+    </data>
+    <data name="ttChgLim" xml:space="preserve">
+        <value>Llimits the charge percentage of the battery in this laptop to the specified percentage.
+Set to "0" to disable this feature.</value>
+    </data>
+    <data name="ttECMon" xml:space="preserve">
+        <value>When enabled, prints information about the fan speed and RPM,
+and the temperature of the component being cooled by the fan.</value>
+    </data>
+    <data name="ttFanSel" xml:space="preserve">
+        <value>The fan to adjust a fan curve for.
+Depending on your laptop, there may be multiple fans listed here,
+even if your laptop only has one physical fan installed.</value>
+    </data>
+    <data name="ttFullBlast" xml:space="preserve">
+        <value>Sets all fans to full blast while checked.</value>
+    </data>
+    <data name="ttLoadConf" xml:space="preserve">
+        <value>Loads an XML config to edit or apply.</value>
+    </data>
+    <data name="ttNotSupported" xml:space="preserve">
+        <value>This feature is not supported by your system.</value>
+    </data>
+    <data name="ttProfSel" xml:space="preserve">
+        <value>The fan profile to adjust for the current fan.</value>
+    </data>
+    <data name="ttRevert" xml:space="preserve">
+        <value>Revert the currently loaded config to when
+it was first loaded using "Load Config".
+(NOT WORKING YET)</value>
+    </data>
+    <data name="ttSaveConf" xml:space="preserve">
+        <value>Saves the currently loaded config to an XML file.</value>
+    </data>
+    <data name="ttSelfExplan" xml:space="preserve">
+        <value>Do you really need a tooltip to know what this does?</value>
+    </data>
+    <data name="ttSource" xml:space="preserve">
+        <value>Go to the GitHub page for this project.</value>
+    </data>
+</root>

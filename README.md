@@ -1,28 +1,34 @@
-# MSI Fan Control
+# YAMDCC - Yet Another MSI (Dragon) Center Clone
 
-A fast, lightweight, and highly configurable fan control utility for MSI laptops, written in C#.
+*(formerly known as MSI Fan Control)*
+
+A fast, lightweight alternative to MSI Center for MSI laptops, written in C#.
 
 **Please read the whole README (or at least the [Supported Laptops](#supported-laptops) and [FAQ](#faq) sections) before downloading.**
 
 ## Disclaimers
 
 - While this program is mostly complete, I still consider it to be **alpha-quality software!** You *will* likely encounter bugs or missing features!
-- This program requires low-level access to some of your computer hardware in order to control your computer's fans. While no issues should arise from the use of this program, **I (Sparronator9999) and any other contributers shall not be held responsible for any**
+- This program requires low-level access to some of your computer hardware to apply settings. While no issues should arise from the use of this program,
+  **I (Sparronator9999) and any other contributers shall not be held responsible for any**
 **damage to your laptop that result from your use of this program.**
-- I (Sparronator9999) am currently transitioning to Linux for [various](https://www.theverge.com/2024/6/3/24170305) [reasons](https://www.howtogeek.com/how-to-disable-microsofts-ads-and-recommendations-in-windows-11/) (and more, outside of the links provided), and so I may no longer be able to test to make sure no one else broke something in the near future.
+- I (Sparronator9999) am currently transitioning to Linux for [various](https://www.theverge.com/2024/6/3/24170305) [reasons](https://www.howtogeek.com/how-to-disable-microsofts-ads-and-recommendations-in-windows-11/) (and more, outside of the links provided),
+  and so I may no longer be able to test to make sure no one else broke something in the near future.
 - This program, repository and its authors are not affiliated with Micro-Star International Co., Ltd. in any way, shape, or form.
 
 ## Features
 
-- **Fan control:** MSI Fan Control can set fan curves for your CPU and GPU fans, including fan speeds, temperature thresholds, and Full Blast (a.k.a. Cooler Boost in MSI Center).
+- **Fan control:** Change the fan curves for your CPU and GPU fans, including fan speeds, temperature thresholds, and Full Blast (a.k.a. Cooler Boost in MSI Center).
+- **Performance mode:** (coming soon) MSI laptops have their own performance mode setting (not to be confused with Windows' built-in power plans). You can change it here
 - **Charging threshold:** MSI laptops come with the ability to limit the battery charge percentage, which can reduce battery degradation. This utility can set your charge threshold to whatever you want.
-- **Lightweight:** MSI Fan Control takes up less than half a megabyte of disk space when installed, and only works when re-applying configs (manually, or when rebooting or waking up from sleep mode).
+- **Lightweight:** MSI Fan Control takes up less than a megabyte of disk space when installed, and only works when re-applying configs (manually, or when rebooting or waking up from sleep mode).
+- **Configurable:** Almost all settings (including those not accessible through the config GUI) can be changed with the power of XML.
 
 ## Screenshots
 
-![A screenshot of MSI Fan Control's main interface](Media/MSIFC-MainWindow.png)
+![A screenshot of YAMDCC, formerly MSI Fan Control's main interface](Media/MSIFC-MainWindow.png)
 
-*Note: this screenshot is a little outdated right now. I will update it Soon™, after other features are finished.*
+*Note: this screenshot is outdated. I will update it Soon™, after other features are finished.*
 
 ## Supported Laptops
 
@@ -61,7 +67,7 @@ Older versions of Windows may also work, but with no support from me.
 
 ### Why do I need administrator privileges to run this program?
 
-The MSI Fan Control service requires administrator privileges to install and communicate with
+The YAMDCC service requires administrator privileges to install and communicate with
 the WinRing0 driver, which allows for low-level hardware access (required for EC access).
 This is restricted to privileged programs for obvious reasons.
 
@@ -90,12 +96,9 @@ Users of other laptop brands will need to look up instructions for their laptop.
 
 ### How does this program work?
 
-MSI Fan Control works by writing a fan curve to your laptop's embedded controller (aka, the EC).
-This is a feature that, as far as I know, is only supported by MSI laptops (and is supported by
-the official MSI Center).
-
-This is unlike NoteBook FanControl, which monitors the CPU temperature and directly controls
-the fan speed using a backgronud service.
+YAMDCC works by accessing your laptop's embedded controller (aka, the EC). Many settings that
+can be configured with MSI Center are stored here, including fan curve, performance mode,
+and the Win/Fn key swap setting.
 
 ### Dark mode?
 
@@ -103,12 +106,15 @@ Due to WinForms limitations, no.
 
 Technical explanation: A few specific WinForms controls used by MSI Fan Control look really bad
 when trying to recolour them to be dark themed. Also, built-in dialog boxes (for C# programmers,
-think `MessageBox.Show`) cannot be recoloured from their default white theme.
+think `MessageBox.Show`) cannot be recoloured from their default white theme. Also, I have little
+to no experience with other UI kits (e.g. WPF).
 
 ### .NET (Core) 5/6/8/<insert latest .NET version>!
 
-Converting to .NET *should* be easy, but last time I attempted it, the MSI Fan Control service
-broke horribly (even when installing the [`Microsoft.Windows.Compatibility`](https://www.nuget.org/packages/Microsoft.Windows.Compatibility/)
+Soon™.
+
+Converting to .NET *should* be easy, but last time I attempted it, the YAMDCC service broke
+horribly (even when installing the [`Microsoft.Windows.Compatibility`](https://www.nuget.org/packages/Microsoft.Windows.Compatibility/)
 NuGet package).
 
 .NET support will come when I'm ready, and when I've figured out how to write a Windows service
@@ -116,14 +122,13 @@ in .NET.
 
 ### Doesn't WinRing0 have security issues?
 
-[Yes](https://voidsec.com/crucial-mod-utility-lpe-cve-2021-41285/), however MSI Fan Control
-installs the driver such that only programs with administrator privileges can access the driver
-functions (something that should have been done in the first place by the driver itself),
-largely mitigating this vulnerability.
+[Yes](https://voidsec.com/crucial-mod-utility-lpe-cve-2021-41285/), however YAMDCC installs the
+driver such that only programs with administrator privileges can access the driver functions
+(something that should have been done in the first place by the driver itself), largely
+mitigating this vulnerability.
 
-However, if MSI Fan Control finds the driver already installed, it will use that
-(potentially vulnerable) version instead. If it was installed with, e.g.
-[LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor),
+However, if YAMDCC finds the driver already installed, it will use that (potentially vulnerable)
+version instead. If it was installed with, e.g. [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor),
 you should be fine, as they implement the same fix.
 
 The [updated fork of WinRing0](https://github.com/GermanAizek/WinRing0) updates the driver itself
@@ -137,12 +142,14 @@ Please read the [disclaimer](#disclaimers), especially the bold text, if you hav
 ## Issues
 
 If your question wasn't answered in the FAQ, feel free to open an issue
-request. Please state the following in your issue request:
+request. Please make sure to use the correct issue template for your problem.
 
+<!--
 - Laptop model, system specifications (CPU, GPU), and OS version
 - A detailed description of the problem
 - Steps to reproduce the issue
 - Relevant screenshots when needed
+-->
 
 However, know that I **may not check my GitHub page very often** when I'm not working
 on anything, so your issue may remain open for a while before I answer it.
@@ -178,10 +185,7 @@ or new configs, feel free to open a pull request. Please include the following:
 
 - **Bug Fixes/Improvements:** Describe the changes you made and why they
   are important or useful.
-- **New Config:** Include the laptop model the config was made for in the PR
-  title (e.g. Add config for MSI GF63 Thin 11SC).
-  - Make sure the config doesn't need any third-party software (**MSI Center**)
-    for it to work.
+- ~~**New Config:**~~ Not currently accepting new configs.
 
 ## Download
 
@@ -202,12 +206,24 @@ Alternatively, you can [build the program yourself](#build).
 3.  Extract the downloaded code, if needed.
 4.  Open `MSIFanControl.sln` in Visual Studio.
 5.  Click `Build` > `Build Solution` to build everything.
-6.  Your output, assuming default build settings, is located in `MSIFanControl.GUI\bin\Debug\`.
+6.  Your output, assuming default build settings, is located in `MSIFanControl.GUI\bin\Debug\net48\`.
 7.  ???
 8.  Profit!
 
 Make sure to only use matching `msifcsvc.exe` and `MSIFanControl.exe` together, otherwise you
 may encounter issues (that means `net stop msifcsvc` first, then compile).
+
+### From command line
+
+1.  Follow steps 1-3 above to install Visual Studio and download the code.
+2.  Open `Developer Command Prompt for VS 2022` and `cd` to your project directory.
+3.  Run `msbuild /t:restore` to restore the solution, including NuGet packages.
+4.  Run `msbuild MSIFanControl.sln /p:platform="Any CPU" /p:configuration="Debug"` to build
+    the project, substituting `Debug` with `Release` (or `Any CPU` with `x86` or `x64`) as 
+5.  Your output should be located in `MSIFanControl.GUI\bin\Debug\net48\`, assuming you built
+    with the above unmodified command.
+6.  ???
+7.  Profit!
 
 ## License and Copyright
 

@@ -1,0 +1,60 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0AE7A4B0-4972-4D9E-8298-65DC7C568CC7}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YAMDCC.Config", "YAMDCC.Config\YAMDCC.Config.csproj", "{F4FD34BF-5F9A-4271-A1E4-515C82A189F6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YAMDCC.ECAccess", "YAMDCC.ECAccess\YAMDCC.ECAccess.csproj", "{EDCEB6F6-B97C-4343-969E-AA58F887A0FE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YAMDCC.GUI", "YAMDCC.GUI\YAMDCC.GUI.csproj", "{5025D7BC-1BE1-4B72-B30A-893B25F73596}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YAMDCC.IPC", "YAMDCC.IPC\YAMDCC.IPC.csproj", "{73152691-3CDE-46DF-8D04-7117747DFFE7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YAMDCC.Service", "YAMDCC.Service\YAMDCC.Service.csproj", "{D99C674A-7949-4402-A9DE-088C1F7BB361}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YAMDCC.Logs", "YAMDCC.Logs\YAMDCC.Logs.csproj", "{46F94C80-4C0D-43E4-9970-D1925024C99E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F4FD34BF-5F9A-4271-A1E4-515C82A189F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4FD34BF-5F9A-4271-A1E4-515C82A189F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4FD34BF-5F9A-4271-A1E4-515C82A189F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4FD34BF-5F9A-4271-A1E4-515C82A189F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDCEB6F6-B97C-4343-969E-AA58F887A0FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDCEB6F6-B97C-4343-969E-AA58F887A0FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDCEB6F6-B97C-4343-969E-AA58F887A0FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDCEB6F6-B97C-4343-969E-AA58F887A0FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5025D7BC-1BE1-4B72-B30A-893B25F73596}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5025D7BC-1BE1-4B72-B30A-893B25F73596}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5025D7BC-1BE1-4B72-B30A-893B25F73596}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5025D7BC-1BE1-4B72-B30A-893B25F73596}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73152691-3CDE-46DF-8D04-7117747DFFE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73152691-3CDE-46DF-8D04-7117747DFFE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73152691-3CDE-46DF-8D04-7117747DFFE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73152691-3CDE-46DF-8D04-7117747DFFE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D99C674A-7949-4402-A9DE-088C1F7BB361}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D99C674A-7949-4402-A9DE-088C1F7BB361}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D99C674A-7949-4402-A9DE-088C1F7BB361}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D99C674A-7949-4402-A9DE-088C1F7BB361}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46F94C80-4C0D-43E4-9970-D1925024C99E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46F94C80-4C0D-43E4-9970-D1925024C99E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46F94C80-4C0D-43E4-9970-D1925024C99E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46F94C80-4C0D-43E4-9970-D1925024C99E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9645AB40-7B4B-4F36-8EB2-5666D4781DDF}
+	EndGlobalSection
+EndGlobal
