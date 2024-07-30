@@ -537,6 +537,16 @@ namespace YAMDCC.GUI
             Config.ChargeLimitConf.CurVal = (byte)numChgLim.Value;
         }
 
+        private void cboPerfMode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Config.PerfModeConf.ModeSel = cboPerfMode.SelectedIndex;
+        }
+
+        private void chkWinFnSwap_CheckedChanged(object sender, EventArgs e)
+        {
+            Config.KeySwapConf.Enabled = chkWinFnSwap.Checked;
+        }
+
         private void btnRevert_Click(object sender, EventArgs e)
         {
 
@@ -619,6 +629,37 @@ namespace YAMDCC.GUI
                 numChgLim.Enabled = lblChgLim.Enabled = true;
                 numChgLim.Value = cfg.CurVal;
                 numChgLim.Maximum = Math.Abs(cfg.MaxVal - cfg.MinVal);
+            }
+
+            if (Config.PerfModeConf is null)
+            {
+                ttMain.SetToolTip(cboPerfMode, Strings.GetString("ttNotSupported"));
+                cboPerfMode.Enabled = lblPerfMode.Enabled = false;
+            }
+            else
+            {
+                PerfModeConf cfg = Config.PerfModeConf;
+                for (int i = 0; i < cfg.PerfModes.Length; i++)
+                {
+                    cboPerfMode.Items.Add(cfg.PerfModes[i].Name);
+                }
+
+                cboPerfMode.SelectedIndex = cfg.ModeSel;
+                ttMain.SetToolTip(cboPerfMode, cfg.PerfModes[cfg.ModeSel].Desc);
+                cboPerfMode.Enabled = lblPerfMode.Enabled = true;
+            }
+
+
+            if (Config.KeySwapConf is null)
+            {
+                ttMain.SetToolTip(chkWinFnSwap, Strings.GetString("ttNotSupported"));
+                chkWinFnSwap.Enabled = lblWinFnSwap.Enabled = false;
+            }
+            else
+            {
+                chkWinFnSwap.Checked = Config.KeySwapConf.Enabled;
+                ttMain.SetToolTip(chkWinFnSwap, "tooltip todo lol");
+                chkWinFnSwap.Enabled = lblWinFnSwap.Enabled = true;
             }
 
             cboFanSel.Items.Clear();

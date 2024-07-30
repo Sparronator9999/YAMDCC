@@ -111,9 +111,11 @@ Controls the performance level of the laptop:
 
 - `0xC4`: Turbo. The `MSI GF63 Thin 11SC.xml` config sets this value when loaded.
 - `0xC0`: High
-- `0xC1`: Medium (default). Causes maximum fan speeds to be capped at 60%.
-- `0xC2`: Low. Causes fan settings set by MSI Fan Control to be ignored,'
-  and a different default fan curve to be set (not in EC, as far as I know).
+- `0xC1`: Medium (default on my machine). Causes maximum fan speeds to be capped at 60% (~3500 RPM).
+- `0xC2`: Low:
+  - Limits CPU power draw to 10W while active (but not the dGPU power draw, funnily enough).
+  - Modifys some fan settings. This is still being studied, but appears to completely mess up
+    custom fan curves.
 
 ## `0xD3`
 Controls the keyboard backlight. The brightness level can be set using

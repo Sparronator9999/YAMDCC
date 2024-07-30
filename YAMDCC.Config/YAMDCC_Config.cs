@@ -69,6 +69,18 @@ namespace YAMDCC.Config
         public ChargeLimitConf ChargeLimitConf;
 
         /// <summary>
+        /// The laptop's performance mode config. May be <c>null</c>.
+        /// </summary>
+        [XmlElement]
+        public PerfModeConf PerfModeConf;
+
+        /// <summary>
+        /// The laptop's Win/Fn keyboard swap config. May be <c>null</c>.
+        /// </summary>
+        [XmlElement]
+        public KeySwapConf KeySwapConf;
+
+        /// <summary>
         /// A list of registers to write when applying a fan config.
         /// May be <c>null</c>, but if not <c>null</c>, must have
         /// at least one <see cref="RegConf"/>.

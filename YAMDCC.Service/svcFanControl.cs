@@ -114,7 +114,7 @@ namespace YAMDCC.Service
             Log.Info(Strings.GetString("svcStarted"));
 
             // Apply the fan curve and charging threshold:
-            ApplyCurve();
+            ApplySettings();
         }
 
         protected override void OnStop()
@@ -144,7 +144,7 @@ namespace YAMDCC.Service
                 case PowerBroadcastStatus.ResumeAutomatic:
                     // Re-apply the fan curve after waking up from sleep:
                     Log.Debug($"Re-applying fan curve...");
-                    ApplyCurve();
+                    ApplySettings();
                     break;
             }
             return true;
@@ -185,7 +185,7 @@ namespace YAMDCC.Service
                     break;
                 case Command.ApplyConfig:
                     LoadConf();
-                    ApplyCurve();
+                    ApplySettings();
                     error = 0;
                     break;
                 case Command.FullBlast:
@@ -248,7 +248,7 @@ namespace YAMDCC.Service
             }
         }
 
-        private void ApplyCurve()
+        private void ApplySettings()
         {
             if (ConfigLoaded)
             {
@@ -300,11 +300,30 @@ namespace YAMDCC.Service
                     }
 
                     // Write the charge threshold:
-                    Log.Debug($"Writing charge limit configuration...");
+                    Log.Debug("Writing charge limit configuration...");
                     byte value = (byte)(Config.ChargeLimitConf.MinVal + Config.ChargeLimitConf.CurVal);
                     if (!_EC.WriteByte(Config.ChargeLimitConf.Reg, value))
                     {
                         LogECWriteError(Config.ChargeLimitConf.Reg);
+                    }
+
+                    // Write the performance mode
+                    Log.Debug("Writing performance mode setting...");
+                    value = Config.PerfModeConf.PerfModes[Config.PerfModeConf.ModeSel].Value;
+                    if (!_EC.WriteByte(Config.PerfModeConf.Reg, value))
+                    {
+                        LogECWriteError(Config.PerfModeConf.Reg);
+                    }
+
+                    // Write the Win/Fn key swap setting
+                    Log.Debug("Writing Win/Fn key swap setting...");
+                    value = Config.KeySwapConf.Enabled
+                        ? Config.KeySwapConf.OnVal
+                        : Config.KeySwapConf.OffVal;
+
+                    if (!_EC.WriteByte(Config.KeySwapConf.Reg, value))
+                    {
+                        LogECWriteError(Config.KeySwapConf.Reg);
                     }
 
                     EC.ReleaseLock();

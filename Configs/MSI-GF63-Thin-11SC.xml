@@ -265,16 +265,46 @@
 		<MaxVal>228</MaxVal>
 		<CurVal>60</CurVal>
 	</ChargeLimitConf>
+	<PerfModeConf>
+		<Reg>210</Reg>
+		<ModeSel>2</ModeSel>
+		<PerfModes>
+			<PerfMode>
+				<Name>Maximum battery life</Name>
+				<Desc>Optimises your laptop for maximum battery life.
+Limits CPU power draw to 10W.
+If set to default fan curve, uses an alternative fan curve.</Desc>
+				<Value>194</Value>
+			</PerfMode>
+			<PerfMode>
+				<Name>Silent</Name>
+				<Desc>Reduces the maximum fan speed to 60%.</Desc>
+				<Value>193</Value>
+			</PerfMode>
+			<PerfMode>
+				<Name>Balanced</Name>
+				<Desc>Balances battery life and performance.</Desc>
+				<Value>192</Value>
+			</PerfMode>
+			<PerfMode>
+				<Name>High performance</Name>
+				<Desc>Optimises your laptop for maximum performance.
+Old (pre-alpha) versions of MSI Fan Control/YAMDCC set this setting.</Desc>
+				<Value>196</Value>
+			</PerfMode>
+		</PerfModes>
+	</PerfModeConf>
+	<KeySwapConf>
+		<Reg>232</Reg>
+		<Enabled>false</Enabled>
+		<OnVal>16</OnVal>
+		<OffVal>0</OffVal>
+	</KeySwapConf>
 	<RegConfs>
 		<RegConf>
 			<Desc>Set fan mode to Advanced. Fixes fans not working at all with certain fan settings.</Desc>
 			<Reg>212</Reg>
 			<Value>77</Value>
-		</RegConf>
-		<RegConf>
-			<Desc>Set Performance Level to Turbo. Fixes fan speeds capped at ~60% due to the default setting.</Desc>
-			<Reg>210</Reg>
-			<Value>196</Value>
 		</RegConf>
 	</RegConfs>
 </YAMDCC_Config>

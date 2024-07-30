@@ -147,45 +147,45 @@ namespace YAMDCC.GUI
             // tsiLoadConf
             // 
             this.tsiLoadConf.Name = "tsiLoadConf";
-            this.tsiLoadConf.Size = new System.Drawing.Size(180, 22);
+            this.tsiLoadConf.Size = new System.Drawing.Size(154, 22);
             this.tsiLoadConf.Text = "Load config";
             this.tsiLoadConf.Click += new System.EventHandler(this.tsiLoadConf_Click);
             // 
             // tsiSaveConf
             // 
             this.tsiSaveConf.Name = "tsiSaveConf";
-            this.tsiSaveConf.Size = new System.Drawing.Size(180, 22);
+            this.tsiSaveConf.Size = new System.Drawing.Size(154, 22);
             this.tsiSaveConf.Text = "Save config";
             this.tsiSaveConf.Click += new System.EventHandler(this.tsiSaveConf_Click);
             // 
             // sep1
             // 
             this.sep1.Name = "sep1";
-            this.sep1.Size = new System.Drawing.Size(177, 6);
+            this.sep1.Size = new System.Drawing.Size(151, 6);
             // 
             // tsiApply
             // 
             this.tsiApply.Name = "tsiApply";
-            this.tsiApply.Size = new System.Drawing.Size(180, 22);
+            this.tsiApply.Size = new System.Drawing.Size(154, 22);
             this.tsiApply.Text = "Apply changes";
             this.tsiApply.Click += new System.EventHandler(this.tsiApply_Click);
             // 
             // tsiRevert
             // 
             this.tsiRevert.Name = "tsiRevert";
-            this.tsiRevert.Size = new System.Drawing.Size(180, 22);
+            this.tsiRevert.Size = new System.Drawing.Size(154, 22);
             this.tsiRevert.Text = "Revert changes";
             this.tsiRevert.Click += new System.EventHandler(this.tsiRevert_Click);
             // 
             // sep2
             // 
             this.sep2.Name = "sep2";
-            this.sep2.Size = new System.Drawing.Size(177, 6);
+            this.sep2.Size = new System.Drawing.Size(151, 6);
             // 
             // tsiExit
             // 
             this.tsiExit.Name = "tsiExit";
-            this.tsiExit.Size = new System.Drawing.Size(180, 22);
+            this.tsiExit.Size = new System.Drawing.Size(154, 22);
             this.tsiExit.Text = "Exit";
             this.tsiExit.Click += new System.EventHandler(this.tsiExit_Click);
             // 
@@ -224,26 +224,26 @@ namespace YAMDCC.GUI
             // tsiProfRename
             // 
             this.tsiProfRename.Name = "tsiProfRename";
-            this.tsiProfRename.Size = new System.Drawing.Size(180, 22);
+            this.tsiProfRename.Size = new System.Drawing.Size(178, 22);
             this.tsiProfRename.Text = "Change Name";
             this.tsiProfRename.Click += new System.EventHandler(this.tsiProfRename_Click);
             // 
             // tsiProfChangeDesc
             // 
             this.tsiProfChangeDesc.Name = "tsiProfChangeDesc";
-            this.tsiProfChangeDesc.Size = new System.Drawing.Size(180, 22);
+            this.tsiProfChangeDesc.Size = new System.Drawing.Size(178, 22);
             this.tsiProfChangeDesc.Text = "Change Description";
             this.tsiProfChangeDesc.Click += new System.EventHandler(this.tsiProfChangeDesc_Click);
             // 
             // sep3
             // 
             this.sep3.Name = "sep3";
-            this.sep3.Size = new System.Drawing.Size(177, 6);
+            this.sep3.Size = new System.Drawing.Size(175, 6);
             // 
             // tsiProfDel
             // 
             this.tsiProfDel.Name = "tsiProfDel";
-            this.tsiProfDel.Size = new System.Drawing.Size(180, 22);
+            this.tsiProfDel.Size = new System.Drawing.Size(178, 22);
             this.tsiProfDel.Text = "Delete";
             this.tsiProfDel.Click += new System.EventHandler(this.tsiProfDel_Click);
             // 
@@ -291,14 +291,14 @@ namespace YAMDCC.GUI
             // tsiAbout
             // 
             this.tsiAbout.Name = "tsiAbout";
-            this.tsiAbout.Size = new System.Drawing.Size(180, 22);
+            this.tsiAbout.Size = new System.Drawing.Size(141, 22);
             this.tsiAbout.Text = "About";
             this.tsiAbout.Click += new System.EventHandler(this.tsiAbout_Click);
             // 
             // tsiSource
             // 
             this.tsiSource.Name = "tsiSource";
-            this.tsiSource.Size = new System.Drawing.Size(180, 22);
+            this.tsiSource.Size = new System.Drawing.Size(141, 22);
             this.tsiSource.Text = "Source Code";
             this.tsiSource.Click += new System.EventHandler(this.tsiSrc_Click);
             // 
@@ -448,14 +448,14 @@ namespace YAMDCC.GUI
             this.cboFanSel.FormattingEnabled = true;
             this.cboFanSel.Location = new System.Drawing.Point(35, 3);
             this.cboFanSel.Name = "cboFanSel";
-            this.cboFanSel.Size = new System.Drawing.Size(121, 23);
+            this.cboFanSel.Size = new System.Drawing.Size(120, 23);
             this.cboFanSel.TabIndex = 1;
             this.cboFanSel.SelectedIndexChanged += new System.EventHandler(this.cboFanSel_IndexChanged);
             // 
             // lblProfSel
             // 
             this.lblProfSel.AutoSize = true;
-            this.lblProfSel.Location = new System.Drawing.Point(162, 7);
+            this.lblProfSel.Location = new System.Drawing.Point(161, 7);
             this.lblProfSel.Margin = new System.Windows.Forms.Padding(3, 7, 0, 3);
             this.lblProfSel.Name = "lblProfSel";
             this.lblProfSel.Size = new System.Drawing.Size(44, 15);
@@ -467,16 +467,16 @@ namespace YAMDCC.GUI
             this.cboProfSel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboProfSel.Enabled = false;
             this.cboProfSel.FormattingEnabled = true;
-            this.cboProfSel.Location = new System.Drawing.Point(209, 3);
+            this.cboProfSel.Location = new System.Drawing.Point(208, 3);
             this.cboProfSel.Name = "cboProfSel";
-            this.cboProfSel.Size = new System.Drawing.Size(121, 23);
+            this.cboProfSel.Size = new System.Drawing.Size(120, 23);
             this.cboProfSel.TabIndex = 3;
             this.cboProfSel.SelectedIndexChanged += new System.EventHandler(this.cboProfSel_IndexChanged);
             // 
             // btnProfAdd
             // 
             this.btnProfAdd.Enabled = false;
-            this.btnProfAdd.Location = new System.Drawing.Point(336, 3);
+            this.btnProfAdd.Location = new System.Drawing.Point(334, 3);
             this.btnProfAdd.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
             this.btnProfAdd.Name = "btnProfAdd";
             this.btnProfAdd.Size = new System.Drawing.Size(23, 23);
@@ -488,7 +488,7 @@ namespace YAMDCC.GUI
             // btnProfDel
             // 
             this.btnProfDel.Enabled = false;
-            this.btnProfDel.Location = new System.Drawing.Point(359, 3);
+            this.btnProfDel.Location = new System.Drawing.Point(357, 3);
             this.btnProfDel.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
             this.btnProfDel.Name = "btnProfDel";
             this.btnProfDel.Size = new System.Drawing.Size(23, 23);
@@ -604,8 +604,9 @@ namespace YAMDCC.GUI
             this.numChgLim.Enabled = false;
             this.numChgLim.Location = new System.Drawing.Point(136, 3);
             this.numChgLim.Name = "numChgLim";
-            this.numChgLim.Size = new System.Drawing.Size(60, 23);
+            this.numChgLim.Size = new System.Drawing.Size(50, 23);
             this.numChgLim.TabIndex = 3;
+            this.numChgLim.ValueChanged += new System.EventHandler(this.numChargeLim_Changed);
             // 
             // lblPerfMode
             // 
@@ -624,15 +625,11 @@ namespace YAMDCC.GUI
             this.cboPerfMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPerfMode.Enabled = false;
             this.cboPerfMode.FormattingEnabled = true;
-            this.cboPerfMode.Items.AddRange(new object[] {
-            "Maximum battery life",
-            "Balanced",
-            "High performance",
-            "Turbo performance"});
             this.cboPerfMode.Location = new System.Drawing.Point(136, 32);
             this.cboPerfMode.Name = "cboPerfMode";
-            this.cboPerfMode.Size = new System.Drawing.Size(121, 23);
+            this.cboPerfMode.Size = new System.Drawing.Size(150, 23);
             this.cboPerfMode.TabIndex = 5;
+            this.cboPerfMode.SelectedIndexChanged += new System.EventHandler(this.cboPerfMode_SelectedIndexChanged);
             // 
             // lblWinFnSwap
             // 
@@ -657,6 +654,7 @@ namespace YAMDCC.GUI
             this.chkWinFnSwap.TabIndex = 7;
             this.chkWinFnSwap.Text = "Enabled";
             this.chkWinFnSwap.UseVisualStyleBackColor = true;
+            this.chkWinFnSwap.CheckedChanged += new System.EventHandler(this.chkWinFnSwap_CheckedChanged);
             // 
             // flwStats
             // 
