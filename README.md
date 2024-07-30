@@ -8,25 +8,33 @@ A fast, lightweight alternative to MSI Center for MSI laptops, written in C#.
 
 ## Disclaimers
 
-- While this program is mostly complete, I still consider it to be **alpha-quality software!** You *will* likely encounter bugs or missing features!
-- This program requires low-level access to some of your computer hardware to apply settings. While no issues should arise from the use of this program,
-  **I (Sparronator9999) and any other contributers shall not be held responsible for any**
-**damage to your laptop that result from your use of this program.**
-- I (Sparronator9999) am currently transitioning to Linux for [various](https://www.theverge.com/2024/6/3/24170305) [reasons](https://www.howtogeek.com/how-to-disable-microsofts-ads-and-recommendations-in-windows-11/) (and more, outside of the links provided),
-  and so I may no longer be able to test to make sure no one else broke something in the near future.
+- While this program is mostly complete, I still consider it to be **alpha-quality software!**
+- This program is held together by a lot of metaphorical duct-tape. You *will* experience bugs
+  and/or crashes when using it (especially if feeding it any config other than the one provided)!
+- This program requires low-level access to some of your computer hardware to apply settings.
+  While no issues should arise from the use of this program, **I (Sparronator9999) and any other**
+  **contributers shall not be held responsible for any damage to your laptop that result from**
+  **your use of this program.**
+- Linux is not yet supported. I will update it for Linux once I figure out how to run services/background processes on Linux.
 - This program, repository and its authors are not affiliated with Micro-Star International Co., Ltd. in any way, shape, or form.
 
 ## Features
 
-- **Fan control:** Change the fan curves for your CPU and GPU fans, including fan speeds, temperature thresholds, and Full Blast (a.k.a. Cooler Boost in MSI Center).
-- **Performance mode:** (coming soon) MSI laptops have their own performance mode setting (not to be confused with Windows' built-in power plans). You can change it here
-- **Charging threshold:** MSI laptops come with the ability to limit the battery charge percentage, which can reduce battery degradation. This utility can set your charge threshold to whatever you want.
-- **Lightweight:** MSI Fan Control takes up less than a megabyte of disk space when installed, and only works when re-applying configs (manually, or when rebooting or waking up from sleep mode).
-- **Configurable:** Almost all settings (including those not accessible through the config GUI) can be changed with the power of XML.
+- **Fan control:** Change the fan curves for your CPU and GPU fans, including fan speeds, temperature
+  thresholds, and Full Blast (a.k.a. Cooler Boost in MSI Center).
+- **Performance mode:** MSI laptops have their own performance mode setting (not to be confused
+  with Windows' built-in power plans). You can change it here.
+- **Charging threshold:** MSI laptops come with the ability to limit the battery charge percentage,
+  which can reduce battery degradation. This utility can set your charge threshold to whatever
+  you want.
+- **Lightweight:** MSI Fan Control takes up less than a megabyte of disk space when installed, and
+  only works when re-applying configs (manually, or when rebooting or waking up from sleep mode).
+- **Configurable:** Almost all settings (including those not accessible through the config GUI) can
+  be changed with the power of XML.
 
 ## Screenshots
 
-![A screenshot of YAMDCC, formerly MSI Fan Control's main interface](Media/MSIFC-MainWindow.png)
+![A screenshot of YAMDCC (formerly MSI Fan Control)'s main interface](Media/MSIFC-MainWindow.png)
 
 *Note: this screenshot is outdated. I will update it Soon™, after other features are finished.*
 
@@ -47,6 +55,117 @@ are you're looking for [NoteBook FanControl](https://github.com/UraniumDonut/nbf
 **Unless we have your specific laptop model (which we probably don't), we will not be able to**
 **help you outside of the general instructions.**
 
+## Comparison
+
+| Feature                   | MSI Center | YAMDCC   |
+|---------------------------|------------|----------|
+| Installed size            | ~950 MB¹   | ~1.1 MB  |
+| Fan control               | ✔          | ✔        |
+| Temp. threshold control   | ❌          | ✔        |
+| Multi-fan profile support | ❌          | ✔        |
+| Charge threshold setting  | Limited²   | ✔        |
+| Perf. mode setting        | ✔          | ✔        |
+| Win/Fn key swap           | ✔          | ✔        |
+| Win key disable           | ✔          | ❌        |
+| Hardware monitoring       | ✔          | Limited³ |
+| Other MSI Center features | ✔          | ❌        |
+| Open source               | ❌          | ✔        |
+
+1: As of v2.0.38, MSI Center takes about 950 MB of storage space when counting the UWP app (749 MB) and the files installed on first launch to `C:\Program Files (x86)\MSI` (205 MB).
+
+2: MSI Center only supports setting the charge threshold to 60%, 80%, or 100%, while YAMDCC can set this to anything between 0 and 100% (with 0 meaning charge to 100% always).
+
+3: YAMDCC only supports monitoring the CPU/GPU temperatures and fan speeds via EC.
+
+## Roadmap
+
+- [ ] Config UI fixes:
+  - [ ] Actually implement the "revert to last saved config" functionality
+  - [ ] Implement missing tooltips
+- [ ] Code bug fixes *(started)*
+  - [ ] Fix the config system (it likes to crash if even a slightly wrong config is loaded)
+  - [ ] just (re)write more robust code in general lol
+- [x] Add more extra options for MSI laptops (from MSI Center):
+  - [x] Performance mode selection
+  - [x] Fn/Win key swap
+- [ ] Config generation for MSI laptops
+  - This would only work because many MSI laptops have almost identical EC register locations
+    for all the relevent settings we change
+  - The only thing we need to do is get the default fan curve from the user's laptop, and add
+    it to the default fan profile.
+- [ ] Command line support
+  - The beginning of a CLI for MSI Fan Control exists, just not publicly yet
+- [ ] .NET support
+  - Mandatory for Linux support
+  - The GUI *should* compile on .NET 8, but hasn't been tested yet
+- [ ] Support for editing laptop config registers using the GUI interface
+  - This would allow for creating configs for other laptop brands from the config UI
+  - Currently, the only way to do this is to edit the XML directly
+
+## Download
+
+Development builds are availabe through [GitHub Actions](https://github.com/Sparronator9999/MSIFanControl/actions).
+
+Alternatively, if you don't have a GitHub account, you can download the latest build from [nightly.link](https://nightly.link/Sparronator9999/MSIFanControl/workflows/build/main?preview).
+
+(You probably want the `Release` build, unless you're debugging issues with the program)
+
+Alternatively, you can [build the program yourself](#build).
+
+## Build
+
+### Using Visual Studio
+
+1.  Install Visual Studio 2022 with the `.NET Desktop Development` workload checked.
+2.  Download the code repository, or clone it with `git`.
+3.  Extract the downloaded code, if needed.
+4.  Open `MSIFanControl.sln` in Visual Studio.
+5.  Click `Build` > `Build Solution` to build everything.
+6.  Your output, assuming default build settings, is located in `MSIFanControl.GUI\bin\Debug\net48\`.
+7.  ???
+8.  Profit!
+
+Make sure to only use matching `msifcsvc.exe` and `MSIFanControl.exe` together, otherwise you
+may encounter issues (that means `net stop msifcsvc` first, then compile).
+
+### From command line
+
+1.  Follow steps 1-3 above to install Visual Studio and download the code.
+2.  Open `Developer Command Prompt for VS 2022` and `cd` to your project directory.
+3.  Run `msbuild /t:restore` to restore the solution, including NuGet packages.
+4.  Run `msbuild MSIFanControl.sln /p:platform="Any CPU" /p:configuration="Debug"` to build
+    the project, substituting `Debug` with `Release` (or `Any CPU` with `x86` or `x64`) as 
+5.  Your output should be located in `MSIFanControl.GUI\bin\Debug\net48\`, assuming you built
+    with the above unmodified command.
+6.  ???
+7.  Profit!
+
+## Issues
+
+If your question isn't already answered in the [FAQ](#faq) or [issues megathread](https://github.com/Sparronator9999/YAMDCC/issues/1),
+feel free to open an issue. Please make sure to use the correct issue template for your problem.
+
+<!--
+- Laptop model, system specifications (CPU, GPU), and OS version
+- A detailed description of the problem
+- Steps to reproduce the issue
+- Relevant screenshots when needed
+-->
+
+However, know that I **may not check my GitHub page very often** when I'm not working
+on anything, so your issue may remain open for a while before I answer it.
+
+## Contributing
+
+See the [build instructions](#build) to build this project.
+
+If you would like to contribute to the project with bug fixes, new features,
+or new configs, feel free to open a pull request. Please include the following:
+
+- **Bug Fixes/Improvements:** Describe the changes you made and why they
+  are important or useful.
+- ~~**New Config:**~~ Not currently accepting new configs.
+
 ## FAQ
 
 ### Can you please make a Linux version?
@@ -61,7 +180,7 @@ Use one of the [many](https://github.com/dmitry-s93/MControlCenter) [other](http
 This program is tested by me (Sparronator9999) on 64-bit Windows 10 (specifically LTSC 2021).
 It should, however, run on any verison of Windows 10, 32- or 64-bit.
 
-Windows 11 should be supported as well, but I have not tested it. Open an issue if you have trouble with Windows 11.
+Windows 11 *should* be supported as well, but I have not tested it. Open an issue if you have trouble with Windows 11.
 
 Older versions of Windows may also work, but with no support from me.
 
@@ -111,14 +230,9 @@ to no experience with other UI kits (e.g. WPF).
 
 ### .NET (Core) 5/6/8/<insert latest .NET version>!
 
-Soon™.
+Probably not for Windows (unless it goes EOL, which I doubt will happen for a while).
 
-Converting to .NET *should* be easy, but last time I attempted it, the YAMDCC service broke
-horribly (even when installing the [`Microsoft.Windows.Compatibility`](https://www.nuget.org/packages/Microsoft.Windows.Compatibility/)
-NuGet package).
-
-.NET support will come when I'm ready, and when I've figured out how to write a Windows service
-in .NET.
+If Linux support ever comes, it will be using .NET (since .NET Framework isn't supported on Linux).
 
 ### Doesn't WinRing0 have security issues?
 
@@ -138,92 +252,6 @@ kernel driver (but apparently not an entire fan control utility from scratch, in
 WinRing0 interface code...), and I'd have to get it signed anyways.
 
 Please read the [disclaimer](#disclaimers), especially the bold text, if you haven't already.
-
-## Issues
-
-If your question wasn't answered in the FAQ, feel free to open an issue
-request. Please make sure to use the correct issue template for your problem.
-
-<!--
-- Laptop model, system specifications (CPU, GPU), and OS version
-- A detailed description of the problem
-- Steps to reproduce the issue
-- Relevant screenshots when needed
--->
-
-However, know that I **may not check my GitHub page very often** when I'm not working
-on anything, so your issue may remain open for a while before I answer it.
-
-## Roadmap
-
-- [ ] Config UI fixes:
-  - [ ] Actually implement the "revert to last saved config" functionality
-  - [ ] Implement missing tooltips
-- [ ] Give the program code a once-over before doing anything else *(Started)*
-- [ ] Add more extra options for MSI laptops (from MSI Center):
-  - [ ] Performance mode selection
-  - [ ] Fn/Win key swap
-- [ ] Config generation for MSI laptops
-  - This would only work because many MSI laptops have almost identical EC register locations
-    for all the relevent settings we change
-  - The only thing we need to do is get the default fan curve from the user's laptop, and add
-    it to the default fan profile.
-- [ ] Command line support
-  - The beginning of a CLI for MSI Fan Control exists, just not publicly yet
-- [ ] .NET support
-  - As of writing, .NET 8 is the current LTS, and will be targeted should I decide to tackle .NET.
-- [ ] Support for editing laptop config registers using the GUI interface
-  - This would allow for creating configs for other laptop brands from the config UI
-  - Currently, the only way to do this is to edit the XML directly
-
-## Contributing
-
-See the [build instructions](#build) below to build this project.
-
-If you would like to contribute to the project with bug fixes, new features,
-or new configs, feel free to open a pull request. Please include the following:
-
-- **Bug Fixes/Improvements:** Describe the changes you made and why they
-  are important or useful.
-- ~~**New Config:**~~ Not currently accepting new configs.
-
-## Download
-
-Development builds are availabe through [GitHub Actions](https://github.com/Sparronator9999/MSIFanControl/actions).
-
-Alternatively, if you don't have a GitHub account, you can download the latest build from [nightly.link](https://nightly.link/Sparronator9999/MSIFanControl/workflows/build/main?preview).
-
-(You probably want the `Release` build, unless you're debugging issues with the program)
-
-Alternatively, you can [build the program yourself](#build).
-
-## Build
-
-### Using Visual Studio
-
-1.  Install Visual Studio 2022 with the `.NET Desktop Development` workload checked.
-2.  Download the code repository, or clone it with `git`.
-3.  Extract the downloaded code, if needed.
-4.  Open `MSIFanControl.sln` in Visual Studio.
-5.  Click `Build` > `Build Solution` to build everything.
-6.  Your output, assuming default build settings, is located in `MSIFanControl.GUI\bin\Debug\net48\`.
-7.  ???
-8.  Profit!
-
-Make sure to only use matching `msifcsvc.exe` and `MSIFanControl.exe` together, otherwise you
-may encounter issues (that means `net stop msifcsvc` first, then compile).
-
-### From command line
-
-1.  Follow steps 1-3 above to install Visual Studio and download the code.
-2.  Open `Developer Command Prompt for VS 2022` and `cd` to your project directory.
-3.  Run `msbuild /t:restore` to restore the solution, including NuGet packages.
-4.  Run `msbuild MSIFanControl.sln /p:platform="Any CPU" /p:configuration="Debug"` to build
-    the project, substituting `Debug` with `Release` (or `Any CPU` with `x86` or `x64`) as 
-5.  Your output should be located in `MSIFanControl.GUI\bin\Debug\net48\`, assuming you built
-    with the above unmodified command.
-6.  ???
-7.  Profit!
 
 ## License and Copyright
 
