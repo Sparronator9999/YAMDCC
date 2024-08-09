@@ -4,12 +4,12 @@ namespace YAMDCC.IPC
 {
     /// <summary>
     /// Represents a list of possible commands that can
-    /// be sent to the MSI Fan Control Service.
+    /// be sent to the YAMDCC Service.
     /// </summary>
     public enum Command
     {
         /// <summary>
-        /// <para>Get the MSI Fan Control Service version.</para>
+        /// <para>Get the YAMDCC Service version.</para>
         /// <para>
         /// The result is sent to the caller as a
         /// <see cref="Response.Version"/> message.
@@ -45,7 +45,7 @@ namespace YAMDCC.IPC
         WriteECByte,
         /// <summary>
         /// Get the target speed of a specified system fan in the
-        /// currently loaded MSI Fan Control config.
+        /// currently loaded YAMDCC config.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -61,7 +61,7 @@ namespace YAMDCC.IPC
         GetFanSpeed,
         /// <summary>
         /// Get the RPM of a specified system fan in the
-        /// currently loaded MSI Fan Control config.
+        /// currently loaded YAMDCC config.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -77,8 +77,7 @@ namespace YAMDCC.IPC
         GetFanRPM,
         /// <summary>
         /// Get the temperature of the component (CPU, GPU...) associated
-        /// with a specified system fan in the currently loaded MSI Fan
-        /// Control config.
+        /// with a specified system fan in the currently loaded YAMDCC config.
         /// </summary>
         /// <remarks>
         /// <para>
@@ -93,7 +92,7 @@ namespace YAMDCC.IPC
         /// </remarks>
         GetTemp,
         /// <summary>
-        /// Reload and apply an MSI Fan Control config.
+        /// Reload and apply a YAMDCC config.
         /// </summary>
         ApplyConfig,
         /// <summary>
@@ -108,13 +107,13 @@ namespace YAMDCC.IPC
     }
 
     /// <summary>
-    /// Represents a command to send to the MSI Fan Control Service.
+    /// Represents a command to send to the YAMDCC Service.
     /// </summary>
     [MessagePackObject]
     public class ServiceCommand
     {
         /// <summary>
-        /// The <see cref="Command"/> to send to the service.
+        /// The <see cref="IPC.Command"/> to send to the service.
         /// </summary>
         [Key(0)]
         public Command Command;

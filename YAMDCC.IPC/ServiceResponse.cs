@@ -44,13 +44,13 @@ namespace YAMDCC.IPC
     public class ServiceResponse
     {
         /// <summary>
-        /// The <see cref="NamedPipeWrapper.Response"/> to send to the service.
+        /// The <see cref="IPC.Response"/> to send to the service.
         /// </summary>
         [Key(0)]
         public Response Response;
 
         /// <summary>
-        /// The value associated with the <see cref="Response"/>.
+        /// The value associated with the <see cref="IPC.Response"/>.
         /// </summary>
         [Key(1)]
         public string Value;

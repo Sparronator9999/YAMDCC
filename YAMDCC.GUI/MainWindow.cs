@@ -39,12 +39,12 @@ namespace YAMDCC.GUI
             "Sparronator9999", "YAMDCC");
 
         /// <summary>
-        /// The MSI Fan Control config that is currently open for editing.
+        /// The YAMDCC config that is currently open for editing.
         /// </summary>
         private YAMDCC_Config Config;
 
         /// <summary>
-        /// The client that connects to the MSI Fan Control Service
+        /// The client that connects to the YAMDCC Service
         /// </summary>
         private readonly NamedPipeClient<ServiceResponse, ServiceCommand> IPCClient =
             new NamedPipeClient<ServiceResponse, ServiceCommand>("YAMDCC-Server");
@@ -71,10 +71,16 @@ namespace YAMDCC.GUI
             tsiApply.ToolTipText = Strings.GetString("ttApply");
             tsiRevert.ToolTipText = Strings.GetString("ttRevert");
             tsiExit.ToolTipText = Strings.GetString("ttSelfExplan");
+            tsiProfAdd.ToolTipText = Strings.GetString("ttProfAdd");
+            tsiProfRename.ToolTipText = Strings.GetString("ttProfRename");
+            tsiProfChangeDesc.ToolTipText = Strings.GetString("ttProfChangeDesc");
+            tsiProfDel.ToolTipText = Strings.GetString("ttProfDel");
             tsiECMon.ToolTipText = Strings.GetString("ttECMon");
             tsiAbout.ToolTipText = Strings.GetString("ttAbout");
             tsiSource.ToolTipText = Strings.GetString("ttSource");
             ttMain.SetToolTip(cboFanSel, Strings.GetString("ttFanSel"));
+            ttMain.SetToolTip(btnProfAdd, Strings.GetString("ttProfAdd"));
+            ttMain.SetToolTip(btnProfDel, Strings.GetString("ttProfDel"));
             ttMain.SetToolTip(btnApply, Strings.GetString("ttApply"));
             ttMain.SetToolTip(btnRevert, Strings.GetString("ttRevert"));
 
@@ -192,7 +198,7 @@ namespace YAMDCC.GUI
 
         private void OnProcessExit(object sender, EventArgs e)
         {
-            // Close the connection to the MSI Fan Control
+            // Close the connection to the YAMDCC
             // Service before exiting the program:
             IPCClient.Stop();
         }
@@ -250,7 +256,7 @@ namespace YAMDCC.GUI
             SaveFileDialog sfd = new SaveFileDialog()
             {
                 AddExtension = true,
-                Filter = "MSI Fan Control config files|*.xml",
+                Filter = "YAMDCC config files|*.xml",
                 Title = "Save config",
             };
 
@@ -286,7 +292,7 @@ namespace YAMDCC.GUI
                 .FanCurveConfs[cboProfSel.SelectedIndex];
 
             TextInputDialog dlg = new TextInputDialog(
-                "Please enter a new name for your fan profile:",
+                Strings.GetString("dlgProfRename"),
                 "Change Profile Name", curveCfg.Name);
             if (dlg.ShowDialog() == DialogResult.OK)
             {
@@ -300,7 +306,7 @@ namespace YAMDCC.GUI
             FanCurveConf curveCfg = Config.FanConfs[cboFanSel.SelectedIndex]
                 .FanCurveConfs[cboProfSel.SelectedIndex];
             TextInputDialog dlg = new TextInputDialog(
-                "Please enter a new description for your fan profile:",
+                Strings.GetString("dlgProfChangeDesc"),
                 "Change Profile Description", curveCfg.Desc, true);
             if (dlg.ShowDialog() == DialogResult.OK)
             {
@@ -336,9 +342,7 @@ namespace YAMDCC.GUI
         private void tsiStopSvc_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show(
-                "This will stop the MSI Fan Control service,\n" +
-                "and MSI Fan Control will close.\n\n" +
-                "Proceed?", "Stop Service",
+                Strings.GetString("dlgSvcStop"), "Stop Service",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
 
@@ -350,22 +354,11 @@ namespace YAMDCC.GUI
 
         private void tsiUninstall_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show(
-                "This will uninstall the MSI Fan Control service from your computer.\n\n" +
-                "Only proceed if you would like to delete MSI Fan Control " +
-                "from your computer.\n\n" +
-                "MSI Fan Control will close once the uninstall is complete.\n\n" +
-                "Proceed?", "Uninstall Service",
+            if (MessageBox.Show(Strings.GetString("dlgSvcUninstall"), "Uninstall Service",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
                 bool delData = MessageBox.Show(
-                    "Also delete the MSI Fan Control data directory\n" +
-                    $"(located at {DataPath})?\n\n" +
-                    "This directory includes program logs and the current " +
-                    "MSI Fan Control fan settings.\n\n" +
-                    "WARNING:\n" +
-                    "Make sure you save your config using the \"Save config\"" +
-                    "button before clicking \"Yes\" here!",
+                    Strings.GetString("dlgSvcDelData", DataPath),
                     "Delete configuration data?",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
 
@@ -383,7 +376,7 @@ namespace YAMDCC.GUI
 
         #region Help
         private void tsiAbout_Click(object sender, EventArgs e) =>
-            MessageBox.Show(Strings.GetString("About"), "About",
+            MessageBox.Show(Strings.GetString("dlgAbout"), "About",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
 
         private void tsiSrc_Click(object sender, EventArgs e) =>
@@ -658,7 +651,7 @@ namespace YAMDCC.GUI
             else
             {
                 chkWinFnSwap.Checked = Config.KeySwapConf.Enabled;
-                ttMain.SetToolTip(chkWinFnSwap, "tooltip todo lol");
+                ttMain.SetToolTip(chkWinFnSwap, Strings.GetString("ttKeySwap"));
                 chkWinFnSwap.Enabled = lblWinFnSwap.Enabled = true;
             }
 
@@ -699,7 +692,7 @@ namespace YAMDCC.GUI
             FanCurveConf oldCurveCfg = fanConfig.FanCurveConfs[cboProfSel.SelectedIndex];
 
             TextInputDialog dlg = new TextInputDialog(
-                "Please enter a name for your new fan profile:",
+                Strings.GetString("dlgProfAdd"),
                 "New Profile", $"Copy of {oldCurveCfg.Name}");
             if (dlg.ShowDialog() == DialogResult.OK)
             {
@@ -724,9 +717,7 @@ namespace YAMDCC.GUI
         private void DeleteFanProfile()
         {
             if (cboProfSel.Text != "Default" && MessageBox.Show(
-                "This will delete the following fan profile:\n" +
-                $"{cboProfSel.Text}\n" +
-                "Are you sure you want to delete this profile?",
+                Strings.GetString("dlgProfDel", cboProfSel.Text),
                 "Delete fan profile?", MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning) == DialogResult.Yes)
             {
