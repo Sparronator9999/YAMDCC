@@ -1,6 +1,7 @@
 using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO.Pipes;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Threading;
 using YAMDCC.IPC.IO;
@@ -11,9 +12,11 @@ namespace YAMDCC.IPC
     /// <summary>
     /// Represents a connection between a named pipe client and server.
     /// </summary>
-    /// <typeparam name="TRead">Reference type to read from the named pipe</typeparam>
-    /// <typeparam name="TWrite">Reference type to write to the named pipe</typeparam>
-    public sealed class NamedPipeConnection<TRead, TWrite> : IDisposable
+    /// <typeparam name="TRd">Reference type to read from the named pipe</typeparam>
+    /// <typeparam name="TWr">Reference type to write to the named pipe</typeparam>
+    public sealed class NamedPipeConnection<TRd, TWr>
+        where TRd : class
+        where TWr : class
     {
         /// <summary>
         /// Gets the connection's unique identifier.
@@ -26,6 +29,11 @@ namespace YAMDCC.IPC
         public readonly string Name;
 
         /// <summary>
+        /// Gets the connection's handle.
+        /// </summary>
+        public readonly SafeHandle Handle;
+
+        /// <summary>
         /// Gets a value indicating whether the pipe is connected or not.
         /// </summary>
         public bool IsConnected => _streamWrapper.IsConnected;
@@ -33,35 +41,31 @@ namespace YAMDCC.IPC
         /// <summary>
         /// Invoked when the named pipe connection terminates.
         /// </summary>
-        public event ConnectionEventHandler<TRead, TWrite> Disconnected;
+        public event ConnectionEventHandler<TRd, TWr> Disconnected;
 
         /// <summary>
         /// Invoked whenever a message is received from the other end of the pipe.
         /// </summary>
-        public event ConnectionMessageEventHandler<TRead, TWrite> ReceiveMessage;
+        public event ConnectionMessageEventHandler<TRd, TWr> ReceiveMessage;
 
         /// <summary>
         /// Invoked when an exception is thrown during any read/write operation over the named pipe.
         /// </summary>
-        public event ConnectionExceptionEventHandler<TRead, TWrite> Error;
+        public event ConnectionExceptionEventHandler<TRd, TWr> Error;
 
-        private readonly PipeStreamWrapper<TRead, TWrite> _streamWrapper;
+        private readonly PipeStreamWrapper<TRd, TWr> _streamWrapper;
 
         private readonly AutoResetEvent _writeSignal = new AutoResetEvent(false);
-        /// <summary>
-        /// To support Multithread, we should use BlockingCollection.
-        /// </summary>
-        private readonly BlockingCollection<TWrite> _writeQueue
-            = new BlockingCollection<TWrite>();
+        private readonly Queue<TWr> _writeQueue = new Queue<TWr>();
 
         private bool _notifiedSucceeded;
-        private bool _disposed;
 
         internal NamedPipeConnection(int id, string name, PipeStream serverStream)
         {
             ID = id;
             Name = name;
-            _streamWrapper = new PipeStreamWrapper<TRead, TWrite>(serverStream);
+            Handle = serverStream.SafePipeHandle;
+            _streamWrapper = new PipeStreamWrapper<TRd, TWr>(serverStream);
         }
 
         /// <summary>
@@ -71,12 +75,12 @@ namespace YAMDCC.IPC
         public void Open()
         {
             Worker readWorker = new Worker();
-            readWorker.Succeeded += OnSucceed;
+            readWorker.Succeeded += OnSucceeded;
             readWorker.Error += OnError;
             readWorker.DoWork(ReadPipe);
 
             Worker writeWorker = new Worker();
-            writeWorker.Succeeded += OnSucceed;
+            writeWorker.Succeeded += OnSucceeded;
             writeWorker.Error += OnError;
             writeWorker.DoWork(WritePipe);
         }
@@ -87,9 +91,9 @@ namespace YAMDCC.IPC
         /// at the next available opportunity.
         /// </summary>
         /// <param name="message"></param>
-        public void PushMessage(TWrite message)
+        public void PushMessage(TWr message)
         {
-            _writeQueue.Add(message);
+            _writeQueue.Enqueue(message);
             _writeSignal.Set();
         }
 
@@ -105,11 +109,13 @@ namespace YAMDCC.IPC
         /// <summary>
         /// Invoked on the UI thread.
         /// </summary>
-        private void OnSucceed()
+        private void OnSucceeded()
         {
             // Only notify observers once
             if (_notifiedSucceeded)
+            {
                 return;
+            }
 
             _notifiedSucceeded = true;
 
@@ -126,60 +132,36 @@ namespace YAMDCC.IPC
         /// <summary>
         /// Invoked on the background thread.
         /// </summary>
-        /// <exception cref="SerializationException">An object in the graph of type parameter <typeparamref name="TRead"/> is not marked as serializable.</exception>
+        /// <exception cref="SerializationException">An object in the graph of type parameter <typeparamref name="TRd"/> is not marked as serializable.</exception>
         private void ReadPipe()
         {
             while (IsConnected && _streamWrapper.CanRead)
             {
-                try
+                TRd obj = _streamWrapper.ReadObject();
+                if (obj == null)
                 {
-                    TRead obj = _streamWrapper.ReadObject();
-                    if (obj == null)
-                    {
-                        Close();
-                        return;
-                    }
-                    ReceiveMessage?.Invoke(this, obj);
+                    Close();
+                    return;
                 }
-                catch
-                {
-                    //we must igonre exception, otherwise, the namepipe wrapper will stop work.
-                }
+                ReceiveMessage?.Invoke(this, obj);
             }
         }
 
         /// <summary>
         /// Invoked on the background thread.
         /// </summary>
-        /// <exception cref="SerializationException">An object in the graph of type parameter <typeparamref name="TWrite"/> is not marked as serializable.</exception>
+        /// <exception cref="SerializationException">An object in the graph of type parameter <typeparamref name="TWr"/> is not marked as serializable.</exception>
         private void WritePipe()
         {
             while (IsConnected && _streamWrapper.CanWrite)
             {
-                try
+                _writeSignal.WaitOne();
+                while (_writeQueue.Count > 0)
                 {
-                    _streamWrapper.WriteObject(_writeQueue.Take());
+                    _streamWrapper.WriteObject(_writeQueue.Dequeue());
                     _streamWrapper.WaitForPipeDrain();
                 }
-                catch
-                {
-                    //we must igonre exception, otherwise, the namepipe wrapper will stop work.
-                }
             }
-        }
-
-        /// <summary>
-        /// Releases all resources associated with the
-        /// <see cref="NamedPipeConnection{TRead, TWrite}"/>.
-        /// </summary>
-        public void Dispose()
-        {
-            if (_disposed) return;
-
-            _writeQueue.Dispose();
-            _writeSignal.Dispose();
-
-            _disposed = true;
         }
     }
 
@@ -187,33 +169,43 @@ namespace YAMDCC.IPC
     {
         private static int _lastId;
 
-        public static NamedPipeConnection<TRead, TWrite> CreateConnection<TRead, TWrite>(PipeStream pipeStream) =>
-            new NamedPipeConnection<TRead, TWrite>(++_lastId, "Client " + _lastId, pipeStream);
+        public static NamedPipeConnection<TRd, TWr> CreateConnection<TRd, TWr>(PipeStream pipeStream)
+            where TRd : class
+            where TWr : class
+        {
+            return new NamedPipeConnection<TRd, TWr>(++_lastId, "Client " + _lastId, pipeStream);
+        }
     }
 
     /// <summary>
     /// Handles new connections.
     /// </summary>
     /// <param name="connection">The newly established connection</param>
-    /// <typeparam name="TRead">Reference type</typeparam>
-    /// <typeparam name="TWrite">Reference type</typeparam>
-    public delegate void ConnectionEventHandler<TRead, TWrite>(NamedPipeConnection<TRead, TWrite> connection);
+    /// <typeparam name="TRd">Reference type</typeparam>
+    /// <typeparam name="TWr">Reference type</typeparam>
+    public delegate void ConnectionEventHandler<TRd, TWr>(NamedPipeConnection<TRd, TWr> connection)
+        where TRd : class
+        where TWr : class;
 
     /// <summary>
     /// Handles messages received from a named pipe.
     /// </summary>
-    /// <typeparam name="TRead">Reference type</typeparam>
-    /// <typeparam name="TWrite">Reference type</typeparam>
+    /// <typeparam name="TRd">Reference type</typeparam>
+    /// <typeparam name="TWr">Reference type</typeparam>
     /// <param name="connection">Connection that received the message</param>
     /// <param name="message">Message sent by the other end of the pipe</param>
-    public delegate void ConnectionMessageEventHandler<TRead, TWrite>(NamedPipeConnection<TRead, TWrite> connection, TRead message);
+    public delegate void ConnectionMessageEventHandler<TRd, TWr>(NamedPipeConnection<TRd, TWr> connection, TRd message)
+        where TRd : class
+        where TWr : class;
 
     /// <summary>
     /// Handles exceptions thrown during read/write operations.
     /// </summary>
-    /// <typeparam name="TRead">Reference type</typeparam>
-    /// <typeparam name="TWrite">Reference type</typeparam>
+    /// <typeparam name="TRd">Reference type</typeparam>
+    /// <typeparam name="TWr">Reference type</typeparam>
     /// <param name="connection">Connection that threw the exception</param>
     /// <param name="exception">The exception that was thrown</param>
-    public delegate void ConnectionExceptionEventHandler<TRead, TWrite>(NamedPipeConnection<TRead, TWrite> connection, Exception exception);
+    public delegate void ConnectionExceptionEventHandler<TRd, TWr>(NamedPipeConnection<TRd, TWr> connection, Exception exception)
+        where TRd : class
+        where TWr : class;
 }

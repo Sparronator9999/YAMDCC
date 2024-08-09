@@ -1,4 +1,4 @@
-using MessagePack;
+using System;
 
 namespace YAMDCC.IPC
 {
@@ -40,19 +40,17 @@ namespace YAMDCC.IPC
     /// <summary>
     /// Represents a response to a <see cref="ServiceCommand"/>.
     /// </summary>
-    [MessagePackObject]
+    [Serializable]
     public class ServiceResponse
     {
         /// <summary>
         /// The <see cref="IPC.Response"/> to send to the service.
         /// </summary>
-        [Key(0)]
         public Response Response;
 
         /// <summary>
         /// The value associated with the <see cref="IPC.Response"/>.
         /// </summary>
-        [Key(1)]
         public string Value;
 
         /// <summary>

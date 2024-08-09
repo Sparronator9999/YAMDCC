@@ -1,5 +1,7 @@
 using System;
+using System.IO;
 using System.IO.Pipes;
+using System.Runtime.InteropServices;
 using System.Threading;
 using YAMDCC.IPC.IO;
 using YAMDCC.IPC.Threading;
@@ -12,7 +14,7 @@ namespace YAMDCC.IPC
     /// <typeparam name="TRdWr">
     /// Reference type to read from and write to the named pipe
     /// </typeparam>
-    public class NamedPipeClient<TRdWr> : NamedPipeClient<TRdWr, TRdWr>
+    public class NamedPipeClient<TRdWr> : NamedPipeClient<TRdWr, TRdWr> where TRdWr : class
     {
         /// <summary>
         /// Constructs a new <c>NamedPipeClient</c> to connect to the
@@ -20,9 +22,7 @@ namespace YAMDCC.IPC
         /// <paramref name="pipeName"/>.
         /// </summary>
         /// <param name="pipeName">Name of the server's pipe</param>
-        /// <param name="serverName">server name default is local.</param>
-        public NamedPipeClient(string pipeName, string serverName = ".")
-            : base(pipeName, serverName) { }
+        public NamedPipeClient(string pipeName) : base(pipeName) { }
     }
 
     /// <summary>
@@ -30,7 +30,9 @@ namespace YAMDCC.IPC
     /// </summary>
     /// <typeparam name="TRd">Reference type to read from the named pipe</typeparam>
     /// <typeparam name="TWr">Reference type to write to the named pipe</typeparam>
-    public class NamedPipeClient<TRd, TWr> : IDisposable
+    public class NamedPipeClient<TRd, TWr>
+        where TRd : class
+        where TWr : class
     {
         /// <summary>
         /// Gets or sets whether the client should attempt to reconnect when the pipe breaks
@@ -38,6 +40,12 @@ namespace YAMDCC.IPC
         /// Default value is <c>true</c>.
         /// </summary>
         public bool AutoReconnect;
+
+        /// <summary>
+        /// Gets or sets how long the client waits between a reconnection attempt.
+        /// Default value is <c>0</c>.
+        /// </summary>
+        public int AutoReconnectDelay;
 
         /// <summary>
         /// Invoked whenever a message is received from the server.
@@ -61,22 +69,16 @@ namespace YAMDCC.IPC
         private readonly AutoResetEvent _disconnected = new AutoResetEvent(false);
 
         private volatile bool _closedExplicitly;
-        private bool _disposed;
 
         /// <summary>
-        /// The server name, which client will connect to.
-        /// </summary>
-        private readonly string _serverName;
-
-        /// <summary>
-        /// Constructs a new <c>NamedPipeClient</c> to connect to the named pipe server specified by <paramref name="pipeName"/>.
+        /// Constructs a new <see cref="NamedPipeClient{TRd, TWr}"/> to connect to the
+        /// <see cref="NamedPipeServer{TReadWrite}"/> specified by
+        /// <paramref name="pipeName"/>.
         /// </summary>
         /// <param name="pipeName">Name of the server's pipe</param>
-        /// <param name="serverName">the Name of the server, default is  local machine</param>
-        public NamedPipeClient(string pipeName, string serverName = ".")
+        public NamedPipeClient(string pipeName)
         {
             _pipeName = pipeName;
-            _serverName = serverName;
             AutoReconnect = true;
         }
 
@@ -96,8 +98,7 @@ namespace YAMDCC.IPC
         /// Sends a message to the server over a named pipe.
         /// </summary>
         /// <param name="message">Message to send to the server.</param>
-        public void PushMessage(TWr message) =>
-            _connection?.PushMessage(message);
+        public void PushMessage(TWr message) => _connection?.PushMessage(message);
 
         /// <summary>
         /// Closes the named pipe.
@@ -170,12 +171,12 @@ namespace YAMDCC.IPC
         private void ListenSync()
         {
             // Get the name of the data pipe that should be used from now on by this NamedPipeClient
-            PipeStreamWrapper<string, string> handshake = PipeClientFactory.Connect<string, string>(_pipeName, _serverName);
+            PipeStreamWrapper<string, string> handshake = PipeClientFactory.Connect<string, string>(_pipeName);
             string dataPipeName = handshake.ReadObject();
             handshake.Close();
 
             // Connect to the actual data pipe
-            NamedPipeClientStream dataPipe = PipeClientFactory.CreateAndConnectPipe(dataPipeName, _serverName);
+            NamedPipeClientStream dataPipe = PipeClientFactory.CreateAndConnectPipe(dataPipeName);
 
             // Create a Connection object for the data pipe
             _connection = ConnectionFactory.CreateConnection<TRd, TWr>(dataPipe);
@@ -189,80 +190,94 @@ namespace YAMDCC.IPC
 
         private void OnDisconnected(NamedPipeConnection<TRd, TWr> connection)
         {
-            Disconnected?.Invoke(connection);
+            if (Disconnected != null)
+                Disconnected(connection);
 
             _disconnected.Set();
 
             // Reconnect
             if (AutoReconnect && !_closedExplicitly)
+            {
+                Thread.Sleep(AutoReconnectDelay);
                 Start();
+            }
         }
 
-        private void OnReceiveMessage(NamedPipeConnection<TRd, TWr> connection, TRd message) =>
-            ServerMessage?.Invoke(connection, message);
+        private void OnReceiveMessage(NamedPipeConnection<TRd, TWr> connection, TRd message)
+        {
+            if (ServerMessage != null)
+                ServerMessage(connection, message);
+        }
 
         /// <summary>
-        /// Invoked on the UI thread.
+        ///     Invoked on the UI thread.
         /// </summary>
-        private void ConnectionOnError(NamedPipeConnection<TRd, TWr> connection, Exception exception) =>
+        private void ConnectionOnError(NamedPipeConnection<TRd, TWr> connection, Exception exception)
+        {
             OnError(exception);
+        }
 
         /// <summary>
-        /// Invoked on the UI thread.
+        ///     Invoked on the UI thread.
         /// </summary>
         /// <param name="exception"></param>
-        private void OnError(Exception exception) =>
-            Error?.Invoke(exception);
-
-        #endregion
-
-        #region Cleanup/Dispose code
-        /// <summary>
-        /// The destructor for the <see cref="NamedPipeClient{TRead, TWrite}"/>.
-        /// </summary>
-        ~NamedPipeClient()
+        private void OnError(Exception exception)
         {
-            Dispose(false);
+            if (Error != null)
+                Error(exception);
         }
 
-        /// <summary>
-        /// Releases all resources associated with the
-        /// <see cref="NamedPipeClient{TRead, TWrite}"/>.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (_disposed) return;
-
-            if (disposing)
-            {
-                _connected.Dispose();
-                _disconnected.Dispose();
-            }
-
-            _disposed = true;
-        }
         #endregion
     }
 
     internal static class PipeClientFactory
     {
-        public static PipeStreamWrapper<TRead, TWrite> Connect<TRead, TWrite>(string pipeName, string serverName) =>
-            new PipeStreamWrapper<TRead, TWrite>(CreateAndConnectPipe(pipeName, serverName));
-
-        public static NamedPipeClientStream CreateAndConnectPipe(string pipeName, string serverName)
+        [return: MarshalAs(UnmanagedType.Bool)]
+        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern bool WaitNamedPipe(string name, int timeout);
+        
+        public static bool NamedPipeExists(string pipeName)
         {
-            NamedPipeClientStream pipe = CreatePipe(pipeName, serverName);
-            pipe.Connect();
+            try
+            {
+                bool exists = WaitNamedPipe(pipeName, -1);
+                if (!exists)
+                {
+                    int error = Marshal.GetLastWin32Error();
+                    if (error == 0 || error == 2)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public static PipeStreamWrapper<TRd, TWr> Connect<TRd, TWr>(string pipeName)
+            where TRd : class
+            where TWr : class
+        {
+            return new PipeStreamWrapper<TRd, TWr>(CreateAndConnectPipe(pipeName));
+        }
+
+        public static NamedPipeClientStream CreateAndConnectPipe(string pipeName, int timeout = 10)
+        {
+            string normalizedPath = Path.GetFullPath(string.Format(@"\\.\pipe\{0}", pipeName));
+            while (!NamedPipeExists(normalizedPath))
+            {
+                Thread.Sleep(timeout);
+            }
+            NamedPipeClientStream pipe = CreatePipe(pipeName);
+            pipe.Connect(1000);
             return pipe;
         }
 
-        private static NamedPipeClientStream CreatePipe(string pipeName, string serverName) =>
-            new NamedPipeClientStream(serverName, pipeName, PipeDirection.InOut, PipeOptions.Asynchronous | PipeOptions.WriteThrough);
+        private static NamedPipeClientStream CreatePipe(string pipeName) =>
+            new NamedPipeClientStream(".", pipeName, PipeDirection.InOut,
+                PipeOptions.Asynchronous | PipeOptions.WriteThrough);
     }
 }

@@ -8,28 +8,39 @@ namespace YAMDCC.IPC.IO
     /// <summary>
     /// Wraps a <see cref="PipeStream"/> object to read and write .NET CLR objects.
     /// </summary>
-    /// <typeparam name="TRdWr">Reference type to read from and write to the pipe</typeparam>
+    /// <typeparam name="TRdWr">
+    /// Reference type to read from and write to the pipe
+    /// </typeparam>
     public class PipeStreamWrapper<TRdWr> : PipeStreamWrapper<TRdWr, TRdWr>
         where TRdWr : class
     {
         /// <summary>
-        /// Constructs a new <c>PipeStreamWrapper</c> object that reads from and writes to the given <paramref name="stream"/>.
+        /// Constructs a new <c>PipeStreamWrapper</c> object that
+        /// reads from and writes to the given <paramref name="stream"/>.
         /// </summary>
-        /// <param name="stream">Stream to read from and write to</param>
+        /// <param name="stream">
+        /// Stream to read from and write to
+        /// </param>
         public PipeStreamWrapper(PipeStream stream) : base(stream) { }
     }
 
     /// <summary>
     /// Wraps a <see cref="PipeStream"/> object to read and write .NET CLR objects.
     /// </summary>
-    /// <typeparam name="TRd">Reference type to <b>read</b> from the pipe</typeparam>
-    /// <typeparam name="TWr">Reference type to <b>write</b> to the pipe</typeparam>
+    /// <typeparam name="TRd">
+    /// Reference type to <b>read</b> from the pipe
+    /// </typeparam>
+    /// <typeparam name="TWr">
+    /// Reference type to <b>write</b> to the pipe
+    /// </typeparam>
     public class PipeStreamWrapper<TRd, TWr>
+        where TRd : class
+        where TWr : class
     {
         /// <summary>
         /// Gets the underlying <c>PipeStream</c> object.
         /// </summary>
-        public readonly PipeStream BaseStream;
+        public PipeStream BaseStream { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether the
@@ -65,8 +76,8 @@ namespace YAMDCC.IPC.IO
         private readonly PipeStreamWriter<TWr> _writer;
 
         /// <summary>
-        /// Constructs a new <c>PipeStreamWrapper</c> object that reads from
-        /// and writes to the given <paramref name="stream"/>.
+        /// Constructs a new <c>PipeStreamWrapper</c> object that reads
+        /// from and writes to the given <paramref name="stream"/>.
         /// </summary>
         /// <param name="stream">Stream to read from and write to</param>
         public PipeStreamWrapper(PipeStream stream)
@@ -77,8 +88,8 @@ namespace YAMDCC.IPC.IO
         }
 
         /// <summary>
-        /// Reads the next object from the pipe. This method blocks until an
-        /// object is sent or the pipe is disconnected.
+        /// Reads the next object from the pipe. This method blocks
+        /// until an object is sent or the pipe is disconnected.
         /// </summary>
         /// <returns>
         /// The next object read from the pipe, or
@@ -88,20 +99,20 @@ namespace YAMDCC.IPC.IO
         /// An object in the graph of type parameter
         /// <typeparamref name="TRd"/> is not marked as serializable.
         /// </exception>
-        public TRd ReadObject() =>
-            _reader.ReadObject();
+        public TRd ReadObject() => _reader.ReadObject();
 
         /// <summary>
-        /// Writes an object to the pipe. This
-        /// method blocks until all data is sent.
+        /// Writes an object to the pipe.
+        /// This method blocks until all data is sent.
         /// </summary>
-        /// <param name="obj">Object to write to the pipe</param>
+        /// <param name="obj">
+        /// Object to write to the pipe
+        /// </param>
         /// <exception cref="SerializationException">
         /// An object in the graph of type parameter
         /// <typeparamref name="TRd"/> is not marked as serializable.
         /// </exception>
-        public void WriteObject(TWr obj) =>
-            _writer.WriteObject(obj);
+        public void WriteObject(TWr obj) => _writer.WriteObject(obj);
 
         /// <summary>
         /// Waits for the other end of the pipe to read all sent bytes.
@@ -115,14 +126,12 @@ namespace YAMDCC.IPC.IO
         /// <exception cref="IOException">
         /// The pipe is broken or another I/O error occurred.
         /// </exception>
-        public void WaitForPipeDrain() =>
-            _writer.WaitForPipeDrain();
+        public void WaitForPipeDrain() => _writer.WaitForPipeDrain();
 
         /// <summary>
-        /// Closes the current stream and releases any resources (such as
-        /// sockets and file handles) associated with the current stream.
+        /// Closes the current stream and releases any resources
+        /// (such as sockets and file handles) associated with the current stream.
         /// </summary>
-        public void Close() =>
-            BaseStream.Close();
+        public void Close() => BaseStream.Close();
     }
 }

@@ -76,7 +76,7 @@ namespace YAMDCC.Service
             PipeSecurity security = new PipeSecurity();
             security.AddAccessRule(new PipeAccessRule("Administrators", PipeAccessRights.ReadWrite, AccessControlType.Allow));
 
-            IPCServer = new Server<ServiceCommand, ServiceResponse>("YAMDCC-Server", security);
+            IPCServer = new Server<ServiceCommand, ServiceResponse>("YAMDCC-Server", 0, security);
         }
 
         #region Events

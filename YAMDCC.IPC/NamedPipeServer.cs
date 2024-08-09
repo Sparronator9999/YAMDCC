@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO.Pipes;
+using System.Linq;
 using YAMDCC.IPC.IO;
 using YAMDCC.IPC.Threading;
 
@@ -20,18 +21,28 @@ namespace YAMDCC.IPC
         /// Constructs a new <see cref="NamedPipeServer{TRdWr}"/> object
         /// that listens for client connections on the given <paramref name="pipeName"/>.
         /// </summary>
-        /// <param name="pipeName">The name of the pipe to listen on.</param>
-        public NamedPipeServer(string pipeName) : base(pipeName, null) { }
+        /// <param name="pipeName">
+        /// The name of the pipe to listen on.
+        /// </param>
+        public NamedPipeServer(string pipeName) : base(pipeName) { }
 
         /// <summary>
         /// Constructs a new <see cref="NamedPipeServer{TRdWr}"/> object
         /// that listens for client connections on the given <paramref name="pipeName"/>,
-        /// with the given <paramref name="pipeSecurity"/>.
+        /// with the given <paramref name="security"/>.
         /// </summary>
-        /// <param name="pipeName">Name of the pipe to listen on</param>
-        /// <param name="pipeSecurity">The access control object for the pipe</param>
-        public NamedPipeServer(string pipeName, PipeSecurity pipeSecurity)
-            : base(pipeName, pipeSecurity) { }
+        /// <param name="pipeName">
+        /// The name of the pipe to listen on.
+        /// </param>
+        /// <param name="bufferSize">
+        /// The size of input and output buffer.
+        /// </param>
+        /// <param name="security">
+        /// The object that determines the access control
+        /// and audit security for the pipe.
+        /// </param>
+        public NamedPipeServer(string pipeName, int bufferSize, PipeSecurity security)
+            : base(pipeName, bufferSize, security) { }
     }
 
     /// <summary>
@@ -41,6 +52,8 @@ namespace YAMDCC.IPC
     /// <typeparam name="TRd">Reference type to read from the named pipe</typeparam>
     /// <typeparam name="TWr">Reference type to write to the named pipe</typeparam>
     public class Server<TRd, TWr>
+        where TRd : class
+        where TWr : class
     {
         /// <summary>
         /// Invoked whenever a client connects to the server.
@@ -63,29 +76,40 @@ namespace YAMDCC.IPC
         public event PipeExceptionEventHandler Error;
 
         private readonly string _pipeName;
-        private readonly PipeSecurity _pipeSecurity;
-        private readonly List<NamedPipeConnection<TRd, TWr>> _connections
-            = new List<NamedPipeConnection<TRd, TWr>>();
+        private readonly int _bufferSize;
+        private readonly PipeSecurity _security;
+        private readonly List<NamedPipeConnection<TRd, TWr>> _connections = new List<NamedPipeConnection<TRd, TWr>>();
 
         private int _nextPipeId;
 
         private volatile bool _shouldKeepRunning;
 
         /// <summary>
+        /// Constructs a new <c>NamedPipeServer</c> object that listens for client connections on the given <paramref name="pipeName"/>.
+        /// </summary>
+        /// <param name="pipeName">Name of the pipe to listen on</param>
+        public Server(string pipeName)
+        {
+            _pipeName = pipeName;
+        }
+
+        /// <summary>
         /// Constructs a new <c>NamedPipeServer</c> object that listens
         /// for client connections on the given <paramref name="pipeName"/>.
         /// </summary>
         /// <param name="pipeName">Name of the pipe to listen on</param>
-        /// <param name="pipeSecurity">The access control object for the pipe</param>
-        public Server(string pipeName, PipeSecurity pipeSecurity)
+        /// <param name="bufferSize">Size of input and output buffer</param>
+        /// <param name="security">And object that determine the access control and audit security for the pipe</param>
+        public Server(string pipeName, int bufferSize, PipeSecurity security)
         {
             _pipeName = pipeName;
-            _pipeSecurity = pipeSecurity;
+            _bufferSize = bufferSize;
+            _security = security;
         }
 
         /// <summary>
-        /// Begins listening for client connections in a separate
-        /// background thread. This method returns immediately.
+        /// Begins listening for client connections in a separate background thread.
+        /// This method returns immediately.
         /// </summary>
         public void Start()
         {
@@ -96,9 +120,9 @@ namespace YAMDCC.IPC
         }
 
         /// <summary>
-        /// Sends a message to all connected clients asynchronously. This
-        /// method returns immediately, possibly before the message has been
-        /// sent to all clients.
+        /// Sends a message to all connected clients asynchronously.
+        /// This method returns immediately, possibly before the
+        /// message has been sent to all clients.
         /// </summary>
         /// <param name="message"></param>
         public void PushMessage(TWr message)
@@ -113,18 +137,97 @@ namespace YAMDCC.IPC
         }
 
         /// <summary>
-        /// push message to the given client.
+        /// Sends a message to a specific client asynchronously.
+        /// This method returns immediately, possibly before the message has been sent to all clients.
         /// </summary>
         /// <param name="message"></param>
-        /// <param name="clientName"></param>
-        public void PushMessage(TWr message, string clientName)
+        /// <param name="targetId">Specific client ID to send to.</param>
+        public void PushMessage(TWr message, int targetId)
+        {
+            lock (_connections)
+            {
+                // Can we speed this up with Linq or does that add overhead?
+                foreach (NamedPipeConnection<TRd, TWr> client in _connections)
+                {
+                    if (client.ID == targetId)
+                    {
+                        client.PushMessage(message);
+                        break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sends a message to a specific clients asynchronously.
+        /// This method returns immediately, possibly before the message has been sent to all clients.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="targetIds">A list of client ID's to send to.</param>
+        public void PushMessage(TWr message, List<int> targetIds)
+        {
+            lock (_connections)
+            {
+                // Can we speed this up with Linq or does that add overhead?
+                foreach (NamedPipeConnection<TRd, TWr> client in _connections)
+                {
+                    if (targetIds.Contains(client.ID))
+                    {
+                        client.PushMessage(message);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sends a message to a specific clients asynchronously.
+        /// This method returns immediately, possibly before the message has been sent to all clients.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="targetIds">An array of client ID's to send to.</param>
+        public void PushMessage(TWr message, int[] targetIds)
+        {
+            PushMessage(message, targetIds.ToList());
+        }
+
+        /// <summary>
+        /// Sends a message to a specific client asynchronously.
+        /// This method returns immediately, possibly before the message has been sent to all clients.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="targetName">Specific client name to send to.</param>
+        public void PushMessage(TWr message, string targetName)
+        {
+            lock (_connections)
+            {
+                // Can we speed this up with Linq or does that add overhead?
+                foreach (NamedPipeConnection<TRd, TWr> client in _connections)
+                {
+                    if (client.Name.Equals(targetName))
+                    {
+                        client.PushMessage(message);
+                        break;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sends a message to a specific client asynchronously.
+        /// This method returns immediately, possibly before the message has been sent to all clients.
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="targetNames">A list of client names to send to.</param>
+        public void PushMessage(TWr message, List<string> targetNames)
         {
             lock (_connections)
             {
                 foreach (NamedPipeConnection<TRd, TWr> client in _connections)
                 {
-                    if (client.Name == clientName)
+                    if (targetNames.Contains(client.Name))
+                    {
                         client.PushMessage(message);
+                    }
                 }
             }
         }
@@ -146,9 +249,7 @@ namespace YAMDCC.IPC
 
             // If background thread is still listening for a client to connect,
             // initiate a dummy connection that will allow the thread to exit.
-            //dummy connection will use the local server name.
-            NamedPipeClient<TRd, TWr> dummyClient
-                = new NamedPipeClient<TRd, TWr>(_pipeName, ".");
+            NamedPipeClient<TRd, TWr> dummyClient = new NamedPipeClient<TRd, TWr>(_pipeName);
             dummyClient.Start();
             dummyClient.WaitForConnection(TimeSpan.FromSeconds(2));
             dummyClient.Stop();
@@ -161,30 +262,33 @@ namespace YAMDCC.IPC
         {
             while (_shouldKeepRunning)
             {
-                WaitForConnection(_pipeName, _pipeSecurity);
+                WaitForConnection();
             }
         }
 
-        private void WaitForConnection(string pipeName, PipeSecurity pipeSecurity)
+        private void WaitForConnection()
         {
             NamedPipeServerStream handshakePipe = null;
             NamedPipeServerStream dataPipe = null;
             NamedPipeConnection<TRd, TWr> connection = null;
 
-            string connectionPipeName = GetNextConnectionPipeName(pipeName);
+            string connectionPipeName = GetNextConnectionPipeName();
 
             try
             {
+                dataPipe = CreatePipe(connectionPipeName);
+
                 // Send the client the name of the data pipe to use
-                handshakePipe = PipeServerFactory.CreateAndConnectPipe(pipeName, pipeSecurity);
+                handshakePipe = CreateAndConnectPipe();
+
                 PipeStreamWrapper<string, string> handshakeWrapper
                     = new PipeStreamWrapper<string, string>(handshakePipe);
+
                 handshakeWrapper.WriteObject(connectionPipeName);
                 handshakeWrapper.WaitForPipeDrain();
                 handshakeWrapper.Close();
 
                 // Wait for the client to connect to the data pipe
-                dataPipe = PipeServerFactory.CreatePipe(connectionPipeName, pipeSecurity);
                 dataPipe.WaitForConnection();
 
                 // Add the client's connection to the list of connections
@@ -213,6 +317,20 @@ namespace YAMDCC.IPC
             }
         }
 
+        private NamedPipeServerStream CreateAndConnectPipe()
+        {
+            return _security == null
+                ? PipeServerFactory.CreateAndConnectPipe(_pipeName)
+                : PipeServerFactory.CreateAndConnectPipe(_pipeName, _bufferSize, _security);
+        }
+
+        private NamedPipeServerStream CreatePipe(string connectionPipeName)
+        {
+            return _security == null
+                ? PipeServerFactory.CreatePipe(connectionPipeName)
+                : PipeServerFactory.CreatePipe(connectionPipeName, _bufferSize, _security);
+        }
+
         private void ClientOnConnected(NamedPipeConnection<TRd, TWr> connection) =>
             ClientConnected?.Invoke(connection);
 
@@ -221,8 +339,7 @@ namespace YAMDCC.IPC
 
         private void ClientOnDisconnected(NamedPipeConnection<TRd, TWr> connection)
         {
-            if (connection == null)
-                return;
+            if (connection == null) return;
 
             lock (_connections)
             {
@@ -245,12 +362,13 @@ namespace YAMDCC.IPC
         private void OnError(Exception exception) =>
             Error?.Invoke(exception);
 
-        private string GetNextConnectionPipeName(string pipeName) =>
-            $"{pipeName}_{++_nextPipeId}";
+        private string GetNextConnectionPipeName() =>
+            $"{_pipeName}_{++_nextPipeId}";
 
         private static void Cleanup(NamedPipeServerStream pipe)
         {
             if (pipe == null) return;
+
             using (NamedPipeServerStream x = pipe)
             {
                 x.Close();
@@ -258,20 +376,5 @@ namespace YAMDCC.IPC
         }
 
         #endregion
-    }
-
-    internal static class PipeServerFactory
-    {
-        public static NamedPipeServerStream CreateAndConnectPipe(string pipeName, PipeSecurity pipeSecurity)
-        {
-            NamedPipeServerStream pipe = CreatePipe(pipeName, pipeSecurity);
-            pipe.WaitForConnection();
-            return pipe;
-        }
-
-        public static NamedPipeServerStream CreatePipe(string pipeName, PipeSecurity pipeSecurity) =>
-            new NamedPipeServerStream(
-                pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte,
-                PipeOptions.Asynchronous | PipeOptions.WriteThrough, 0, 0, pipeSecurity);
     }
 }

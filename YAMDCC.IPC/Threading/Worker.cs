@@ -39,11 +39,9 @@ namespace YAMDCC.IPC.Threading
             }
         }
 
-        private void Succeed() =>
-            Succeeded?.Invoke();
+        private void Succeed() => Succeeded?.Invoke();
 
-        private void Fail(Exception exception) =>
-            Error?.Invoke(exception);
+        private void Fail(Exception exception) => Error?.Invoke(exception);
 
         private void Callback(Action action) =>
             Task.Factory.StartNew(action, CancellationToken.None,

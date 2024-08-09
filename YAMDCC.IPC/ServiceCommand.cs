@@ -1,4 +1,4 @@
-using MessagePack;
+using System;
 
 namespace YAMDCC.IPC
 {
@@ -109,13 +109,12 @@ namespace YAMDCC.IPC
     /// <summary>
     /// Represents a command to send to the YAMDCC Service.
     /// </summary>
-    [MessagePackObject]
+    [Serializable]
     public class ServiceCommand
     {
         /// <summary>
         /// The <see cref="IPC.Command"/> to send to the service.
         /// </summary>
-        [Key(0)]
         public Command Command;
 
         /// <summary>
@@ -123,7 +122,6 @@ namespace YAMDCC.IPC
         /// The number of parameters for a service command vary depending on the
         /// specific command sent to the service.
         /// </summary>
-        [Key(1)]
         public string Arguments;
 
         public ServiceCommand(Command command, string args)
