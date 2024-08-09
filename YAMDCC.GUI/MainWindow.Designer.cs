@@ -747,7 +747,7 @@ namespace YAMDCC.GUI
             this.MaximizeBox = false;
             this.Name = "MainWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "MSI Fan Control";
+            this.Text = "YAMDCC config editor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_Closing);
             this.Load += new System.EventHandler(this.MainWindow_Load);
             this.menuStrip.ResumeLayout(false);

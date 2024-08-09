@@ -1,4 +1,20 @@
-﻿namespace YAMDCC.GUI.Dialogs
+﻿// This file is part of YAMDCC (Yet Another MSI Dragon Center Clone).
+// Copyright © Sparronator9999 2023-2024.
+//
+// YAMDCC is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the Free
+// Software Foundation, either version 3 of the License, or (at your option)
+// any later version.
+//
+// YAMDCC is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+// or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+// more details.
+//
+// You should have received a copy of the GNU General Public License along with
+// YAMDCC. If not, see <https://www.gnu.org/licenses/>.
+
+namespace YAMDCC.GUI.Dialogs
 {
     partial class CrashDialog
     {
@@ -70,9 +86,8 @@
             this.lblError.Name = "lblError";
             this.lblError.Size = new System.Drawing.Size(394, 60);
             this.lblError.TabIndex = 0;
-            this.lblError.Text = "MSI Fan Control has crashed!\r\n\r\nBefore reporting a bug, try again on the latest v" +
-    "ersion of MSI Fan Control.\r\nIf the crash still occurs, please include the follow" +
-    "ing crash report:";
+            this.lblError.Text = "YAMDCC has crashed!\r\n\r\nBefore reporting a bug, try again on the latest version of" +
+    " YAMDCC.\r\nIf the crash still occurs, please include the following crash report:";
             // 
             // btnReportIssue
             // 
