@@ -16,16 +16,33 @@
 
 using System.ComponentModel;
 using System.Configuration.Install;
+using System.ServiceProcess;
 
 namespace YAMDCC.Service
 {
     [RunInstaller(true)]
-    public partial class ProjectInstaller : Installer
+    public class ProjectInstaller : Installer
     {
         public ProjectInstaller()
         {
-            InitializeComponent();
-            svcInstaller.Description = Strings.GetString("svcDesc");
+            ServiceInstaller svcInstaller = new ServiceInstaller
+            {
+                Description = Strings.GetString("svcDesc"),
+                DisplayName = "YAMDCC Service",
+                ServiceName = "yamdccsvc",
+                StartType = ServiceStartMode.Automatic
+            };
+
+            ServiceProcessInstaller svcPInstaller = new ServiceProcessInstaller
+            {
+                Account = ServiceAccount.LocalSystem
+            };
+
+            Installers.AddRange(new Installer[]
+            {
+                svcPInstaller,
+                svcInstaller
+            });
         }
     }
 }

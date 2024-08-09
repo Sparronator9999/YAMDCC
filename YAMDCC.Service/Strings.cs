@@ -40,7 +40,7 @@ namespace YAMDCC.Service
         /// <para>The value of the specified string name, if found.</para>
         /// <para><c>null</c> if the string couldn't be found.</para>
         /// </returns>
-        internal static string GetString(string name)
+        public static string GetString(string name)
         {
             if (resMan is null)
             {
@@ -63,7 +63,7 @@ namespace YAMDCC.Service
         /// <para>The formatted string corresponding to the specified string name, if found.</para>
         /// <para><c>null</c> if the string couldn't be found.</para>
         /// </returns>
-        internal static string GetString(string name, object arg0)
+        public static string GetString(string name, object arg0)
         {
             string temp = GetString(name);
             return temp is null
@@ -75,7 +75,7 @@ namespace YAMDCC.Service
         /// <param name="args">
         /// The objects to format the string with.
         /// </param>
-        internal static string GetString(string name, params object[] args)
+        public static string GetString(string name, params object[] args)
         {
             string temp = GetString(name);
             return temp is null

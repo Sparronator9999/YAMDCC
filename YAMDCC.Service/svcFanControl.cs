@@ -66,7 +66,7 @@ namespace YAMDCC.Service
         /// Initialises a new instance of the <see cref="svcFanControl"/> class.
         /// </summary>
         /// <param name="logger">The <see cref="Logger"/> instance to write logs to.</param>
-        internal svcFanControl()
+        public svcFanControl()
         {
             InitializeComponent();
             AppDomain.CurrentDomain.UnhandledException += LogUnhandledException;

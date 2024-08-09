@@ -2,7 +2,7 @@ using System.Xml.Serialization;
 
 namespace YAMDCC.Config
 {
-    public class KeySwapConf
+    public sealed class KeySwapConf
     {
         /// <summary>
         /// The register that controls the Win/Fn key swap state.

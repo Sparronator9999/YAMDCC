@@ -28,7 +28,7 @@ using YAMDCC.IPC;
 
 namespace YAMDCC.GUI
 {
-    public partial class MainWindow : Form
+    internal partial class MainWindow : Form
     {
         #region Fields
         /// <summary>
@@ -360,7 +360,8 @@ namespace YAMDCC.GUI
                 bool delData = MessageBox.Show(
                     Strings.GetString("dlgSvcDelData", DataPath),
                     "Delete configuration data?",
-                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes;
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
+                    MessageBoxDefaultButton.Button2) == DialogResult.Yes;
 
                 if (delData)
                 {

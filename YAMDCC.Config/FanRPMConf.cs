@@ -20,7 +20,7 @@ using System.Xml.Serialization;
 namespace YAMDCC.Config
 {
     [Serializable]
-    public class FanRPMConf
+    public sealed class FanRPMConf
     {
         /// <summary>
         /// The register to read to get the fan RPM.

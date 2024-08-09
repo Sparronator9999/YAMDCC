@@ -196,7 +196,7 @@ namespace YAMDCC.ECAccess
         public static extern bool CloseServiceHandle(IntPtr hSCObject);
 
         [StructLayout(LayoutKind.Sequential)]
-        internal struct ServiceStatus
+        public struct ServiceStatus
         {
             internal ServiceType dwServiceType;
             internal ServiceState dwCurrentState;
@@ -252,7 +252,7 @@ namespace YAMDCC.ECAccess
         }
 
         [Flags]
-        internal enum ServiceType : uint
+        public enum ServiceType : uint
         {
             /// <summary>
             /// A kernel-mode driver service.
@@ -278,7 +278,7 @@ namespace YAMDCC.ECAccess
             Win32ShareProcess = 0x00000020,
         }
 
-        internal enum ServiceState : uint
+        public enum ServiceState : uint
         {
             Stopped = 1U,
             StartPending = 2U,
@@ -289,7 +289,7 @@ namespace YAMDCC.ECAccess
             Paused = 7U,
         }
 
-        internal enum ServiceStartType : uint
+        public enum ServiceStartType : uint
         {
             /// <summary>
             /// A device driver started by the system loader.
@@ -327,7 +327,7 @@ namespace YAMDCC.ECAccess
         /// <summary>
         /// The action to take if a service fails to start.
         /// </summary>
-        internal enum ServiceError : uint
+        public enum ServiceError : uint
         {
             /// <summary>
             /// The error is ignored and the service continues to

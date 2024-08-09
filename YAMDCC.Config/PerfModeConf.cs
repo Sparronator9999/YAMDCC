@@ -2,7 +2,7 @@ using System.Xml.Serialization;
 
 namespace YAMDCC.Config
 {
-    public class PerfModeConf
+    public sealed class PerfModeConf
     {
         /// <summary>
         /// The register that controls the performance mode.

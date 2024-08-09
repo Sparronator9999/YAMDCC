@@ -26,9 +26,6 @@
         <Compile Update="ProjectInstaller.cs">
             <SubType>Component</SubType>
         </Compile>
-        <Compile Update="ProjectInstaller.Designer.cs">
-            <DependentUpon>ProjectInstaller.cs</DependentUpon>
-        </Compile>
         <Compile Update="svcFanControl.cs">
             <SubType>Component</SubType>
         </Compile>
@@ -44,9 +41,6 @@
         <EmbeddedResource Update="Strings.resx">
             <Generator></Generator>
         </EmbeddedResource>
-        <None Include="ProjectInstaller.resx">
-            <DependentUpon>ProjectInstaller.cs</DependentUpon>
-        </None>
         <None Include="svcFanControl.resx">
             <DependentUpon>svcFanControl.cs</DependentUpon>
         </None>
@@ -78,7 +72,6 @@
         <PackageReference Include="System.Management" Version="8.0.0" />
     </ItemGroup>
     <ItemGroup>
-        <EmbeddedResource Remove="ProjectInstaller.resx" />
         <EmbeddedResource Remove="svcFanControl.resx" />
     </ItemGroup>
 </Project>
