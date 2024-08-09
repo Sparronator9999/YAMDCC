@@ -14,9 +14,6 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
-using YAMDCC.Config;
-using YAMDCC.GUI.Dialogs;
-using YAMDCC.IPC;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,6 +22,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using YAMDCC.Config;
+using YAMDCC.GUI.Dialogs;
+using YAMDCC.IPC;
 
 namespace YAMDCC.GUI
 {

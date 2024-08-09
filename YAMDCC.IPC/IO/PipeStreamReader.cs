@@ -1,9 +1,9 @@
+using MessagePack;
 using System;
 using System.IO;
 using System.IO.Pipes;
 using System.Net;
 using System.Runtime.Serialization;
-using MessagePack;
 
 namespace YAMDCC.IPC.IO
 {

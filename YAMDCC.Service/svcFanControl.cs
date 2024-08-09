@@ -14,16 +14,16 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
-using YAMDCC.Config;
-using YAMDCC.ECAccess;
-using YAMDCC.IPC;
-using YAMDCC.Logs;
 using System;
 using System.ComponentModel;
 using System.IO;
 using System.IO.Pipes;
 using System.Security.AccessControl;
 using System.ServiceProcess;
+using YAMDCC.Config;
+using YAMDCC.ECAccess;
+using YAMDCC.IPC;
+using YAMDCC.Logs;
 
 namespace YAMDCC.Service
 {
@@ -232,7 +232,7 @@ namespace YAMDCC.Service
                 {
                     Config = YAMDCC_Config.Load(confPath);
                 }
-                catch
+                catch (InvalidConfigException)
                 {
                     ConfigLoaded = false;
                     Log.Error(Strings.GetString("cfgInvalid"));
@@ -256,7 +256,7 @@ namespace YAMDCC.Service
                 if (EC.AcquireLock(1000))
                 {
                     // Write custom register values, if configured:
-                    if (Config.RegConfs.Length > 0)
+                    if (!(Config.RegConfs is null) && Config.RegConfs.Length > 0)
                     {
                         for (int i = 0; i < Config.RegConfs.Length; i++)
                         {
@@ -300,30 +300,39 @@ namespace YAMDCC.Service
                     }
 
                     // Write the charge threshold:
-                    Log.Debug("Writing charge limit configuration...");
-                    byte value = (byte)(Config.ChargeLimitConf.MinVal + Config.ChargeLimitConf.CurVal);
-                    if (!_EC.WriteByte(Config.ChargeLimitConf.Reg, value))
+                    if (!(Config.ChargeLimitConf is null))
                     {
-                        LogECWriteError(Config.ChargeLimitConf.Reg);
+                        Log.Debug("Writing charge limit configuration...");
+                        byte value = (byte)(Config.ChargeLimitConf.MinVal + Config.ChargeLimitConf.CurVal);
+                        if (!_EC.WriteByte(Config.ChargeLimitConf.Reg, value))
+                        {
+                            LogECWriteError(Config.ChargeLimitConf.Reg);
+                        }
                     }
 
                     // Write the performance mode
-                    Log.Debug("Writing performance mode setting...");
-                    value = Config.PerfModeConf.PerfModes[Config.PerfModeConf.ModeSel].Value;
-                    if (!_EC.WriteByte(Config.PerfModeConf.Reg, value))
+                    if (!(Config.PerfModeConf is null))
                     {
-                        LogECWriteError(Config.PerfModeConf.Reg);
+                        Log.Debug("Writing performance mode setting...");
+                        byte value = Config.PerfModeConf.PerfModes[Config.PerfModeConf.ModeSel].Value;
+                        if (!_EC.WriteByte(Config.PerfModeConf.Reg, value))
+                        {
+                            LogECWriteError(Config.PerfModeConf.Reg);
+                        }
                     }
 
                     // Write the Win/Fn key swap setting
-                    Log.Debug("Writing Win/Fn key swap setting...");
-                    value = Config.KeySwapConf.Enabled
-                        ? Config.KeySwapConf.OnVal
-                        : Config.KeySwapConf.OffVal;
-
-                    if (!_EC.WriteByte(Config.KeySwapConf.Reg, value))
+                    if (!(Config.KeySwapConf is null))
                     {
-                        LogECWriteError(Config.KeySwapConf.Reg);
+                        Log.Debug("Writing Win/Fn key swap setting...");
+                        byte value = Config.KeySwapConf.Enabled
+                            ? Config.KeySwapConf.OnVal
+                            : Config.KeySwapConf.OffVal;
+
+                        if (!_EC.WriteByte(Config.KeySwapConf.Reg, value))
+                        {
+                            LogECWriteError(Config.KeySwapConf.Reg);
+                        }
                     }
 
                     EC.ReleaseLock();
@@ -559,34 +568,38 @@ namespace YAMDCC.Service
 
         private int SetFullBlast(string name, string args)
         {
-            if (ParseArgs(args, 1, out int[] pArgs))
+            if (!(Config.FullBlastConf is null))
             {
-                if (EC.AcquireLock(500))
+                if (ParseArgs(args, 1, out int[] pArgs))
                 {
-                    bool success;
-                    if (pArgs[0] == 1)
+                    if (EC.AcquireLock(500))
                     {
-                        Log.Debug("Enabling Full Blast...");
-                        success = _EC.WriteByte(Config.FullBlastConf.Reg,
-                            Config.FullBlastConf.OnVal);
-                    }
-                    else
-                    {
-                        Log.Debug("Disabling Full Blast...");
-                        success = _EC.WriteByte(Config.FullBlastConf.Reg,
-                            Config.FullBlastConf.OffVal);
-                    }
-                    EC.ReleaseLock();
+                        bool success;
+                        if (pArgs[0] == 1)
+                        {
+                            Log.Debug("Enabling Full Blast...");
+                            success = _EC.WriteByte(Config.FullBlastConf.Reg,
+                                Config.FullBlastConf.OnVal);
+                        }
+                        else
+                        {
+                            Log.Debug("Disabling Full Blast...");
+                            success = _EC.WriteByte(Config.FullBlastConf.Reg,
+                                Config.FullBlastConf.OffVal);
+                        }
+                        EC.ReleaseLock();
 
-                    if (!success)
-                    {
-                        LogECReadError(Config.FullBlastConf.Reg);
+                        if (!success)
+                        {
+                            LogECReadError(Config.FullBlastConf.Reg);
+                        }
+                        return 0;
                     }
-                    return 0;
+                    return 3;
                 }
-                return 3;
+                return 2;
             }
-            return 2;
+            return 0;
         }
 
         private static void LogUnhandledException(object sender, UnhandledExceptionEventArgs e)

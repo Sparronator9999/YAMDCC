@@ -1,10 +1,10 @@
-using YAMDCC.IPC.IO;
-using YAMDCC.IPC.Threading;
 using System;
 using System.Collections.Concurrent;
 using System.IO.Pipes;
 using System.Runtime.Serialization;
 using System.Threading;
+using YAMDCC.IPC.IO;
+using YAMDCC.IPC.Threading;
 
 namespace YAMDCC.IPC
 {

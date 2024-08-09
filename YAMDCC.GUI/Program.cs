@@ -14,11 +14,11 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
-using YAMDCC.GUI.Dialogs;
 using System;
 using System.IO;
 using System.ServiceProcess;
 using System.Windows.Forms;
+using YAMDCC.GUI.Dialogs;
 
 namespace YAMDCC.GUI
 {
