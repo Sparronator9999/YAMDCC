@@ -27,16 +27,16 @@ A fast, lightweight alternative to MSI Center for MSI laptops, written in C#.
 - **Charging threshold:** MSI laptops come with the ability to limit the battery charge percentage,
   which can reduce battery degradation. This utility can set your charge threshold to whatever
   you want.
-- **Lightweight:** MSI Fan Control takes up less than a megabyte of disk space when installed, and
+- **Lightweight:** YAMDCC takes up less than a megabyte of disk space when installed, and
   only works when re-applying configs (manually, or when rebooting or waking up from sleep mode).
 - **Configurable:** Almost all settings (including those not accessible through the config GUI) can
   be changed with the power of XML.
 
 ## Screenshots
 
-![A screenshot of YAMDCC (formerly MSI Fan Control)'s main interface](Media/MSIFC-MainWindow.png)
+![A screenshot of YAMDCC's fan control interface](Media/YAMDCC-FanControlTab.png)
 
-*Note: this screenshot is outdated. I will update it Soon™, after other features are finished.*
+![A screenshot of YAMDCC's extra options interface](Media/YAMDCC-ExtrasTab.png)
 
 ## Supported Laptops
 
@@ -94,7 +94,7 @@ are you're looking for [NoteBook FanControl](https://github.com/UraniumDonut/nbf
   - The only thing we need to do is get the default fan curve from the user's laptop, and add
     it to the default fan profile.
 - [ ] Command line support
-  - The beginning of a CLI for MSI Fan Control exists, just not publicly yet
+  - The beginning of a CLI for YAMDCC exists, just not publicly yet
 - [ ] .NET support
   - Mandatory for Linux support
   - The GUI *should* compile on .NET 8, but hasn't been tested yet
@@ -119,23 +119,23 @@ Alternatively, you can [build the program yourself](#build).
 1.  Install Visual Studio 2022 with the `.NET Desktop Development` workload checked.
 2.  Download the code repository, or clone it with `git`.
 3.  Extract the downloaded code, if needed.
-4.  Open `MSIFanControl.sln` in Visual Studio.
+4.  Open `YAMDCC.sln` in Visual Studio.
 5.  Click `Build` > `Build Solution` to build everything.
-6.  Your output, assuming default build settings, is located in `MSIFanControl.GUI\bin\Debug\net48\`.
+6.  Your output, assuming default build settings, is located in `YAMDCC.GUI\bin\Debug\net48\`.
 7.  ???
 8.  Profit!
 
-Make sure to only use matching `msifcsvc.exe` and `MSIFanControl.exe` together, otherwise you
-may encounter issues (that means `net stop msifcsvc` first, then compile).
+Make sure to only use matching `yamdccsvc.exe` and `YAMDCC.exe` together, otherwise you
+may encounter issues (that means `net stop yamdccsvc` first, then compile).
 
 ### From command line
 
 1.  Follow steps 1-3 above to install Visual Studio and download the code.
 2.  Open `Developer Command Prompt for VS 2022` and `cd` to your project directory.
 3.  Run `msbuild /t:restore` to restore the solution, including NuGet packages.
-4.  Run `msbuild MSIFanControl.sln /p:platform="Any CPU" /p:configuration="Debug"` to build
+4.  Run `msbuild YAMDCC.sln /p:platform="Any CPU" /p:configuration="Debug"` to build
     the project, substituting `Debug` with `Release` (or `Any CPU` with `x86` or `x64`) as 
-5.  Your output should be located in `MSIFanControl.GUI\bin\Debug\net48\`, assuming you built
+5.  Your output should be located in `YAMDCC.GUI\bin\Debug\net48\`, assuming you built
     with the above unmodified command.
 6.  ???
 7.  Profit!
@@ -223,7 +223,7 @@ and the Win/Fn key swap setting.
 
 Due to WinForms limitations, no.
 
-Technical explanation: A few specific WinForms controls used by MSI Fan Control look really bad
+Technical explanation: A few specific WinForms controls used by YAMDCC look really bad
 when trying to recolour them to be dark themed. Also, built-in dialog boxes (for C# programmers,
 think `MessageBox.Show`) cannot be recoloured from their default white theme. Also, I have little
 to no experience with other UI kits (e.g. WPF).
@@ -271,7 +271,7 @@ details.
 
 This project makes use of the following third-party libraries:
 
-- [Named Pipe Wrapper](https://github.com/acdvorak/named-pipe-wrapper), as `MSIFanControl.IPC`,
+- [Named Pipe Wrapper](https://github.com/acdvorak/named-pipe-wrapper), as `YAMDCC.IPC`,
   for communication between the service and UI program.
 - [WinRing0](https://github.com/QCute/WinRing0) for low-level hardware access required to
   read/write the EC.
