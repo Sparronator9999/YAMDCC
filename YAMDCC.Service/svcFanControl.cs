@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.IO;
 using System.IO.Pipes;
 using System.Security.AccessControl;
+using System.Security.Principal;
 using System.ServiceProcess;
 using YAMDCC.Config;
 using YAMDCC.ECAccess;
@@ -74,7 +75,8 @@ namespace YAMDCC.Service
             _EC = new EC();
 
             PipeSecurity security = new PipeSecurity();
-            security.AddAccessRule(new PipeAccessRule("Administrators", PipeAccessRights.ReadWrite, AccessControlType.Allow));
+            //security.AddAccessRule(new PipeAccessRule("Administrators", PipeAccessRights.ReadWrite, AccessControlType.Allow));
+            security.SetSecurityDescriptorSddlForm("O:BAG:SYD:(A;;GA;;;SY)(A;;GRGW;;;BA)");
 
             IPCServer = new Server<ServiceCommand, ServiceResponse>("YAMDCC-Server", 0, security);
         }
