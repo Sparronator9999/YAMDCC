@@ -19,9 +19,7 @@ namespace YAMDCC.GUI.Dialogs
 
         private void btnReportIssue_Click(object sender, EventArgs e)
         {
-            // TODO: work out GitHub Issues stuff
-            // Process.Start("https://github.com/Sparronator9999/MSIFanControl/issues");
-            Process.Start("https://youtu.be/dQw4w9WgXcQ");
+            Process.Start("https://github.com/Sparronator9999/YAMDCC/issues");
         }
 
         private void btnSaveReport_Click(object sender, EventArgs e)

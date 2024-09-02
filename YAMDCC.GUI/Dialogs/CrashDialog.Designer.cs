@@ -82,19 +82,19 @@ namespace YAMDCC.GUI.Dialogs
             this.tableLayoutPanel1.SetColumnSpan(this.lblError, 2);
             this.lblError.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblError.Location = new System.Drawing.Point(3, 3);
-            this.lblError.Margin = new System.Windows.Forms.Padding(3);
+            this.lblError.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.lblError.Name = "lblError";
             this.lblError.Size = new System.Drawing.Size(394, 60);
             this.lblError.TabIndex = 0;
-            this.lblError.Text = "YAMDCC has crashed!\r\n\r\nBefore reporting a bug, try again on the latest version of" +
-    " YAMDCC.\r\nIf the crash still occurs, please include the following crash report:";
+            this.lblError.Text = "YAMDCC has crashed!\r\n\r\nBefore reporting a bug, try again on the latest commit of " +
+    "YAMDCC.\r\nIf the crash still occurs, please include the following crash report:";
             // 
             // btnReportIssue
             // 
             this.btnReportIssue.AutoSize = true;
-            this.btnReportIssue.Location = new System.Drawing.Point(3, 222);
+            this.btnReportIssue.Location = new System.Drawing.Point(3, 221);
             this.btnReportIssue.Name = "btnReportIssue";
-            this.btnReportIssue.Size = new System.Drawing.Size(100, 25);
+            this.btnReportIssue.Size = new System.Drawing.Size(100, 26);
             this.btnReportIssue.TabIndex = 1;
             this.btnReportIssue.Text = "GitHub Issues";
             this.btnReportIssue.UseVisualStyleBackColor = true;
@@ -107,10 +107,10 @@ namespace YAMDCC.GUI.Dialogs
             this.flowLayoutPanel1.Controls.Add(this.btnSaveReport);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(106, 219);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(106, 218);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(294, 31);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(294, 32);
             this.flowLayoutPanel1.TabIndex = 2;
             // 
             // btnExit
@@ -142,7 +142,7 @@ namespace YAMDCC.GUI.Dialogs
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(3, 69);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(394, 147);
+            this.groupBox1.Size = new System.Drawing.Size(394, 146);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Crash report";
@@ -157,7 +157,7 @@ namespace YAMDCC.GUI.Dialogs
             this.txtStackTrace.Name = "txtStackTrace";
             this.txtStackTrace.ReadOnly = true;
             this.txtStackTrace.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtStackTrace.Size = new System.Drawing.Size(388, 125);
+            this.txtStackTrace.Size = new System.Drawing.Size(388, 124);
             this.txtStackTrace.TabIndex = 0;
             // 
             // CrashDialog

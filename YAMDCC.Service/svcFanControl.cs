@@ -18,8 +18,6 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.IO.Pipes;
-using System.Security.AccessControl;
-using System.Security.Principal;
 using System.ServiceProcess;
 using YAMDCC.Config;
 using YAMDCC.ECAccess;
