@@ -15,6 +15,7 @@
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.ServiceProcess;
 using System.Windows.Forms;
@@ -65,13 +66,16 @@ namespace YAMDCC.GUI
                                 return;
                             }
                         }
-                        else return;
+                        else
+                        {
+                            return;
+                        }
                     }
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(
-                        string.Format(Strings.GetString("svcErrorStart"), ex),
+                        string.Format(CultureInfo.InvariantCulture, Strings.GetString("svcErrorStart"), ex),
                         "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }

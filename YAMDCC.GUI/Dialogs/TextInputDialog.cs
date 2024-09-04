@@ -18,7 +18,7 @@ using System.Windows.Forms;
 
 namespace YAMDCC.GUI.Dialogs
 {
-    internal partial class TextInputDialog : Form
+    internal sealed partial class TextInputDialog : Form
     {
         /// <summary>
         /// The text that the user entered in this dialog.
@@ -31,7 +31,7 @@ namespace YAMDCC.GUI.Dialogs
             lblCaption.Text = caption;
             txtInput.Text = text;
             txtInput.Multiline = multiline;
-            txtInput.Height = (int)((AutoScaleDimensions.Height / 96) * 69);
+            txtInput.Height = (int)(AutoScaleDimensions.Height / 96 * 69);
             Text = title;
         }
 

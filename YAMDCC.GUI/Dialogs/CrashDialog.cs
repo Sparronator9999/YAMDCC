@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace YAMDCC.GUI.Dialogs
 {
-    internal partial class CrashDialog : Form
+    internal sealed partial class CrashDialog : Form
     {
         public CrashDialog(Exception ex, bool threadException)
         {

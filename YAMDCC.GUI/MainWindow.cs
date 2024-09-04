@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -28,7 +29,7 @@ using YAMDCC.IPC;
 
 namespace YAMDCC.GUI
 {
-    internal partial class MainWindow : Form
+    internal sealed partial class MainWindow : Form
     {
         #region Fields
         /// <summary>
@@ -178,7 +179,7 @@ namespace YAMDCC.GUI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format(Strings.GetString("svcErrorConnect"), ex),
+                MessageBox.Show(string.Format(CultureInfo.InvariantCulture, Strings.GetString("svcErrorConnect"), ex),
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
             }
@@ -682,9 +683,9 @@ namespace YAMDCC.GUI
 
         private void PollEC()
         {
-            IPCClient.PushMessage(new ServiceCommand(Command.GetTemp, cboFanSel.SelectedIndex.ToString()));
-            IPCClient.PushMessage(new ServiceCommand(Command.GetFanSpeed, cboFanSel.SelectedIndex.ToString()));
-            IPCClient.PushMessage(new ServiceCommand(Command.GetFanRPM, cboFanSel.SelectedIndex.ToString()));
+            IPCClient.PushMessage(new ServiceCommand(Command.GetTemp, $"{cboFanSel.SelectedIndex}"));
+            IPCClient.PushMessage(new ServiceCommand(Command.GetFanSpeed, $"{cboFanSel.SelectedIndex}"));
+            IPCClient.PushMessage(new ServiceCommand(Command.GetFanRPM, $"{cboFanSel.SelectedIndex}"));
         }
 
         private void AddFanProfile()
