@@ -47,24 +47,25 @@ namespace YAMDCC.GUI.Dialogs
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.lblError = new System.Windows.Forms.Label();
             this.btnReportIssue = new System.Windows.Forms.Button();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.btnExit = new System.Windows.Forms.Button();
             this.btnSaveReport = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.txtStackTrace = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnCount = 4;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.Controls.Add(this.btnSaveReport, 2, 2);
+            this.tableLayoutPanel1.Controls.Add(this.btnExit, 3, 2);
             this.tableLayoutPanel1.Controls.Add(this.lblError, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.btnReportIssue, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 1, 2);
             this.tableLayoutPanel1.Controls.Add(this.groupBox1, 0, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
@@ -79,10 +80,10 @@ namespace YAMDCC.GUI.Dialogs
             // lblError
             // 
             this.lblError.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.lblError, 2);
+            this.tableLayoutPanel1.SetColumnSpan(this.lblError, 4);
             this.lblError.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblError.Location = new System.Drawing.Point(3, 3);
-            this.lblError.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.lblError.Margin = new System.Windows.Forms.Padding(3);
             this.lblError.Name = "lblError";
             this.lblError.Size = new System.Drawing.Size(394, 60);
             this.lblError.TabIndex = 0;
@@ -91,7 +92,7 @@ namespace YAMDCC.GUI.Dialogs
             // 
             // btnReportIssue
             // 
-            this.btnReportIssue.AutoSize = true;
+            this.btnReportIssue.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnReportIssue.Location = new System.Drawing.Point(3, 221);
             this.btnReportIssue.Name = "btnReportIssue";
             this.btnReportIssue.Size = new System.Drawing.Size(100, 26);
@@ -100,22 +101,9 @@ namespace YAMDCC.GUI.Dialogs
             this.btnReportIssue.UseVisualStyleBackColor = true;
             this.btnReportIssue.Click += new System.EventHandler(this.btnReportIssue_Click);
             // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.Controls.Add(this.btnExit);
-            this.flowLayoutPanel1.Controls.Add(this.btnSaveReport);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(106, 218);
-            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(294, 32);
-            this.flowLayoutPanel1.TabIndex = 2;
-            // 
             // btnExit
             // 
-            this.btnExit.Location = new System.Drawing.Point(216, 3);
+            this.btnExit.Location = new System.Drawing.Point(322, 221);
             this.btnExit.Name = "btnExit";
             this.btnExit.Size = new System.Drawing.Size(75, 25);
             this.btnExit.TabIndex = 0;
@@ -125,11 +113,10 @@ namespace YAMDCC.GUI.Dialogs
             // 
             // btnSaveReport
             // 
-            this.btnSaveReport.AutoSize = true;
             this.btnSaveReport.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnSaveReport.Location = new System.Drawing.Point(121, 3);
+            this.btnSaveReport.Location = new System.Drawing.Point(226, 221);
             this.btnSaveReport.Name = "btnSaveReport";
-            this.btnSaveReport.Size = new System.Drawing.Size(89, 25);
+            this.btnSaveReport.Size = new System.Drawing.Size(90, 25);
             this.btnSaveReport.TabIndex = 1;
             this.btnSaveReport.Text = "Save crash.txt";
             this.btnSaveReport.UseVisualStyleBackColor = true;
@@ -137,7 +124,7 @@ namespace YAMDCC.GUI.Dialogs
             // 
             // groupBox1
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.groupBox1, 2);
+            this.tableLayoutPanel1.SetColumnSpan(this.groupBox1, 4);
             this.groupBox1.Controls.Add(this.txtStackTrace);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(3, 69);
@@ -175,8 +162,6 @@ namespace YAMDCC.GUI.Dialogs
             this.Text = "Crash!";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
@@ -188,7 +173,6 @@ namespace YAMDCC.GUI.Dialogs
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label lblError;
         private System.Windows.Forms.Button btnReportIssue;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Button btnExit;
         private System.Windows.Forms.Button btnSaveReport;
         private System.Windows.Forms.GroupBox groupBox1;

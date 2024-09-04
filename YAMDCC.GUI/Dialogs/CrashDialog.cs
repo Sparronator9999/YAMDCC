@@ -11,8 +11,8 @@ namespace YAMDCC.GUI.Dialogs
         {
             InitializeComponent();
             txtStackTrace.Text = threadException
-                ? "Called from Application.ThreadException"
-                : "Called from AppDomain.CurrentDomain.UnhandledException";
+                ? "Called from Application.ThreadException\n"
+                : "Called from AppDomain.CurrentDomain.UnhandledException\n";
 
             txtStackTrace.Text += $"{ex.Message}\n{ex.StackTrace}";
         }
@@ -27,7 +27,7 @@ namespace YAMDCC.GUI.Dialogs
             SaveFileDialog sfd = new SaveFileDialog
             {
                 AddExtension = true,
-                FileName = $"crash-{DateTime.Now:s}.txt",
+                FileName = $"crash-{DateTime.Now:yyyy'-'MM'-'dd'T'HH'-'mm'-'ss}.txt",
                 Filter = "Text files (*.txt)|*.txt",
                 Title = "Save crash report",
             };
