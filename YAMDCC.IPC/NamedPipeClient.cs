@@ -1,81 +1,98 @@
-using System;
-using System.IO;
-using System.IO.Pipes;
-using System.Runtime.InteropServices;
-using System.Threading;
-using YAMDCC.IPC.IO;
+﻿using YAMDCC.IPC.IO;
 using YAMDCC.IPC.Threading;
+using System;
+using System.IO.Pipes;
+using System.Threading;
 
 namespace YAMDCC.IPC
 {
     /// <summary>
     /// Wraps a <see cref="NamedPipeClientStream"/>.
     /// </summary>
-    /// <typeparam name="TRdWr">
-    /// Reference type to read from and write to the named pipe
+    /// <typeparam name="TReadWrite">
+    /// The reference type to read from and write to the named pipe.
     /// </typeparam>
-    public class NamedPipeClient<TRdWr> : NamedPipeClient<TRdWr, TRdWr> where TRdWr : class
+    public class NamedPipeClient<TReadWrite> : NamedPipeClient<TReadWrite, TReadWrite>
+        where TReadWrite : class
     {
         /// <summary>
-        /// Constructs a new <c>NamedPipeClient</c> to connect to the
-        /// <see cref="NamedPipeServer{TReadWrite}"/> specified by
-        /// <paramref name="pipeName"/>.
+        /// Constructs a new <see cref="NamedPipeClient{TReadWrite}"/> to
+        /// connect to the <see cref="NamedPipeServer{TReadWrite}"/> specified
+        /// by <paramref name="pipeName"/>.
         /// </summary>
-        /// <param name="pipeName">Name of the server's pipe</param>
+        /// <param name="pipeName">
+        /// The name of the named pipe server.
+        /// </param>
         public NamedPipeClient(string pipeName) : base(pipeName) { }
     }
 
     /// <summary>
     /// Wraps a <see cref="NamedPipeClientStream"/>.
     /// </summary>
-    /// <typeparam name="TRd">Reference type to read from the named pipe</typeparam>
-    /// <typeparam name="TWr">Reference type to write to the named pipe</typeparam>
-    public class NamedPipeClient<TRd, TWr>
-        where TRd : class
-        where TWr : class
+    /// <typeparam name="TRead">
+    /// The reference type to read from the named pipe.
+    /// </typeparam>
+    /// <typeparam name="TWrite">
+    /// The reference type to write to the named pipe.
+    /// </typeparam>
+    public class NamedPipeClient<TRead, TWrite> : IDisposable
+        where TRead : class
+        where TWrite : class
     {
         /// <summary>
-        /// Gets or sets whether the client should attempt to reconnect when the pipe breaks
-        /// due to an error or the other end terminating the connection.
-        /// Default value is <c>true</c>.
+        /// Gets or sets whether the client should attempt to reconnect when
+        /// the pipe breaks due to an error or the other end terminating the
+        /// connection.
         /// </summary>
-        public bool AutoReconnect;
+        /// <remarks>
+        /// The default value is <c>true</c>.
+        /// </remarks>
+        public bool AutoReconnect { get; set; } = true;
 
         /// <summary>
-        /// Gets or sets how long the client waits between a reconnection attempt.
-        /// Default value is <c>0</c>.
+        /// Gets or sets how long the client
+        /// waits between a reconnection attempt.
         /// </summary>
-        public int AutoReconnectDelay;
+        /// <remarks>
+        /// The default value is <c>0</c>.
+        /// </remarks>
+        public int AutoReconnectDelay { get; set; }
 
         /// <summary>
         /// Invoked whenever a message is received from the server.
         /// </summary>
-        public event ConnectionMessageEventHandler<TRd, TWr> ServerMessage;
+        public event EventHandler<PipeMessageEventArgs<TRead, TWrite>> ServerMessage;
 
         /// <summary>
-        /// Invoked when the client disconnects from the server (e.g., the pipe is closed or broken).
+        /// Invoked when the client disconnects from the server
+        /// (e.g. when the pipe is closed or broken).
         /// </summary>
-        public event ConnectionEventHandler<TRd, TWr> Disconnected;
+        public event EventHandler<PipeConnectionEventArgs<TRead, TWrite>> Disconnected;
 
         /// <summary>
-        /// Invoked whenever an exception is thrown during a read or write operation on the named pipe.
+        /// Invoked whenever an exception is thrown during
+        /// a read or write operation on the named pipe.
         /// </summary>
-        public event PipeExceptionEventHandler Error;
+        public event EventHandler<PipeErrorEventArgs<TRead, TWrite>> Error;
 
         private readonly string _pipeName;
-        private NamedPipeConnection<TRd, TWr> _connection;
+        private NamedPipeConnection<TRead, TWrite> _connection;
 
         private readonly AutoResetEvent _connected = new AutoResetEvent(false);
         private readonly AutoResetEvent _disconnected = new AutoResetEvent(false);
 
         private volatile bool _closedExplicitly;
 
+        private bool _disposed;
+
         /// <summary>
-        /// Constructs a new <see cref="NamedPipeClient{TRd, TWr}"/> to connect to the
-        /// <see cref="NamedPipeServer{TReadWrite}"/> specified by
-        /// <paramref name="pipeName"/>.
+        /// Constructs a new <see cref="NamedPipeClient{TRead,TWrite}"/> to
+        /// connect to the <see cref="NamedPipeServer{TRead,TWrite}"/>
+        /// specified by <paramref name="pipeName"/>.
         /// </summary>
-        /// <param name="pipeName">Name of the server's pipe</param>
+        /// <param name="pipeName">
+        /// The name of the named pipe server.
+        /// </param>
         public NamedPipeClient(string pipeName)
         {
             _pipeName = pipeName;
@@ -84,21 +101,19 @@ namespace YAMDCC.IPC
 
         /// <summary>
         /// Connects to the named pipe server asynchronously.
-        /// This method returns immediately, possibly before the connection has been established.
         /// </summary>
+        /// <remarks>
+        /// This method returns immediately, possibly before the connection
+        /// has been established. Use <see cref="WaitForConnection()"/> to
+        /// wait until the connection to the server is established.
+        /// </remarks>
         public void Start()
         {
             _closedExplicitly = false;
             Worker worker = new Worker();
-            worker.Error += OnError;
+            worker.Error += WorkerOnError;
             worker.DoWork(ListenSync);
         }
-
-        /// <summary>
-        /// Sends a message to the server over a named pipe.
-        /// </summary>
-        /// <param name="message">Message to send to the server.</param>
-        public void PushMessage(TWr message) => _connection?.PushMessage(message);
 
         /// <summary>
         /// Closes the named pipe.
@@ -109,65 +124,110 @@ namespace YAMDCC.IPC
             _connection?.Close();
         }
 
+        /// <summary>
+        /// Sends a message to the server over a named pipe.
+        /// </summary>
+        /// <param name="message">
+        /// The message to send to the server.
+        /// </param>
+        public void PushMessage(TWrite message)
+        {
+            _connection?.PushMessage(message);
+        }
+
         #region Wait for connection/disconnection
-        /// <summary>
-        /// Blocks the current thread until a connection is established.
-        /// </summary>
-        public void WaitForConnection() =>
-            _connected.WaitOne();
 
         /// <summary>
-        /// Blocks the current thread until a connection is established,
-        /// using an integer to specify the timeout in milliseconds.
+        /// Blocks the current thread until a connection
+        /// to the named pipe server is established.
         /// </summary>
-        /// <param name="millisecondsTimeout">
-        /// The number of milliseconds to wait, or
-        /// <see cref="Timeout.Infinite"/> to wait indefinitely.
-        /// </param>
-        public void WaitForConnection(int millisecondsTimeout) =>
-            _connected.WaitOne(millisecondsTimeout);
+        public bool WaitForConnection()
+        {
+            return _connected.WaitOne();
+        }
 
         /// <summary>
-        /// Blocks the current thread until a connection is established,
-        /// using a <see cref="TimeSpan"/> to specify the timeout in milliseconds.
+        /// Blocks the current thread until a connection to the
+        /// named pipe server is established, waiting until at
+        /// most <paramref name="timeout"/> before returning.
         /// </summary>
         /// <param name="timeout">
-        /// A <see cref="TimeSpan"/> that represents the number of milliseconds to wait.
+        /// The timeout, in milliseconds, to wait for the server connection.
         /// </param>
-        public void WaitForConnection(TimeSpan timeout) =>
-            _connected.WaitOne(timeout);
+        /// <returns>
+        /// <c>true</c> if the server connection was established
+        /// before the timeout, otherwise <c>false</c>.
+        /// </returns>
+        public bool WaitForConnection(int timeout)
+        {
+            return _connected.WaitOne(timeout);
+        }
 
         /// <summary>
-        /// Blocks the current thread until the client disconnects.
-        /// </summary>
-        public void WaitForDisconnection() =>
-            _disconnected.WaitOne();
-
-        /// <summary>
-        /// Blocks the current thread until the client disconnects,
-        /// using an integer to specify the timeout in milliseconds.
-        /// </summary>
-        /// <param name="millisecondsTimeout">
-        /// The number of milliseconds to wait, or
-        /// <see cref="Timeout.Infinite"/> to wait indefinitely.
-        /// </param>
-        public void WaitForDisconnection(int millisecondsTimeout) =>
-            _disconnected.WaitOne(millisecondsTimeout);
-
-        /// <summary>
-        /// Blocks the current thread until the client disconnects,
-        /// using a <see cref="TimeSpan"/> to specify the timeout in milliseconds.
+        /// Blocks the current thread until a connection to the
+        /// named pipe server is established, waiting until at
+        /// most <paramref name="timeout"/> before returning.
         /// </summary>
         /// <param name="timeout">
-        /// A <see cref="TimeSpan"/> that represents the number of milliseconds to wait.
+        /// A <see cref="TimeSpan"/> representing the time
+        /// (in milliseconds) to wait for the server connection.
         /// </param>
-        public void WaitForDisconnection(TimeSpan timeout) =>
-            _disconnected.WaitOne(timeout);
+        /// <returns>
+        /// <c>true</c> if the server connection was established
+        /// before the timeout, otherwise <c>false</c>.
+        /// </returns>
+        public bool WaitForConnection(TimeSpan timeout)
+        {
+            return _connected.WaitOne(timeout);
+        }
+
+        /// <summary>
+        /// Blocks the current thread until the client
+        /// disconnects from the named pipe server.
+        /// </summary>
+        public bool WaitForDisconnection()
+        {
+            return _disconnected.WaitOne();
+        }
+
+        /// <summary>
+        /// Blocks the current thread until the client disconnects
+        /// from the named pipe server, waiting until at most
+        /// <paramref name="timeout"/> before returning.
+        /// </summary>
+        /// <param name="timeout">
+        /// The timeout, in milliseconds, to wait for the server to disconnect.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if the client disconnected
+        /// before the timeout, otherwise <c>false</c>.
+        /// </returns>
+        public bool WaitForDisconnection(int timeout)
+        {
+            return _disconnected.WaitOne(timeout);
+        }
+
+        /// <summary>
+        /// Blocks the current thread until the client disconnects
+        /// from the named pipe server, waiting until at most
+        /// <paramref name="timeout"/> before returning.
+        /// </summary>
+        /// <param name="timeout">
+        /// A <see cref="TimeSpan"/> representing the time
+        /// (in milliseconds) to wait for the server to disconnect.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if the client disconnected
+        /// before the timeout, otherwise <c>false</c>.
+        /// </returns>
+        public bool WaitForDisconnection(TimeSpan timeout)
+        {
+            return _disconnected.WaitOne(timeout);
+        }
 
         #endregion
 
         #region Private methods
-
         private void ListenSync()
         {
             // Get the name of the data pipe that should be used from now on by this NamedPipeClient
@@ -179,7 +239,7 @@ namespace YAMDCC.IPC
             NamedPipeClientStream dataPipe = PipeClientFactory.CreateAndConnectPipe(dataPipeName);
 
             // Create a Connection object for the data pipe
-            _connection = ConnectionFactory.CreateConnection<TRd, TWr>(dataPipe);
+            _connection = ConnectionFactory.CreateConnection<TRead, TWrite>(dataPipe);
             _connection.Disconnected += OnDisconnected;
             _connection.ReceiveMessage += OnReceiveMessage;
             _connection.Error += ConnectionOnError;
@@ -188,10 +248,9 @@ namespace YAMDCC.IPC
             _connected.Set();
         }
 
-        private void OnDisconnected(NamedPipeConnection<TRd, TWr> connection)
+        private void OnDisconnected(object sender, PipeConnectionEventArgs<TRead, TWrite> e)
         {
-            if (Disconnected != null)
-                Disconnected(connection);
+            Disconnected?.Invoke(sender, e);
 
             _disconnected.Set();
 
@@ -203,81 +262,49 @@ namespace YAMDCC.IPC
             }
         }
 
-        private void OnReceiveMessage(NamedPipeConnection<TRd, TWr> connection, TRd message)
+        private void OnReceiveMessage(object sender, PipeMessageEventArgs<TRead, TWrite> e)
         {
-            if (ServerMessage != null)
-                ServerMessage(connection, message);
+            ServerMessage?.Invoke(sender, e);
         }
 
         /// <summary>
-        ///     Invoked on the UI thread.
+        /// Invoked on the UI thread.
         /// </summary>
-        private void ConnectionOnError(NamedPipeConnection<TRd, TWr> connection, Exception exception)
+        private void ConnectionOnError(object sender, PipeErrorEventArgs<TRead, TWrite> e)
         {
-            OnError(exception);
+            Error?.Invoke(sender, e);
         }
+
 
         /// <summary>
-        ///     Invoked on the UI thread.
+        /// Invoked on the UI thread.
         /// </summary>
-        /// <param name="exception"></param>
-        private void OnError(Exception exception)
+        private void WorkerOnError(object sender, WorkerErrorEventArgs e)
         {
-            if (Error != null)
-                Error(exception);
+            Error?.Invoke(sender, new PipeErrorEventArgs<TRead, TWrite>(_connection, e.Exception));
         }
-
         #endregion
-    }
 
-    internal static class PipeClientFactory
-    {
-        [return: MarshalAs(UnmanagedType.Bool)]
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern bool WaitNamedPipe(string name, int timeout);
-        
-        public static bool NamedPipeExists(string pipeName)
+        public void Dispose()
         {
-            try
-            {
-                bool exists = WaitNamedPipe(pipeName, -1);
-                if (!exists)
-                {
-                    int error = Marshal.GetLastWin32Error();
-                    if (error == 0 || error == 2)
-                    {
-                        return false;
-                    }
-                }
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
-        public static PipeStreamWrapper<TRd, TWr> Connect<TRd, TWr>(string pipeName)
-            where TRd : class
-            where TWr : class
+        private void Dispose(bool disposing)
         {
-            return new PipeStreamWrapper<TRd, TWr>(CreateAndConnectPipe(pipeName));
-        }
-
-        public static NamedPipeClientStream CreateAndConnectPipe(string pipeName, int timeout = 10)
-        {
-            string normalizedPath = Path.GetFullPath(string.Format(@"\\.\pipe\{0}", pipeName));
-            while (!NamedPipeExists(normalizedPath))
+            if (_disposed)
             {
-                Thread.Sleep(timeout);
+                return;
             }
-            NamedPipeClientStream pipe = CreatePipe(pipeName);
-            pipe.Connect(1000);
-            return pipe;
-        }
 
-        private static NamedPipeClientStream CreatePipe(string pipeName) =>
-            new NamedPipeClientStream(".", pipeName, PipeDirection.InOut,
-                PipeOptions.Asynchronous | PipeOptions.WriteThrough);
+            if (disposing)
+            {
+                _connected.Dispose();
+                _disconnected.Dispose();
+            }
+
+            _disposed = true;
+        }
     }
 }

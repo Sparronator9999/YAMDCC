@@ -204,12 +204,12 @@ namespace YAMDCC.GUI
             IPCClient.Stop();
         }
 
-        private void IPC_MessageReceived(NamedPipeConnection<ServiceResponse, ServiceCommand> connection, ServiceResponse message)
+        private void IPC_MessageReceived(object sender, PipeMessageEventArgs<ServiceResponse, ServiceCommand> e)
         {
-            string[] args = message.Value.Split(' ');
+            string[] args = e.Message.Value.Split(' ');
             if (args.Length == 1)
             {
-                switch (message.Response)
+                switch (e.Message.Response)
                 {
                     case Response.Temp:
                         if (int.TryParse(args[0], out int value))

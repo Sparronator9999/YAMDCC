@@ -115,14 +115,14 @@ namespace YAMDCC.IPC
         /// <summary>
         /// The <see cref="IPC.Command"/> to send to the service.
         /// </summary>
-        public Command Command;
+        public Command Command { get; set; }
 
         /// <summary>
         /// The argument(s) to send to the service with the command.
         /// The number of parameters for a service command vary depending on the
         /// specific command sent to the service.
         /// </summary>
-        public string Arguments;
+        public string Arguments { get; set; }
 
         public ServiceCommand(Command command, string args)
         {

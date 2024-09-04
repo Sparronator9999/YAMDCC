@@ -1,37 +1,41 @@
+using YAMDCC.IPC.IO;
+using YAMDCC.IPC.Threading;
 using System;
 using System.Collections.Generic;
 using System.IO.Pipes;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Threading;
-using YAMDCC.IPC.IO;
-using YAMDCC.IPC.Threading;
 
 namespace YAMDCC.IPC
 {
     /// <summary>
     /// Represents a connection between a named pipe client and server.
     /// </summary>
-    /// <typeparam name="TRd">Reference type to read from the named pipe</typeparam>
-    /// <typeparam name="TWr">Reference type to write to the named pipe</typeparam>
-    public sealed class NamedPipeConnection<TRd, TWr>
-        where TRd : class
-        where TWr : class
+    /// <typeparam name="TRead">
+    /// The reference type to read from the named pipe.
+    /// </typeparam>
+    /// <typeparam name="TWrite">
+    /// The reference type to write to the named pipe.
+    /// </typeparam>
+    public class NamedPipeConnection<TRead, TWrite> : IDisposable
+        where TRead : class
+        where TWrite : class
     {
         /// <summary>
         /// Gets the connection's unique identifier.
         /// </summary>
-        public readonly int ID;
+        public int ID { get; }
 
         /// <summary>
         /// Gets the connection's name.
         /// </summary>
-        public readonly string Name;
+        public string Name { get; }
 
         /// <summary>
         /// Gets the connection's handle.
         /// </summary>
-        public readonly SafeHandle Handle;
+        public SafeHandle Handle => _streamWrapper.BaseStream.SafePipeHandle;
 
         /// <summary>
         /// Gets a value indicating whether the pipe is connected or not.
@@ -41,38 +45,58 @@ namespace YAMDCC.IPC
         /// <summary>
         /// Invoked when the named pipe connection terminates.
         /// </summary>
-        public event ConnectionEventHandler<TRd, TWr> Disconnected;
+        public event EventHandler<PipeConnectionEventArgs<TRead, TWrite>> Disconnected;
 
         /// <summary>
         /// Invoked whenever a message is received from the other end of the pipe.
         /// </summary>
-        public event ConnectionMessageEventHandler<TRd, TWr> ReceiveMessage;
+        public event EventHandler<PipeMessageEventArgs<TRead, TWrite>> ReceiveMessage;
 
         /// <summary>
         /// Invoked when an exception is thrown during any read/write operation over the named pipe.
         /// </summary>
-        public event ConnectionExceptionEventHandler<TRd, TWr> Error;
+        public event EventHandler<PipeErrorEventArgs<TRead, TWrite>> Error;
 
-        private readonly PipeStreamWrapper<TRd, TWr> _streamWrapper;
+        private readonly PipeStreamWrapper<TRead, TWrite> _streamWrapper;
 
         private readonly AutoResetEvent _writeSignal = new AutoResetEvent(false);
-        private readonly Queue<TWr> _writeQueue = new Queue<TWr>();
+        private readonly Queue<TWrite> _writeQueue = new Queue<TWrite>();
 
         private bool _notifiedSucceeded;
+
+        private bool _disposed;
 
         internal NamedPipeConnection(int id, string name, PipeStream serverStream)
         {
             ID = id;
             Name = name;
-            Handle = serverStream.SafePipeHandle;
-            _streamWrapper = new PipeStreamWrapper<TRd, TWr>(serverStream);
+            _streamWrapper = new PipeStreamWrapper<TRead, TWrite>(serverStream);
         }
 
         /// <summary>
-        /// Begins reading from and writing to the named pipe on a background thread.
-        /// This method returns immediately.
+        /// Adds the specified message to the write queue.
         /// </summary>
-        public void Open()
+        /// <remarks>
+        /// The message will be written to the named pipe by the
+        /// background thread at the next available opportunity.
+        /// </remarks>
+        /// <param name="message">
+        /// The message to write to the named pipe.
+        /// </param>
+        public void PushMessage(TWrite message)
+        {
+            _writeQueue.Enqueue(message);
+            _writeSignal.Set();
+        }
+
+        /// <summary>
+        /// Begins reading from and writing to the
+        /// named pipe on a background thread.
+        /// </summary>
+        /// <remarks>
+        /// This method returns immediately.
+        /// </remarks>
+        internal void Open()
         {
             Worker readWorker = new Worker();
             readWorker.Succeeded += OnSucceeded;
@@ -86,21 +110,13 @@ namespace YAMDCC.IPC
         }
 
         /// <summary>
-        /// Adds the specified <paramref name="message"/> to the write queue.
-        /// The message will be written to the named pipe by the background thread
-        /// at the next available opportunity.
+        /// Closes the named pipe connection and
+        /// underlying <see cref="PipeStream"/>.
         /// </summary>
-        /// <param name="message"></param>
-        public void PushMessage(TWr message)
-        {
-            _writeQueue.Enqueue(message);
-            _writeSignal.Set();
-        }
-
-        /// <summary>
-        /// Closes the named pipe connection and underlying <c>PipeStream</c>.
-        /// </summary>
-        public void Close()
+        /// <remarks>
+        /// Invoked on the background thread.
+        /// </remarks>
+        internal void Close()
         {
             _streamWrapper.Close();
             _writeSignal.Set();
@@ -109,48 +125,52 @@ namespace YAMDCC.IPC
         /// <summary>
         /// Invoked on the UI thread.
         /// </summary>
-        private void OnSucceeded()
+        private void OnSucceeded(object sender, EventArgs e)
         {
             // Only notify observers once
             if (_notifiedSucceeded)
-            {
                 return;
-            }
 
             _notifiedSucceeded = true;
 
-            Disconnected?.Invoke(this);
+            PipeConnectionEventArgs<TRead, TWrite> e2 = new PipeConnectionEventArgs<TRead, TWrite>(this);
+            Disconnected?.Invoke(sender, e2);
         }
 
         /// <summary>
         /// Invoked on the UI thread.
         /// </summary>
         /// <param name="exception"></param>
-        private void OnError(Exception exception) =>
-            Error?.Invoke(this, exception);
+        private void OnError(object sender, WorkerErrorEventArgs e)
+        {
+            Error?.Invoke(sender, new PipeErrorEventArgs<TRead, TWrite>(this, e.Exception));
+        }
 
         /// <summary>
         /// Invoked on the background thread.
         /// </summary>
-        /// <exception cref="SerializationException">An object in the graph of type parameter <typeparamref name="TRd"/> is not marked as serializable.</exception>
+        /// <exception cref="SerializationException"/>
         private void ReadPipe()
         {
             while (IsConnected && _streamWrapper.CanRead)
             {
-                TRd obj = _streamWrapper.ReadObject();
+                TRead obj = _streamWrapper.ReadObject();
                 if (obj == null)
                 {
                     Close();
                     return;
                 }
-                ReceiveMessage?.Invoke(this, obj);
+                PipeMessageEventArgs<TRead, TWrite> e =
+                    new PipeMessageEventArgs<TRead, TWrite>(this, obj);
+
+                ReceiveMessage?.Invoke(this, e);
             }
         }
 
         /// <summary>
         /// Invoked on the background thread.
         /// </summary>
-        /// <exception cref="SerializationException">An object in the graph of type parameter <typeparamref name="TWr"/> is not marked as serializable.</exception>
+        /// <exception cref="SerializationException"/>
         private void WritePipe()
         {
             while (IsConnected && _streamWrapper.CanWrite)
@@ -163,49 +183,26 @@ namespace YAMDCC.IPC
                 }
             }
         }
-    }
 
-    internal static class ConnectionFactory
-    {
-        private static int _lastId;
-
-        public static NamedPipeConnection<TRd, TWr> CreateConnection<TRd, TWr>(PipeStream pipeStream)
-            where TRd : class
-            where TWr : class
+        public void Dispose()
         {
-            return new NamedPipeConnection<TRd, TWr>(++_lastId, "Client " + _lastId, pipeStream);
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                _writeSignal.Dispose();
+            }
+
+            _disposed = true;
         }
     }
-
-    /// <summary>
-    /// Handles new connections.
-    /// </summary>
-    /// <param name="connection">The newly established connection</param>
-    /// <typeparam name="TRd">Reference type</typeparam>
-    /// <typeparam name="TWr">Reference type</typeparam>
-    public delegate void ConnectionEventHandler<TRd, TWr>(NamedPipeConnection<TRd, TWr> connection)
-        where TRd : class
-        where TWr : class;
-
-    /// <summary>
-    /// Handles messages received from a named pipe.
-    /// </summary>
-    /// <typeparam name="TRd">Reference type</typeparam>
-    /// <typeparam name="TWr">Reference type</typeparam>
-    /// <param name="connection">Connection that received the message</param>
-    /// <param name="message">Message sent by the other end of the pipe</param>
-    public delegate void ConnectionMessageEventHandler<TRd, TWr>(NamedPipeConnection<TRd, TWr> connection, TRd message)
-        where TRd : class
-        where TWr : class;
-
-    /// <summary>
-    /// Handles exceptions thrown during read/write operations.
-    /// </summary>
-    /// <typeparam name="TRd">Reference type</typeparam>
-    /// <typeparam name="TWr">Reference type</typeparam>
-    /// <param name="connection">Connection that threw the exception</param>
-    /// <param name="exception">The exception that was thrown</param>
-    public delegate void ConnectionExceptionEventHandler<TRd, TWr>(NamedPipeConnection<TRd, TWr> connection, Exception exception)
-        where TRd : class
-        where TWr : class;
 }

@@ -271,7 +271,7 @@ details.
 
 This project makes use of the following third-party libraries:
 
-- A modified version of Twosense's fork of [Named Pipe Wrapper](https://github.com/twosense/named-pipe-wrapper)
-  for communication between the service and UI program (called `YAMDCC.IPC` in the source files).
+- My fork of [Named Pipe Wrapper](https://github.com/Sparronator9999/NamedPipeWrapper) for\
+  communication between the service and UI program (called `YAMDCC.IPC` in the source files).
 - [WinRing0](https://github.com/QCute/WinRing0) for low-level hardware access required to
   read/write the EC.

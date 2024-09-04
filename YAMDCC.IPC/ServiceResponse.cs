@@ -46,12 +46,12 @@ namespace YAMDCC.IPC
         /// <summary>
         /// The <see cref="IPC.Response"/> to send to the service.
         /// </summary>
-        public Response Response;
+        public Response Response { get; set; }
 
         /// <summary>
         /// The value associated with the <see cref="IPC.Response"/>.
         /// </summary>
-        public string Value;
+        public string Value { get; set; }
 
         /// <summary>
         /// Initialises a new instance of the <see cref="ServiceResponse"/>

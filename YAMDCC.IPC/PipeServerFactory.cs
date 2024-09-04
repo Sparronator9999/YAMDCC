@@ -1,10 +1,10 @@
-using System.IO.Pipes;
+﻿using System.IO.Pipes;
 
 namespace YAMDCC.IPC
 {
     internal static class PipeServerFactory
     {
-        public static NamedPipeServerStream CreateAndConnectPipe(string pipeName)
+        internal static NamedPipeServerStream CreateAndConnectPipe(string pipeName)
         {
             NamedPipeServerStream pipe = CreatePipe(pipeName);
             pipe.WaitForConnection();
@@ -12,13 +12,13 @@ namespace YAMDCC.IPC
             return pipe;
         }
 
-        public static NamedPipeServerStream CreatePipe(string pipeName)
+        internal static NamedPipeServerStream CreatePipe(string pipeName)
         {
             return new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message,
                 PipeOptions.Asynchronous);
         }
 
-        public static NamedPipeServerStream CreateAndConnectPipe(string pipeName, int bufferSize, PipeSecurity security)
+        internal static NamedPipeServerStream CreateAndConnectPipe(string pipeName, int bufferSize, PipeSecurity security)
         {
             NamedPipeServerStream pipe = CreatePipe(pipeName, bufferSize, security);
             pipe.WaitForConnection();
@@ -26,7 +26,7 @@ namespace YAMDCC.IPC
             return pipe;
         }
 
-        public static NamedPipeServerStream CreatePipe(string pipeName, int bufferSize, PipeSecurity security)
+        internal static NamedPipeServerStream CreatePipe(string pipeName, int bufferSize, PipeSecurity security)
         {
             return new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Message,
                 PipeOptions.Asynchronous, bufferSize, bufferSize, security);

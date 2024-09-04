@@ -47,7 +47,7 @@ namespace YAMDCC.Service
         /// <summary>
         /// The named message pipe server that MSI Fan Control connects to.
         /// </summary>
-        private readonly Server<ServiceCommand, ServiceResponse> IPCServer;
+        private readonly NamedPipeServer<ServiceCommand, ServiceResponse> IPCServer;
 
         /// <summary>
         /// The <see cref="Logger"/> instance to write logs to.
@@ -76,7 +76,7 @@ namespace YAMDCC.Service
             //security.AddAccessRule(new PipeAccessRule("Administrators", PipeAccessRights.ReadWrite, AccessControlType.Allow));
             security.SetSecurityDescriptorSddlForm("O:BAG:SYD:(A;;GA;;;SY)(A;;GRGW;;;BA)");
 
-            IPCServer = new Server<ServiceCommand, ServiceResponse>("YAMDCC-Server", 0, security);
+            IPCServer = new NamedPipeServer<ServiceCommand, ServiceResponse>("YAMDCC-Server", security);
         }
 
         #region Events
@@ -150,38 +150,38 @@ namespace YAMDCC.Service
             return true;
         }
 
-        private void IPCClientConnect(NamedPipeConnection<ServiceCommand, ServiceResponse> connection)
+        private void IPCClientConnect(object sender, PipeConnectionEventArgs<ServiceCommand, ServiceResponse> e)
         {
-            connection.ReceiveMessage += IPCClientMessage;
-            Log.Info(Strings.GetString("ipcConnect"), connection.ID);
+            e.Connection.ReceiveMessage += IPCClientMessage;
+            Log.Info(Strings.GetString("ipcConnect"), e.Connection.ID);
         }
 
-        private void IPCClientDisconnect(NamedPipeConnection<ServiceCommand, ServiceResponse> connection)
+        private void IPCClientDisconnect(object sender, PipeConnectionEventArgs<ServiceCommand, ServiceResponse> e)
         {
-            connection.ReceiveMessage -= IPCClientMessage;
-            Log.Info(Strings.GetString("ipcDC"), connection.ID);
+            e.Connection.ReceiveMessage -= IPCClientMessage;
+            Log.Info(Strings.GetString("ipcDC"), e.Connection.ID);
         }
 
-        private void IPCClientMessage(NamedPipeConnection<ServiceCommand, ServiceResponse> connection, ServiceCommand message)
+        private void IPCClientMessage(object sender, PipeMessageEventArgs<ServiceCommand, ServiceResponse> e)
         {
             int error = 0;
 
-            switch (message.Command)
+            switch (e.Message.Command)
             {
                 case Command.ReadECByte:
-                    error = ReadECByte(connection.Name, message.Arguments);
+                    error = ReadECByte(e.Connection.Name, e.Message.Arguments);
                     break;
                 case Command.WriteECByte:
-                    error = WriteECByte(connection.Name, message.Arguments);
+                    error = WriteECByte(e.Connection.Name, e.Message.Arguments);
                     break;
                 case Command.GetFanSpeed:
-                    error = GetFanSpeed(connection.Name, message.Arguments);
+                    error = GetFanSpeed(e.Connection.Name, e.Message.Arguments);
                     break;
                 case Command.GetFanRPM:
-                    error = GetFanRPM(connection.Name, message.Arguments);
+                    error = GetFanRPM(e.Connection.Name, e.Message.Arguments);
                     break;
                 case Command.GetTemp:
-                    error = GetTemp(connection.Name, message.Arguments);
+                    error = GetTemp(e.Connection.Name, e.Message.Arguments);
                     break;
                 case Command.ApplyConfig:
                     LoadConf();
@@ -189,17 +189,17 @@ namespace YAMDCC.Service
                     error = 0;
                     break;
                 case Command.FullBlast:
-                    error = SetFullBlast(connection.Name, message.Arguments);
+                    error = SetFullBlast(e.Connection.Name, e.Message.Arguments);
                     break;
                 default:    // Unknown command
-                    Log.Error(Strings.GetString("errBadCmd"), message);
+                    Log.Error(Strings.GetString("errBadCmd"), e.Message);
                     break;
             }
 
             switch (error)
             {
                 case 2:
-                    Log.Error(Strings.GetString("errOffendingCmd"), message.Command, message.Arguments);
+                    Log.Error(Strings.GetString("errOffendingCmd"), e.Message.Command, e.Message.Arguments);
                     break;
                 case 3:
                     Log.Error(Strings.GetString("errECLock"));
