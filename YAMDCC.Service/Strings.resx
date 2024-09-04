@@ -143,9 +143,6 @@ Please run YAMDCC configurator and apply a config at least once.</value>
 Check the FAQ for common fixes. If the issue still occurs, open a bug report
 with this log attached.</value>
   </data>
-  <data name="drvLoadFailS" xml:space="preserve">
-    <value>Failed to load WinRing0: {0}</value>
-  </data>
   <data name="drvLoadSuccess" xml:space="preserve">
     <value>WinRing0 driver loaded successfully!</value>
   </data>
