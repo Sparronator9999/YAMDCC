@@ -106,7 +106,7 @@ are you're looking for [NoteBook FanControl](https://github.com/UraniumDonut/nbf
 
 Development builds are availabe through [GitHub Actions](https://github.com/Sparronator9999/MSIFanControl/actions).
 
-Alternatively, if you don't have a GitHub account, you can download the latest build from [nightly.link](https://nightly.link/Sparronator9999/MSIFanControl/workflows/build/main?preview).
+Alternatively, if you don't have a GitHub account, you can download the latest build from [nightly.link](https://nightly.link/Sparronator9999/YAMDCC/workflows/build/main?preview).
 
 (You probably want the `Release` build, unless you're debugging issues with the program)
 
