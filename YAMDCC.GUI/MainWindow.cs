@@ -77,6 +77,8 @@ namespace YAMDCC.GUI
             tsiProfChangeDesc.ToolTipText = Strings.GetString("ttProfChangeDesc");
             tsiProfDel.ToolTipText = Strings.GetString("ttProfDel");
             tsiECMon.ToolTipText = Strings.GetString("ttECMon");
+            tsiStopSvc.ToolTipText = Strings.GetString("ttSvcStop");
+            tsiUninstall.ToolTipText = Strings.GetString("ttSvcUninstall");
             tsiAbout.ToolTipText = Strings.GetString("ttAbout");
             tsiSource.ToolTipText = Strings.GetString("ttSource");
             ttMain.SetToolTip(cboFanSel, Strings.GetString("ttFanSel"));

@@ -9,26 +9,30 @@ A fast, lightweight alternative to MSI Center for MSI laptops, written in C#.
 ## Disclaimers
 
 - While this program is mostly complete, I still consider it to be **alpha-quality software!**
-- This program is held together by a lot of metaphorical duct-tape. You *will* experience bugs
-  and/or crashes when using it (especially if feeding it any config other than the one provided)!
-- This program requires low-level access to some of your computer hardware to apply settings.
-  While no issues should arise from the use of this program, **I (Sparronator9999) and any other**
-  **contributers shall not be held responsible for any damage to your laptop that result from**
-  **your use of this program.**
-- Linux is not yet supported. I will update it for Linux once I figure out how to run services/background processes on Linux.
+- While measures are taken to reduce the program crash change, you *will* still likely encounter
+  bugs while using this program, especially if feeding the program garbage configs.
+- This program requires low-level access to some of your computer hardware to apply settings. While
+  no issues should arise from this, **I (Sparronator9999) and any other contributers**
+  **shall not be held responsible if this program fries your computer.**
+- Additionally, if you do something silly with the program like turn off all your fans while
+  running under full load, **we *will not* be held responsible for *any* damage you cause to your**
+  **own hardware from your use of this program.**
+- Linux is not yet supported. Please don't beg me for Linux support, it will come when I can be
+  bothered (and when I figure out how to run background services/daemons on Linux).
 - This program, repository and its authors are not affiliated with Micro-Star International Co., Ltd. in any way, shape, or form.
 
 ## Features
 
-- **Fan control:** Change the fan curves for your CPU and GPU fans, including fan speeds, temperature
-  thresholds, and Full Blast (a.k.a. Cooler Boost in MSI Center).
+- **Fan control:** Change the fan curves for your CPU and GPU fans, including fan speeds,
+  temperature thresholds, and Full Blast (a.k.a. Cooler Boost in MSI Center). This allows you to
+  fix a curve that is not aggressive enough under full load, or to turn your fans off when your
+  computer is idle.
 - **Performance mode:** MSI laptops have their own performance mode setting (not to be confused
   with Windows' built-in power plans). You can change it here.
-- **Charging threshold:** MSI laptops come with the ability to limit the battery charge percentage,
-  which can reduce battery degradation. This utility can set your charge threshold to whatever
-  you want.
-- **Lightweight:** YAMDCC takes up less than a megabyte of disk space when installed, and
-  only works when re-applying configs (manually, or when rebooting or waking up from sleep mode).
+- **Charging threshold:** This program can limit how much your laptop's battery charges to, which
+  can help reduce battery degradation, especially if you leave your laptop plugged in all the time.
+- **Lightweight:** YAMDCC takes up less than a megabyte of disk space when installed, and is
+  designed to be light on your laptop's CPU.
 - **Configurable:** Almost all settings (including those not accessible through the config GUI) can
   be changed with the power of XML.
 
@@ -40,7 +44,7 @@ A fast, lightweight alternative to MSI Center for MSI laptops, written in C#.
 
 ## Supported Laptops
 
-Currently, only the MSI GF63 Thin 11SC is supported, with more MSI laptop support Coming Soon™.
+Currently, only the MSI GF63 Thin 11SC is supported, with support for more MSI laptops Coming Soon™.
 
 In the meantime, you must make your own config for your laptop (tutorial Coming Soon™).
 
@@ -59,7 +63,7 @@ are you're looking for [NoteBook FanControl](https://github.com/UraniumDonut/nbf
 
 | Feature                   | MSI Center | YAMDCC   |
 |---------------------------|------------|----------|
-| Installed size            | ~950 MB¹   | ~1.1 MB  |
+| Installed size            | ~950 MB¹   | ~176 KB¹ |
 | Fan control               | ✔          | ✔        |
 | Temp. threshold control   | ❌          | ✔        |
 | Multi-fan profile support | ❌          | ✔        |
@@ -71,7 +75,7 @@ are you're looking for [NoteBook FanControl](https://github.com/UraniumDonut/nbf
 | Other MSI Center features | ✔          | ❌        |
 | Open source               | ❌          | ✔        |
 
-1: As of v2.0.38, MSI Center takes about 950 MB of storage space when counting the UWP app (749 MB) and the files installed on first launch to `C:\Program Files (x86)\MSI` (205 MB).
+1: As of v2.0.38, MSI Center takes about 950 MB of storage space when counting the UWP app (749 MB) and the files installed on first launch to `C:\Program Files (x86)\MSI` (205 MB). YAMDCC's installed size is based on the Release build of commit dc819a6, and includes all program files, but excludes config XMLs.
 
 2: MSI Center only supports setting the charge threshold to 60%, 80%, or 100%, while YAMDCC can set this to anything between 0 and 100% (with 0 meaning charge to 100% always).
 
@@ -79,32 +83,41 @@ are you're looking for [NoteBook FanControl](https://github.com/UraniumDonut/nbf
 
 ## Roadmap
 
+Below are some changes I would like to make before a 1.0 release of YAMDCC:
+
 - [ ] Config UI fixes:
   - [ ] Actually implement the "revert to last saved config" functionality
-  - [ ] Implement missing tooltips
-- [ ] Code bug fixes *(started)*
-  - [ ] Fix the config system (it likes to crash if even a slightly wrong config is loaded)
-  - [ ] just (re)write more robust code in general lol
-- [x] Add more extra options for MSI laptops (from MSI Center):
-  - [x] Performance mode selection
-  - [x] Fn/Win key swap
+  - [x] Implement missing tooltips
 - [ ] Config generation for MSI laptops
   - This would only work because many MSI laptops have almost identical EC register locations
     for all the relevent settings we change
   - The only thing we need to do is get the default fan curve from the user's laptop, and add
     it to the default fan profile.
+- [ ] Revamp IPC between service and config applications
+  - Currently, there is no "acknowledgement" system for commands sent to the service,
+    even for commands that expect data to be returned. This means no errors if the service
+    crashes before fulfilling a received command.
+
+Below are some planned features for potential future releases:
+
 - [ ] Command line support
   - The beginning of a CLI for YAMDCC exists, just not publicly yet
-- [ ] .NET support
-  - Mandatory for Linux support
-  - The GUI *should* compile on .NET 8, but hasn't been tested yet
 - [ ] Support for editing laptop config registers using the GUI interface
   - This would allow for creating configs for other laptop brands from the config UI
   - Currently, the only way to do this is to edit the XML directly
+- [ ] .NET support
+  - Mandatory for Linux support
+  - The GUI *should* compile on .NET 8, but hasn't been tested yet
+  - The Windows service on the other hand... is going to be interesting. Even
+    with the `Microsoft.Windows.Compatibility` package installed, I still
+    wasn't able to get the service to run without issues.
+- [ ] Linux support *(not guaranteed)*
+  - Now this would require some figuring out, and may end up being a seperate
+    project that's compatible with this project's configs.
 
 ## Download
 
-Development builds are availabe through [GitHub Actions](https://github.com/Sparronator9999/MSIFanControl/actions).
+Development builds are available through [GitHub Actions](https://github.com/Sparronator9999/YAMDCC/actions).
 
 Alternatively, if you don't have a GitHub account, you can download the latest build from [nightly.link](https://nightly.link/Sparronator9999/YAMDCC/workflows/build/main?preview).
 
@@ -128,7 +141,7 @@ Alternatively, you can [build the program yourself](#build).
 Make sure to only use matching `yamdccsvc.exe` and `YAMDCC.exe` together, otherwise you
 may encounter issues (that means `net stop yamdccsvc` first, then compile).
 
-### From command line
+### From the command line
 
 1.  Follow steps 1-3 above to install Visual Studio and download the code.
 2.  Open `Developer Command Prompt for VS 2022` and `cd` to your project directory.
@@ -145,16 +158,6 @@ may encounter issues (that means `net stop yamdccsvc` first, then compile).
 If your question isn't already answered in the [FAQ](#faq) or [issues megathread](https://github.com/Sparronator9999/YAMDCC/issues/1),
 feel free to open an issue. Please make sure to use the correct issue template for your problem.
 
-<!--
-- Laptop model, system specifications (CPU, GPU), and OS version
-- A detailed description of the problem
-- Steps to reproduce the issue
-- Relevant screenshots when needed
--->
-
-However, know that I **may not check my GitHub page very often** when I'm not working
-on anything, so your issue may remain open for a while before I answer it.
-
 ## Contributing
 
 See the [build instructions](#build) to build this project.
@@ -168,6 +171,16 @@ or new configs, feel free to open a pull request. Please include the following:
 
 ## FAQ
 
+### What versions of Windows do you support?
+
+This program is tested by me (Sparronator9999) on 64-bit Windows 10 (specifically LTSC 2021).
+It should, however, run on any verison of Windows 10, 32- or 64-bit.
+
+Windows 11 *should* be supported as well, but I have not tested it. Open an issue if you have
+trouble with Windows 11.
+
+Older versions of Windows may also work, but with no support from me.
+
 ### Can you please make a Linux version?
 
 Soon™.
@@ -175,20 +188,42 @@ Soon™.
 Use one of the [many](https://github.com/dmitry-s93/MControlCenter) [other](https://github.com/gourav1100/isw)
 [projects](https://github.com/YoCodingMonster/OpenFreezeCenter) on GitHub instead while you wait.
 
-### What versions of Windows do you support?
+### How does this program work?
 
-This program is tested by me (Sparronator9999) on 64-bit Windows 10 (specifically LTSC 2021).
-It should, however, run on any verison of Windows 10, 32- or 64-bit.
-
-Windows 11 *should* be supported as well, but I have not tested it. Open an issue if you have trouble with Windows 11.
-
-Older versions of Windows may also work, but with no support from me.
+YAMDCC works by accessing your laptop's embedded controller (aka, the EC). Many settings that
+can be configured with MSI Center are stored here, including fan curve, performance mode,
+and the Win/Fn key swap setting.
 
 ### Why do I need administrator privileges to run this program?
 
-The YAMDCC service requires administrator privileges to install and communicate with
-the WinRing0 driver, which allows for low-level hardware access (required for EC access).
-This is restricted to privileged programs for obvious reasons.
+Because admin privileges are required to install kernel drivers. Simple as that.
+
+For security reasons, only programs with admin privileges are allowed to communicate with the
+YAMDCC service.
+
+### Why does this program need a kernel driver?
+
+Because communicating with the EC requires low-level hardware access, something only possible from
+within the kernel. This program achieves this with WinRing0.
+
+### Doesn't WinRing0 have security issues?
+
+[Yes](https://voidsec.com/crucial-mod-utility-lpe-cve-2021-41285/), however YAMDCC mitigates this
+by installing the driver such that only programs run with administrator privileges can communicate
+with the driver.
+
+Why wasn't this done by the driver itself in the first place, you might ask? Honestly, I don't know
+how this slipped through during development, but here we are. Unfortunately the
+[updated fork of WinRing0](https://github.com/GermanAizek/WinRing0) that *does* fix this
+vulnerability driver-side doesn't have a binary release due to Microsoft's strict driver signing
+requirements.
+
+NOTE:
+If YAMDCC finds the driver already installed, it may try to use that (potentially vulnerable)
+driver instead. If it was installed with, e.g. [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor),
+you should be fine, as they implement the same fix that YAMDCC does.
+
+Please read the [disclaimer](#disclaimers), especially the bold text, if you haven't already.
 
 ### My laptop isn't supported! What do I do?
 
@@ -213,12 +248,6 @@ then re-assemble and attempt another reboot. This will reset your BIOS settings.
 
 Users of other laptop brands will need to look up instructions for their laptop.
 
-### How does this program work?
-
-YAMDCC works by accessing your laptop's embedded controller (aka, the EC). Many settings that
-can be configured with MSI Center are stored here, including fan curve, performance mode,
-and the Win/Fn key swap setting.
-
 ### Dark mode?
 
 Due to WinForms limitations, no.
@@ -233,25 +262,6 @@ to no experience with other UI kits (e.g. WPF).
 Probably not for Windows (unless it goes EOL, which I doubt will happen for a while).
 
 If Linux support ever comes, it will be using .NET (since .NET Framework isn't supported on Linux).
-
-### Doesn't WinRing0 have security issues?
-
-[Yes](https://voidsec.com/crucial-mod-utility-lpe-cve-2021-41285/), however YAMDCC installs the
-driver such that only programs with administrator privileges can access the driver functions
-(something that should have been done in the first place by the driver itself), largely
-mitigating this vulnerability.
-
-However, if YAMDCC finds the driver already installed, it will use that (potentially vulnerable)
-version instead. If it was installed with, e.g. [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor),
-you should be fine, as they implement the same fix.
-
-The [updated fork of WinRing0](https://github.com/GermanAizek/WinRing0) updates the driver itself
-(`WinRing0.sys`) to apply this fix, however binary releases of the driver aren't provided due to
-Microsoft's driver signing requirements, and I'm too smooth-brained to write my own EC access
-kernel driver (but apparently not an entire fan control utility from scratch, including the
-WinRing0 interface code...), and I'd have to get it signed anyways.
-
-Please read the [disclaimer](#disclaimers), especially the bold text, if you haven't already.
 
 ## License and Copyright
 
@@ -271,7 +281,7 @@ details.
 
 This project makes use of the following third-party libraries:
 
-- My fork of [Named Pipe Wrapper](https://github.com/Sparronator9999/NamedPipeWrapper) for\
+- [My fork of Named Pipe Wrapper](https://github.com/Sparronator9999/NamedPipeWrapper) for
   communication between the service and UI program (called `YAMDCC.IPC` in the source files).
 - [WinRing0](https://github.com/QCute/WinRing0) for low-level hardware access required to
   read/write the EC.
