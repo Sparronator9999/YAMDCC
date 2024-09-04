@@ -363,14 +363,14 @@ namespace YAMDCC.GUI
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
                     MessageBoxDefaultButton.Button2) == DialogResult.Yes;
 
+                IPCClient.Stop();
+                Close();
+                Utils.UninstallService("yamdccsvc");
+
                 if (delData)
                 {
                     Directory.Delete(DataPath, true);
                 }
-
-                IPCClient.Stop();
-                Close();
-                Utils.UninstallService("yamdccsvc");
             }
         }
         #endregion
