@@ -27,19 +27,19 @@ namespace YAMDCC.Config
         /// The name of the fan profile.
         /// </summary>
         [XmlElement]
-        public string Name;
+        public string Name { get; set; }
 
         /// <summary>
         /// The description of the fan profile.
         /// </summary>
         [XmlElement]
-        public string Desc;
+        public string Desc { get; set; }
 
         /// <summary>
         /// The fan speeds and associated up and down thresholds.
         /// </summary>
         [XmlArray]
-        public TempThreshold[] TempThresholds;
+        public TempThreshold[] TempThresholds { get; set; }
 
         /// <summary>
         /// Creates a deep copy of this <seealso cref="FanCurveConf"/>.

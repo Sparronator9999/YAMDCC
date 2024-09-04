@@ -27,24 +27,24 @@ namespace YAMDCC.Config
         /// The register that controls the charge threshold.
         /// </summary>
         [XmlElement]
-        public byte Reg;
+        public byte Reg { get; set; }
 
         /// <summary>
         /// The value that corresponds to 0% battery threshold.
         /// </summary>
         [XmlElement]
-        public byte MinVal;
+        public byte MinVal { get; set; }
 
         /// <summary>
         /// The value that corresponds to 100% battery threshold.
         /// </summary>
         [XmlElement]
-        public byte MaxVal;
+        public byte MaxVal { get; set; }
 
         /// <summary>
         /// The currently set Charge Threshold value.
         /// </summary>
         [XmlElement]
-        public byte CurVal;
+        public byte CurVal { get; set; }
     }
 }

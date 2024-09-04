@@ -27,18 +27,18 @@ namespace YAMDCC.Config
         /// The register that controls the Cooler Boost function.
         /// </summary>
         [XmlElement]
-        public byte Reg;
+        public byte Reg { get; set; }
 
         /// <summary>
         /// The value that turns on Cooler Boost.
         /// </summary>
         [XmlElement]
-        public byte OnVal;
+        public byte OnVal { get; set; }
 
         /// <summary>
         /// The value that turns off Cooler Boost.
         /// </summary>
         [XmlElement]
-        public byte OffVal;
+        public byte OffVal { get; set; }
     }
 }

@@ -31,18 +31,18 @@ namespace YAMDCC.Config
         /// A description of what this config does.
         /// </summary>
         [XmlElement]
-        public string Desc;
+        public string Desc { get; set; }
 
         /// <summary>
         /// The register to write to.
         /// </summary>
         [XmlElement]
-        public byte Reg;
+        public byte Reg { get; set; }
 
         /// <summary>
         /// The value to write to the register.
         /// </summary>
         [XmlElement]
-        public byte Value;
+        public byte Value { get; set; }
     }
 }

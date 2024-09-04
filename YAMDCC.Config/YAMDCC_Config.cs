@@ -36,49 +36,49 @@ namespace YAMDCC.Config
         /// unless the config is newer or invalid.
         /// </summary>
         [XmlAttribute]
-        public int Ver;
+        public int Ver { get; set; }
 
         /// <summary>
         /// The laptop model the config was made for.
         /// </summary>
         [XmlElement]
-        public string Model;
+        public string Model { get; set; }
 
         /// <summary>
         /// The author of the config file.
         /// </summary>
         [XmlElement]
-        public string Author;
+        public string Author { get; set; }
 
         /// <summary>
         /// The list of <see cref="FanConf"/>s associated with the laptop.
         /// </summary>
         [XmlArray]
-        public FanConf[] FanConfs;
+        public FanConf[] FanConfs { get; set; }
 
         /// <summary>
         /// The laptop's Cooler Boost config. May be <c>null</c>.
         /// </summary>
         [XmlElement]
-        public FullBlastConf FullBlastConf;
+        public FullBlastConf FullBlastConf { get; set; }
 
         /// <summary>
         /// The laptop's charge threshold config. May be <c>null</c>.
         /// </summary>
         [XmlElement]
-        public ChargeLimitConf ChargeLimitConf;
+        public ChargeLimitConf ChargeLimitConf { get; set; }
 
         /// <summary>
         /// The laptop's performance mode config. May be <c>null</c>.
         /// </summary>
         [XmlElement]
-        public PerfModeConf PerfModeConf;
+        public PerfModeConf PerfModeConf { get; set; }
 
         /// <summary>
         /// The laptop's Win/Fn keyboard swap config. May be <c>null</c>.
         /// </summary>
         [XmlElement]
-        public KeySwapConf KeySwapConf;
+        public KeySwapConf KeySwapConf { get; set; }
 
         /// <summary>
         /// A list of registers to write when applying a fan config.
@@ -86,7 +86,7 @@ namespace YAMDCC.Config
         /// at least one <see cref="RegConf"/>.
         /// </summary>
         [XmlArray]
-        public RegConf[] RegConfs;
+        public RegConf[] RegConfs { get; set; }
 
         /// <summary>
         /// Parses an MSI Fan Control config XML and returns an

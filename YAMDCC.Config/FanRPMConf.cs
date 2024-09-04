@@ -26,40 +26,40 @@ namespace YAMDCC.Config
         /// The register to read to get the fan RPM.
         /// </summary>
         [XmlElement]
-        public byte ReadReg;
+        public byte ReadReg { get; set; }
 
         /// <summary>
         /// Is the RPM value stored as a word (16-bit) or byte (8-bit)?
         /// </summary>
         [XmlElement]
-        public bool Is16Bit;
+        public bool Is16Bit { get; set; }
 
         /// <summary>
         /// Is the RPM value big-endian? This will only have an
         /// effect if <see cref="Is16Bit"/> is set to <c>true</c>.
         /// </summary>
         [XmlElement]
-        public bool IsBigEndian;
+        public bool IsBigEndian { get; set; }
 
         /// <summary>
         /// The value to multiply (or divide, if <see cref="DivideByMult"/>
         /// is <c>true</c>) the read RPM value by.
         /// </summary>
         [XmlElement]
-        public int RPMMult = 1;
+        public int RPMMult { get; set; } = 1;
 
         /// <summary>
         /// If <c>true</c>, divides the read RPM value by
         /// <see cref="RPMMult"/> instead of multiplying.
         /// </summary>
         [XmlElement]
-        public bool DivideByMult;
+        public bool DivideByMult { get; set; }
 
         /// <summary>
         /// Set to true if the read RPM value starts high
         /// and decreases as the fan speed increases.
         /// </summary>
         [XmlElement]
-        public bool Invert;
+        public bool Invert { get; set; }
     }
 }

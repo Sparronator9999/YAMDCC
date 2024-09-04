@@ -31,7 +31,7 @@ namespace YAMDCC.Config
         /// (i.e. this is the highest fan speed that can be set).
         /// </remarks>
         [XmlElement]
-        public byte UpThreshold;
+        public byte UpThreshold { get; set; }
 
         /// <summary>
         /// The temperature threshold before the fan slows down to the previous fan speed.
@@ -41,13 +41,13 @@ namespace YAMDCC.Config
         /// (i.e. this is the default fan speed).
         /// </remarks>
         [XmlElement]
-        public byte DownThreshold;
+        public byte DownThreshold { get; set; }
 
         /// <summary>
         /// The target fan speed to set when reaching the up threshold.
         /// </summary>
         [XmlElement]
-        public byte FanSpeed;
+        public byte FanSpeed { get; set; }
 
         /// <summary>
         /// Creates a copy of this <seealso cref="TempThreshold"/>.

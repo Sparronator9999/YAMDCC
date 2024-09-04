@@ -27,38 +27,38 @@ namespace YAMDCC.Config
         /// The display name of the fan in the curve editor.
         /// </summary>
         [XmlElement]
-        public string Name;
+        public string Name { get; set; }
 
         /// <summary>
         /// The minimum possible register value for the fan speed.
         /// </summary>
         [XmlElement]
-        public byte MinSpeed;
+        public byte MinSpeed { get; set; }
 
         /// <summary>
         /// The maximum possible register value for the fan speed.
         /// </summary>
         [XmlElement]
-        public byte MaxSpeed;
+        public byte MaxSpeed { get; set; }
 
         /// <summary>
         /// The zero-based index of the <see cref="FanCurveConf"/> to apply for this fan.
         /// </summary>
         [XmlElement]
-        public int CurveSel;
+        public int CurveSel { get; set; }
 
         /// <summary>
         /// The register to read to get the fan speed percentage.
         /// </summary>
         [XmlElement]
-        public byte SpeedReadReg;
+        public byte SpeedReadReg { get; set; }
 
         /// <summary>
         /// The register to read to get the temperature
         /// of the component that controls this fan's speed.
         /// </summary>
         [XmlElement]
-        public byte TempReadReg;
+        public byte TempReadReg { get; set; }
 
         /// <summary>
         /// Contains information on how to calculate the fan RPM.
@@ -67,30 +67,30 @@ namespace YAMDCC.Config
         /// May be <c>null</c>.
         /// </remarks>
         [XmlElement]
-        public FanRPMConf RPMConf;
+        public FanRPMConf RPMConf { get; set; }
 
         /// <summary>
         /// The registers that the up thresholds are written to.
         /// </summary>
         [XmlArray]
-        public byte[] UpThresholdRegs;
+        public byte[] UpThresholdRegs { get; set; }
 
         /// <summary>
         /// The registers that the down thresholds are written to.
         /// </summary>
         [XmlArray]
-        public byte[] DownThresholdRegs;
+        public byte[] DownThresholdRegs { get; set; }
 
         /// <summary>
         /// The registers to write a fan speed profile to.
         /// </summary>
         [XmlArray]
-        public byte[] FanCurveRegs;
+        public byte[] FanCurveRegs { get; set; }
 
         /// <summary>
         /// The list of <see cref="FanCurveConf"/>s associated with this fan.
         /// </summary>
         [XmlArray]
-        public FanCurveConf[] FanCurveConfs;
+        public FanCurveConf[] FanCurveConfs { get; set; }
     }
 }
