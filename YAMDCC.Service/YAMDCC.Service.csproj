@@ -17,6 +17,8 @@
     </PropertyGroup>
     <PropertyGroup>
         <ApplicationIcon>ec.ico</ApplicationIcon>
+        <EnableNETAnalyzers>True</EnableNETAnalyzers>
+        <AnalysisLevel>latest-recommended</AnalysisLevel>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="System.Configuration.Install" />

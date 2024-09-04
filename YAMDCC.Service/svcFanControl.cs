@@ -93,10 +93,10 @@ namespace YAMDCC.Service
                 Log.Info(Strings.GetString("drvLoad"));
                 if (!_EC.LoadDriver())
                 {
-                    throw new ApplicationException(string.Format(Strings.GetString("drvLoadFailS"), new Win32Exception(_EC.GetDriverError()).Message));
+                    throw new Win32Exception(_EC.GetDriverError());
                 }
             }
-            catch (ApplicationException)
+            catch (Win32Exception)
             {
                 Log.Fatal(Strings.GetString("drvLoadFail"));
                 _EC.UnloadDriver();
@@ -351,7 +351,7 @@ namespace YAMDCC.Service
         /// <param name="expected_args">The expected number of arguments. Must be zero or positive.</param>
         /// <param name="args_out">The parsed arguments. Will be empty if parsing fails.</param>
         /// <returns></returns>
-        private bool ParseArgs(string args_in, int expected_args, out int[] args_out)
+        private static bool ParseArgs(string args_in, int expected_args, out int[] args_out)
         {
             args_out = new int[expected_args];
 
@@ -402,7 +402,7 @@ namespace YAMDCC.Service
             {
                 if (EC.AcquireLock(1000))
                 {
-                    Log.Debug(Strings.GetString("svcECReading"), pArgs[0].ToString("X"));
+                    Log.Debug(Strings.GetString("svcECReading"), $"{pArgs[0]:X}");
                     bool success = _EC.ReadByte((byte)pArgs[0], out byte value);
                     EC.ReleaseLock();
 
@@ -410,7 +410,7 @@ namespace YAMDCC.Service
                     {
                         ServiceResponse response = new ServiceResponse(Response.ReadResult, $"{pArgs[0]} {value}");
                         IPCServer.PushMessage(response, name);
-                        Log.Debug(Strings.GetString("svcECReadSuccess"), pArgs[1].ToString("X"), value.ToString("X"));
+                        Log.Debug(Strings.GetString("svcECReadSuccess"), $"{pArgs[1]:X}", $"{value:X}");
                     }
                     else
                     {
@@ -429,13 +429,13 @@ namespace YAMDCC.Service
             {
                 if (EC.AcquireLock(1000))
                 {
-                    Log.Debug(Strings.GetString("svcECWriting"), pArgs[1].ToString("X"), pArgs[0].ToString("X"));
+                    Log.Debug(Strings.GetString("svcECWriting"), $"{pArgs[1]:X}", $"{pArgs[0]:X}");
                     bool success = _EC.WriteByte((byte)pArgs[0], (byte)pArgs[1]);
                     EC.ReleaseLock();
 
                     if (success)
                     {
-                        Log.Debug(Strings.GetString("svcECWriteSuccess"), pArgs[0].ToString("X"));
+                        Log.Debug(Strings.GetString("svcECWriteSuccess"), $"{pArgs[0]:X}");
                     }
                     else
                     {
@@ -460,7 +460,7 @@ namespace YAMDCC.Service
 
                     if (success)
                     {
-                        ServiceResponse response = new ServiceResponse(Response.FanSpeed, speed.ToString());
+                        ServiceResponse response = new ServiceResponse(Response.FanSpeed, $"{speed}");
                         IPCServer.PushMessage(response, name);
                     }
                     else
@@ -552,7 +552,7 @@ namespace YAMDCC.Service
                     EC.ReleaseLock();
                     if (success)
                     {
-                        ServiceResponse response = new ServiceResponse(Response.Temp, temp.ToString());
+                        ServiceResponse response = new ServiceResponse(Response.Temp, $"{temp}");
                         IPCServer.PushMessage(response, name);
                     }
                     else

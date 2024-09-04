@@ -24,7 +24,7 @@ namespace YAMDCC.Service
     /// </summary>
     internal static class Strings
     {
-        private static ResourceManager resMan = null;
+        private static ResourceManager resMan;
 
         /// <summary>
         /// Gets a string from the underlying resource file.
@@ -68,7 +68,7 @@ namespace YAMDCC.Service
             string temp = GetString(name);
             return temp is null
                 ? null
-                : string.Format(temp, arg0);
+                : string.Format(CultureInfo.InvariantCulture, temp, arg0);
         }
 
         /// <inheritdoc cref="GetString(string)"/>
@@ -80,7 +80,7 @@ namespace YAMDCC.Service
             string temp = GetString(name);
             return temp is null
                 ? null
-                : string.Format(temp, args);
+                : string.Format(CultureInfo.InvariantCulture, temp, args);
         }
     }
 }
