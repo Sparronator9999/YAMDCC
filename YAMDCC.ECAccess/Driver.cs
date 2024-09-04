@@ -32,7 +32,7 @@ namespace YAMDCC.ECAccess
 
         private DriverStatus _status;
         private int _error;
-        private bool Disposed = false;
+        private bool Disposed;
 
         /// <summary>
         /// The current status of this <see cref="Driver"/> instance.

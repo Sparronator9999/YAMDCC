@@ -10,6 +10,8 @@
         <AssemblyVersion>1.6.0.0</AssemblyVersion>
         <FileVersion>1.6.0.0</FileVersion>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <EnableNETAnalyzers>True</EnableNETAnalyzers>
+        <AnalysisLevel>latest-recommended</AnalysisLevel>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
