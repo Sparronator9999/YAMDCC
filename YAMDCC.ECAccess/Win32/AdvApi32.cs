@@ -19,6 +19,9 @@ using System.Runtime.InteropServices;
 
 namespace YAMDCC.ECAccess
 {
+    /// <summary>
+    /// Wraps native Win32 functions from <c>advapi32.dll</c>.
+    /// </summary>
     internal static class AdvApi32
     {
         /// <summary>
@@ -35,7 +38,7 @@ namespace YAMDCC.ECAccess
             CharSet = CharSet.Unicode, ExactSpelling = true,
             EntryPoint = "OpenSCManagerW", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        public static extern IntPtr OpenSCManager(
+        internal static extern IntPtr OpenSCManager(
             string lpMachineName,
             string lpDatabaseName,
             [MarshalAs(UnmanagedType.U4)] SCMAccess dwDesiredAccess);
@@ -72,7 +75,7 @@ namespace YAMDCC.ECAccess
         CharSet = CharSet.Unicode, ExactSpelling = true,
             EntryPoint = "CreateServiceW", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        public static extern IntPtr CreateService(
+        internal static extern IntPtr CreateService(
             IntPtr hSCManager,
             string lpServiceName,
             [Optional] string lpDisplayName,
@@ -111,7 +114,7 @@ namespace YAMDCC.ECAccess
         CharSet = CharSet.Unicode, ExactSpelling = true,
             EntryPoint = "OpenServiceW", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        public static extern IntPtr OpenService(
+        internal static extern IntPtr OpenService(
             IntPtr hSCManager,
             string lpServiceName,
             [MarshalAs(UnmanagedType.U4)] ServiceAccess dwDesiredAccess);
@@ -136,7 +139,7 @@ namespace YAMDCC.ECAccess
             EntryPoint = "StartServiceW", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool StartService(
+        internal static extern bool StartService(
             IntPtr hService,
             uint dwNumServiceArgs,
             [Optional] IntPtr lpServiceArgVectors);
@@ -160,7 +163,7 @@ namespace YAMDCC.ECAccess
             ExactSpelling = true, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool ControlService(
+        internal static extern bool ControlService(
             IntPtr hService,
             uint dwControl,
             out ServiceStatus lpServiceStatus);
@@ -170,15 +173,15 @@ namespace YAMDCC.ECAccess
             ExactSpelling = true, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool ControlService(
+        internal static extern bool ControlService(
             IntPtr hService,
-            [MarshalAs(UnmanagedType.U4)] ServiceControlCode controlCode,
+            [MarshalAs(UnmanagedType.U4)] ServiceControlCode dwControl,
             out ServiceStatus lpServiceStatus);
 
         [DllImport("advapi32.dll",
             ExactSpelling = true, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        public static extern bool DeleteService(IntPtr hService);
+        internal static extern bool DeleteService(IntPtr hService);
 
         /// <summary>
         /// Closes an handle to a service control manager or service.
@@ -193,10 +196,10 @@ namespace YAMDCC.ECAccess
         [DllImport("advapi32.dll",
             ExactSpelling = true, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        public static extern bool CloseServiceHandle(IntPtr hSCObject);
+        internal static extern bool CloseServiceHandle(IntPtr hSCObject);
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct ServiceStatus
+        internal struct ServiceStatus
         {
             internal ServiceType dwServiceType;
             internal ServiceState dwCurrentState;
@@ -207,7 +210,7 @@ namespace YAMDCC.ECAccess
             internal uint dwWaitHint;
         }
 
-        public enum ServiceControlCode : uint
+        internal enum ServiceControlCode : uint
         {
             Stop = 0x01,
             Pause = 0x02,
@@ -221,7 +224,7 @@ namespace YAMDCC.ECAccess
         }
 
         [Flags]
-        public enum SCMAccess : uint
+        internal enum SCMAccess : uint
         {
             Connect = 0x0001,
             CreateService = 0x0002,
@@ -233,7 +236,7 @@ namespace YAMDCC.ECAccess
         }
 
         [Flags]
-        public enum ServiceAccess : uint
+        internal enum ServiceAccess : uint
         {
             QueryConfig = 0x0001,
             ChangeConfig = 0x0002,
@@ -252,7 +255,7 @@ namespace YAMDCC.ECAccess
         }
 
         [Flags]
-        public enum ServiceType : uint
+        internal enum ServiceType : uint
         {
             /// <summary>
             /// A kernel-mode driver service.
@@ -278,7 +281,7 @@ namespace YAMDCC.ECAccess
             Win32ShareProcess = 0x00000020,
         }
 
-        public enum ServiceState : uint
+        internal enum ServiceState : uint
         {
             Stopped = 1U,
             StartPending = 2U,
@@ -289,7 +292,7 @@ namespace YAMDCC.ECAccess
             Paused = 7U,
         }
 
-        public enum ServiceStartType : uint
+        internal enum ServiceStartType : uint
         {
             /// <summary>
             /// A device driver started by the system loader.
@@ -327,7 +330,7 @@ namespace YAMDCC.ECAccess
         /// <summary>
         /// The action to take if a service fails to start.
         /// </summary>
-        public enum ServiceError : uint
+        internal enum ServiceError : uint
         {
             /// <summary>
             /// The error is ignored and the service continues to

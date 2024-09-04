@@ -17,11 +17,12 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace YAMDCC.ECAccess
 {
     /// <summary>
-    /// Contains native Windows OS functions.
+    /// Wraps native Win32 functions from <c>kernel32.dll</c>.
     /// </summary>
     internal static class Kernel32
     {
@@ -36,7 +37,7 @@ namespace YAMDCC.ECAccess
         [DllImport("kernel32.dll",
             ExactSpelling = true, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        public static extern bool CloseHandle(IntPtr hObject);
+        internal static extern bool CloseHandle(IntPtr hObject);
 
         /// <summary>
         /// Open an installed device driver for direct communication.
@@ -58,7 +59,7 @@ namespace YAMDCC.ECAccess
             CharSet = CharSet.Unicode, ExactSpelling = true,
             EntryPoint = "CreateFileW", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        public static extern IntPtr CreateFile(
+        internal static extern IntPtr CreateFile(
             string lpFileName,
             [MarshalAs(UnmanagedType.U4)] GenericAccessRights dwDesiredAccess,
             [MarshalAs(UnmanagedType.U4)] FileShare dwShareMode,
@@ -86,66 +87,20 @@ namespace YAMDCC.ECAccess
         /// <c>true</c> if the operation was successful, otherwise <c>false</c>.
         /// </returns>
         [DllImport("kernel32.dll",
-        ExactSpelling = true, SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool DeviceIoControl(
-            IntPtr hDevice,
-            uint dwIoControlCode,
-            [Optional] ref byte lpInBuffer,
-            uint nInBufferSize,
-            [Optional] ref byte lpOutBuffer,
-            uint nOutBufferSize,
-            [Optional] out uint lpBytesReturned,
-            [Optional] IntPtr lpOverlapped);
-
-        /// <inheritdoc cref="DeviceIoControl(IntPtr, uint, ref byte, ref byte)"/>
-        [DllImport("kernel32.dll",
             ExactSpelling = true, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool DeviceIoControl(
+        internal static extern unsafe bool DeviceIoControl(
             IntPtr hDevice,
             uint dwIoControlCode,
-            [Optional] ref ushort lpInBuffer,
+            [Optional] void* lpInBuffer,
             uint nInBufferSize,
-            [Optional] ref ushort lpOutBuffer,
+            [Optional] void* lpOutBuffer,
             uint nOutBufferSize,
             [Optional] out uint lpBytesReturned,
-            [Optional] IntPtr lpOverlapped);
+            [Optional] NativeOverlapped* lpOverlapped);
 
-        /// <inheritdoc cref="DeviceIoControl(IntPtr, uint, ref byte, ref byte)"/>
-        [DllImport("kernel32.dll",
-            ExactSpelling = true, SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool DeviceIoControl(
-            IntPtr hDevice,
-            uint dwIoControlCode,
-            [Optional] ref uint lpInBuffer,
-            uint nInBufferSize,
-            [Optional] ref uint lpOutBuffer,
-            uint nOutBufferSize,
-            [Optional] out uint lpBytesReturned,
-            [Optional] IntPtr lpOverlapped);
-
-
-        /// <inheritdoc cref="DeviceIoControl(IntPtr, uint, ref byte, ref byte)"/>
-        [DllImport("kernel32.dll",
-            ExactSpelling = true, SetLastError = true)]
-        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool DeviceIoControl(
-            IntPtr hDevice,
-            uint dwIoControlCode,
-            [MarshalAs(UnmanagedType.AsAny)][Optional] object lpInBuffer,
-            uint nInBufferSize,
-            [MarshalAs(UnmanagedType.AsAny)][Optional] object lpOutBuffer,
-            uint nOutBufferSize,
-            [Optional] out uint lpBytesReturned,
-            [Optional] IntPtr lpOverlapped);
-
-        public enum GenericAccessRights : uint
+        internal enum GenericAccessRights : uint
         {
             None = 0,
             All = 0x10000000,

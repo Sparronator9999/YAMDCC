@@ -12,6 +12,7 @@
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
         <AnalysisLevel>latest-recommended</AnalysisLevel>
+        <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     </PropertyGroup>
     <ItemGroup>
         <None Update="WinRing0.sys">

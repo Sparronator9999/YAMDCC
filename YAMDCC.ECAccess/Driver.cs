@@ -13,7 +13,6 @@
 //
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
-
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -26,32 +25,30 @@ namespace YAMDCC.ECAccess
     /// </summary>
     internal class Driver : IDisposable
     {
-        private readonly string DriverName;
-        private readonly string DriverPath;
+        private readonly string DeviceName;
+        private readonly string DriverPath = string.Empty;
         private IntPtr hDevice;
 
-        private DriverStatus _status;
-        private int _error;
-        private bool Disposed;
+        /// <summary>
+        /// Gets whether the driver connection is open.
+        /// </summary>
+        public bool IsOpen { get; private set; }
 
         /// <summary>
-        /// The current status of this <see cref="Driver"/> instance.
+        /// Gets whether the driver is installed to the computer.
         /// </summary>
-        public DriverStatus Status
-        {
-            get => _status;
-            private set => _status = value;
-        }
+        /// <remarks>
+        /// This will be <c>false</c> if the driver has not been
+        /// installed by this instance of the <see cref="Driver"/>,
+        /// even if it is actaully installed to the system.
+        /// </remarks>
+        public bool IsInstalled { get; private set; }
 
         /// <summary>
         /// The underlying Win32 Error code generated
         /// by the last called method in this class instance.
         /// </summary>
-        public int ErrorCode
-        {
-            get => _error;
-            private set => _error = value;
-        }
+        public int ErrorCode { get; private set; }
 
         /// <summary>
         /// Create an instance of the <see cref="Driver"/>
@@ -66,7 +63,7 @@ namespace YAMDCC.ECAccess
         /// </param>
         public Driver(string name, string path)
         {
-            DriverName = name;
+            DeviceName = name;
             DriverPath = path;
         }
 
@@ -81,15 +78,18 @@ namespace YAMDCC.ECAccess
         {
             ErrorCode = 0;
 
-            // Make sure the file we're trying to install actually exists:
-            try
+            if (string.IsNullOrEmpty(DriverPath))
             {
-                string fullPath = Path.GetFullPath(DriverPath);
+                throw new ArgumentException(
+                    "The driver path is set to a null or empty string.", DriverPath);
             }
-            catch (ArgumentException)
+
+            // Make sure the file we're trying to install actually exists:
+            string fullPath = Path.GetFullPath(DriverPath);
+
+            if (!File.Exists(fullPath))
             {
-                Status |= DriverStatus.FileNotFound;
-                return false;
+                throw new FileNotFoundException($"{fullPath} was not found.", fullPath);
             }
 
             // Try to open the Service Control Manager:
@@ -104,7 +104,7 @@ namespace YAMDCC.ECAccess
 
             // Try to create the service:
             IntPtr hSvc = AdvApi32.CreateService(
-                hSCM, DriverName, DriverName,
+                hSCM, DeviceName, DeviceName,
                 AdvApi32.ServiceAccess.All,
                 AdvApi32.ServiceType.KernelDriver,
                 AdvApi32.ServiceStartType.DemandStart,
@@ -116,7 +116,7 @@ namespace YAMDCC.ECAccess
                 ErrorCode = Marshal.GetLastWin32Error();
                 if (ErrorCode == 1073)  // ERROR_SERVICE_EXISTS
                 {
-                    hSvc = AdvApi32.OpenService(hSCM, DriverName, AdvApi32.ServiceAccess.All);
+                    hSvc = AdvApi32.OpenService(hSCM, DeviceName, AdvApi32.ServiceAccess.All);
                     if (hSvc == IntPtr.Zero)
                     {
                         ErrorCode = Marshal.GetLastWin32Error();
@@ -131,7 +131,7 @@ namespace YAMDCC.ECAccess
                     return false;
                 }
             }
-            Status |= DriverStatus.Installed;
+            IsInstalled = true;
 
             // Try to start the service:
             if (!AdvApi32.StartService(hSvc, 0, IntPtr.Zero))
@@ -152,9 +152,11 @@ namespace YAMDCC.ECAccess
 
             // Security fix for WinRing0 access from unprivileged processes.
             // This fix is present in the WinRing0 driver itself (WinRing0.sys)
-            // in the updated fork (https://github.com/GermanAizek/WinRing0), but
-            // no public production-signed build of the driver exists with the fixes.
-            FileInfo fi = new FileInfo($"\\\\.\\{DriverName}");
+            // in an updated fork (https://github.com/GermanAizek/WinRing0), but no
+            // public production-signed build of the driver exists with the fixes.
+            // This fix was "borrowed" from OpenHardwareMonitor:
+            // https://github.com/openhardwaremonitor/openhardwaremonitor/
+            FileInfo fi = new FileInfo($"\\\\.\\{DeviceName}");
             FileSecurity security = fi.GetAccessControl();
             security.SetSecurityDescriptorSddlForm("O:BAG:SYD:(A;;FA;;;SY)(A;;FA;;;BA)");
             fi.SetAccessControl(security);
@@ -186,7 +188,7 @@ namespace YAMDCC.ECAccess
             }
 
             // Try to open the service:
-            IntPtr hSvc = AdvApi32.OpenService(hSCM, DriverName, AdvApi32.ServiceAccess.All);
+            IntPtr hSvc = AdvApi32.OpenService(hSCM, DeviceName, AdvApi32.ServiceAccess.All);
             if (hSvc == IntPtr.Zero)
             {
                 // Ignore ERROR_SERVICE_DOES_NOT_EXIST:
@@ -194,7 +196,7 @@ namespace YAMDCC.ECAccess
                 bool success = error == 1060;
                 if (success)
                 {
-                    Status &= ~DriverStatus.Installed;
+                    IsInstalled = false;
                 }
                 else
                 {
@@ -208,7 +210,7 @@ namespace YAMDCC.ECAccess
             // Stop and delete the service:
             AdvApi32.ControlService(hSvc, AdvApi32.ServiceControlCode.Stop, out _);
             AdvApi32.DeleteService(hSvc);
-            Status &= ~DriverStatus.Installed;
+            IsInstalled = false;
 
             // Close service handles
             AdvApi32.CloseServiceHandle(hSvc);
@@ -225,12 +227,17 @@ namespace YAMDCC.ECAccess
         /// </returns>
         public bool Open()
         {
+            if (IsOpen)
+            {
+                return true;
+            }
+
             ErrorCode = 0;
 
             if (hDevice == IntPtr.Zero)
             {
                 hDevice = Kernel32.CreateFile(
-                    $"\\\\.\\{DriverName}",
+                    $"\\\\.\\{DeviceName}",
                     Kernel32.GenericAccessRights.Read | Kernel32.GenericAccessRights.Write,
                     FileShare.None,
                     IntPtr.Zero,
@@ -245,8 +252,7 @@ namespace YAMDCC.ECAccess
                     return false;
                 }
 
-
-                Status |= DriverStatus.Open;
+                IsOpen = true;
                 return true;
             }
             return true;
@@ -261,91 +267,57 @@ namespace YAMDCC.ECAccess
             {
                 Kernel32.CloseHandle(hDevice);
                 hDevice = IntPtr.Zero;
-                Status &= ~DriverStatus.Open;
+                IsOpen = false;
             }
         }
 
-        public bool IOControl(uint ctlCode, object inBuffer, object outBuffer)
+        public unsafe bool IOControl(uint ctlCode, void* inBuffer, uint inBufSize, void* outBuffer, uint outBufSize, out uint bytesReturned)
         {
             if (hDevice == IntPtr.Zero)
             {
+                bytesReturned = 0;
                 return false;
             }
 
             bool success = Kernel32.DeviceIoControl(
                 hDevice, ctlCode,
-                inBuffer, inBuffer is null ? 0 : (uint)Marshal.SizeOf(inBuffer),
-                outBuffer, outBuffer is null ? 0 : (uint)Marshal.SizeOf(outBuffer),
-                out _, IntPtr.Zero);
-            if (!success)
-            {
-                ErrorCode = Marshal.GetLastWin32Error();
-            }
+                inBuffer, inBufSize,
+                outBuffer, outBufSize,
+                out bytesReturned, null);
+
+            ErrorCode = success
+                ? 0
+                : Marshal.GetLastWin32Error();
+
             return success;
         }
 
-
-        public bool IOControl(uint ctlCode, ref byte inBuffer, out byte outBuffer)
+        public unsafe bool IOControl<T>(uint ctlCode, ref T inBuffer)
+            where T : unmanaged
         {
-            outBuffer = 0;
-            if (hDevice == IntPtr.Zero)
+            fixed (T* pBuffer = &inBuffer)
             {
-                return false;
+                return IOControl(ctlCode,
+                    pBuffer, (uint)sizeof(T),
+                    null, 0,
+                    out _);
             }
-
-            bool success = Kernel32.DeviceIoControl(
-                hDevice, ctlCode,
-                ref inBuffer, sizeof(byte),
-                ref outBuffer, sizeof(byte),
-                out _, IntPtr.Zero);
-
-            if (!success)
-            {
-                ErrorCode = Marshal.GetLastWin32Error();
-            }
-            return success;
         }
 
-        public bool IOControl(uint ctlCode, ref ushort inBuffer, out ushort outBuffer)
+        public unsafe bool IOControl<TIn, TOut>(uint ctlCode, ref TIn inBuffer, out TOut outBuffer)
+            where TIn : unmanaged
+            where TOut : unmanaged
         {
-            outBuffer = 0;
-            if (hDevice == IntPtr.Zero)
+            int inSize = sizeof(TIn);
+
+            fixed (TIn* pInBuffer = &inBuffer)
+            fixed (TOut* pOutBuffer = &outBuffer)
             {
-                return false;
+                return IOControl(ctlCode,
+                    pInBuffer, (uint)inSize,
+                    pOutBuffer, (uint)sizeof(TOut),
+                    out _);
             }
-
-            bool success = Kernel32.DeviceIoControl(
-                hDevice, ctlCode,
-                ref inBuffer, sizeof(ushort),
-                ref outBuffer, sizeof(ushort),
-                out _, IntPtr.Zero);
-
-            if (!success)
-            {
-                ErrorCode = Marshal.GetLastWin32Error();
-            }
-            return success;
-        }
-
-        public bool IOControl(uint ctlCode, ref uint inBuffer, out uint outBuffer)
-        {
-            outBuffer = 0;
-            if (hDevice == IntPtr.Zero)
-            {
-                return false;
-            }
-
-            bool success = Kernel32.DeviceIoControl(
-                hDevice, ctlCode,
-                ref inBuffer, sizeof(uint),
-                ref outBuffer, sizeof(uint),
-                out _, IntPtr.Zero);
-
-            if (!success)
-            {
-                ErrorCode = Marshal.GetLastWin32Error();
-            }
-            return success;
         }
 
         #region Cleanup code
@@ -366,47 +338,16 @@ namespace YAMDCC.ECAccess
         protected virtual void Dispose(bool disposing)
         {
             // Don't do anything if we already called Dispose:
-            if (Disposed)
+            if (!IsOpen)
             {
                 return;
-            }
-
-            if (disposing)
-            {
-                // Dispose managed objects
-                // (classes that implement IDisposable, etc.)
             }
 
             // Close all open file and service handles
             Close();
 
-            Disposed = true;
+            IsOpen = false;
         }
         #endregion
-    }
-
-    [Flags]
-    public enum DriverStatus
-    {
-        /// <summary>
-        /// The driver is in an unknown state.
-        /// </summary>
-        Unknown = 0x00,
-        /// <summary>
-        /// The driver has been installed to the system.
-        /// </summary>
-        Installed = 0x01,
-        /// <summary>
-        /// The driver class is connected to the driver.
-        /// </summary>
-        Open = 0x02,
-        /// <summary>
-        /// The specified driver file was not found on the system.
-        /// </summary>
-        FileNotFound = 0x04,
-        /// <summary>
-        /// The specified driver file is invalid or corrupt.
-        /// </summary>
-        InvalidFile = 0x08,
     }
 }

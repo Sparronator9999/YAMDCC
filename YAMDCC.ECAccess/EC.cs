@@ -25,7 +25,7 @@ namespace YAMDCC.ECAccess
     /// <summary>
     /// Methods to access the embedded controller in a computer.
     /// </summary>
-    public class EC
+    public class EC : IDisposable
     {
         // See ACPI specs ch 12.2
         [Flags]
@@ -145,7 +145,7 @@ namespace YAMDCC.ECAccess
             value = 0;
 
             // only attempt to read EC if driver connection has been opened
-            if ((_Driver.Status & DriverStatus.Open) == DriverStatus.Open)
+            if (_Driver.IsOpen)
             {
                 for (int i = 0; i < RW_MAX_RETRIES; i++)
                 {
@@ -166,7 +166,7 @@ namespace YAMDCC.ECAccess
         public bool WriteByte(byte register, byte value)
         {
             // only attempt to write EC if driver connection has been opened
-            if ((_Driver.Status & DriverStatus.Open) == DriverStatus.Open)
+            if (_Driver.IsOpen)
             {
                 for (int i = 0; i < RW_MAX_RETRIES; i++)
                 {
@@ -194,7 +194,7 @@ namespace YAMDCC.ECAccess
             value = 0;
 
             // only attempt to read EC if driver connection has been opened
-            if ((_Driver.Status & DriverStatus.Open) == DriverStatus.Open)
+            if (_Driver.IsOpen)
             {
                 for (int i = 0; i < RW_MAX_RETRIES; i++)
                 {
@@ -220,7 +220,7 @@ namespace YAMDCC.ECAccess
         public bool WriteWord(byte register, ushort value, bool bigEndian = false)
         {
             // only attempt to write EC if driver connection has been opened
-            if ((_Driver.Status & DriverStatus.Open) == DriverStatus.Open)
+            if (_Driver.IsOpen)
             {
                 for (int i = 0; i < RW_MAX_RETRIES; i++)
                 {
@@ -379,7 +379,7 @@ namespace YAMDCC.ECAccess
         private bool WriteIOPort(ushort port, byte value)
         {
             WriteIOPortInput input = new WriteIOPortInput(port, value);
-            return _Driver.IOControl((uint)Ring0Control.WriteIOPortByte, input, null);
+            return _Driver.IOControl((uint)Ring0Control.WriteIOPortByte, ref input);
         }
 
         private uint GetRefCount()
@@ -387,16 +387,6 @@ namespace YAMDCC.ECAccess
             uint refCount = 0;
             return _Driver.IOControl((uint)Ring0Control.GetRefCount, ref refCount, out refCount) ? refCount : 0;
         }
-
-        /// <summary>
-        /// Gets the status of the WinRing0 driver.
-        /// </summary>
-        /// <returns>
-        /// A <see cref="DriverStatus"/> that represents
-        /// the current driver status.
-        /// </returns>
-        public DriverStatus GetDriverStatus() =>
-            _Driver.Status;
 
         public int GetDriverError() => _Driver.ErrorCode;
 
@@ -409,7 +399,7 @@ namespace YAMDCC.ECAccess
             WriteIOPortByte  = 40000u << 16 | 0x836 << 2 | 2 << 14,
         }
 
-        [StructLayout(LayoutKind.Sequential)]
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
         private struct WriteIOPortInput
         {
             public uint Port;
@@ -420,6 +410,12 @@ namespace YAMDCC.ECAccess
                 Port = port;
                 Value = value;
             }
+        }
+
+        public void Dispose()
+        {
+            _Driver?.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }
