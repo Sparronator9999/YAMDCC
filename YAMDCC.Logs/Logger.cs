@@ -15,6 +15,7 @@
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 
@@ -24,7 +25,7 @@ namespace YAMDCC.Logs
     /// A simple logger class for writing logs to
     /// the console or a configurable file path.
     /// </summary>
-    public sealed class Logger
+    public sealed class Logger : IDisposable
     {
         /// <summary>
         /// The <see cref="StreamWriter"/> to write log files to.
@@ -44,13 +45,13 @@ namespace YAMDCC.Logs
         /// </summary>
         private static readonly char[] NewlineChars = { '\r', '\n' };
 
-        private string LogString(string text, LogLevel level, bool showDate) =>
-            (showDate ? $"[{DateTime.Now:dd/MM/yyyy @ HH:mm:ss.fff}] " : "") + $"[{level}]".PadRight(8).ToUpper() + text;
+        private static string LogString(string text, LogLevel level, bool showDate) =>
+            (showDate ? $"[{DateTime.Now:dd/MM/yyyy @ HH:mm:ss.fff}] " : "") + $"[{level}]".PadRight(8).ToUpper(CultureInfo.InvariantCulture) + text;
 
         /// <summary>
         /// The path to which the log file will be written.
         /// </summary>
-        public string LogDir = Path.Combine(
+        public string LogDir { get; set; } = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
             "Sparronator9999", "YAMDCC", "Logs");
 
@@ -61,27 +62,27 @@ namespace YAMDCC.Logs
         /// <summary>
         /// The maximum number of logs to archive.
         /// </summary>
-        public int MaxArchivedLogs = 9;
+        public int MaxArchivedLogs { get; set; } = 9;
 
         /// <summary>
         /// How verbose should console logs be?
         /// </summary>
-        public LogLevel ConsoleLogLevel = LogLevel.Info;
+        public LogLevel ConsoleLogLevel { get; set; } = LogLevel.Info;
 
         /// <summary>
         /// How verbose should logs written to disk be?
         /// </summary>
-        public LogLevel FileLogLevel = LogLevel.Info;
+        public LogLevel FileLogLevel { get; set; } = LogLevel.Info;
 
         /// <summary>
         /// Should the log time be shown in console logs?
         /// </summary>
-        public bool ShowTimeInConsole = false;
+        public bool ShowTimeInConsole { get; set; }
 
         /// <summary>
         /// Should the log time be shown in logs written to disk?
         /// </summary>
-        public bool ShowTimeInFile = true;
+        public bool ShowTimeInFile { get; set; } = true;
 
         /// <summary>
         /// Writes a Debug event to the <see cref="Logger"/>.
@@ -112,7 +113,7 @@ namespace YAMDCC.Logs
         /// <param name="args">The objects to format.</param>
         public void Debug(string message, params object[] args)
         {
-            Debug(string.Format(message, args));
+            Debug(string.Format(CultureInfo.InvariantCulture, message, args));
         }
 
         /// <summary>
@@ -144,7 +145,7 @@ namespace YAMDCC.Logs
         /// <param name="args">The objects to format.</param>
         public void Info(string message, params object[] args)
         {
-            Info(string.Format(message, args));
+            Info(string.Format(CultureInfo.InvariantCulture, message, args));
         }
 
         /// <summary>
@@ -176,7 +177,7 @@ namespace YAMDCC.Logs
         /// <param name="args">The objects to format.</param>
         public void Warn(string message, params object[] args)
         {
-            Warn(string.Format(message, args));
+            Warn(string.Format(CultureInfo.InvariantCulture, message, args));
         }
 
         /// <summary>
@@ -208,7 +209,7 @@ namespace YAMDCC.Logs
         /// <param name="args">The objects to format.</param>
         public void Error(string message, params object[] args)
         {
-            Error(string.Format(message, args));
+            Error(string.Format(CultureInfo.InvariantCulture, message, args));
         }
 
         /// <summary>
@@ -242,7 +243,7 @@ namespace YAMDCC.Logs
         /// <param name="args">The objects to format.</param>
         public void Fatal(string message, params object[] args)
         {
-            Fatal(string.Format(message, args));
+            Fatal(string.Format(CultureInfo.InvariantCulture, message, args));
         }
 
         /// <summary>
@@ -271,7 +272,7 @@ namespace YAMDCC.Logs
 
                 foreach (string str in message.Split(NewlineChars, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    LogWriter.WriteLine(LogString(str, FileLogLevel, ShowTimeInFile));
+                    LogWriter.WriteLine(LogString(str, level, ShowTimeInFile));
                 }
             }
         }
@@ -374,6 +375,11 @@ namespace YAMDCC.Logs
             {
                 AutoFlush = true
             };
+        }
+
+        public void Dispose()
+        {
+            LogWriter.Dispose();
         }
     }
 }
