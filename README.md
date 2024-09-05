@@ -101,7 +101,7 @@ Below are some changes I would like to make before a 1.0 release of YAMDCC:
 Below are some planned features for potential future releases:
 
 - [ ] Command line support
-  - The beginning of a CLI for YAMDCC exists, just not publicly yet
+  - Development of a CLI application for YAMDCC has started, but isn't publicly available yet
 - [ ] Support for editing laptop config registers using the GUI interface
   - This would allow for creating configs for other laptop brands from the config UI
   - Currently, the only way to do this is to edit the XML directly
