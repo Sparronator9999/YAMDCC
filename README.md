@@ -97,6 +97,8 @@ Below are some changes I would like to make before a 1.0 release of YAMDCC:
   - Currently, there is no "acknowledgement" system for commands sent to the service,
     even for commands that expect data to be returned. This means no errors if the service
     crashes before fulfilling a received command.
+- [ ] Keyboard backlight control
+  - At the request of @porkmanager
 
 Below are some planned features for potential future releases:
 
