@@ -8,7 +8,7 @@ assignees: Sparronator9999
 ---
 
 ### Prerequisites
-- [ ] I am using the correct [issue template](https://github.com/Sparronator9999/MSIFanControl/issues/new/choose), i.e. I am asking the developer of MSI Fan Control a question. Bug reports and feature requests should be opened using their respective templates.
+- [ ] I am using the correct [issue template](https://github.com/Sparronator9999/MSIFanControl/issues/new/choose), i.e. I am asking the developer of YAMDCC a question. Bug reports and feature requests should be opened using their respective templates.
 - [ ] I have read the [FAQ](https://github.com/Sparronator9999/MSIFanControl#faq). Your question might already be answered there.
 - [ ] I have searched the [issue tracker](https://github.com/Sparronator9999/MSIFanControl/issues?q=label:"type:+question") for duplicate or similar questions. Your issue will be closed if it is a duplicate of another issue.
 - [ ] I have not answered truthfully to the above questions.
