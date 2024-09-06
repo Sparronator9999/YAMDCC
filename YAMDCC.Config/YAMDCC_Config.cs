@@ -164,6 +164,14 @@ namespace YAMDCC.Config
                         return false;
                     }
 
+                    // the selected fan curve shouldn't be higher than
+                    // the number of fan curves in the config
+                    if (cfg.CurveSel >= FanConfs.Length ||
+                        cfg.CurveSel < 0)
+                    {
+                        return false;
+                    }
+
                     if (cfg.UpThresholdRegs?.Length >= 1 &&
                         cfg.DownThresholdRegs?.Length >= 1 &&
                         cfg.FanCurveRegs?.Length >= 2 &&
@@ -198,6 +206,17 @@ namespace YAMDCC.Config
             if (RegConfs?.Length == 0)
             {
                 return false;
+            }
+
+            if (PerfModeConf is not null)
+            {
+                // the selected performance mode shouldn't be higher than
+                // the number of performance modes in the config
+                if (PerfModeConf.ModeSel >= PerfModeConf.PerfModes.Length ||
+                    PerfModeConf.ModeSel < 0)
+                {
+                    return false;
+                }
             }
 
             // All other values are considered to be valid; return true
