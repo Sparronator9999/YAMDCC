@@ -81,6 +81,12 @@ namespace YAMDCC.Config
         public KeySwapConf KeySwapConf { get; set; }
 
         /// <summary>
+        /// The laptop's keyboard backlight config. May be <c>null</c>.
+        /// </summary>
+        [XmlElement]
+        public KeyLightConf KeyLightConf { get; set; }
+
+        /// <summary>
         /// A list of registers to write when applying a fan config.
         /// May be <c>null</c>, but if not <c>null</c>, must have
         /// at least one <see cref="RegConf"/>.

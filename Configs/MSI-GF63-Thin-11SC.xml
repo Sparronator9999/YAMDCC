@@ -97,7 +97,7 @@
 						<TempThreshold>
 							<UpThreshold>46</UpThreshold>
 							<DownThreshold>43</DownThreshold>
-							<FanSpeed>33</FanSpeed>
+							<FanSpeed>32</FanSpeed>
 						</TempThreshold>
 						<TempThreshold>
 							<UpThreshold>52</UpThreshold>
@@ -222,7 +222,7 @@
 						<TempThreshold>
 							<UpThreshold>46</UpThreshold>
 							<DownThreshold>43</DownThreshold>
-							<FanSpeed>33</FanSpeed>
+							<FanSpeed>32</FanSpeed>
 						</TempThreshold>
 						<TempThreshold>
 							<UpThreshold>50</UpThreshold>
@@ -300,6 +300,11 @@ Old (pre-alpha) versions of MSI Fan Control/YAMDCC set this setting.</Desc>
 		<OnVal>16</OnVal>
 		<OffVal>0</OffVal>
 	</KeySwapConf>
+	<KeyLightConf>
+		<Reg>211</Reg>
+		<MinVal>128</MinVal>
+		<MaxVal>131</MaxVal>
+	</KeyLightConf>
 	<RegConfs>
 		<RegConf>
 			<Desc>Set fan mode to Advanced. Fixes fans not working at all with certain fan settings.</Desc>
