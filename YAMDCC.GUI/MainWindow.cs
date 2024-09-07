@@ -378,6 +378,13 @@ namespace YAMDCC.GUI
 
                 IPCClient.Stop();
                 Close();
+
+                if (!Utils.StopService("yamdccsvc"))
+                {
+                    MessageBox.Show("Failed to stop the YAMDCC service!",
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
                 if (Utils.UninstallService("yamdccsvc"))
                 {
                     // Only delete service data if the
