@@ -378,11 +378,19 @@ namespace YAMDCC.GUI
 
                 IPCClient.Stop();
                 Close();
-                Utils.UninstallService("yamdccsvc");
-
-                if (delData)
+                if (Utils.UninstallService("yamdccsvc"))
                 {
-                    Directory.Delete(DataPath, true);
+                    // Only delete service data if the
+                    // service uninstalled successfully
+                    if (delData)
+                    {
+                        Directory.Delete(DataPath, true);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Failed to uninstall the YAMDCC service!",
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
