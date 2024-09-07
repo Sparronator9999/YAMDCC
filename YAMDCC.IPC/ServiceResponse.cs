@@ -34,7 +34,11 @@ namespace YAMDCC.IPC
         /// <summary>
         /// The result of a <see cref="Command.ReadECByte"/> command.
         /// </summary>
-        ReadResult
+        ReadResult,
+        /// <summary>
+        /// The result of a <see cref="Command.GetKeyLightBright"/> command.
+        /// </summary>
+        KeyLightBright,
     }
 
     /// <summary>

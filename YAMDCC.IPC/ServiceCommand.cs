@@ -103,7 +103,23 @@ namespace YAMDCC.IPC
         /// a space-seperated string:<br/>
         /// • Enable: 1 to enable Full Blast, 0 to disable.
         /// </remarks>
-        FullBlast
+        FullBlast,
+        /// <summary>
+        /// Gets the brightness of the keyboard backlight,
+        /// and sends a <see cref="Response.KeyLightBright"/>
+        /// response with the result.
+        /// </summary>
+        GetKeyLightBright,
+        /// <summary>
+        /// Sets the keyboard backlight to the specified value.
+        /// </summary>
+        /// <remarks>
+        /// This command expects the following arguments as
+        /// a space-seperated string:<br/>
+        /// • Brightness: A value between the minimum and
+        /// maximum brightness value (minus offset).
+        /// </remarks>
+        SetKeyLightBright,
     }
 
     /// <summary>
