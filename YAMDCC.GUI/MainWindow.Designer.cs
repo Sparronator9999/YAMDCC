@@ -97,16 +97,16 @@ namespace YAMDCC.GUI
             this.lblWinFnSwap = new System.Windows.Forms.Label();
             this.chkWinFnSwap = new System.Windows.Forms.CheckBox();
             this.lblKeyLight = new System.Windows.Forms.Label();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblKeyLightLow = new System.Windows.Forms.Label();
             this.tbKeyLight = new System.Windows.Forms.TrackBar();
+            this.lblKeyLightHigh = new System.Windows.Forms.Label();
             this.flwStats = new System.Windows.Forms.FlowLayoutPanel();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lblFanSpd = new System.Windows.Forms.Label();
             this.lblFanRPM = new System.Windows.Forms.Label();
             this.lblTemp = new System.Windows.Forms.Label();
             this.tmrPoll = new System.Windows.Forms.Timer(this.components);
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblKeyLightLow = new System.Windows.Forms.Label();
-            this.lblKeyLightHigh = new System.Windows.Forms.Label();
             this.menuStrip.SuspendLayout();
             this.tblMain.SuspendLayout();
             this.tcMain.SuspendLayout();
@@ -118,9 +118,9 @@ namespace YAMDCC.GUI
             this.tabOptions.SuspendLayout();
             this.tblExtra.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numChgLim)).BeginInit();
+            this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbKeyLight)).BeginInit();
             this.flwStats.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -677,15 +677,49 @@ namespace YAMDCC.GUI
             this.lblKeyLight.TabIndex = 8;
             this.lblKeyLight.Text = "Keyboard backlight:";
             // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.AutoSize = true;
+            this.flowLayoutPanel1.Controls.Add(this.lblKeyLightLow);
+            this.flowLayoutPanel1.Controls.Add(this.tbKeyLight);
+            this.flowLayoutPanel1.Controls.Add(this.lblKeyLightHigh);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(133, 83);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(229, 49);
+            this.flowLayoutPanel1.TabIndex = 10;
+            // 
+            // lblKeyLightLow
+            // 
+            this.lblKeyLightLow.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblKeyLightLow.AutoSize = true;
+            this.lblKeyLightLow.Location = new System.Drawing.Point(3, 17);
+            this.lblKeyLightLow.Name = "lblKeyLightLow";
+            this.lblKeyLightLow.Size = new System.Drawing.Size(24, 15);
+            this.lblKeyLightLow.TabIndex = 10;
+            this.lblKeyLightLow.Text = "Off";
+            // 
             // tbKeyLight
             // 
+            this.tbKeyLight.Enabled = false;
             this.tbKeyLight.Location = new System.Drawing.Point(32, 2);
-            this.tbKeyLight.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.tbKeyLight.Margin = new System.Windows.Forms.Padding(2);
             this.tbKeyLight.Maximum = 3;
             this.tbKeyLight.Name = "tbKeyLight";
             this.tbKeyLight.Size = new System.Drawing.Size(150, 45);
             this.tbKeyLight.TabIndex = 9;
             this.tbKeyLight.TickStyle = System.Windows.Forms.TickStyle.Both;
+            this.tbKeyLight.Scroll += new System.EventHandler(this.tbKeyLight_Scroll);
+            // 
+            // lblKeyLightHigh
+            // 
+            this.lblKeyLightHigh.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblKeyLightHigh.AutoSize = true;
+            this.lblKeyLightHigh.Location = new System.Drawing.Point(187, 17);
+            this.lblKeyLightHigh.Name = "lblKeyLightHigh";
+            this.lblKeyLightHigh.Size = new System.Drawing.Size(39, 15);
+            this.lblKeyLightHigh.TabIndex = 11;
+            this.lblKeyLightHigh.Text = "Bright";
             // 
             // flwStats
             // 
@@ -745,38 +779,6 @@ namespace YAMDCC.GUI
             this.tmrPoll.Interval = 1000;
             this.tmrPoll.Tick += new System.EventHandler(this.tmrPoll_Tick);
             // 
-            // flowLayoutPanel1
-            // 
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.Controls.Add(this.lblKeyLightLow);
-            this.flowLayoutPanel1.Controls.Add(this.tbKeyLight);
-            this.flowLayoutPanel1.Controls.Add(this.lblKeyLightHigh);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(133, 83);
-            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(229, 49);
-            this.flowLayoutPanel1.TabIndex = 10;
-            // 
-            // lblKeyLightLow
-            // 
-            this.lblKeyLightLow.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblKeyLightLow.AutoSize = true;
-            this.lblKeyLightLow.Location = new System.Drawing.Point(3, 17);
-            this.lblKeyLightLow.Name = "lblKeyLightLow";
-            this.lblKeyLightLow.Size = new System.Drawing.Size(24, 15);
-            this.lblKeyLightLow.TabIndex = 10;
-            this.lblKeyLightLow.Text = "Off";
-            // 
-            // lblKeyLightHigh
-            // 
-            this.lblKeyLightHigh.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblKeyLightHigh.AutoSize = true;
-            this.lblKeyLightHigh.Location = new System.Drawing.Point(187, 17);
-            this.lblKeyLightHigh.Name = "lblKeyLightHigh";
-            this.lblKeyLightHigh.Size = new System.Drawing.Size(39, 15);
-            this.lblKeyLightHigh.TabIndex = 11;
-            this.lblKeyLightHigh.Text = "Bright";
-            // 
             // MainWindow
             // 
             this.AcceptButton = this.btnApply;
@@ -813,11 +815,11 @@ namespace YAMDCC.GUI
             this.tblExtra.ResumeLayout(false);
             this.tblExtra.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numChgLim)).EndInit();
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbKeyLight)).EndInit();
             this.flwStats.ResumeLayout(false);
             this.flwStats.PerformLayout();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

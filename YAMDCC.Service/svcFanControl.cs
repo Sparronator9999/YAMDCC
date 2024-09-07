@@ -194,6 +194,9 @@ namespace YAMDCC.Service
                 case Command.GetKeyLightBright:
                     error = GetKeyLightBright(e.Connection.Name);
                     break;
+                case Command.SetKeyLightBright:
+                    error = SetKeyLightBright(e.Connection.Name, e.Message.Arguments);
+                    break;
                 default:    // Unknown command
                     Log.Error(Strings.GetString("errBadCmd"), e.Message);
                     break;
@@ -607,17 +610,43 @@ namespace YAMDCC.Service
 
         private int GetKeyLightBright(string name)
         {
+            Log.Debug("Getting keyboard backlight brightness...");
             if (EC.AcquireLock(500))
             {
-                int offset = Config.KeyLightConf.MaxVal - Config.KeyLightConf.MinVal;
+                int offset = Config.KeyLightConf.MinVal;
                 if (_EC.ReadByte(Config.KeyLightConf.Reg, out byte brightness))
                 {
+                    Log.Debug($"Keyboard backlight brightness is {brightness}");
                     ServiceResponse response = new(Response.KeyLightBright, $"{brightness - offset}");
                     IPCServer.PushMessage(response, name);
                 }
+                else
+                {
+                    LogECReadError(Config.KeyLightConf.Reg);
+                }
                 EC.ReleaseLock();
+                return 0;
             }
-            return 0;
+            return 3;
+        }
+
+        private int SetKeyLightBright(string name, string args)
+        {
+            if (ParseArgs(args, 1, out int[] pArgs))
+            {
+                Log.Debug($"Setting keyboard backlight brightness to {pArgs[0]}...");
+                if (EC.AcquireLock(500))
+                {
+                    if (!_EC.WriteByte(Config.KeyLightConf.Reg, (byte)(pArgs[0] + Config.KeyLightConf.MinVal)))
+                    {
+                        LogECWriteError(Config.KeyLightConf.Reg);
+                    }
+                    EC.ReleaseLock();
+                    return 0;
+                }
+                return 3;
+            }
+            return 2;
         }
 
         private static void LogUnhandledException(object sender, UnhandledExceptionEventArgs e)

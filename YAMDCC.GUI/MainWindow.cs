@@ -187,6 +187,9 @@ namespace YAMDCC.GUI
             }
 
             LoadConf(Path.Combine(DataPath, "CurrentConfig.xml"));
+
+            ServiceCommand command = new ServiceCommand(Command.GetKeyLightBright, "");
+            IPCClient.PushMessage(command);
         }
 
         private void MainWindow_Closing(object sender, FormClosingEventArgs e)
@@ -229,6 +232,17 @@ namespace YAMDCC.GUI
                         if (int.TryParse(args[0], out value))
                         {
                             UpdateFanMon(value, 2);
+                        }
+                        break;
+                    case Response.KeyLightBright:
+                        if (int.TryParse(args[0], out value))
+                        {
+                            tbKeyLight.Invoke(new Action(delegate
+                            {
+                                tbKeyLight.Maximum = Config.KeyLightConf.MaxVal - Config.KeyLightConf.MinVal;
+                                tbKeyLight.Value = value;
+                                tbKeyLight.Enabled = true;
+                            }));
                         }
                         break;
                 }
@@ -542,6 +556,12 @@ namespace YAMDCC.GUI
         private void chkWinFnSwap_CheckedChanged(object sender, EventArgs e)
         {
             Config.KeySwapConf.Enabled = chkWinFnSwap.Checked;
+        }
+
+        private void tbKeyLight_Scroll(object sender, EventArgs e)
+        {
+            ServiceCommand command = new(Command.SetKeyLightBright, $"{tbKeyLight.Value}");
+            IPCClient.PushMessage(command);
         }
 
         private void btnRevert_Click(object sender, EventArgs e)
