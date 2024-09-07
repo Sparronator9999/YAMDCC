@@ -14,18 +14,35 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
+using System;
 using System.ServiceProcess;
+using YAMDCC.Logs;
 
 namespace YAMDCC.Service
 {
     internal static class Program
     {
         /// <summary>
+        /// The <see cref="Logger"/> instance to write logs to.
+        /// </summary>
+        private static readonly Logger Log = new Logger
+        {
+            ConsoleLogLevel = LogLevel.None,
+            FileLogLevel = LogLevel.Debug,
+        };
+
+        /// <summary>
         /// The main entry point for the application.
         /// </summary>
         private static void Main()
         {
-            ServiceBase.Run(new svcFanControl());
+            AppDomain.CurrentDomain.UnhandledException += LogUnhandledException;
+            ServiceBase.Run(new svcFanControl(Log));
+        }
+
+        private static void LogUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            Log.Fatal(Strings.GetString("svcException"), e.ExceptionObject);
         }
     }
 }

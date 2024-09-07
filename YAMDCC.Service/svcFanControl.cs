@@ -49,14 +49,7 @@ namespace YAMDCC.Service
         /// </summary>
         private readonly NamedPipeServer<ServiceCommand, ServiceResponse> IPCServer;
 
-        /// <summary>
-        /// The <see cref="Logger"/> instance to write logs to.
-        /// </summary>
-        private static readonly Logger Log = new Logger
-        {
-            ConsoleLogLevel = LogLevel.None,
-            FileLogLevel = LogLevel.Debug,
-        };
+        private readonly Logger Log;
 
         private readonly EC _EC;
         #endregion
@@ -65,11 +58,11 @@ namespace YAMDCC.Service
         /// Initialises a new instance of the <see cref="svcFanControl"/> class.
         /// </summary>
         /// <param name="logger">The <see cref="Logger"/> instance to write logs to.</param>
-        public svcFanControl()
+        public svcFanControl(Logger logger)
         {
             InitializeComponent();
-            AppDomain.CurrentDomain.UnhandledException += LogUnhandledException;
 
+            Log = logger;
             _EC = new EC();
 
             PipeSecurity security = new PipeSecurity();
@@ -357,7 +350,7 @@ namespace YAMDCC.Service
         /// <param name="expected_args">The expected number of arguments. Must be zero or positive.</param>
         /// <param name="args_out">The parsed arguments. Will be empty if parsing fails.</param>
         /// <returns></returns>
-        private static bool ParseArgs(string args_in, int expected_args, out int[] args_out)
+        private bool ParseArgs(string args_in, int expected_args, out int[] args_out)
         {
             args_out = new int[expected_args];
 
@@ -647,11 +640,6 @@ namespace YAMDCC.Service
                 return 3;
             }
             return 2;
-        }
-
-        private static void LogUnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            Log.Fatal(Strings.GetString("svcException"), e.ExceptionObject);
         }
     }
 }
