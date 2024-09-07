@@ -56,46 +56,7 @@ namespace YAMDCC.GUI
                 return;
             }
 
-            if (Utils.ServiceExists("yamdccsvc"))
-            {
-                ServiceController yamdccSvc = new("yamdccsvc");
-
-                // Check if the service is stopped:
-                try
-                {
-                    if (yamdccSvc.Status == ServiceControllerStatus.Stopped)
-                    {
-                        if (MessageBox.Show(
-                            Strings.GetString("svcNotRunning"),
-                            "Service not running", MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Information) == DialogResult.Yes)
-                        {
-                            if (!Utils.StartService("yamdccsvc"))
-                            {
-                                MessageBox.Show(Strings.GetString("svcErrorCrash"),
-                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                                return;
-                            }
-                        }
-                        else
-                        {
-                            return;
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(
-                        string.Format(CultureInfo.InvariantCulture, Strings.GetString("svcErrorStart"), ex),
-                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-                finally
-                {
-                    yamdccSvc.Close();
-                }
-            }
-            else // Service doesn't exist
+            if (!Utils.ServiceExists("yamdccsvc"))
             {
                 if (File.Exists("yamdccsvc.exe"))
                 {
@@ -107,8 +68,16 @@ namespace YAMDCC.GUI
                     {
                         if (Utils.InstallService("yamdccsvc"))
                         {
-                            MessageBox.Show(Strings.GetString("svcInstallSuccess"),
-                                "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            if (Utils.StartService("yamdccsvc"))
+                            {
+                                // Start the program when the service finishes starting:
+                                Application.Run(new MainWindow());
+                            }
+                            else
+                            {
+                                MessageBox.Show(Strings.GetString("svcErrorCrash"),
+                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
                         }
                         else
                         {
@@ -116,13 +85,53 @@ namespace YAMDCC.GUI
                                 "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
+                    return;
                 }
                 else
                 {
                     MessageBox.Show(Strings.GetString("svcNotFound"),
                         "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
+            }
+
+            // Check if the service is stopped:
+            ServiceController yamdccSvc = new("yamdccsvc");
+            try
+            {
+                ServiceControllerStatus status = yamdccSvc.Status;
+                yamdccSvc.Close();
+
+                if (status == ServiceControllerStatus.Stopped)
+                {
+                    if (MessageBox.Show(
+                        Strings.GetString("svcNotRunning"),
+                        "Service not running", MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Information) == DialogResult.Yes)
+                    {
+                        if (!Utils.StartService("yamdccsvc"))
+                        {
+                            MessageBox.Show(Strings.GetString("svcErrorCrash"),
+                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    string.Format(CultureInfo.InvariantCulture, Strings.GetString("svcErrorStart"), ex),
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
+            }
+            finally
+            {
+                yamdccSvc?.Close();
             }
 
             // Start the program when the service finishes starting:

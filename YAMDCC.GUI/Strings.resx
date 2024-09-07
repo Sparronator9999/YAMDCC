@@ -190,10 +190,6 @@ Try running the YAMDCC configurator again, and if the
 service installation fails again, open a bug report with
 this error.</value>
   </data>
-  <data name="svcInstallSuccess" xml:space="preserve">
-    <value>Service installed successfully!
-Please run YAMDCC again to start using it.</value>
-  </data>
   <data name="svcNotFound" xml:space="preserve">
     <value>The YAMDCC Service is not installed.
 
