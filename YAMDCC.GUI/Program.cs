@@ -17,6 +17,7 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Security.Principal;
 using System.ServiceProcess;
 using System.Windows.Forms;
 using YAMDCC.GUI.Dialogs;
@@ -44,6 +45,16 @@ namespace YAMDCC.GUI
             Directory.CreateDirectory(Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
                 "Sparronator9999", "YAMDCC", "Logs"));
+
+            if (!IsAdmin())
+            {
+                MessageBox.Show(
+                    "If you see this message, YAMDCC is not running as an Administrator.\n\n" +
+                    "Please re-run this program as Administrator\n" +
+                    "(by right-clicking on this program and clicking \"Run as administrator\").",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
 
             if (Utils.ServiceExists("yamdccsvc"))
             {
@@ -132,6 +143,24 @@ namespace YAMDCC.GUI
         {
             CrashDialog dlg = new(e.Exception, true);
             dlg.ShowDialog();
+        }
+
+        private static bool IsAdmin()
+        {
+            WindowsIdentity identity = WindowsIdentity.GetCurrent();
+            try
+            {
+                WindowsPrincipal principal = new(identity);
+                return principal.IsInRole(WindowsBuiltInRole.Administrator);
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                identity.Dispose();
+            }
         }
         #endregion
     }
