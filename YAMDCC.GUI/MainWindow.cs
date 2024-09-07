@@ -361,7 +361,12 @@ namespace YAMDCC.GUI
 
                 IPCClient.Stop();
                 Close();
-                Utils.StopService("yamdccsvc");
+
+                if (!Utils.StopService("yamdccsvc"))
+                {
+                    MessageBox.Show("Failed to stop the YAMDCC service!",
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -379,24 +384,28 @@ namespace YAMDCC.GUI
                 IPCClient.Stop();
                 Close();
 
-                if (!Utils.StopService("yamdccsvc"))
+                // Apparently this fixes the YAMDCC service not uninstalling
+                // when YAMDCC is launched by certain means
+                if (Utils.StopService("yamdccsvc"))
                 {
-                    MessageBox.Show("Failed to stop the YAMDCC service!",
-                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-
-                if (Utils.UninstallService("yamdccsvc"))
-                {
-                    // Only delete service data if the
-                    // service uninstalled successfully
-                    if (delData)
+                    if (Utils.UninstallService("yamdccsvc"))
                     {
-                        Directory.Delete(DataPath, true);
+                        // Only delete service data if the
+                        // service uninstalled successfully
+                        if (delData)
+                        {
+                            Directory.Delete(DataPath, true);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Failed to uninstall the YAMDCC service!",
+                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Failed to uninstall the YAMDCC service!",
+                    MessageBox.Show("Failed to stop the YAMDCC service!",
                         "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
