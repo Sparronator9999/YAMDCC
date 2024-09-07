@@ -13,6 +13,7 @@
         <UseWindowsForms>true</UseWindowsForms>
         <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <LangVersion>latest</LangVersion>
     </PropertyGroup>
     <PropertyGroup>
         <ApplicationIcon>fan.ico</ApplicationIcon>

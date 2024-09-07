@@ -13,6 +13,7 @@
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
         <AnalysisLevel>latest-recommended</AnalysisLevel>
         <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+        <LangVersion>latest</LangVersion>
     </PropertyGroup>
     <ItemGroup>
         <None Update="WinRing0.sys">
