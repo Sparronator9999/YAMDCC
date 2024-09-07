@@ -668,6 +668,7 @@ namespace YAMDCC.GUI
                 numChgLim.Maximum = Math.Abs(cfg.MaxVal - cfg.MinVal);
             }
 
+            cboPerfMode.Items.Clear();
             if (Config.PerfModeConf is null)
             {
                 ttMain.SetToolTip(cboPerfMode, Strings.GetString("ttNotSupported"));
