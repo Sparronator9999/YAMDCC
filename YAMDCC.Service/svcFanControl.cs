@@ -455,6 +455,11 @@ namespace YAMDCC.Service
 
         private int GetFanSpeed(string name, string args)
         {
+            if (!ConfigLoaded)
+            {
+                return 0;
+            }
+
             if (ParseArgs(args, 1, out int[] pArgs))
             {
                 if (EC.AcquireLock(1000))
@@ -481,6 +486,11 @@ namespace YAMDCC.Service
 
         private int GetFanRPM(string name, string args)
         {
+            if (!ConfigLoaded)
+            {
+                return 0;
+            }
+
             if (ParseArgs(args, 1, out int[] pArgs))
             {
                 FanConf cfg = Config.FanConfs[pArgs[0]];
@@ -548,6 +558,11 @@ namespace YAMDCC.Service
 
         private int GetTemp(string name, string args)
         {
+            if (!ConfigLoaded)
+            {
+                return 0;
+            }
+
             if (ParseArgs(args, 1, out int[] pArgs))
             {
                 if (EC.AcquireLock(1000))
@@ -573,7 +588,7 @@ namespace YAMDCC.Service
 
         private int SetFullBlast(string name, string args)
         {
-            if (Config.FullBlastConf is not null)
+            if (ConfigLoaded && Config.FullBlastConf is not null)
             {
                 if (ParseArgs(args, 1, out int[] pArgs))
                 {
@@ -609,7 +624,7 @@ namespace YAMDCC.Service
 
         private int GetKeyLightBright(string name)
         {
-            if (Config.KeyLightConf is null)
+            if (!ConfigLoaded || Config.KeyLightConf is null)
             {
                 return 0;
             }
@@ -636,7 +651,7 @@ namespace YAMDCC.Service
 
         private int SetKeyLightBright(string name, string args)
         {
-            if (Config.KeyLightConf is null)
+            if (!ConfigLoaded || Config.KeyLightConf is null)
             {
                 return 0;
             }
