@@ -183,6 +183,8 @@ namespace YAMDCC.Service
                 case Command.ApplyConfig:
                     LoadConf();
                     ApplySettings();
+                    ServiceResponse response = new(Response.Success, $"{(int)e.Message.Command}");
+                    IPCServer.PushMessage(response, e.Connection.ID);
                     error = 0;
                     break;
                 case Command.FullBlast:

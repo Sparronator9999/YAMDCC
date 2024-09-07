@@ -186,6 +186,12 @@ namespace YAMDCC.GUI
             }
 
             LoadConf(Path.Combine(DataPath, "CurrentConfig.xml"));
+
+            if (Config is not null && Config.KeyLightConf is not null)
+            {
+                ServiceCommand command = new(Command.GetKeyLightBright, "");
+                IPCClient.PushMessage(command);
+            }
         }
 
         private void MainWindow_Closing(object sender, FormClosingEventArgs e)
@@ -212,26 +218,45 @@ namespace YAMDCC.GUI
             {
                 switch (e.Message.Response)
                 {
+                    case Response.Success:
+                    {
+                        if (int.TryParse(args[0], out int value))
+                        {
+                            if ((Command)value == Command.ApplyConfig && Config.KeyLightConf is not null)
+                            {
+                                ServiceCommand command = new(Command.GetKeyLightBright, "");
+                                IPCClient.PushMessage(command);
+                            }
+                        }
+                        break;
+                    }
                     case Response.Temp:
+                    {
                         if (int.TryParse(args[0], out int value))
                         {
                             UpdateFanMon(value, 0);
                         }
                         break;
+                    }
                     case Response.FanSpeed:
-                        if (int.TryParse(args[0], out value))
+                    {
+                        if (int.TryParse(args[0], out int value))
                         {
                             UpdateFanMon(value, 1);
                         }
                         break;
+                    }
                     case Response.FanRPM:
-                        if (int.TryParse(args[0], out value))
+                    {
+                        if (int.TryParse(args[0], out int value))
                         {
                             UpdateFanMon(value, 2);
                         }
                         break;
+                    }
                     case Response.KeyLightBright:
-                        if (int.TryParse(args[0], out value))
+                    {
+                        if (int.TryParse(args[0], out int value))
                         {
                             tbKeyLight.Invoke(new Action(delegate
                             {
@@ -241,6 +266,7 @@ namespace YAMDCC.GUI
                             }));
                         }
                         break;
+                    }
                 }
             }
         }
@@ -698,12 +724,6 @@ namespace YAMDCC.GUI
                 chkWinFnSwap.Checked = Config.KeySwapConf.Enabled;
                 ttMain.SetToolTip(chkWinFnSwap, Strings.GetString("ttKeySwap"));
                 chkWinFnSwap.Enabled = lblWinFnSwap.Enabled = true;
-            }
-
-            if (Config.KeyLightConf is not null)
-            {
-                ServiceCommand command = new(Command.GetKeyLightBright, "");
-                IPCClient.PushMessage(command);
             }
 
             cboFanSel.Items.Clear();
