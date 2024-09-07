@@ -191,6 +191,9 @@ namespace YAMDCC.Service
                 case Command.FullBlast:
                     error = SetFullBlast(e.Connection.Name, e.Message.Arguments);
                     break;
+                case Command.GetKeyLightBright:
+                    error = GetKeyLightBright(e.Connection.Name);
+                    break;
                 default:    // Unknown command
                     Log.Error(Strings.GetString("errBadCmd"), e.Message);
                     break;
@@ -598,6 +601,21 @@ namespace YAMDCC.Service
                     return 3;
                 }
                 return 2;
+            }
+            return 0;
+        }
+
+        private int GetKeyLightBright(string name)
+        {
+            if (EC.AcquireLock(500))
+            {
+                int offset = Config.KeyLightConf.MaxVal - Config.KeyLightConf.MinVal;
+                if (_EC.ReadByte(Config.KeyLightConf.Reg, out byte brightness))
+                {
+                    ServiceResponse response = new(Response.KeyLightBright, $"{brightness - offset}");
+                    IPCServer.PushMessage(response, name);
+                }
+                EC.ReleaseLock();
             }
             return 0;
         }
