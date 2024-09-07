@@ -607,14 +607,19 @@ namespace YAMDCC.Service
 
         private int GetKeyLightBright(string name)
         {
+            if (Config.KeyLightConf is null)
+            {
+                return 0;
+            }
+
             Log.Debug("Getting keyboard backlight brightness...");
             if (EC.AcquireLock(500))
             {
-                int offset = Config.KeyLightConf.MinVal;
-                if (_EC.ReadByte(Config.KeyLightConf.Reg, out byte brightness))
+                if (_EC.ReadByte(Config.KeyLightConf.Reg, out byte value))
                 {
+                    int brightness = value - Config.KeyLightConf.MinVal;
                     Log.Debug($"Keyboard backlight brightness is {brightness}");
-                    ServiceResponse response = new(Response.KeyLightBright, $"{brightness - offset}");
+                    ServiceResponse response = new(Response.KeyLightBright, $"{brightness}");
                     IPCServer.PushMessage(response, name);
                 }
                 else
@@ -629,6 +634,11 @@ namespace YAMDCC.Service
 
         private int SetKeyLightBright(string name, string args)
         {
+            if (Config.KeyLightConf is null)
+            {
+                return 0;
+            }
+
             if (ParseArgs(args, 1, out int[] pArgs))
             {
                 Log.Debug($"Setting keyboard backlight brightness to {pArgs[0]}...");

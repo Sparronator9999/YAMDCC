@@ -187,9 +187,6 @@ namespace YAMDCC.GUI
             }
 
             LoadConf(Path.Combine(DataPath, "CurrentConfig.xml"));
-
-            ServiceCommand command = new ServiceCommand(Command.GetKeyLightBright, "");
-            IPCClient.PushMessage(command);
         }
 
         private void MainWindow_Closing(object sender, FormClosingEventArgs e)
@@ -677,6 +674,12 @@ namespace YAMDCC.GUI
                 chkWinFnSwap.Checked = Config.KeySwapConf.Enabled;
                 ttMain.SetToolTip(chkWinFnSwap, Strings.GetString("ttKeySwap"));
                 chkWinFnSwap.Enabled = lblWinFnSwap.Enabled = true;
+            }
+
+            if (Config.KeyLightConf is not null)
+            {
+                ServiceCommand command = new(Command.GetKeyLightBright, "");
+                IPCClient.PushMessage(command);
             }
 
             cboFanSel.Items.Clear();
