@@ -102,6 +102,7 @@ namespace YAMDCC.Service
             Log.Debug("Starting IPC server...");
             IPCServer.ClientConnected += IPCClientConnect;
             IPCServer.ClientDisconnected += IPCClientDisconnect;
+            IPCServer.Error += IPCServerError;
             IPCServer.Start();
 
             Log.Info(Strings.GetString("svcStarted"));
@@ -119,6 +120,7 @@ namespace YAMDCC.Service
             IPCServer.Stop();
             IPCServer.ClientConnected -= IPCClientConnect;
             IPCServer.ClientDisconnected -= IPCClientDisconnect;
+            IPCServer.Error -= IPCServerError;
 
             // Uninstall WinRing0 to keep things clean
             Log.Debug(Strings.GetString("drvUnload"));
@@ -154,6 +156,8 @@ namespace YAMDCC.Service
             e.Connection.ReceiveMessage -= IPCClientMessage;
             Log.Info(Strings.GetString("ipcDC"), e.Connection.ID);
         }
+        private void IPCServerError(object sender, PipeErrorEventArgs<ServiceCommand, ServiceResponse> e) =>
+            throw e.Exception;
 
         private void IPCClientMessage(object sender, PipeMessageEventArgs<ServiceCommand, ServiceResponse> e)
         {
