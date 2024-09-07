@@ -15,6 +15,7 @@
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -109,7 +110,7 @@ namespace YAMDCC.Config
         /// </exception>
         public static YAMDCC_Config Load(string xmlFile)
         {
-            XmlSerializer serialiser = new XmlSerializer(typeof(YAMDCC_Config));
+            XmlSerializer serialiser = new(typeof(YAMDCC_Config));
             using (XmlReader reader = XmlReader.Create(xmlFile))
             {
                 YAMDCC_Config cfg = (YAMDCC_Config)serialiser.Deserialize(reader);
@@ -124,8 +125,14 @@ namespace YAMDCC.Config
         /// <exception cref="InvalidOperationException"/>
         public void Save(string xmlFile)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(YAMDCC_Config));
-            using (XmlWriter writer = XmlWriter.Create(xmlFile))
+            XmlSerializer serializer = new(typeof(YAMDCC_Config));
+            XmlWriterSettings settings = new()
+            {
+                Indent = true,
+                IndentChars = "\t",
+            };
+
+            using (XmlWriter writer = XmlWriter.Create(xmlFile, settings))
             {
                 serializer.Serialize(writer, this);
             }
