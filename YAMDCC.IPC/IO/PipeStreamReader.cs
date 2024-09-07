@@ -30,7 +30,7 @@ namespace YAMDCC.IPC.IO
         /// </summary>
         internal bool IsConnected { get; private set; }
 
-        private readonly BinaryFormatter _binaryFormatter = new BinaryFormatter();
+        private readonly BinaryFormatter _binaryFormatter = new();
 
         /// <summary>
         /// Constructs a new <see cref="PipeStreamReader{T}"/> object
@@ -98,7 +98,7 @@ namespace YAMDCC.IPC.IO
         {
             byte[] data = new byte[len];
             BaseStream.Read(data, 0, len);
-            using (MemoryStream memoryStream = new MemoryStream(data))
+            using (MemoryStream memoryStream = new(data))
             {
                 return (T)_binaryFormatter.Deserialize(memoryStream);
             }

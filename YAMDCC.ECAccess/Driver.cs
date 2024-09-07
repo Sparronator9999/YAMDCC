@@ -23,7 +23,7 @@ namespace YAMDCC.ECAccess
     /// <summary>
     /// Contains functions to install and manage kernel-level device drivers.
     /// </summary>
-    internal class Driver : IDisposable
+    internal sealed class Driver : IDisposable
     {
         private readonly string DeviceName;
         private readonly string DriverPath = string.Empty;
@@ -156,7 +156,7 @@ namespace YAMDCC.ECAccess
             // public production-signed build of the driver exists with the fixes.
             // This fix was "borrowed" from OpenHardwareMonitor:
             // https://github.com/openhardwaremonitor/openhardwaremonitor/
-            FileInfo fi = new FileInfo($"\\\\.\\{DeviceName}");
+            FileInfo fi = new($"\\\\.\\{DeviceName}");
             FileSecurity security = fi.GetAccessControl();
             security.SetSecurityDescriptorSddlForm("O:BAG:SYD:(A;;FA;;;SY)(A;;FA;;;BA)");
             fi.SetAccessControl(security);
@@ -323,7 +323,7 @@ namespace YAMDCC.ECAccess
         #region Cleanup code
         ~Driver()
         {
-            Dispose(false);
+            Cleanup();
         }
 
         /// <summary>
@@ -331,11 +331,11 @@ namespace YAMDCC.ECAccess
         /// </summary>
         public void Dispose()
         {
-            Dispose(true);
+            Cleanup();
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
+        private void Cleanup()
         {
             // Don't do anything if we already called Dispose:
             if (!IsOpen)

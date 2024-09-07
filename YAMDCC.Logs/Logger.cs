@@ -37,13 +37,13 @@ namespace YAMDCC.Logs
         /// writing to the file at once.
         /// </summary>
         private readonly object
-            fileLock = new object(),
-            consoleLock = new object();
+            fileLock = new(),
+            consoleLock = new();
 
         /// <summary>
         /// The newline characters to split provided log message lines by.
         /// </summary>
-        private static readonly char[] NewlineChars = { '\r', '\n' };
+        private static readonly char[] NewlineChars = ['\r', '\n'];
 
         private static string LogString(string text, LogLevel level, bool showDate) =>
             (showDate ? $"[{DateTime.Now:dd/MM/yyyy @ HH:mm:ss.fff}] " : "") + $"[{level}]".PadRight(8).ToUpper(CultureInfo.InvariantCulture) + text;
@@ -341,12 +341,12 @@ namespace YAMDCC.Logs
 
             try
             {
-                FileInfo fi = new FileInfo($"{LogPath}.log");
+                FileInfo fi = new($"{LogPath}.log");
 
                 // Set up file streams
                 FileStream original = fi.OpenRead();
                 FileStream compressed = File.Create($"{LogPath}.{1}.log.gz");
-                GZipStream gzStream = new GZipStream(compressed, CompressionLevel.Optimal);
+                GZipStream gzStream = new(compressed, CompressionLevel.Optimal);
 
                 // Compress the file
                 original.CopyTo(gzStream);

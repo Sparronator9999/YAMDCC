@@ -26,7 +26,7 @@ namespace YAMDCC.IPC.IO
         /// </summary>
         internal PipeStream BaseStream { get; private set; }
 
-        private readonly BinaryFormatter _binaryFormatter = new BinaryFormatter();
+        private readonly BinaryFormatter _binaryFormatter = new();
 
         /// <summary>
         /// Constructs a new <see cref="PipeStreamWriter{T}"/>
@@ -80,7 +80,7 @@ namespace YAMDCC.IPC.IO
         /// <exception cref="SerializationException"/>
         private byte[] Serialize(T obj)
         {
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (MemoryStream memoryStream = new())
             {
                 _binaryFormatter.Serialize(memoryStream, obj);
                 return memoryStream.ToArray();

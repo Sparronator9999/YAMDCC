@@ -65,7 +65,7 @@ namespace YAMDCC.Service
             Log = logger;
             _EC = new EC();
 
-            PipeSecurity security = new PipeSecurity();
+            PipeSecurity security = new();
             //security.AddAccessRule(new PipeAccessRule("Administrators", PipeAccessRights.ReadWrite, AccessControlType.Allow));
             security.SetSecurityDescriptorSddlForm("O:BAG:SYD:(A;;GA;;;SY)(A;;GRGW;;;BA)");
 
@@ -259,7 +259,7 @@ namespace YAMDCC.Service
                 if (EC.AcquireLock(1000))
                 {
                     // Write custom register values, if configured:
-                    if (!(Config.RegConfs is null) && Config.RegConfs.Length > 0)
+                    if (Config.RegConfs is not null && Config.RegConfs.Length > 0)
                     {
                         for (int i = 0; i < Config.RegConfs.Length; i++)
                         {
@@ -303,7 +303,7 @@ namespace YAMDCC.Service
                     }
 
                     // Write the charge threshold:
-                    if (!(Config.ChargeLimitConf is null))
+                    if (Config.ChargeLimitConf is not null)
                     {
                         Log.Debug("Writing charge limit configuration...");
                         byte value = (byte)(Config.ChargeLimitConf.MinVal + Config.ChargeLimitConf.CurVal);
@@ -314,7 +314,7 @@ namespace YAMDCC.Service
                     }
 
                     // Write the performance mode
-                    if (!(Config.PerfModeConf is null))
+                    if (Config.PerfModeConf is not null)
                     {
                         Log.Debug("Writing performance mode setting...");
                         byte value = Config.PerfModeConf.PerfModes[Config.PerfModeConf.ModeSel].Value;
@@ -325,7 +325,7 @@ namespace YAMDCC.Service
                     }
 
                     // Write the Win/Fn key swap setting
-                    if (!(Config.KeySwapConf is null))
+                    if (Config.KeySwapConf is not null)
                     {
                         Log.Debug("Writing Win/Fn key swap setting...");
                         byte value = Config.KeySwapConf.Enabled
@@ -411,7 +411,7 @@ namespace YAMDCC.Service
 
                     if (success)
                     {
-                        ServiceResponse response = new ServiceResponse(Response.ReadResult, $"{pArgs[0]} {value}");
+                        ServiceResponse response = new(Response.ReadResult, $"{pArgs[0]} {value}");
                         IPCServer.PushMessage(response, name);
                         Log.Debug(Strings.GetString("svcECReadSuccess"), $"{pArgs[1]:X}", $"{value:X}");
                     }
@@ -463,7 +463,7 @@ namespace YAMDCC.Service
 
                     if (success)
                     {
-                        ServiceResponse response = new ServiceResponse(Response.FanSpeed, $"{speed}");
+                        ServiceResponse response = new(Response.FanSpeed, $"{speed}");
                         IPCServer.PushMessage(response, name);
                     }
                     else
@@ -483,7 +483,7 @@ namespace YAMDCC.Service
             {
                 FanConf cfg = Config.FanConfs[pArgs[0]];
 
-                if (!(cfg.RPMConf is null))
+                if (cfg.RPMConf is not null)
                 {
                     if (EC.AcquireLock(1000))
                     {
@@ -528,7 +528,7 @@ namespace YAMDCC.Service
                                 rpm = rpmValue * cfg.RPMConf.RPMMult;
                             }
 #pragma warning restore IDE0045
-                            ServiceResponse response = new ServiceResponse(Response.FanRPM, $"{rpm}");
+                            ServiceResponse response = new(Response.FanRPM, $"{rpm}");
                             IPCServer.PushMessage(response, name);
                         }
                         else
@@ -555,7 +555,7 @@ namespace YAMDCC.Service
                     EC.ReleaseLock();
                     if (success)
                     {
-                        ServiceResponse response = new ServiceResponse(Response.Temp, $"{temp}");
+                        ServiceResponse response = new(Response.Temp, $"{temp}");
                         IPCServer.PushMessage(response, name);
                     }
                     else
@@ -571,7 +571,7 @@ namespace YAMDCC.Service
 
         private int SetFullBlast(string name, string args)
         {
-            if (!(Config.FullBlastConf is null))
+            if (Config.FullBlastConf is not null)
             {
                 if (ParseArgs(args, 1, out int[] pArgs))
                 {

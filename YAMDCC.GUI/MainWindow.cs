@@ -20,7 +20,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using YAMDCC.Config;
@@ -48,14 +47,14 @@ namespace YAMDCC.GUI
         /// The client that connects to the YAMDCC Service
         /// </summary>
         private readonly NamedPipeClient<ServiceResponse, ServiceCommand> IPCClient =
-            new NamedPipeClient<ServiceResponse, ServiceCommand>("YAMDCC-Server");
+            new("YAMDCC-Server");
 
         private readonly NumericUpDown[] numUpTs = new NumericUpDown[6];
         private readonly NumericUpDown[] numDownTs = new NumericUpDown[6];
         private readonly NumericUpDown[] numFanSpds = new NumericUpDown[7];
         private readonly TrackBar[] tbFanSpds = new TrackBar[7];
 
-        private readonly ToolTip ttMain = new ToolTip();
+        private readonly ToolTip ttMain = new();
         #endregion
 
         public MainWindow()
@@ -194,7 +193,7 @@ namespace YAMDCC.GUI
             // Disable Full Blast if it was enabled while the program was running:
             if (chkFullBlast.Checked)
             {
-                ServiceCommand command = new ServiceCommand(Command.FullBlast, "0");
+                ServiceCommand command = new(Command.FullBlast, "0");
                 IPCClient.PushMessage(command);
             }
         }
@@ -251,7 +250,7 @@ namespace YAMDCC.GUI
         #region File
         private void tsiLoadConf_Click(object sender, EventArgs e)
         {
-            OpenFileDialog ofd = new OpenFileDialog()
+            OpenFileDialog ofd = new()
             {
                 AddExtension = true,
                 CheckFileExists = true,
@@ -267,7 +266,7 @@ namespace YAMDCC.GUI
 
         private void tsiSaveConf_Click(object sender, EventArgs e)
         {
-            SaveFileDialog sfd = new SaveFileDialog()
+            SaveFileDialog sfd = new()
             {
                 AddExtension = true,
                 Filter = "YAMDCC config files|*.xml",
@@ -305,7 +304,7 @@ namespace YAMDCC.GUI
             FanCurveConf curveCfg = Config.FanConfs[cboFanSel.SelectedIndex]
                 .FanCurveConfs[cboProfSel.SelectedIndex];
 
-            TextInputDialog dlg = new TextInputDialog(
+            TextInputDialog dlg = new(
                 Strings.GetString("dlgProfRename"),
                 "Change Profile Name", curveCfg.Name);
             if (dlg.ShowDialog() == DialogResult.OK)
@@ -319,7 +318,7 @@ namespace YAMDCC.GUI
         {
             FanCurveConf curveCfg = Config.FanConfs[cboFanSel.SelectedIndex]
                 .FanCurveConfs[cboProfSel.SelectedIndex];
-            TextInputDialog dlg = new TextInputDialog(
+            TextInputDialog dlg = new(
                 Strings.GetString("dlgProfChangeDesc"),
                 "Change Profile Description", curveCfg.Desc, true);
             if (dlg.ShowDialog() == DialogResult.OK)
@@ -536,7 +535,7 @@ namespace YAMDCC.GUI
 
         private void chkFullBlast_Toggled(object sender, EventArgs e)
         {
-            ServiceCommand command = new ServiceCommand(Command.FullBlast, chkFullBlast.Checked ? "1" : "0");
+            ServiceCommand command = new(Command.FullBlast, chkFullBlast.Checked ? "1" : "0");
             IPCClient.PushMessage(command);
         }
 
@@ -702,7 +701,7 @@ namespace YAMDCC.GUI
             Config.Save(Path.Combine(DataPath, "CurrentConfig.xml"));
 
             // Tell the service to reload and apply the updated config
-            ServiceCommand command = new ServiceCommand(Command.ApplyConfig, null);
+            ServiceCommand command = new(Command.ApplyConfig, null);
             IPCClient.PushMessage(command);
         }
 
@@ -718,7 +717,7 @@ namespace YAMDCC.GUI
             FanConf fanConfig = Config.FanConfs[cboFanSel.SelectedIndex];
             FanCurveConf oldCurveCfg = fanConfig.FanCurveConfs[cboProfSel.SelectedIndex];
 
-            TextInputDialog dlg = new TextInputDialog(
+            TextInputDialog dlg = new(
                 Strings.GetString("dlgProfAdd"),
                 "New Profile", $"Copy of {oldCurveCfg.Name}");
             if (dlg.ShowDialog() == DialogResult.OK)
@@ -731,9 +730,9 @@ namespace YAMDCC.GUI
                 newCurveCfg.Desc = $"Copy of {oldCurveCfg.Name}";
 
                 // Add the new fan profile to the list
-                List<FanCurveConf> curveCfgList = fanConfig.FanCurveConfs.ToList();
+                List<FanCurveConf> curveCfgList = [.. fanConfig.FanCurveConfs];
                 curveCfgList.Add(newCurveCfg);
-                fanConfig.FanCurveConfs = curveCfgList.ToArray();
+                fanConfig.FanCurveConfs = [.. curveCfgList];
 
                 // Add the new fan profile to the list and select it:
                 cboProfSel.Items.Add(dlg.Result);
@@ -751,9 +750,9 @@ namespace YAMDCC.GUI
                 FanConf fanConfig = Config.FanConfs[cboFanSel.SelectedIndex];
 
                 // Remove the fan profile
-                List<FanCurveConf> curveCfgList = fanConfig.FanCurveConfs.ToList();
+                List<FanCurveConf> curveCfgList = [.. fanConfig.FanCurveConfs];
                 curveCfgList.RemoveAt(cboProfSel.SelectedIndex);
-                fanConfig.FanCurveConfs = curveCfgList.ToArray();
+                fanConfig.FanCurveConfs = [.. curveCfgList];
 
                 // Remove from the list client-side, and select a different fan profile
                 int oldIndex = cboProfSel.SelectedIndex;

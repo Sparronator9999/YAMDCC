@@ -42,10 +42,7 @@ namespace YAMDCC.GUI
         /// </returns>
         public static string GetString(string name)
         {
-            if (resMan is null)
-            {
-                resMan = new ResourceManager(typeof(Strings));
-            }
+            resMan ??= new ResourceManager(typeof(Strings));
             return resMan.GetString(name, CultureInfo.InvariantCulture);
         }
 

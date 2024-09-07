@@ -24,7 +24,7 @@ namespace YAMDCC.GUI.Dialogs
 
         private void btnSaveReport_Click(object sender, EventArgs e)
         {
-            SaveFileDialog sfd = new SaveFileDialog
+            SaveFileDialog sfd = new()
             {
                 AddExtension = true,
                 FileName = $"crash-{DateTime.Now:yyyy'-'MM'-'dd'T'HH'-'mm'-'ss}.txt",
@@ -34,7 +34,7 @@ namespace YAMDCC.GUI.Dialogs
 
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-                StreamWriter sw = new StreamWriter(sfd.FileName);
+                StreamWriter sw = new(sfd.FileName);
                 sw.WriteLine(txtStackTrace.Text);
                 sw.Close();
             }

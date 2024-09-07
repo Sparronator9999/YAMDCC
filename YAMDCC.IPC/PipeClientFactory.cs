@@ -1,4 +1,4 @@
-﻿using YAMDCC.IPC.IO;
+using YAMDCC.IPC.IO;
 using System;
 using System.IO;
 using System.IO.Pipes;
@@ -23,7 +23,7 @@ namespace YAMDCC.IPC
             {
                 Thread.Sleep(timeout);
             }
-            NamedPipeClientStream pipe = new NamedPipeClientStream(".", pipeName, PipeDirection.InOut, PipeOptions.Asynchronous | PipeOptions.WriteThrough);
+            NamedPipeClientStream pipe = new(".", pipeName, PipeDirection.InOut, PipeOptions.Asynchronous | PipeOptions.WriteThrough);
             pipe.Connect(1000);
             return pipe;
         }
@@ -36,7 +36,7 @@ namespace YAMDCC.IPC
                 if (!exists)
                 {
                     int error = Marshal.GetLastWin32Error();
-                    if (error == 0 || error == 2)
+                    if (error is 0 or 2)
                     {
                         return false;
                     }

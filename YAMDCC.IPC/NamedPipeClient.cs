@@ -1,4 +1,4 @@
-﻿using YAMDCC.IPC.IO;
+using YAMDCC.IPC.IO;
 using YAMDCC.IPC.Threading;
 using System;
 using System.IO.Pipes;
@@ -78,8 +78,8 @@ namespace YAMDCC.IPC
         private readonly string _pipeName;
         private NamedPipeConnection<TRead, TWrite> _connection;
 
-        private readonly AutoResetEvent _connected = new AutoResetEvent(false);
-        private readonly AutoResetEvent _disconnected = new AutoResetEvent(false);
+        private readonly AutoResetEvent _connected = new(false);
+        private readonly AutoResetEvent _disconnected = new(false);
 
         private volatile bool _closedExplicitly;
 
@@ -110,7 +110,7 @@ namespace YAMDCC.IPC
         public void Start()
         {
             _closedExplicitly = false;
-            Worker worker = new Worker();
+            Worker worker = new();
             worker.Error += WorkerOnError;
             worker.DoWork(ListenSync);
         }

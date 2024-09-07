@@ -25,7 +25,7 @@ namespace YAMDCC.Service
     {
         public ProjectInstaller()
         {
-            ServiceInstaller svcInstaller = new ServiceInstaller
+            ServiceInstaller svcInstaller = new()
             {
                 Description = Strings.GetString("svcDesc"),
                 DisplayName = "YAMDCC Service",
@@ -33,16 +33,16 @@ namespace YAMDCC.Service
                 StartType = ServiceStartMode.Automatic
             };
 
-            ServiceProcessInstaller svcPInstaller = new ServiceProcessInstaller
+            ServiceProcessInstaller svcPInstaller = new()
             {
                 Account = ServiceAccount.LocalSystem
             };
 
-            Installers.AddRange(new Installer[]
-            {
+            Installers.AddRange(
+            [
                 svcPInstaller,
                 svcInstaller
-            });
+            ]);
         }
     }
 }

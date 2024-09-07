@@ -25,7 +25,7 @@ namespace YAMDCC.Service
         /// <summary>
         /// The <see cref="Logger"/> instance to write logs to.
         /// </summary>
-        private static readonly Logger Log = new Logger
+        private static readonly Logger Log = new()
         {
             ConsoleLogLevel = LogLevel.None,
             FileLogLevel = LogLevel.Debug,

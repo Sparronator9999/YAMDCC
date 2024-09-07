@@ -47,7 +47,7 @@ namespace YAMDCC.GUI
 
             if (Utils.ServiceExists("yamdccsvc"))
             {
-                ServiceController yamdccSvc = new ServiceController("yamdccsvc");
+                ServiceController yamdccSvc = new("yamdccsvc");
 
                 // Check if the service is stopped:
                 try
@@ -123,14 +123,14 @@ namespace YAMDCC.GUI
         {
             if (e.ExceptionObject is Exception ex)
             {
-                CrashDialog dlg = new CrashDialog(ex, false);
+                CrashDialog dlg = new(ex, false);
                 dlg.ShowDialog();
             }
         }
 
         private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
-            CrashDialog dlg = new CrashDialog(e.Exception, true);
+            CrashDialog dlg = new(e.Exception, true);
             dlg.ShowDialog();
         }
         #endregion

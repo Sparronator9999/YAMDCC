@@ -59,8 +59,8 @@ namespace YAMDCC.IPC
 
         private readonly PipeStreamWrapper<TRead, TWrite> _streamWrapper;
 
-        private readonly AutoResetEvent _writeSignal = new AutoResetEvent(false);
-        private readonly Queue<TWrite> _writeQueue = new Queue<TWrite>();
+        private readonly AutoResetEvent _writeSignal = new(false);
+        private readonly Queue<TWrite> _writeQueue = new();
 
         private bool _notifiedSucceeded;
 
@@ -98,12 +98,12 @@ namespace YAMDCC.IPC
         /// </remarks>
         internal void Open()
         {
-            Worker readWorker = new Worker();
+            Worker readWorker = new();
             readWorker.Succeeded += OnSucceeded;
             readWorker.Error += OnError;
             readWorker.DoWork(ReadPipe);
 
-            Worker writeWorker = new Worker();
+            Worker writeWorker = new();
             writeWorker.Succeeded += OnSucceeded;
             writeWorker.Error += OnError;
             writeWorker.DoWork(WritePipe);
@@ -129,11 +129,13 @@ namespace YAMDCC.IPC
         {
             // Only notify observers once
             if (_notifiedSucceeded)
+            {
                 return;
+            }
 
             _notifiedSucceeded = true;
 
-            PipeConnectionEventArgs<TRead, TWrite> e2 = new PipeConnectionEventArgs<TRead, TWrite>(this);
+            PipeConnectionEventArgs<TRead, TWrite> e2 = new(this);
             Disconnected?.Invoke(sender, e2);
         }
 
@@ -161,7 +163,7 @@ namespace YAMDCC.IPC
                     return;
                 }
                 PipeMessageEventArgs<TRead, TWrite> e =
-                    new PipeMessageEventArgs<TRead, TWrite>(this, obj);
+                    new(this, obj);
 
                 ReceiveMessage?.Invoke(this, e);
             }

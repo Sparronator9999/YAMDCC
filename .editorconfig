@@ -148,5 +148,5 @@ csharp_style_var_when_type_is_apparent = false:suggestion
 csharp_style_var_elsewhere = false:suggestion
 csharp_indent_case_contents_when_block = false
 csharp_preserve_single_line_statements = true
-csharp_style_prefer_primary_constructors = true:suggestion
+csharp_style_prefer_primary_constructors = false:suggestion
 csharp_style_prefer_readonly_struct_member = true:suggestion

@@ -1,4 +1,4 @@
-﻿using YAMDCC.IPC.IO;
+using YAMDCC.IPC.IO;
 using YAMDCC.IPC.Threading;
 using System;
 using System.Collections.Generic;
@@ -74,7 +74,7 @@ namespace YAMDCC.IPC
         private readonly string _pipeName;
         private readonly int _bufferSize;
         private readonly PipeSecurity _security;
-        private readonly List<NamedPipeConnection<TRead, TWrite>> _connections = new List<NamedPipeConnection<TRead, TWrite>>();
+        private readonly List<NamedPipeConnection<TRead, TWrite>> _connections = [];
 
         private int _nextPipeId;
 
@@ -119,7 +119,7 @@ namespace YAMDCC.IPC
         public void Start()
         {
             _shouldKeepRunning = true;
-            Worker worker = new Worker();
+            Worker worker = new();
             worker.Error += WorkerOnError;
             worker.DoWork(ListenSync);
         }
@@ -257,7 +257,7 @@ namespace YAMDCC.IPC
 
             // If background thread is still listening for a client to connect,
             // initiate a dummy connection that will allow the thread to exit.
-            NamedPipeClient<TRead, TWrite> dummyClient = new NamedPipeClient<TRead, TWrite>(_pipeName);
+            NamedPipeClient<TRead, TWrite> dummyClient = new(_pipeName);
             dummyClient.Start();
             dummyClient.WaitForConnection(TimeSpan.FromSeconds(2));
             dummyClient.Stop();
@@ -289,7 +289,7 @@ namespace YAMDCC.IPC
                 // Send the client the name of the data pipe to use
                 handshakePipe = CreateAndConnectPipe();
 
-                PipeStreamWrapper<string, string> handshakeWrapper = new PipeStreamWrapper<string, string>(handshakePipe);
+                PipeStreamWrapper<string, string> handshakeWrapper = new(handshakePipe);
 
                 handshakeWrapper.WriteObject(connectionPipeName);
                 handshakeWrapper.WaitForPipeDrain();
@@ -308,8 +308,7 @@ namespace YAMDCC.IPC
 
                 lock (_connections) { _connections.Add(connection); }
 
-                PipeConnectionEventArgs<TRead, TWrite> e =
-                    new PipeConnectionEventArgs<TRead, TWrite>(connection);
+                PipeConnectionEventArgs<TRead, TWrite> e = new(connection);
 
                 ClientOnConnected(this, e);
             }
@@ -321,8 +320,7 @@ namespace YAMDCC.IPC
                 Cleanup(handshakePipe);
                 Cleanup(dataPipe);
 
-                PipeConnectionEventArgs<TRead, TWrite> e =
-                    new PipeConnectionEventArgs<TRead, TWrite>(connection);
+                PipeConnectionEventArgs<TRead, TWrite> e = new(connection);
 
                 ClientOnDisconnected(this, e);
             }
@@ -381,8 +379,7 @@ namespace YAMDCC.IPC
         /// <param name="exception"></param>
         private void WorkerOnError(object sender, WorkerErrorEventArgs e)
         {
-            PipeErrorEventArgs<TRead, TWrite> e2 =
-                new PipeErrorEventArgs<TRead, TWrite>(null, e.Exception);
+            PipeErrorEventArgs<TRead, TWrite> e2 = new(null, e.Exception);
             Error?.Invoke(sender, e2);
         }
 
@@ -393,7 +390,11 @@ namespace YAMDCC.IPC
 
         private static void Cleanup(NamedPipeServerStream pipe)
         {
-            if (pipe == null) return;
+            if (pipe is null)
+            {
+                return;
+            }
+
             using (NamedPipeServerStream x = pipe)
             {
                 x.Close();

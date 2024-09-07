@@ -126,7 +126,7 @@ namespace YAMDCC.GUI
 
         private static int RunCmd(string exe, string args)
         {
-            Process p = new Process()
+            Process p = new()
             {
                 StartInfo = new ProcessStartInfo(exe)
                 {

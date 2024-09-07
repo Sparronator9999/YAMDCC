@@ -25,7 +25,7 @@ namespace YAMDCC.ECAccess
     /// <summary>
     /// Methods to access the embedded controller in a computer.
     /// </summary>
-    public class EC : IDisposable
+    public sealed class EC : IDisposable
     {
         // See ACPI specs ch 12.2
         [Flags]
@@ -67,7 +67,7 @@ namespace YAMDCC.ECAccess
         /// <summary>
         /// Used to synchronise EC access.
         /// </summary>
-        private static readonly Mutex EcMutex = new Mutex();
+        private static readonly Mutex EcMutex = new();
 
         /// <summary>
         /// Gets whether the WinRing0 driver is currently loaded.
@@ -378,7 +378,7 @@ namespace YAMDCC.ECAccess
 
         private bool WriteIOPort(ushort port, byte value)
         {
-            WriteIOPortInput input = new WriteIOPortInput(port, value);
+            WriteIOPortInput input = new(port, value);
             return _Driver.IOControl((uint)Ring0Control.WriteIOPortByte, ref input);
         }
 
