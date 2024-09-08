@@ -26,6 +26,9 @@
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
         <AnalysisLevel>latest-recommended</AnalysisLevel>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Release'">
+        <DebugType>none</DebugType>
+    </PropertyGroup>
     <ItemGroup>
       <EmbeddedResource Remove="Dialogs\CrashDialog.resx" />
       <EmbeddedResource Remove="Dialogs\TextInputDialog.resx" />

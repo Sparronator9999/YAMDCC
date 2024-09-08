@@ -21,6 +21,9 @@
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
         <AnalysisLevel>latest-recommended</AnalysisLevel>
     </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Release'">
+        <DebugType>none</DebugType>
+    </PropertyGroup>
     <ItemGroup>
         <Reference Include="System.Configuration.Install" />
         <Reference Include="System.ServiceProcess" />
