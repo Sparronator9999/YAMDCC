@@ -41,7 +41,7 @@ jobs:
           ${{ runner.os }}-nuget-
 
     - name: Restore solution (including NuGet packages for solution)
-      run: msbuild.exe /t:restore /p:RestoreLockedMode=true
+      run: msbuild.exe /t:restore /p:configuration="${{ matrix.config }}" /p:RestoreLockedMode=true
 
     - name: Build solution
       run: msbuild.exe YAMDCC.sln /nologo /nr:false /p:DeployOnBuild=true /p:platform="Any CPU" /p:configuration="${{ matrix.config }}"
