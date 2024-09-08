@@ -21,7 +21,6 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
-using System.Security.Cryptography;
 using System.Windows.Forms;
 using YAMDCC.Config;
 using YAMDCC.GUI.Dialogs;
@@ -309,6 +308,8 @@ namespace YAMDCC.GUI
             {
                 LoadConf(ofd.FileName);
                 SetLastConfPath(ofd.FileName);
+                btnRevert.Enabled = false;
+                tsiRevert.Enabled = false;
             }
         }
 
@@ -325,6 +326,8 @@ namespace YAMDCC.GUI
             {
                 Config.Save(sfd.FileName);
                 SetLastConfPath(sfd.FileName);
+                btnRevert.Enabled = false;
+                tsiRevert.Enabled = false;
             }
         }
 
@@ -362,6 +365,8 @@ namespace YAMDCC.GUI
             {
                 curveCfg.Name = dlg.Result;
                 cboProfSel.Items[cboProfSel.SelectedIndex] = dlg.Result;
+                btnRevert.Enabled = true;
+                tsiRevert.Enabled = true;
             }
         }
 
@@ -376,6 +381,8 @@ namespace YAMDCC.GUI
             {
                 curveCfg.Desc = dlg.Result;
                 ttMain.SetToolTip(cboProfSel, dlg.Result);
+                btnRevert.Enabled = true;
+                tsiRevert.Enabled = true;
             }
         }
 
@@ -541,6 +548,9 @@ namespace YAMDCC.GUI
             Config.FanConfs[cboFanSel.SelectedIndex]
                 .FanCurveConfs[cboProfSel.SelectedIndex]
                 .TempThresholds[i].FanSpeed = (byte)numFanSpds[i].Value;
+
+            btnRevert.Enabled = true;
+            tsiRevert.Enabled = true;
         }
 
         private void tbFanSpd_Scroll(object sender, EventArgs e)
@@ -552,6 +562,9 @@ namespace YAMDCC.GUI
             Config.FanConfs[cboFanSel.SelectedIndex]
                 .FanCurveConfs[cboProfSel.SelectedIndex]
                 .TempThresholds[i].FanSpeed = (byte)numFanSpds[i].Value;
+
+            btnRevert.Enabled = true;
+            tsiRevert.Enabled = true;
         }
 
         private void numUpT_Changed(object sender, EventArgs e)
@@ -567,6 +580,9 @@ namespace YAMDCC.GUI
             numDownTs[i].Value += nud.Value - threshold.UpThreshold;
 
             threshold.UpThreshold = (byte)numUpTs[i].Value;
+
+            btnRevert.Enabled = true;
+            tsiRevert.Enabled = true;
         }
 
         private void numDownT_Changed(object sender, EventArgs e)
@@ -577,6 +593,9 @@ namespace YAMDCC.GUI
             Config.FanConfs[cboFanSel.SelectedIndex]
                 .FanCurveConfs[cboProfSel.SelectedIndex]
                 .TempThresholds[i + 1].DownThreshold = (byte)numDownTs[i].Value;
+
+            btnRevert.Enabled = true;
+            tsiRevert.Enabled = true;
         }
 
         private void chkFullBlast_Toggled(object sender, EventArgs e)
@@ -589,17 +608,23 @@ namespace YAMDCC.GUI
         private void numChargeLim_Changed(object sender, EventArgs e)
         {
             Config.ChargeLimitConf.CurVal = (byte)numChgLim.Value;
+            btnRevert.Enabled = true;
+            tsiRevert.Enabled = true;
         }
 
         private void cboPerfMode_SelectedIndexChanged(object sender, EventArgs e)
         {
             Config.PerfModeConf.ModeSel = cboPerfMode.SelectedIndex;
             ttMain.SetToolTip(cboPerfMode, Config.PerfModeConf.PerfModes[cboPerfMode.SelectedIndex].Desc);
+            btnRevert.Enabled = true;
+            tsiRevert.Enabled = true;
         }
 
         private void chkWinFnSwap_CheckedChanged(object sender, EventArgs e)
         {
             Config.KeySwapConf.Enabled = chkWinFnSwap.Checked;
+            btnRevert.Enabled = true;
+            tsiRevert.Enabled = true;
         }
 
         private void tbKeyLight_Scroll(object sender, EventArgs e)
@@ -769,6 +794,8 @@ namespace YAMDCC.GUI
                     Config = tempConf;
                     UpdateFanCurveDisplay();
                     ApplyConf();
+                    btnRevert.Enabled = false;
+                    tsiRevert.Enabled = false;
                 }
                 catch (Exception ex)
                 {
@@ -824,6 +851,9 @@ namespace YAMDCC.GUI
                 // Add the new fan profile to the list and select it:
                 cboProfSel.Items.Add(dlg.Result);
                 cboProfSel.SelectedIndex = cboProfSel.Items.Count - 1;
+
+                btnRevert.Enabled = true;
+                tsiRevert.Enabled = true;
             }
         }
 
@@ -845,6 +875,9 @@ namespace YAMDCC.GUI
                 int oldIndex = cboProfSel.SelectedIndex;
                 cboProfSel.Items.RemoveAt(cboProfSel.SelectedIndex);
                 cboProfSel.SelectedIndex = oldIndex == 1 ? 1 : oldIndex - 1;
+
+                btnRevert.Enabled = true;
+                tsiRevert.Enabled = true;
             }
         }
 
