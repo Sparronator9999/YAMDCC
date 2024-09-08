@@ -257,8 +257,9 @@ A dialog will open, in which you can enter the fan profile's new name.</value>
   </data>
   <data name="ttRevert" xml:space="preserve">
     <value>Revert the currently loaded config to when
-it was first loaded using "Load Config".
-(NOT WORKING YET)</value>
+it was first loaded using "Load Config",
+or saved using "Save Config", whichever 
+came last.</value>
   </data>
   <data name="ttSaveConf" xml:space="preserve">
     <value>Saves the currently loaded config to an XML file.</value>

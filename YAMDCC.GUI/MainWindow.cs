@@ -21,6 +21,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Windows.Forms;
 using YAMDCC.Config;
 using YAMDCC.GUI.Dialogs;
@@ -307,6 +308,7 @@ namespace YAMDCC.GUI
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 LoadConf(ofd.FileName);
+                SetLastConfPath(ofd.FileName);
             }
         }
 
@@ -322,6 +324,7 @@ namespace YAMDCC.GUI
             if (sfd.ShowDialog() == DialogResult.OK)
             {
                 Config.Save(sfd.FileName);
+                SetLastConfPath(sfd.FileName);
             }
         }
 
@@ -332,11 +335,13 @@ namespace YAMDCC.GUI
 
         private void tsiRevert_Click(object sender, EventArgs e)
         {
-
+            RevertConf();
         }
 
-        private void tsiExit_Click(object sender, EventArgs e) =>
+        private void tsiExit_Click(object sender, EventArgs e)
+        {
             Close();
+        }
         #endregion
 
         #region Options
@@ -472,36 +477,7 @@ namespace YAMDCC.GUI
 
         private void cboFanSel_IndexChanged(object sender, EventArgs e)
         {
-            FanConf config = Config.FanConfs[cboFanSel.SelectedIndex];
-
-            cboProfSel.Items.Clear();
-            foreach (FanCurveConf curve in config.FanCurveConfs)
-            {
-                cboProfSel.Items.Add(curve.Name);
-            }
-
-            for (int i = 0; i < numFanSpds.Length; i++)
-            {
-                if (config.FanCurveRegs.Length >= i)
-                {
-                    numFanSpds[i].Maximum = tbFanSpds[i].Maximum
-                        = Math.Abs(config.MaxSpeed - config.MinSpeed);
-                }
-                else
-                {
-                    numFanSpds[i].Enabled = tbFanSpds[i].Enabled = false;
-                }
-            }
-
-            cboProfSel.Enabled = true;
-            cboProfSel.SelectedIndex = config.CurveSel;
-
-            if (tsiECMon.Checked)
-            {
-                tmrPoll.Stop();
-                PollEC();
-                tmrPoll.Start();
-            }
+            UpdateFanCurveDisplay();
         }
 
         private void cboProfSel_IndexChanged(object sender, EventArgs e)
@@ -634,7 +610,7 @@ namespace YAMDCC.GUI
 
         private void btnRevert_Click(object sender, EventArgs e)
         {
-
+            RevertConf();
         }
 
         private void btnApply_Click(object sender, EventArgs e)
@@ -677,13 +653,14 @@ namespace YAMDCC.GUI
             }
         }
 
-        private void LoadConf(string configPath)
+        private void LoadConf(string confPath)
         {
             lblStatus.Text = "Loading config, please wait...";
 
             try
             {
-                Config = YAMDCC_Config.Load(configPath);
+                Config = YAMDCC_Config.Load(confPath);
+                LoadConf(Config);
             }
             catch
             {
@@ -691,8 +668,14 @@ namespace YAMDCC.GUI
                 return;
             }
             tsiSaveConf.Enabled = true;
+        }
 
-            if (Config.FullBlastConf is null)
+        private void LoadConf(YAMDCC_Config config)
+        {
+            lblStatus.Text = "Loading config, please wait...";
+            tsiSaveConf.Enabled = true;
+
+            if (config.FullBlastConf is null)
             {
                 ttMain.SetToolTip(chkFullBlast, Strings.GetString("ttNotSupported"));
                 chkFullBlast.Enabled = false;
@@ -703,7 +686,7 @@ namespace YAMDCC.GUI
                 chkFullBlast.Enabled = true;
             }
 
-            if (Config.ChargeLimitConf is null)
+            if (config.ChargeLimitConf is null)
             {
                 ttMain.SetToolTip(chkFullBlast, Strings.GetString("ttNotSupported"));
                 numChgLim.Enabled = lblChgLim.Enabled = false;
@@ -711,21 +694,21 @@ namespace YAMDCC.GUI
             else
             {
                 ttMain.SetToolTip(numChgLim, Strings.GetString("ttChgLim"));
-                ChargeLimitConf cfg = Config.ChargeLimitConf;
+                ChargeLimitConf cfg = config.ChargeLimitConf;
                 numChgLim.Enabled = lblChgLim.Enabled = true;
                 numChgLim.Value = cfg.CurVal;
                 numChgLim.Maximum = Math.Abs(cfg.MaxVal - cfg.MinVal);
             }
 
             cboPerfMode.Items.Clear();
-            if (Config.PerfModeConf is null)
+            if (config.PerfModeConf is null)
             {
                 ttMain.SetToolTip(cboPerfMode, Strings.GetString("ttNotSupported"));
                 cboPerfMode.Enabled = lblPerfMode.Enabled = false;
             }
             else
             {
-                PerfModeConf cfg = Config.PerfModeConf;
+                PerfModeConf cfg = config.PerfModeConf;
                 for (int i = 0; i < cfg.PerfModes.Length; i++)
                 {
                     cboPerfMode.Items.Add(cfg.PerfModes[i].Name);
@@ -736,23 +719,22 @@ namespace YAMDCC.GUI
                 cboPerfMode.Enabled = lblPerfMode.Enabled = true;
             }
 
-
-            if (Config.KeySwapConf is null)
+            if (config.KeySwapConf is null)
             {
                 ttMain.SetToolTip(chkWinFnSwap, Strings.GetString("ttNotSupported"));
                 chkWinFnSwap.Enabled = lblWinFnSwap.Enabled = false;
             }
             else
             {
-                chkWinFnSwap.Checked = Config.KeySwapConf.Enabled;
+                chkWinFnSwap.Checked = config.KeySwapConf.Enabled;
                 ttMain.SetToolTip(chkWinFnSwap, Strings.GetString("ttKeySwap"));
                 chkWinFnSwap.Enabled = lblWinFnSwap.Enabled = true;
             }
 
             cboFanSel.Items.Clear();
-            for (int i = 0; i < Config.FanConfs.Length; i++)
+            for (int i = 0; i < config.FanConfs.Length; i++)
             {
-                cboFanSel.Items.Add(Config.FanConfs[i].Name);
+                cboFanSel.Items.Add(config.FanConfs[i].Name);
             }
 
             btnProfAdd.Enabled = true;
@@ -771,6 +753,43 @@ namespace YAMDCC.GUI
             // Tell the service to reload and apply the updated config
             ServiceCommand command = new(Command.ApplyConfig, null);
             IPCClient.PushMessage(command);
+        }
+
+        private void RevertConf()
+        {
+            if (MessageBox.Show(
+                "Are you sure you want to revert to the last loaded/saved config?",
+                "Revert?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
+                == DialogResult.Yes)
+            {
+                try
+                {
+                    YAMDCC_Config tempConf = YAMDCC_Config.Load(GetLastConfPath());
+                    LoadConf(tempConf);
+                    Config = tempConf;
+                    UpdateFanCurveDisplay();
+                    ApplyConf();
+                }
+                catch (Exception ex)
+                {
+                    if (ex is FileNotFoundException)
+                    {
+                        MessageBox.Show(
+                            "The last loaded/saved config was moved or deleted.",
+                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else if (ex is InvalidConfigException or InvalidOperationException)
+                    {
+                        MessageBox.Show(
+                            "The last loaded/saved config is invalid.",
+                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }
         }
 
         private void PollEC()
@@ -826,6 +845,59 @@ namespace YAMDCC.GUI
                 int oldIndex = cboProfSel.SelectedIndex;
                 cboProfSel.Items.RemoveAt(cboProfSel.SelectedIndex);
                 cboProfSel.SelectedIndex = oldIndex == 1 ? 1 : oldIndex - 1;
+            }
+        }
+
+        private static string GetLastConfPath()
+        {
+            using (StreamReader sr = new(Path.Combine(DataPath, "LastConfig"), false))
+            {
+                string path = sr.ReadLine();
+                sr.Close();
+                return path;
+            }
+        }
+
+        private static void SetLastConfPath(string path)
+        {
+            using (StreamWriter sw = new(Path.Combine(DataPath, "LastConfig"), false))
+            {
+                sw.WriteLine(path);
+                sw.Close();
+            }
+        }
+
+        private void UpdateFanCurveDisplay()
+        {
+            FanConf config = Config.FanConfs[cboFanSel.SelectedIndex];
+
+            cboProfSel.Items.Clear();
+            foreach (FanCurveConf curve in config.FanCurveConfs)
+            {
+                cboProfSel.Items.Add(curve.Name);
+            }
+
+            for (int i = 0; i < numFanSpds.Length; i++)
+            {
+                if (config.FanCurveRegs.Length >= i)
+                {
+                    numFanSpds[i].Maximum = tbFanSpds[i].Maximum
+                        = Math.Abs(config.MaxSpeed - config.MinSpeed);
+                }
+                else
+                {
+                    numFanSpds[i].Enabled = tbFanSpds[i].Enabled = false;
+                }
+            }
+
+            cboProfSel.Enabled = true;
+            cboProfSel.SelectedIndex = config.CurveSel;
+
+            if (tsiECMon.Checked)
+            {
+                tmrPoll.Stop();
+                PollEC();
+                tmrPoll.Start();
             }
         }
         #endregion

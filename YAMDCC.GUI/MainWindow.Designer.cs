@@ -77,7 +77,6 @@ namespace YAMDCC.GUI
             this.tsiHelp = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiSource = new System.Windows.Forms.ToolStripMenuItem();
-            this.tblMain = new System.Windows.Forms.TableLayoutPanel();
             this.tblFanControl = new System.Windows.Forms.TableLayoutPanel();
             this.tblCurve = new System.Windows.Forms.TableLayoutPanel();
             this.lblSpeed = new System.Windows.Forms.Label();
@@ -106,6 +105,7 @@ namespace YAMDCC.GUI
             this.lblFanSpd = new System.Windows.Forms.Label();
             this.lblFanRPM = new System.Windows.Forms.Label();
             this.lblTemp = new System.Windows.Forms.Label();
+            this.tblMain = new System.Windows.Forms.TableLayoutPanel();
             this.tmrPoll = new System.Windows.Forms.Timer(this.components);
             menuStrip = new System.Windows.Forms.MenuStrip();
             tcMain = new System.Windows.Forms.TabControl();
@@ -117,7 +117,6 @@ namespace YAMDCC.GUI
             flwKeyLight = new System.Windows.Forms.FlowLayoutPanel();
             flwStats = new System.Windows.Forms.FlowLayoutPanel();
             menuStrip.SuspendLayout();
-            this.tblMain.SuspendLayout();
             tcMain.SuspendLayout();
             tabFanControl.SuspendLayout();
             this.tblFanControl.SuspendLayout();
@@ -130,6 +129,7 @@ namespace YAMDCC.GUI
             flwKeyLight.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbKeyLight)).BeginInit();
             flwStats.SuspendLayout();
+            this.tblMain.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -317,22 +317,6 @@ namespace YAMDCC.GUI
             this.tsiSource.Size = new System.Drawing.Size(141, 22);
             this.tsiSource.Text = "Source Code";
             this.tsiSource.Click += new System.EventHandler(this.tsiSrc_Click);
-            // 
-            // tblMain
-            // 
-            this.tblMain.ColumnCount = 1;
-            this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.Controls.Add(tcMain, 0, 0);
-            this.tblMain.Controls.Add(flwStats, 0, 1);
-            this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblMain.Location = new System.Drawing.Point(0, 24);
-            this.tblMain.Margin = new System.Windows.Forms.Padding(0);
-            this.tblMain.Name = "tblMain";
-            this.tblMain.RowCount = 2;
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblMain.Size = new System.Drawing.Size(540, 416);
-            this.tblMain.TabIndex = 1;
             // 
             // tcMain
             // 
@@ -560,7 +544,6 @@ namespace YAMDCC.GUI
             // btnRevert
             // 
             this.btnRevert.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnRevert.Enabled = false;
             this.btnRevert.Location = new System.Drawing.Point(367, 3);
             this.btnRevert.Margin = new System.Windows.Forms.Padding(3, 3, 3, 2);
             this.btnRevert.Name = "btnRevert";
@@ -576,7 +559,7 @@ namespace YAMDCC.GUI
             tabOptions.Controls.Add(tblExtra);
             tabOptions.Location = new System.Drawing.Point(4, 24);
             tabOptions.Name = "tabOptions";
-            tabOptions.Size = new System.Drawing.Size(526, 364);
+            tabOptions.Size = new System.Drawing.Size(526, 366);
             tabOptions.TabIndex = 1;
             tabOptions.Text = "Extras";
             // 
@@ -602,7 +585,7 @@ namespace YAMDCC.GUI
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tblExtra.Size = new System.Drawing.Size(526, 364);
+            tblExtra.Size = new System.Drawing.Size(526, 366);
             tblExtra.TabIndex = 4;
             // 
             // lblChgLim
@@ -783,6 +766,22 @@ namespace YAMDCC.GUI
             this.lblTemp.Text = "Temp: --°C";
             this.lblTemp.Visible = false;
             // 
+            // tblMain
+            // 
+            this.tblMain.ColumnCount = 1;
+            this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblMain.Controls.Add(tcMain, 0, 0);
+            this.tblMain.Controls.Add(flwStats, 0, 1);
+            this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tblMain.Location = new System.Drawing.Point(0, 24);
+            this.tblMain.Margin = new System.Windows.Forms.Padding(0);
+            this.tblMain.Name = "tblMain";
+            this.tblMain.RowCount = 2;
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tblMain.Size = new System.Drawing.Size(540, 416);
+            this.tblMain.TabIndex = 1;
+            // 
             // tmrPoll
             // 
             this.tmrPoll.Interval = 1000;
@@ -808,8 +807,6 @@ namespace YAMDCC.GUI
             this.Load += new System.EventHandler(this.MainWindow_Load);
             menuStrip.ResumeLayout(false);
             menuStrip.PerformLayout();
-            this.tblMain.ResumeLayout(false);
-            this.tblMain.PerformLayout();
             tcMain.ResumeLayout(false);
             tabFanControl.ResumeLayout(false);
             this.tblFanControl.ResumeLayout(false);
@@ -829,6 +826,8 @@ namespace YAMDCC.GUI
             ((System.ComponentModel.ISupportInitialize)(this.tbKeyLight)).EndInit();
             flwStats.ResumeLayout(false);
             flwStats.PerformLayout();
+            this.tblMain.ResumeLayout(false);
+            this.tblMain.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
