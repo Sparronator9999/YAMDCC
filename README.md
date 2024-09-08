@@ -86,8 +86,8 @@ are you're looking for [NoteBook FanControl](https://github.com/UraniumDonut/nbf
 Below are some changes I would like to make before a 1.0 release of YAMDCC:
 
 - [ ] Config UI fixes:
-  - [ ] Actually implement the "revert to last saved config" functionality
-  - [x] Implement missing tooltips
+  - [x] Actually implement the "revert to last saved config" functionality
+  - [ ] Other fixes as they get pointed out
 - [ ] Config generation for MSI laptops
   - This would only work because many MSI laptops have almost identical EC register locations
     for all the relevent settings we change
@@ -97,8 +97,6 @@ Below are some changes I would like to make before a 1.0 release of YAMDCC:
   - Currently, there is no "acknowledgement" system for commands sent to the service,
     even for commands that expect data to be returned. This means no errors if the service
     crashes before fulfilling a received command.
-- [x] Keyboard backlight control
-  - At the request of @porkmanager
 
 Below are some planned features for potential future releases:
 
