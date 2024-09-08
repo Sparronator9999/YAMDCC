@@ -29,11 +29,8 @@
         <Compile Update="ProjectInstaller.cs">
             <SubType>Component</SubType>
         </Compile>
-        <Compile Update="svcFanControl.cs">
+        <Compile Update="FanControlService.cs">
             <SubType>Component</SubType>
-        </Compile>
-        <Compile Update="svcFanControl.Designer.cs">
-            <DependentUpon>svcFanControl.cs</DependentUpon>
         </Compile>
     </ItemGroup>
     <ItemGroup>
@@ -44,9 +41,6 @@
         <EmbeddedResource Update="Strings.resx">
             <Generator></Generator>
         </EmbeddedResource>
-        <None Include="svcFanControl.resx">
-            <DependentUpon>svcFanControl.cs</DependentUpon>
-        </None>
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\YAMDCC.Config\YAMDCC.Config.csproj" />
@@ -72,8 +66,5 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
         <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-    </ItemGroup>
-    <ItemGroup>
-        <EmbeddedResource Remove="svcFanControl.resx" />
     </ItemGroup>
 </Project>

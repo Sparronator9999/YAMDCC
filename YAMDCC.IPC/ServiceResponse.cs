@@ -14,7 +14,7 @@ namespace YAMDCC.IPC
         /// <summary>
         /// Sent when any command encounters an error.
         /// </summary>
-        Fail,
+        Error,
         /// <summary>
         /// The result of a <see cref="Command.GetVersion"/> command.
         /// </summary>

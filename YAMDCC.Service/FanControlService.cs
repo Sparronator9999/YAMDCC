@@ -26,7 +26,7 @@ using YAMDCC.Logs;
 
 namespace YAMDCC.Service
 {
-    internal sealed partial class svcFanControl : ServiceBase
+    internal sealed class FanControlService : ServiceBase
     {
         #region Fields
 
@@ -55,12 +55,12 @@ namespace YAMDCC.Service
         #endregion
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="svcFanControl"/> class.
+        /// Initialises a new instance of the <see cref="FanControlService"/> class.
         /// </summary>
         /// <param name="logger">The <see cref="Logger"/> instance to write logs to.</param>
-        public svcFanControl(Logger logger)
+        public FanControlService(Logger logger)
         {
-            InitializeComponent();
+            CanHandlePowerEvent = true;
 
             Log = logger;
             _EC = new EC();
@@ -166,19 +166,19 @@ namespace YAMDCC.Service
             switch (e.Message.Command)
             {
                 case Command.ReadECByte:
-                    error = ReadECByte(e.Connection.Name, e.Message.Arguments);
+                    error = ReadECByte(e.Connection.ID, e.Message.Arguments);
                     break;
                 case Command.WriteECByte:
-                    error = WriteECByte(e.Connection.Name, e.Message.Arguments);
+                    error = WriteECByte(e.Connection.ID, e.Message.Arguments);
                     break;
                 case Command.GetFanSpeed:
-                    error = GetFanSpeed(e.Connection.Name, e.Message.Arguments);
+                    error = GetFanSpeed(e.Connection.ID, e.Message.Arguments);
                     break;
                 case Command.GetFanRPM:
-                    error = GetFanRPM(e.Connection.Name, e.Message.Arguments);
+                    error = GetFanRPM(e.Connection.ID, e.Message.Arguments);
                     break;
                 case Command.GetTemp:
-                    error = GetTemp(e.Connection.Name, e.Message.Arguments);
+                    error = GetTemp(e.Connection.ID, e.Message.Arguments);
                     break;
                 case Command.ApplyConfig:
                     LoadConf();
@@ -188,13 +188,13 @@ namespace YAMDCC.Service
                     error = 0;
                     break;
                 case Command.FullBlast:
-                    error = SetFullBlast(e.Connection.Name, e.Message.Arguments);
+                    error = SetFullBlast(e.Connection.ID, e.Message.Arguments);
                     break;
                 case Command.GetKeyLightBright:
-                    error = GetKeyLightBright(e.Connection.Name);
+                    error = GetKeyLightBright(e.Connection.ID);
                     break;
                 case Command.SetKeyLightBright:
-                    error = SetKeyLightBright(e.Connection.Name, e.Message.Arguments);
+                    error = SetKeyLightBright(e.Connection.ID, e.Message.Arguments);
                     break;
                 default:    // Unknown command
                     Log.Error(Strings.GetString("errBadCmd"), e.Message);
@@ -352,33 +352,33 @@ namespace YAMDCC.Service
         /// <summary>
         /// Parse arguments from a given string.
         /// </summary>
-        /// <param name="args_in">The string containing the space-delimited arguments.</param>
-        /// <param name="expected_args">The expected number of arguments. Must be zero or positive.</param>
-        /// <param name="args_out">The parsed arguments. Will be empty if parsing fails.</param>
+        /// <param name="argsIn">The string containing the space-delimited arguments.</param>
+        /// <param name="numExpectedArgs">The expected number of arguments. Must be zero or positive.</param>
+        /// <param name="argsOut">The parsed arguments. Will be empty if parsing fails.</param>
         /// <returns></returns>
-        private bool ParseArgs(string args_in, int expected_args, out int[] args_out)
+        private bool ParseArgs(string argsIn, int numExpectedArgs, out int[] argsOut)
         {
-            args_out = new int[expected_args];
+            argsOut = new int[numExpectedArgs];
 
-            if (expected_args == 0)
+            if (numExpectedArgs == 0)
             {
-                if (!string.IsNullOrEmpty(args_in))
+                if (!string.IsNullOrEmpty(argsIn))
                 {
                     Log.Warn(Strings.GetString("warnArgsBadLength"));
                 }
                 return true;
             }
 
-            if (!string.IsNullOrEmpty(args_in))
+            if (!string.IsNullOrEmpty(argsIn))
             {
-                string[] args_str = args_in.Split(' ');
-                if (args_str.Length == expected_args)
+                string[] args_str = argsIn.Split(' ');
+                if (args_str.Length == numExpectedArgs)
                 {
-                    for (int i = 0; i < expected_args; i++)
+                    for (int i = 0; i < numExpectedArgs; i++)
                     {
                         if (int.TryParse(args_str[i], out int value))
                         {
-                            args_out[i] = value;
+                            argsOut[i] = value;
                         }
                         else
                         {
@@ -401,7 +401,7 @@ namespace YAMDCC.Service
             return false;
         }
 
-        private int ReadECByte(string name, string args)
+        private int ReadECByte(int clientId, string args)
         {
             if (ParseArgs(args, 1, out int[] pArgs))
             {
@@ -411,16 +411,18 @@ namespace YAMDCC.Service
                     bool success = _EC.ReadByte((byte)pArgs[0], out byte value);
                     EC.ReleaseLock();
 
+                    ServiceResponse response;
                     if (success)
                     {
-                        ServiceResponse response = new(Response.ReadResult, $"{pArgs[0]} {value}");
-                        IPCServer.PushMessage(response, name);
                         Log.Debug(Strings.GetString("svcECReadSuccess"), $"{pArgs[1]:X}", $"{value:X}");
+                        response = new(Response.ReadResult, $"{pArgs[0]} {value}");
                     }
                     else
                     {
                         LogECReadError(pArgs[0]);
+                        response = new(Response.Error, $"{(int)Command.ReadECByte}");
                     }
+                    IPCServer.PushMessage(response, clientId);
                     return 0;
                 }
                 return 3;
@@ -428,7 +430,7 @@ namespace YAMDCC.Service
             return 2;
         }
 
-        private int WriteECByte(string name, string args)
+        private int WriteECByte(int clientId, string args)
         {
             if (ParseArgs(args, 2, out int[] pArgs))
             {
@@ -438,14 +440,18 @@ namespace YAMDCC.Service
                     bool success = _EC.WriteByte((byte)pArgs[0], (byte)pArgs[1]);
                     EC.ReleaseLock();
 
+                    ServiceResponse response;
                     if (success)
                     {
                         Log.Debug(Strings.GetString("svcECWriteSuccess"), $"{pArgs[0]:X}");
+                        response = new(Response.Success, $"{(int)Command.WriteECByte}");
                     }
                     else
                     {
                         LogECWriteError(pArgs[0]);
+                        response = new(Response.Error, $"{(int)Command.WriteECByte}");
                     }
+                    IPCServer.PushMessage(response, clientId);
                     return 0;
                 }
                 return 3;
@@ -453,7 +459,7 @@ namespace YAMDCC.Service
             return 2;
         }
 
-        private int GetFanSpeed(string name, string args)
+        private int GetFanSpeed(int clientId, string args)
         {
             if (!ConfigLoaded)
             {
@@ -468,15 +474,17 @@ namespace YAMDCC.Service
                     bool success = _EC.ReadByte(cfg.SpeedReadReg, out byte speed);
                     EC.ReleaseLock();
 
+                    ServiceResponse response;
                     if (success)
                     {
-                        ServiceResponse response = new(Response.FanSpeed, $"{speed}");
-                        IPCServer.PushMessage(response, name);
+                        response = new(Response.FanSpeed, $"{speed}");
                     }
                     else
                     {
                         LogECReadError(pArgs[0]);
+                        response = new(Response.Error, $"{(int)Command.GetFanSpeed}");
                     }
+                    IPCServer.PushMessage(response, clientId);
                     return 0;
                 }
                 return 3;
@@ -484,7 +492,7 @@ namespace YAMDCC.Service
             return 2;
         }
 
-        private int GetFanRPM(string name, string args)
+        private int GetFanRPM(int clientId, string args)
         {
             if (!ConfigLoaded)
             {
@@ -512,6 +520,7 @@ namespace YAMDCC.Service
                         }
                         EC.ReleaseLock();
 
+                        ServiceResponse response;
                         if (success)
                         {
 #pragma warning disable IDE0045 // Supress "if statement can be simplified" suggestion
@@ -540,13 +549,14 @@ namespace YAMDCC.Service
                                 rpm = rpmValue * cfg.RPMConf.RPMMult;
                             }
 #pragma warning restore IDE0045
-                            ServiceResponse response = new(Response.FanRPM, $"{rpm}");
-                            IPCServer.PushMessage(response, name);
+                            response = new(Response.FanRPM, $"{rpm}");
                         }
                         else
                         {
                             LogECReadError(pArgs[0]);
+                            response = new(Response.FanRPM, $"{(int)Command.GetFanRPM}");
                         }
+                        IPCServer.PushMessage(response, clientId);
                         return 0;
                     }
                     return 3;
@@ -556,7 +566,7 @@ namespace YAMDCC.Service
             return 2;
         }
 
-        private int GetTemp(string name, string args)
+        private int GetTemp(int clientId, string args)
         {
             if (!ConfigLoaded)
             {
@@ -570,15 +580,18 @@ namespace YAMDCC.Service
                     FanConf cfg = Config.FanConfs[pArgs[0]];
                     bool success = _EC.ReadByte(cfg.TempReadReg, out byte temp);
                     EC.ReleaseLock();
+
+                    ServiceResponse response;
                     if (success)
                     {
-                        ServiceResponse response = new(Response.Temp, $"{temp}");
-                        IPCServer.PushMessage(response, name);
+                        response = new(Response.Temp, $"{temp}");
                     }
                     else
                     {
                         LogECReadError(pArgs[0]);
+                        response = new(Response.Error, $"{(int)Command.GetTemp}");
                     }
+                    IPCServer.PushMessage(response, clientId);
                     return 0;
                 }
                 return 3;
@@ -586,7 +599,7 @@ namespace YAMDCC.Service
             return 2;
         }
 
-        private int SetFullBlast(string name, string args)
+        private int SetFullBlast(int clientId, string args)
         {
             if (ConfigLoaded && Config.FullBlastConf is not null)
             {
@@ -609,10 +622,17 @@ namespace YAMDCC.Service
                         }
                         EC.ReleaseLock();
 
-                        if (!success)
+                        ServiceResponse response;
+                        if (success)
+                        {
+                            response = new(Response.Success, $"{(int)Command.FullBlast}");
+                        }
+                        else
                         {
                             LogECReadError(Config.FullBlastConf.Reg);
+                            response = new(Response.Error, $"{(int)Command.FullBlast}");
                         }
+                        IPCServer.PushMessage(response, clientId);
                         return 0;
                     }
                     return 3;
@@ -622,7 +642,7 @@ namespace YAMDCC.Service
             return 0;
         }
 
-        private int GetKeyLightBright(string name)
+        private int GetKeyLightBright(int clientId)
         {
             if (!ConfigLoaded || Config.KeyLightConf is null)
             {
@@ -632,24 +652,28 @@ namespace YAMDCC.Service
             Log.Debug("Getting keyboard backlight brightness...");
             if (EC.AcquireLock(500))
             {
-                if (_EC.ReadByte(Config.KeyLightConf.Reg, out byte value))
+                bool success = _EC.ReadByte(Config.KeyLightConf.Reg, out byte value);
+                EC.ReleaseLock();
+
+                ServiceResponse response;
+                if (success)
                 {
                     int brightness = value - Config.KeyLightConf.MinVal;
                     Log.Debug($"Keyboard backlight brightness is {brightness}");
-                    ServiceResponse response = new(Response.KeyLightBright, $"{brightness}");
-                    IPCServer.PushMessage(response, name);
+                    response = new(Response.KeyLightBright, $"{brightness}");
                 }
                 else
                 {
                     LogECReadError(Config.KeyLightConf.Reg);
+                    response = new(Response.Error, $"{(int)Command.GetKeyLightBright}");
                 }
-                EC.ReleaseLock();
+                IPCServer.PushMessage(response, clientId);
                 return 0;
             }
             return 3;
         }
 
-        private int SetKeyLightBright(string name, string args)
+        private int SetKeyLightBright(int clientId, string args)
         {
             if (!ConfigLoaded || Config.KeyLightConf is null)
             {
@@ -661,11 +685,21 @@ namespace YAMDCC.Service
                 Log.Debug($"Setting keyboard backlight brightness to {pArgs[0]}...");
                 if (EC.AcquireLock(500))
                 {
-                    if (!_EC.WriteByte(Config.KeyLightConf.Reg, (byte)(pArgs[0] + Config.KeyLightConf.MinVal)))
+                    bool success = _EC.WriteByte(Config.KeyLightConf.Reg, (byte)(pArgs[0] + Config.KeyLightConf.MinVal))
+                    EC.ReleaseLock();
+
+                    ServiceResponse response;
+                    if (success)
+                    {
+                        response = new(Response.Success, $"{Command.SetKeyLightBright}");
+                    }
+                    else
                     {
                         LogECWriteError(Config.KeyLightConf.Reg);
+                        response = new(Response.Error, $"{Command.SetKeyLightBright}");
                     }
-                    EC.ReleaseLock();
+
+                    IPCServer.PushMessage(response, clientId);
                     return 0;
                 }
                 return 3;

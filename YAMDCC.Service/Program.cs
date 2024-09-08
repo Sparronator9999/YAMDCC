@@ -37,7 +37,7 @@ namespace YAMDCC.Service
         private static void Main()
         {
             AppDomain.CurrentDomain.UnhandledException += LogUnhandledException;
-            ServiceBase.Run(new svcFanControl(Log));
+            ServiceBase.Run(new FanControlService(Log));
         }
 
         private static void LogUnhandledException(object sender, UnhandledExceptionEventArgs e)
