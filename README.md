@@ -93,11 +93,11 @@ Below are some changes I would like to make before a 1.0 release of YAMDCC:
     for all the relevent settings we change
   - The only thing we need to do is get the default fan curve from the user's laptop, and add
     it to the default fan profile.
-- [ ] Revamp IPC between service and config applications
+- [ ] Revamp IPC between service and config applications *(started)*
   - Currently, there is no "acknowledgement" system for commands sent to the service,
     even for commands that expect data to be returned. This means no errors if the service
     crashes before fulfilling a received command.
-- [ ] Keyboard backlight control
+- [x] Keyboard backlight control
   - At the request of @porkmanager
 
 Below are some planned features for potential future releases:
@@ -107,6 +107,7 @@ Below are some planned features for potential future releases:
 - [ ] Support for editing laptop config registers using the GUI interface
   - This would allow for creating configs for other laptop brands from the config UI
   - Currently, the only way to do this is to edit the XML directly
+- [ ] Plugin system for additional optional features
 - [ ] .NET support
   - Mandatory for Linux support
   - The GUI *should* compile on .NET 8, but hasn't been tested yet
