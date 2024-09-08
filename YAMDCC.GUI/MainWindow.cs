@@ -222,11 +222,31 @@ namespace YAMDCC.GUI
                     {
                         if (int.TryParse(args[0], out int value))
                         {
-                            if ((Command)value == Command.ApplyConfig && Config.KeyLightConf is not null)
+                            Command cmd = (Command)value;
+
+                            switch (cmd)
                             {
-                                ServiceCommand command = new(Command.GetKeyLightBright, "");
-                                IPCClient.PushMessage(command);
+                                case Command.ApplyConfig:
+                                    btnApply.Enabled = true;
+                                    lblStatus.Text = "Config applied successfully!";
+                                    if (Config.KeyLightConf is not null)
+                                    {
+                                        ServiceCommand command = new(Command.GetKeyLightBright, "");
+                                        IPCClient.PushMessage(command);
+                                    }
+                                    break;
+                                case Command.FullBlast:
+                                    chkFullBlast.Enabled = true;
+                                    break;
                             }
+                        }
+                        break;
+                    }
+                    case Response.Error:
+                    {
+                        if (int.TryParse(args[0], out int value))
+                        {
+                            lblStatus.Text = $"ERROR: a {(Command)value} service command failed to run.";
                         }
                         break;
                     }
@@ -585,6 +605,7 @@ namespace YAMDCC.GUI
 
         private void chkFullBlast_Toggled(object sender, EventArgs e)
         {
+            chkFullBlast.Enabled = false;
             ServiceCommand command = new(Command.FullBlast, chkFullBlast.Checked ? "1" : "0");
             IPCClient.PushMessage(command);
         }
@@ -617,6 +638,7 @@ namespace YAMDCC.GUI
 
         private void btnApply_Click(object sender, EventArgs e)
         {
+            btnApply.Enabled = false;
             ApplyConf();
         }
 

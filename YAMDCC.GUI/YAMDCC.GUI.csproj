@@ -27,6 +27,12 @@
         <AnalysisLevel>latest-recommended</AnalysisLevel>
     </PropertyGroup>
     <ItemGroup>
+      <EmbeddedResource Remove="Dialogs\CrashDialog.resx" />
+      <EmbeddedResource Remove="Dialogs\TextInputDialog.resx" />
+      <EmbeddedResource Remove="MainWindow.resx" />
+      <EmbeddedResource Remove="Program.resx" />
+    </ItemGroup>
+    <ItemGroup>
         <Reference Include="System.IO.Compression" />
         <Reference Include="System.ServiceProcess" />
     </ItemGroup>
@@ -52,6 +58,12 @@
             <ProductName>.NET Framework 3.5 SP1</ProductName>
             <Install>false</Install>
         </BootstrapperPackage>
+    </ItemGroup>
+    <ItemGroup>
+      <None Include="Dialogs\CrashDialog.resx" />
+      <None Include="Dialogs\TextInputDialog.resx" />
+      <None Include="MainWindow.resx" />
+      <None Include="Program.resx" />
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />

@@ -685,7 +685,7 @@ namespace YAMDCC.Service
                 Log.Debug($"Setting keyboard backlight brightness to {pArgs[0]}...");
                 if (EC.AcquireLock(500))
                 {
-                    bool success = _EC.WriteByte(Config.KeyLightConf.Reg, (byte)(pArgs[0] + Config.KeyLightConf.MinVal))
+                    bool success = _EC.WriteByte(Config.KeyLightConf.Reg, (byte)(pArgs[0] + Config.KeyLightConf.MinVal));
                     EC.ReleaseLock();
 
                     ServiceResponse response;

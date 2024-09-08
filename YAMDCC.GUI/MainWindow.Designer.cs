@@ -45,7 +45,15 @@ namespace YAMDCC.GUI
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.menuStrip = new System.Windows.Forms.MenuStrip();
+            System.Windows.Forms.MenuStrip menuStrip;
+            System.Windows.Forms.TabControl tcMain;
+            System.Windows.Forms.TabPage tabFanControl;
+            System.Windows.Forms.FlowLayoutPanel flwFanSelect;
+            System.Windows.Forms.TableLayoutPanel tblFCBottom;
+            System.Windows.Forms.TabPage tabOptions;
+            System.Windows.Forms.TableLayoutPanel tblExtra;
+            System.Windows.Forms.FlowLayoutPanel flwKeyLight;
+            System.Windows.Forms.FlowLayoutPanel flwStats;
             this.tsiFile = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiLoadConf = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiSaveConf = new System.Windows.Forms.ToolStripMenuItem();
@@ -70,26 +78,20 @@ namespace YAMDCC.GUI
             this.tsiAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiSource = new System.Windows.Forms.ToolStripMenuItem();
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
-            this.tcMain = new System.Windows.Forms.TabControl();
-            this.tabFanControl = new System.Windows.Forms.TabPage();
             this.tblFanControl = new System.Windows.Forms.TableLayoutPanel();
             this.tblCurve = new System.Windows.Forms.TableLayoutPanel();
             this.lblSpeed = new System.Windows.Forms.Label();
             this.lblUpT = new System.Windows.Forms.Label();
             this.lblDownT = new System.Windows.Forms.Label();
-            this.flwFanSelect = new System.Windows.Forms.FlowLayoutPanel();
             this.lblFanSel = new System.Windows.Forms.Label();
             this.cboFanSel = new System.Windows.Forms.ComboBox();
             this.lblProfSel = new System.Windows.Forms.Label();
             this.cboProfSel = new System.Windows.Forms.ComboBox();
             this.btnProfAdd = new System.Windows.Forms.Button();
             this.btnProfDel = new System.Windows.Forms.Button();
-            this.tblFCBottom = new System.Windows.Forms.TableLayoutPanel();
             this.chkFullBlast = new System.Windows.Forms.CheckBox();
             this.btnApply = new System.Windows.Forms.Button();
             this.btnRevert = new System.Windows.Forms.Button();
-            this.tabOptions = new System.Windows.Forms.TabPage();
-            this.tblExtra = new System.Windows.Forms.TableLayoutPanel();
             this.lblChgLim = new System.Windows.Forms.Label();
             this.numChgLim = new System.Windows.Forms.NumericUpDown();
             this.lblPerfMode = new System.Windows.Forms.Label();
@@ -97,45 +99,52 @@ namespace YAMDCC.GUI
             this.lblWinFnSwap = new System.Windows.Forms.Label();
             this.chkWinFnSwap = new System.Windows.Forms.CheckBox();
             this.lblKeyLight = new System.Windows.Forms.Label();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.lblKeyLightLow = new System.Windows.Forms.Label();
             this.tbKeyLight = new System.Windows.Forms.TrackBar();
             this.lblKeyLightHigh = new System.Windows.Forms.Label();
-            this.flwStats = new System.Windows.Forms.FlowLayoutPanel();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lblFanSpd = new System.Windows.Forms.Label();
             this.lblFanRPM = new System.Windows.Forms.Label();
             this.lblTemp = new System.Windows.Forms.Label();
             this.tmrPoll = new System.Windows.Forms.Timer(this.components);
-            this.menuStrip.SuspendLayout();
+            menuStrip = new System.Windows.Forms.MenuStrip();
+            tcMain = new System.Windows.Forms.TabControl();
+            tabFanControl = new System.Windows.Forms.TabPage();
+            flwFanSelect = new System.Windows.Forms.FlowLayoutPanel();
+            tblFCBottom = new System.Windows.Forms.TableLayoutPanel();
+            tabOptions = new System.Windows.Forms.TabPage();
+            tblExtra = new System.Windows.Forms.TableLayoutPanel();
+            flwKeyLight = new System.Windows.Forms.FlowLayoutPanel();
+            flwStats = new System.Windows.Forms.FlowLayoutPanel();
+            menuStrip.SuspendLayout();
             this.tblMain.SuspendLayout();
-            this.tcMain.SuspendLayout();
-            this.tabFanControl.SuspendLayout();
+            tcMain.SuspendLayout();
+            tabFanControl.SuspendLayout();
             this.tblFanControl.SuspendLayout();
             this.tblCurve.SuspendLayout();
-            this.flwFanSelect.SuspendLayout();
-            this.tblFCBottom.SuspendLayout();
-            this.tabOptions.SuspendLayout();
-            this.tblExtra.SuspendLayout();
+            flwFanSelect.SuspendLayout();
+            tblFCBottom.SuspendLayout();
+            tabOptions.SuspendLayout();
+            tblExtra.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numChgLim)).BeginInit();
-            this.flowLayoutPanel1.SuspendLayout();
+            flwKeyLight.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbKeyLight)).BeginInit();
-            this.flwStats.SuspendLayout();
+            flwStats.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
             // 
-            this.menuStrip.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.menuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            menuStrip.BackColor = System.Drawing.Color.WhiteSmoke;
+            menuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
+            menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsiFile,
             this.tsiOptions,
             this.tsiHelp});
-            this.menuStrip.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
-            this.menuStrip.Size = new System.Drawing.Size(540, 24);
-            this.menuStrip.TabIndex = 0;
+            menuStrip.Location = new System.Drawing.Point(0, 0);
+            menuStrip.Name = "menuStrip";
+            menuStrip.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
+            menuStrip.Size = new System.Drawing.Size(540, 24);
+            menuStrip.TabIndex = 0;
             // 
             // tsiFile
             // 
@@ -313,8 +322,8 @@ namespace YAMDCC.GUI
             // 
             this.tblMain.ColumnCount = 1;
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblMain.Controls.Add(this.tcMain, 0, 0);
-            this.tblMain.Controls.Add(this.flwStats, 0, 1);
+            this.tblMain.Controls.Add(tcMain, 0, 0);
+            this.tblMain.Controls.Add(flwStats, 0, 1);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 24);
             this.tblMain.Margin = new System.Windows.Forms.Padding(0);
@@ -327,32 +336,32 @@ namespace YAMDCC.GUI
             // 
             // tcMain
             // 
-            this.tcMain.Controls.Add(this.tabFanControl);
-            this.tcMain.Controls.Add(this.tabOptions);
-            this.tcMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tcMain.Location = new System.Drawing.Point(3, 3);
-            this.tcMain.Name = "tcMain";
-            this.tcMain.SelectedIndex = 0;
-            this.tcMain.Size = new System.Drawing.Size(534, 392);
-            this.tcMain.TabIndex = 6;
+            tcMain.Controls.Add(tabFanControl);
+            tcMain.Controls.Add(tabOptions);
+            tcMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            tcMain.Location = new System.Drawing.Point(3, 3);
+            tcMain.Name = "tcMain";
+            tcMain.SelectedIndex = 0;
+            tcMain.Size = new System.Drawing.Size(534, 392);
+            tcMain.TabIndex = 6;
             // 
             // tabFanControl
             // 
-            this.tabFanControl.BackColor = System.Drawing.Color.White;
-            this.tabFanControl.Controls.Add(this.tblFanControl);
-            this.tabFanControl.Location = new System.Drawing.Point(4, 24);
-            this.tabFanControl.Name = "tabFanControl";
-            this.tabFanControl.Size = new System.Drawing.Size(526, 364);
-            this.tabFanControl.TabIndex = 0;
-            this.tabFanControl.Text = "Fan Control";
+            tabFanControl.BackColor = System.Drawing.Color.White;
+            tabFanControl.Controls.Add(this.tblFanControl);
+            tabFanControl.Location = new System.Drawing.Point(4, 24);
+            tabFanControl.Name = "tabFanControl";
+            tabFanControl.Size = new System.Drawing.Size(526, 364);
+            tabFanControl.TabIndex = 0;
+            tabFanControl.Text = "Fan Control";
             // 
             // tblFanControl
             // 
             this.tblFanControl.ColumnCount = 1;
             this.tblFanControl.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblFanControl.Controls.Add(this.tblCurve, 0, 1);
-            this.tblFanControl.Controls.Add(this.flwFanSelect, 0, 0);
-            this.tblFanControl.Controls.Add(this.tblFCBottom, 0, 2);
+            this.tblFanControl.Controls.Add(flwFanSelect, 0, 0);
+            this.tblFanControl.Controls.Add(tblFCBottom, 0, 2);
             this.tblFanControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblFanControl.Location = new System.Drawing.Point(0, 0);
             this.tblFanControl.Margin = new System.Windows.Forms.Padding(0);
@@ -424,19 +433,19 @@ namespace YAMDCC.GUI
             // 
             // flwFanSelect
             // 
-            this.flwFanSelect.AutoSize = true;
-            this.flwFanSelect.Controls.Add(this.lblFanSel);
-            this.flwFanSelect.Controls.Add(this.cboFanSel);
-            this.flwFanSelect.Controls.Add(this.lblProfSel);
-            this.flwFanSelect.Controls.Add(this.cboProfSel);
-            this.flwFanSelect.Controls.Add(this.btnProfAdd);
-            this.flwFanSelect.Controls.Add(this.btnProfDel);
-            this.flwFanSelect.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flwFanSelect.Location = new System.Drawing.Point(0, 0);
-            this.flwFanSelect.Margin = new System.Windows.Forms.Padding(0);
-            this.flwFanSelect.Name = "flwFanSelect";
-            this.flwFanSelect.Size = new System.Drawing.Size(526, 29);
-            this.flwFanSelect.TabIndex = 0;
+            flwFanSelect.AutoSize = true;
+            flwFanSelect.Controls.Add(this.lblFanSel);
+            flwFanSelect.Controls.Add(this.cboFanSel);
+            flwFanSelect.Controls.Add(this.lblProfSel);
+            flwFanSelect.Controls.Add(this.cboProfSel);
+            flwFanSelect.Controls.Add(this.btnProfAdd);
+            flwFanSelect.Controls.Add(this.btnProfDel);
+            flwFanSelect.Dock = System.Windows.Forms.DockStyle.Fill;
+            flwFanSelect.Location = new System.Drawing.Point(0, 0);
+            flwFanSelect.Margin = new System.Windows.Forms.Padding(0);
+            flwFanSelect.Name = "flwFanSelect";
+            flwFanSelect.Size = new System.Drawing.Size(526, 29);
+            flwFanSelect.TabIndex = 0;
             // 
             // lblFanSel
             // 
@@ -506,22 +515,22 @@ namespace YAMDCC.GUI
             // 
             // tblFCBottom
             // 
-            this.tblFCBottom.AutoSize = true;
-            this.tblFCBottom.ColumnCount = 3;
-            this.tblFCBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblFCBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tblFCBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tblFCBottom.Controls.Add(this.chkFullBlast, 0, 0);
-            this.tblFCBottom.Controls.Add(this.btnApply, 2, 0);
-            this.tblFCBottom.Controls.Add(this.btnRevert, 1, 0);
-            this.tblFCBottom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblFCBottom.Location = new System.Drawing.Point(0, 334);
-            this.tblFCBottom.Margin = new System.Windows.Forms.Padding(0);
-            this.tblFCBottom.Name = "tblFCBottom";
-            this.tblFCBottom.RowCount = 1;
-            this.tblFCBottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblFCBottom.Size = new System.Drawing.Size(526, 30);
-            this.tblFCBottom.TabIndex = 4;
+            tblFCBottom.AutoSize = true;
+            tblFCBottom.ColumnCount = 3;
+            tblFCBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tblFCBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            tblFCBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            tblFCBottom.Controls.Add(this.chkFullBlast, 0, 0);
+            tblFCBottom.Controls.Add(this.btnApply, 2, 0);
+            tblFCBottom.Controls.Add(this.btnRevert, 1, 0);
+            tblFCBottom.Dock = System.Windows.Forms.DockStyle.Fill;
+            tblFCBottom.Location = new System.Drawing.Point(0, 334);
+            tblFCBottom.Margin = new System.Windows.Forms.Padding(0);
+            tblFCBottom.Name = "tblFCBottom";
+            tblFCBottom.RowCount = 1;
+            tblFCBottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tblFCBottom.Size = new System.Drawing.Size(526, 30);
+            tblFCBottom.TabIndex = 4;
             // 
             // chkFullBlast
             // 
@@ -563,38 +572,38 @@ namespace YAMDCC.GUI
             // 
             // tabOptions
             // 
-            this.tabOptions.BackColor = System.Drawing.Color.White;
-            this.tabOptions.Controls.Add(this.tblExtra);
-            this.tabOptions.Location = new System.Drawing.Point(4, 24);
-            this.tabOptions.Name = "tabOptions";
-            this.tabOptions.Size = new System.Drawing.Size(526, 364);
-            this.tabOptions.TabIndex = 1;
-            this.tabOptions.Text = "Extras";
+            tabOptions.BackColor = System.Drawing.Color.White;
+            tabOptions.Controls.Add(tblExtra);
+            tabOptions.Location = new System.Drawing.Point(4, 24);
+            tabOptions.Name = "tabOptions";
+            tabOptions.Size = new System.Drawing.Size(526, 364);
+            tabOptions.TabIndex = 1;
+            tabOptions.Text = "Extras";
             // 
             // tblExtra
             // 
-            this.tblExtra.ColumnCount = 2;
-            this.tblExtra.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tblExtra.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblExtra.Controls.Add(this.lblChgLim, 0, 0);
-            this.tblExtra.Controls.Add(this.numChgLim, 1, 0);
-            this.tblExtra.Controls.Add(this.lblPerfMode, 0, 1);
-            this.tblExtra.Controls.Add(this.cboPerfMode, 1, 1);
-            this.tblExtra.Controls.Add(this.lblWinFnSwap, 0, 2);
-            this.tblExtra.Controls.Add(this.chkWinFnSwap, 1, 2);
-            this.tblExtra.Controls.Add(this.lblKeyLight, 0, 3);
-            this.tblExtra.Controls.Add(this.flowLayoutPanel1, 1, 3);
-            this.tblExtra.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblExtra.Location = new System.Drawing.Point(0, 0);
-            this.tblExtra.Name = "tblExtra";
-            this.tblExtra.RowCount = 5;
-            this.tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblExtra.Size = new System.Drawing.Size(526, 364);
-            this.tblExtra.TabIndex = 4;
+            tblExtra.ColumnCount = 2;
+            tblExtra.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            tblExtra.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tblExtra.Controls.Add(this.lblChgLim, 0, 0);
+            tblExtra.Controls.Add(this.numChgLim, 1, 0);
+            tblExtra.Controls.Add(this.lblPerfMode, 0, 1);
+            tblExtra.Controls.Add(this.cboPerfMode, 1, 1);
+            tblExtra.Controls.Add(this.lblWinFnSwap, 0, 2);
+            tblExtra.Controls.Add(this.chkWinFnSwap, 1, 2);
+            tblExtra.Controls.Add(this.lblKeyLight, 0, 3);
+            tblExtra.Controls.Add(flwKeyLight, 1, 3);
+            tblExtra.Dock = System.Windows.Forms.DockStyle.Fill;
+            tblExtra.Location = new System.Drawing.Point(0, 0);
+            tblExtra.Name = "tblExtra";
+            tblExtra.RowCount = 5;
+            tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tblExtra.Size = new System.Drawing.Size(526, 364);
+            tblExtra.TabIndex = 4;
             // 
             // lblChgLim
             // 
@@ -677,17 +686,17 @@ namespace YAMDCC.GUI
             this.lblKeyLight.TabIndex = 8;
             this.lblKeyLight.Text = "Keyboard backlight:";
             // 
-            // flowLayoutPanel1
+            // flwKeyLight
             // 
-            this.flowLayoutPanel1.AutoSize = true;
-            this.flowLayoutPanel1.Controls.Add(this.lblKeyLightLow);
-            this.flowLayoutPanel1.Controls.Add(this.tbKeyLight);
-            this.flowLayoutPanel1.Controls.Add(this.lblKeyLightHigh);
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(133, 83);
-            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(229, 49);
-            this.flowLayoutPanel1.TabIndex = 10;
+            flwKeyLight.AutoSize = true;
+            flwKeyLight.Controls.Add(this.lblKeyLightLow);
+            flwKeyLight.Controls.Add(this.tbKeyLight);
+            flwKeyLight.Controls.Add(this.lblKeyLightHigh);
+            flwKeyLight.Location = new System.Drawing.Point(133, 83);
+            flwKeyLight.Margin = new System.Windows.Forms.Padding(0);
+            flwKeyLight.Name = "flwKeyLight";
+            flwKeyLight.Size = new System.Drawing.Size(229, 49);
+            flwKeyLight.TabIndex = 10;
             // 
             // lblKeyLightLow
             // 
@@ -723,17 +732,17 @@ namespace YAMDCC.GUI
             // 
             // flwStats
             // 
-            this.flwStats.AutoSize = true;
-            this.flwStats.Controls.Add(this.lblStatus);
-            this.flwStats.Controls.Add(this.lblFanSpd);
-            this.flwStats.Controls.Add(this.lblFanRPM);
-            this.flwStats.Controls.Add(this.lblTemp);
-            this.flwStats.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flwStats.Location = new System.Drawing.Point(0, 398);
-            this.flwStats.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
-            this.flwStats.Name = "flwStats";
-            this.flwStats.Size = new System.Drawing.Size(540, 15);
-            this.flwStats.TabIndex = 2;
+            flwStats.AutoSize = true;
+            flwStats.Controls.Add(this.lblStatus);
+            flwStats.Controls.Add(this.lblFanSpd);
+            flwStats.Controls.Add(this.lblFanRPM);
+            flwStats.Controls.Add(this.lblTemp);
+            flwStats.Dock = System.Windows.Forms.DockStyle.Fill;
+            flwStats.Location = new System.Drawing.Point(0, 398);
+            flwStats.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
+            flwStats.Name = "flwStats";
+            flwStats.Size = new System.Drawing.Size(540, 15);
+            flwStats.TabIndex = 2;
             // 
             // lblStatus
             // 
@@ -787,39 +796,39 @@ namespace YAMDCC.GUI
             this.CancelButton = this.btnRevert;
             this.ClientSize = new System.Drawing.Size(540, 440);
             this.Controls.Add(this.tblMain);
-            this.Controls.Add(this.menuStrip);
+            this.Controls.Add(menuStrip);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MainMenuStrip = this.menuStrip;
+            this.MainMenuStrip = menuStrip;
             this.MaximizeBox = false;
             this.Name = "MainWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "YAMDCC config editor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_Closing);
             this.Load += new System.EventHandler(this.MainWindow_Load);
-            this.menuStrip.ResumeLayout(false);
-            this.menuStrip.PerformLayout();
+            menuStrip.ResumeLayout(false);
+            menuStrip.PerformLayout();
             this.tblMain.ResumeLayout(false);
             this.tblMain.PerformLayout();
-            this.tcMain.ResumeLayout(false);
-            this.tabFanControl.ResumeLayout(false);
+            tcMain.ResumeLayout(false);
+            tabFanControl.ResumeLayout(false);
             this.tblFanControl.ResumeLayout(false);
             this.tblFanControl.PerformLayout();
             this.tblCurve.ResumeLayout(false);
             this.tblCurve.PerformLayout();
-            this.flwFanSelect.ResumeLayout(false);
-            this.flwFanSelect.PerformLayout();
-            this.tblFCBottom.ResumeLayout(false);
-            this.tblFCBottom.PerformLayout();
-            this.tabOptions.ResumeLayout(false);
-            this.tblExtra.ResumeLayout(false);
-            this.tblExtra.PerformLayout();
+            flwFanSelect.ResumeLayout(false);
+            flwFanSelect.PerformLayout();
+            tblFCBottom.ResumeLayout(false);
+            tblFCBottom.PerformLayout();
+            tabOptions.ResumeLayout(false);
+            tblExtra.ResumeLayout(false);
+            tblExtra.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numChgLim)).EndInit();
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
+            flwKeyLight.ResumeLayout(false);
+            flwKeyLight.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbKeyLight)).EndInit();
-            this.flwStats.ResumeLayout(false);
-            this.flwStats.PerformLayout();
+            flwStats.ResumeLayout(false);
+            flwStats.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -853,40 +862,31 @@ namespace YAMDCC.GUI
         private System.Windows.Forms.ToolStripMenuItem tsiProfDel;
         private System.Windows.Forms.ToolStripSeparator sep4;
         private System.Windows.Forms.ToolStripMenuItem tsiStopSvc;
-        private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStripMenuItem tsiFile;
         private System.Windows.Forms.ToolStripSeparator sep1;
         private System.Windows.Forms.ToolStripSeparator sep2;
         private System.Windows.Forms.ToolStripMenuItem tsiOptions;
         private System.Windows.Forms.ToolStripMenuItem tsiHelp;
         private System.Windows.Forms.TableLayoutPanel tblMain;
-        private System.Windows.Forms.FlowLayoutPanel flwStats;
-        private System.Windows.Forms.TableLayoutPanel tblFCBottom;
-        private System.Windows.Forms.TabControl tcMain;
-        private System.Windows.Forms.TabPage tabFanControl;
         private System.Windows.Forms.TableLayoutPanel tblFanControl;
         private System.Windows.Forms.TableLayoutPanel tblCurve;
         private System.Windows.Forms.Label lblSpeed;
         private System.Windows.Forms.Label lblUpT;
         private System.Windows.Forms.Label lblDownT;
-        private System.Windows.Forms.FlowLayoutPanel flwFanSelect;
         private System.Windows.Forms.Label lblFanSel;
         private System.Windows.Forms.ComboBox cboFanSel;
         private System.Windows.Forms.Label lblProfSel;
         private System.Windows.Forms.ComboBox cboProfSel;
         private System.Windows.Forms.Button btnProfAdd;
         private System.Windows.Forms.Button btnProfDel;
-        private System.Windows.Forms.TabPage tabOptions;
         private System.Windows.Forms.NumericUpDown numChgLim;
-        private System.Windows.Forms.Label lblChgLim;
-        private System.Windows.Forms.TableLayoutPanel tblExtra;
-        private System.Windows.Forms.Label lblPerfMode;
         private System.Windows.Forms.ComboBox cboPerfMode;
-        private System.Windows.Forms.Label lblWinFnSwap;
         private System.Windows.Forms.CheckBox chkWinFnSwap;
-        private System.Windows.Forms.Label lblKeyLight;
         private System.Windows.Forms.TrackBar tbKeyLight;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.Label lblChgLim;
+        private System.Windows.Forms.Label lblPerfMode;
+        private System.Windows.Forms.Label lblWinFnSwap;
+        private System.Windows.Forms.Label lblKeyLight;
         private System.Windows.Forms.Label lblKeyLightLow;
         private System.Windows.Forms.Label lblKeyLightHigh;
     }
