@@ -618,6 +618,7 @@ namespace YAMDCC.GUI
         private void cboPerfMode_SelectedIndexChanged(object sender, EventArgs e)
         {
             Config.PerfModeConf.ModeSel = cboPerfMode.SelectedIndex;
+            ttMain.SetToolTip(cboPerfMode, Config.PerfModeConf.PerfModes[cboPerfMode.SelectedIndex].Desc);
         }
 
         private void chkWinFnSwap_CheckedChanged(object sender, EventArgs e)
