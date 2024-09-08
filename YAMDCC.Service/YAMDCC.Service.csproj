@@ -34,10 +34,6 @@
         </Compile>
     </ItemGroup>
     <ItemGroup>
-        <EmbeddedResource Update="Program.resx">
-            <DependentUpon>Program.cs</DependentUpon>
-            <LastGenOutput>Program.Designer.cs</LastGenOutput>
-        </EmbeddedResource>
         <EmbeddedResource Update="Strings.resx">
             <Generator></Generator>
         </EmbeddedResource>
