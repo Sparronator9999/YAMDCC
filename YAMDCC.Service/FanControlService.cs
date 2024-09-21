@@ -61,6 +61,7 @@ namespace YAMDCC.Service
         public FanControlService(Logger logger)
         {
             CanHandlePowerEvent = true;
+            CanShutdown = true;
 
             Log = logger;
             _EC = new EC();
@@ -113,6 +114,16 @@ namespace YAMDCC.Service
 
         protected override void OnStop()
         {
+            StopService();
+        }
+
+        protected override void OnShutdown()
+        {
+            StopService();
+        }
+
+        private void StopService()
+        {
             Log.Info(Strings.GetString("svcStopping"));
 
             // Stop the IPC server:
@@ -156,6 +167,7 @@ namespace YAMDCC.Service
             e.Connection.ReceiveMessage -= IPCClientMessage;
             Log.Info(Strings.GetString("ipcDC"), e.Connection.ID);
         }
+
         private void IPCServerError(object sender, PipeErrorEventArgs<ServiceCommand, ServiceResponse> e) =>
             throw e.Exception;
 
