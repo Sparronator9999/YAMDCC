@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.IO;
 using System.IO.Pipes;
 using System.ServiceProcess;
+using System.Timers;
 using YAMDCC.Config;
 using YAMDCC.ECAccess;
 using YAMDCC.IPC;
@@ -52,6 +53,13 @@ namespace YAMDCC.Service
         private readonly Logger Log;
 
         private readonly EC _EC;
+
+        private volatile bool Cooldown;
+        private readonly Timer CooldownTimer = new()
+        {
+            AutoReset = false,
+            Interval = 1000,
+        };
         #endregion
 
         /// <summary>
@@ -99,6 +107,8 @@ namespace YAMDCC.Service
             }
             Log.Info(Strings.GetString("drvLoadSuccess"));
 
+            CooldownTimer.Elapsed += CooldownTimer_Elapsed;
+
             // Set up IPC server
             Log.Debug("Starting IPC server...");
             IPCServer.ClientConnected += IPCClientConnect;
@@ -110,6 +120,12 @@ namespace YAMDCC.Service
 
             // Apply the fan curve and charging threshold:
             ApplySettings();
+        }
+
+        private void CooldownTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            CooldownTimer.Stop();
+            Cooldown = false;
         }
 
         protected override void OnStop()
@@ -133,6 +149,8 @@ namespace YAMDCC.Service
             IPCServer.ClientDisconnected -= IPCClientDisconnect;
             IPCServer.Error -= IPCServerError;
 
+            CooldownTimer.Elapsed -= CooldownTimer_Elapsed;
+
             // Uninstall WinRing0 to keep things clean
             Log.Debug(Strings.GetString("drvUnload"));
             _EC.UnloadDriver();
@@ -148,9 +166,14 @@ namespace YAMDCC.Service
                 case PowerBroadcastStatus.ResumeCritical:
                 case PowerBroadcastStatus.ResumeSuspend:
                 case PowerBroadcastStatus.ResumeAutomatic:
-                    // Re-apply the fan curve after waking up from sleep:
-                    Log.Debug($"Re-applying fan curve...");
-                    ApplySettings();
+                    if (!Cooldown)
+                    {
+                        // Re-apply the fan curve after waking up from sleep:
+                        Log.Debug($"Re-applying fan curve...");
+                        ApplySettings();
+                        Cooldown = true;
+                        CooldownTimer.Start();
+                    }
                     break;
             }
             return true;
