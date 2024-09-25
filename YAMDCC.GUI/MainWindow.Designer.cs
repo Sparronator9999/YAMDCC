@@ -307,14 +307,14 @@ namespace YAMDCC.GUI
             // tsiAbout
             // 
             this.tsiAbout.Name = "tsiAbout";
-            this.tsiAbout.Size = new System.Drawing.Size(141, 22);
+            this.tsiAbout.Size = new System.Drawing.Size(180, 22);
             this.tsiAbout.Text = "About";
             this.tsiAbout.Click += new System.EventHandler(this.tsiAbout_Click);
             // 
             // tsiSource
             // 
             this.tsiSource.Name = "tsiSource";
-            this.tsiSource.Size = new System.Drawing.Size(141, 22);
+            this.tsiSource.Size = new System.Drawing.Size(180, 22);
             this.tsiSource.Text = "Source Code";
             this.tsiSource.Click += new System.EventHandler(this.tsiSrc_Click);
             // 

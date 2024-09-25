@@ -11,10 +11,10 @@ namespace YAMDCC.GUI.Dialogs
         {
             InitializeComponent();
             txtStackTrace.Text = threadException
-                ? "Called from Application.ThreadException\n"
-                : "Called from AppDomain.CurrentDomain.UnhandledException\n";
+                ? "Called from Application.ThreadException\r\n"
+                : "Called from AppDomain.CurrentDomain.UnhandledException\r\n";
 
-            txtStackTrace.Text += $"{ex.Message}\n{ex.StackTrace}";
+            txtStackTrace.Text += $"{ex.Message}\r\n{ex.StackTrace}";
         }
 
         private void btnReportIssue_Click(object sender, EventArgs e)
