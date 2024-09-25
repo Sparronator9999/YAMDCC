@@ -90,6 +90,10 @@ namespace YAMDCC.Config
         /// <summary>
         /// The list of <see cref="FanCurveConf"/>s associated with this fan.
         /// </summary>
+        /// <remarks>
+        /// If the base config is a template, this may be <c>null</c>,
+        /// otherwise at least one fan curve (the "default" curve) must exist.
+        /// </remarks>
         [XmlArray]
         public FanCurveConf[] FanCurveConfs { get; set; }
     }

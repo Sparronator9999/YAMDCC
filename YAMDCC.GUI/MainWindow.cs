@@ -684,8 +684,11 @@ namespace YAMDCC.GUI
 
             try
             {
-                Config = YAMDCC_Config.Load(confPath);
-                LoadConf(Config);
+                YAMDCC_Config tmpConf = YAMDCC_Config.Load(confPath);
+                if (LoadConf(tmpConf))
+                {
+                    Config = tmpConf;
+                }
             }
             catch
             {
@@ -695,9 +698,18 @@ namespace YAMDCC.GUI
             tsiSaveConf.Enabled = true;
         }
 
-        private void LoadConf(YAMDCC_Config config)
+        private bool LoadConf(YAMDCC_Config config)
         {
             lblStatus.Text = "Loading config, please wait...";
+            if (config.Template)
+            {
+                MessageBox.Show(
+                    "This is a template config.\n" +
+                    "Template configs are currently WIP and cannot be used yet.\n" +
+                    "Please load a different config.");
+                return false;
+            }
+
             tsiSaveConf.Enabled = true;
 
             if (config.FullBlastConf is null)
@@ -768,6 +780,7 @@ namespace YAMDCC.GUI
             tsiECMon.Enabled = true;
 
             lblStatus.Text = "Ready";
+            return true;
         }
 
         private void ApplyConf()

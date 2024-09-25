@@ -52,6 +52,13 @@ namespace YAMDCC.Config
         public string Author { get; set; }
 
         /// <summary>
+        /// Is this config a "template" config that is used
+        /// when generating other (non-template) configs?
+        /// </summary>
+        [XmlElement]
+        public bool Template { get; set; }
+
+        /// <summary>
         /// The list of <see cref="FanConf"/>s associated with the laptop.
         /// </summary>
         [XmlArray]

@@ -278,6 +278,15 @@ namespace YAMDCC.Service
                     Log.Error(Strings.GetString("cfgInvalid"));
                 }
 
+                if (Config.Template)
+                {
+                    Log.Error(
+                        "Template configs are still WIP and unsupported for now.\n" +
+                        "Please load another config using the configurator app.");
+                    ConfigLoaded = false;
+                    return;
+                }
+
                 ConfigLoaded = true;
                 Log.Info(Strings.GetString("cfgLoadSuccess"));
             }
