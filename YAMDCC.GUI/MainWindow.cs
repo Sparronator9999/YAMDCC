@@ -21,6 +21,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using System.Windows.Forms;
 using YAMDCC.Config;
 using YAMDCC.GUI.Dialogs;
@@ -236,7 +237,10 @@ namespace YAMDCC.GUI
                                     }
                                     break;
                                 case Command.FullBlast:
-                                    chkFullBlast.Enabled = true;
+                                    lblStatus.Invoke(() =>
+                                    {
+                                        lblStatus.Text = "Full blast toggled successfully!";
+                                    });
                                     break;
                             }
                         }
@@ -484,7 +488,10 @@ namespace YAMDCC.GUI
 
         private void cboFanSel_IndexChanged(object sender, EventArgs e)
         {
-            UpdateFanCurveDisplay();
+            if (Config is not null)
+            {
+                UpdateFanCurveDisplay();
+            }
         }
 
         private void cboProfSel_IndexChanged(object sender, EventArgs e)
@@ -600,24 +607,29 @@ namespace YAMDCC.GUI
 
         private void chkFullBlast_Toggled(object sender, EventArgs e)
         {
-            chkFullBlast.Enabled = false;
             ServiceCommand command = new(Command.FullBlast, chkFullBlast.Checked ? "1" : "0");
             IPCClient.PushMessage(command);
         }
 
         private void numChargeLim_Changed(object sender, EventArgs e)
         {
-            Config.ChargeLimitConf.CurVal = (byte)numChgLim.Value;
-            btnRevert.Enabled = true;
-            tsiRevert.Enabled = true;
+            if (Config is not null)
+            {
+                Config.ChargeLimitConf.CurVal = (byte)numChgLim.Value;
+                btnRevert.Enabled = true;
+                tsiRevert.Enabled = true;
+            }
         }
 
         private void cboPerfMode_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Config.PerfModeConf.ModeSel = cboPerfMode.SelectedIndex;
-            ttMain.SetToolTip(cboPerfMode, Config.PerfModeConf.PerfModes[cboPerfMode.SelectedIndex].Desc);
-            btnRevert.Enabled = true;
-            tsiRevert.Enabled = true;
+            if (Config is not null)
+            {
+                Config.PerfModeConf.ModeSel = cboPerfMode.SelectedIndex;
+                ttMain.SetToolTip(cboPerfMode, Config.PerfModeConf.PerfModes[cboPerfMode.SelectedIndex].Desc);
+                btnRevert.Enabled = true;
+                tsiRevert.Enabled = true;
+            }
         }
 
         private void chkWinFnSwap_CheckedChanged(object sender, EventArgs e)
@@ -684,11 +696,8 @@ namespace YAMDCC.GUI
 
             try
             {
-                YAMDCC_Config tmpConf = YAMDCC_Config.Load(confPath);
-                if (LoadConf(tmpConf))
-                {
-                    Config = tmpConf;
-                }
+                Config = YAMDCC_Config.Load(confPath);
+                LoadConf(Config);
             }
             catch
             {
@@ -698,7 +707,7 @@ namespace YAMDCC.GUI
             tsiSaveConf.Enabled = true;
         }
 
-        private bool LoadConf(YAMDCC_Config config)
+        private void LoadConf(YAMDCC_Config config)
         {
             lblStatus.Text = "Loading config, please wait...";
             if (config.Template)
@@ -707,7 +716,27 @@ namespace YAMDCC.GUI
                     "This is a template config.\n" +
                     "Template configs are currently WIP and cannot be used yet.\n" +
                     "Please load a different config.");
-                return false;
+                tsiSaveConf.Enabled = false;
+                chkFullBlast.Enabled = false;
+                cboFanSel.Enabled = false;
+                cboProfSel.Enabled = false;
+                for (int i = 0; i < numUpTs.Length; i++)
+                {
+                    numUpTs[i].Enabled = false;
+                }
+                for (int i = 0; i < numDownTs.Length; i++)
+                {
+                    numDownTs[i].Enabled = false;
+                }
+                for (int i = 0; i < numFanSpds.Length; i++)
+                {
+                    numFanSpds[i].Enabled = false;
+                    tbFanSpds[i].Enabled = false;
+                }
+                cboPerfMode.Enabled = false;
+                numChgLim.Enabled = false;
+                tbKeyLight.Enabled = false;
+                chkWinFnSwap.Enabled = false;
             }
 
             tsiSaveConf.Enabled = true;
@@ -780,7 +809,6 @@ namespace YAMDCC.GUI
             tsiECMon.Enabled = true;
 
             lblStatus.Text = "Ready";
-            return true;
         }
 
         private void ApplyConf()
