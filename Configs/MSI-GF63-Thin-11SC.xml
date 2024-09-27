@@ -256,8 +256,7 @@
 	</FanConfs>
 	<FullBlastConf>
 		<Reg>152</Reg>
-		<OnVal>134</OnVal>
-		<OffVal>6</OffVal>
+		<Mask>128</Mask>
 	</FullBlastConf>
 	<ChargeLimitConf>
 		<Reg>215</Reg>

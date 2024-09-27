@@ -120,6 +120,9 @@ namespace YAMDCC.Config
             XmlSerializer serialiser = new(typeof(YAMDCC_Config));
             using (XmlReader reader = XmlReader.Create(xmlFile))
             {
+                // TODO:
+                // catch InvalidOperationException
+                // that occurs on invalid XML load
                 YAMDCC_Config cfg = (YAMDCC_Config)serialiser.Deserialize(reader);
                 return cfg.IsValid() ? cfg : throw new InvalidConfigException();
             }

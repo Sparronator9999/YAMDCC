@@ -651,19 +651,24 @@ namespace YAMDCC.Service
                 {
                     if (EC.AcquireLock(500))
                     {
+                        if (!_EC.ReadByte(Config.FullBlastConf.Reg, out byte value))
+                        {
+                            LogECReadError(Config.FullBlastConf.Reg);
+                            return 0;
+                        }
+
                         bool success;
                         if (pArgs[0] == 1)
                         {
                             Log.Debug("Enabling Full Blast...");
-                            success = _EC.WriteByte(Config.FullBlastConf.Reg,
-                                Config.FullBlastConf.OnVal);
+                            value |= Config.FullBlastConf.Mask;
                         }
                         else
                         {
                             Log.Debug("Disabling Full Blast...");
-                            success = _EC.WriteByte(Config.FullBlastConf.Reg,
-                                Config.FullBlastConf.OffVal);
+                            value &= (byte)~Config.FullBlastConf.Mask;
                         }
+                        success = _EC.WriteByte(Config.FullBlastConf.Reg, value);
                         EC.ReleaseLock();
 
                         ServiceResponse response;
