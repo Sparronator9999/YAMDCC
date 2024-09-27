@@ -1,7 +1,5 @@
 # YAMDCC - Yet Another MSI (Dragon) Center Clone
 
-*(formerly known as MSI Fan Control)*
-
 A fast, lightweight alternative to MSI Center for MSI laptops, written in C#.
 
 **Please read the whole README (or at least the [Supported Laptops](#supported-laptops) and [FAQ](#faq) sections) before downloading.**
@@ -9,7 +7,7 @@ A fast, lightweight alternative to MSI Center for MSI laptops, written in C#.
 ## Disclaimers
 
 - While this program is mostly complete, I still consider it to be **alpha-quality software!**
-- While measures are taken to reduce the program crash change, you *will* still likely encounter
+- While measures are taken to reduce the program crash chance, you *will* still likely encounter
   bugs while using this program, especially if feeding the program garbage configs.
 - This program requires low-level access to some of your computer hardware to apply settings. While
   no issues should arise from this, **I (Sparronator9999) and any other contributers**
@@ -44,20 +42,29 @@ A fast, lightweight alternative to MSI Center for MSI laptops, written in C#.
 
 ## Supported Laptops
 
-Currently, only the MSI GF63 Thin 11SC is supported, with support for more MSI laptops Coming Soon™.
+Currently, there is only a config for the MSI GF63 Thin 11SC, but other MSI laptops with a 10th-gen
+or later Intel CPU should also work, just with an incorrect default fan curve.
 
-In the meantime, you must make your own config for your laptop (tutorial Coming Soon™).
-
-This should be as easy as supplying your laptop's default fan curves to the Defaut profile in a copy of
-an existing MSI laptop config, however some MSI laptops have a few extra setting located at different EC
-registers. Try looking up similar fan control utilities (most are written for Linux).
+An update will add support for reading the default fan curve of more MSI laptops (including 9th-gen and older).
 
 Other laptop brands are not officially supported. You can still try and make your own config, but chances
 are you're looking for [NoteBook FanControl](https://github.com/UraniumDonut/nbfc-revive) instead.
 
-**Please avoid asking me (or other people) in the issue tracker to create a config for you.**
-**Unless we have your specific laptop model (which we probably don't), we will not be able to**
-**help you outside of the general instructions.**
+### Community tested laptops
+
+The following laptops are confirmed to work by the community:
+
+- MSI Katana GF66 12UG (thanks @porkmanager)
+- MSI Vector GP78 HX 13V (thanks @Twisted6)
+
+### Config disclaimers
+
+- The config format is very likely to change multiple times during YAMDCC's development before
+  release, and as such will break in new updates. Check the git history before updating.
+
+- **Please avoid asking me (or other people) in the issue tracker to create a config for you.**
+  **Unless we have your specific laptop model (which we probably don't), we will not be able to**
+  **help you outside of the general instructions.**
 
 ## Comparison
 
@@ -85,10 +92,7 @@ are you're looking for [NoteBook FanControl](https://github.com/UraniumDonut/nbf
 
 Below are some changes I would like to make before a 1.0 release of YAMDCC:
 
-- [ ] Config UI fixes:
-  - [x] Actually implement the "revert to last saved config" functionality
-  - [ ] Other fixes as they get pointed out
-- [ ] Config generation for MSI laptops
+- [ ] Config generation for MSI laptops *(started)*
   - This would only work because many MSI laptops have almost identical EC register locations
     for all the relevent settings we change
   - The only thing we need to do is get the default fan curve from the user's laptop, and add
