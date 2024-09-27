@@ -4,6 +4,14 @@ A fast, lightweight alternative to MSI Center for MSI laptops, written in C#.
 
 **Please read the whole README (or at least the [Supported Laptops](#supported-laptops) and [FAQ](#faq) sections) before downloading.**
 
+## Notice
+
+A recent commit (e2ae7b5) changed how the Full Blast setting was stored.
+
+If you want Full Blast to work, you'll have to update your config (the included configs have been updated for you).
+
+Not updating your config is safe (I think), however you will lose Full Blast functionality until you update it.
+
 ## Disclaimers
 
 - While this program is mostly complete, I still consider it to be **alpha-quality software!**
