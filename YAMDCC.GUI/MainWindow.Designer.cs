@@ -46,6 +46,11 @@ namespace YAMDCC.GUI
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.MenuStrip menuStrip;
+            System.Windows.Forms.ToolStripSeparator sep1;
+            System.Windows.Forms.ToolStripSeparator sep2;
+            System.Windows.Forms.ToolStripSeparator sep3;
+            System.Windows.Forms.ToolStripSeparator sep4;
+            System.Windows.Forms.ToolStripSeparator sep5;
             System.Windows.Forms.TabControl tcMain;
             System.Windows.Forms.TabPage tabFanControl;
             System.Windows.Forms.FlowLayoutPanel flwFanSelect;
@@ -53,25 +58,22 @@ namespace YAMDCC.GUI
             System.Windows.Forms.TabPage tabOptions;
             System.Windows.Forms.TableLayoutPanel tblExtra;
             System.Windows.Forms.FlowLayoutPanel flwKeyLight;
+            System.Windows.Forms.Label lblKeyLightLow;
+            System.Windows.Forms.Label lblKeyLightHigh;
             System.Windows.Forms.FlowLayoutPanel flwStats;
             this.tsiFile = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiLoadConf = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiSaveConf = new System.Windows.Forms.ToolStripMenuItem();
-            this.sep1 = new System.Windows.Forms.ToolStripSeparator();
             this.tsiApply = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiRevert = new System.Windows.Forms.ToolStripMenuItem();
-            this.sep2 = new System.Windows.Forms.ToolStripSeparator();
             this.tsiExit = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiProfAdd = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiProfEdit = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiProfRename = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiProfChangeDesc = new System.Windows.Forms.ToolStripMenuItem();
-            this.sep3 = new System.Windows.Forms.ToolStripSeparator();
             this.tsiProfDel = new System.Windows.Forms.ToolStripMenuItem();
-            this.sep4 = new System.Windows.Forms.ToolStripSeparator();
             this.tsiECMon = new System.Windows.Forms.ToolStripMenuItem();
-            this.sep5 = new System.Windows.Forms.ToolStripSeparator();
             this.tsiStopSvc = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiUninstall = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiHelp = new System.Windows.Forms.ToolStripMenuItem();
@@ -98,9 +100,7 @@ namespace YAMDCC.GUI
             this.lblWinFnSwap = new System.Windows.Forms.Label();
             this.chkWinFnSwap = new System.Windows.Forms.CheckBox();
             this.lblKeyLight = new System.Windows.Forms.Label();
-            this.lblKeyLightLow = new System.Windows.Forms.Label();
             this.tbKeyLight = new System.Windows.Forms.TrackBar();
-            this.lblKeyLightHigh = new System.Windows.Forms.Label();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lblFanSpd = new System.Windows.Forms.Label();
             this.lblFanRPM = new System.Windows.Forms.Label();
@@ -108,6 +108,11 @@ namespace YAMDCC.GUI
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
             this.tmrPoll = new System.Windows.Forms.Timer(this.components);
             menuStrip = new System.Windows.Forms.MenuStrip();
+            sep1 = new System.Windows.Forms.ToolStripSeparator();
+            sep2 = new System.Windows.Forms.ToolStripSeparator();
+            sep3 = new System.Windows.Forms.ToolStripSeparator();
+            sep4 = new System.Windows.Forms.ToolStripSeparator();
+            sep5 = new System.Windows.Forms.ToolStripSeparator();
             tcMain = new System.Windows.Forms.TabControl();
             tabFanControl = new System.Windows.Forms.TabPage();
             flwFanSelect = new System.Windows.Forms.FlowLayoutPanel();
@@ -115,6 +120,8 @@ namespace YAMDCC.GUI
             tabOptions = new System.Windows.Forms.TabPage();
             tblExtra = new System.Windows.Forms.TableLayoutPanel();
             flwKeyLight = new System.Windows.Forms.FlowLayoutPanel();
+            lblKeyLightLow = new System.Windows.Forms.Label();
+            lblKeyLightHigh = new System.Windows.Forms.Label();
             flwStats = new System.Windows.Forms.FlowLayoutPanel();
             menuStrip.SuspendLayout();
             tcMain.SuspendLayout();
@@ -151,10 +158,10 @@ namespace YAMDCC.GUI
             this.tsiFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsiLoadConf,
             this.tsiSaveConf,
-            this.sep1,
+            sep1,
             this.tsiApply,
             this.tsiRevert,
-            this.sep2,
+            sep2,
             this.tsiExit});
             this.tsiFile.Name = "tsiFile";
             this.tsiFile.Size = new System.Drawing.Size(37, 20);
@@ -163,45 +170,45 @@ namespace YAMDCC.GUI
             // tsiLoadConf
             // 
             this.tsiLoadConf.Name = "tsiLoadConf";
-            this.tsiLoadConf.Size = new System.Drawing.Size(154, 22);
+            this.tsiLoadConf.Size = new System.Drawing.Size(180, 22);
             this.tsiLoadConf.Text = "Load config";
             this.tsiLoadConf.Click += new System.EventHandler(this.tsiLoadConf_Click);
             // 
             // tsiSaveConf
             // 
             this.tsiSaveConf.Name = "tsiSaveConf";
-            this.tsiSaveConf.Size = new System.Drawing.Size(154, 22);
+            this.tsiSaveConf.Size = new System.Drawing.Size(180, 22);
             this.tsiSaveConf.Text = "Save config";
             this.tsiSaveConf.Click += new System.EventHandler(this.tsiSaveConf_Click);
             // 
             // sep1
             // 
-            this.sep1.Name = "sep1";
-            this.sep1.Size = new System.Drawing.Size(151, 6);
+            sep1.Name = "sep1";
+            sep1.Size = new System.Drawing.Size(177, 6);
             // 
             // tsiApply
             // 
             this.tsiApply.Name = "tsiApply";
-            this.tsiApply.Size = new System.Drawing.Size(154, 22);
+            this.tsiApply.Size = new System.Drawing.Size(180, 22);
             this.tsiApply.Text = "Apply changes";
             this.tsiApply.Click += new System.EventHandler(this.tsiApply_Click);
             // 
             // tsiRevert
             // 
             this.tsiRevert.Name = "tsiRevert";
-            this.tsiRevert.Size = new System.Drawing.Size(154, 22);
+            this.tsiRevert.Size = new System.Drawing.Size(180, 22);
             this.tsiRevert.Text = "Revert changes";
             this.tsiRevert.Click += new System.EventHandler(this.tsiRevert_Click);
             // 
             // sep2
             // 
-            this.sep2.Name = "sep2";
-            this.sep2.Size = new System.Drawing.Size(151, 6);
+            sep2.Name = "sep2";
+            sep2.Size = new System.Drawing.Size(177, 6);
             // 
             // tsiExit
             // 
             this.tsiExit.Name = "tsiExit";
-            this.tsiExit.Size = new System.Drawing.Size(154, 22);
+            this.tsiExit.Size = new System.Drawing.Size(180, 22);
             this.tsiExit.Text = "Exit";
             this.tsiExit.Click += new System.EventHandler(this.tsiExit_Click);
             // 
@@ -210,9 +217,9 @@ namespace YAMDCC.GUI
             this.tsiOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsiProfAdd,
             this.tsiProfEdit,
-            this.sep4,
+            sep4,
             this.tsiECMon,
-            this.sep5,
+            sep5,
             this.tsiStopSvc,
             this.tsiUninstall});
             this.tsiOptions.Name = "tsiOptions";
@@ -231,7 +238,7 @@ namespace YAMDCC.GUI
             this.tsiProfEdit.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsiProfRename,
             this.tsiProfChangeDesc,
-            this.sep3,
+            sep3,
             this.tsiProfDel});
             this.tsiProfEdit.Name = "tsiProfEdit";
             this.tsiProfEdit.Size = new System.Drawing.Size(204, 22);
@@ -253,8 +260,8 @@ namespace YAMDCC.GUI
             // 
             // sep3
             // 
-            this.sep3.Name = "sep3";
-            this.sep3.Size = new System.Drawing.Size(175, 6);
+            sep3.Name = "sep3";
+            sep3.Size = new System.Drawing.Size(177, 6);
             // 
             // tsiProfDel
             // 
@@ -265,8 +272,8 @@ namespace YAMDCC.GUI
             // 
             // sep4
             // 
-            this.sep4.Name = "sep4";
-            this.sep4.Size = new System.Drawing.Size(201, 6);
+            sep4.Name = "sep4";
+            sep4.Size = new System.Drawing.Size(201, 6);
             // 
             // tsiECMon
             // 
@@ -278,8 +285,8 @@ namespace YAMDCC.GUI
             // 
             // sep5
             // 
-            this.sep5.Name = "sep5";
-            this.sep5.Size = new System.Drawing.Size(201, 6);
+            sep5.Name = "sep5";
+            sep5.Size = new System.Drawing.Size(201, 6);
             // 
             // tsiStopSvc
             // 
@@ -559,7 +566,7 @@ namespace YAMDCC.GUI
             tabOptions.Controls.Add(tblExtra);
             tabOptions.Location = new System.Drawing.Point(4, 24);
             tabOptions.Name = "tabOptions";
-            tabOptions.Size = new System.Drawing.Size(526, 366);
+            tabOptions.Size = new System.Drawing.Size(526, 364);
             tabOptions.TabIndex = 1;
             tabOptions.Text = "Extras";
             // 
@@ -585,7 +592,7 @@ namespace YAMDCC.GUI
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tblExtra.Size = new System.Drawing.Size(526, 366);
+            tblExtra.Size = new System.Drawing.Size(526, 364);
             tblExtra.TabIndex = 4;
             // 
             // lblChgLim
@@ -631,7 +638,7 @@ namespace YAMDCC.GUI
             this.cboPerfMode.Name = "cboPerfMode";
             this.cboPerfMode.Size = new System.Drawing.Size(150, 23);
             this.cboPerfMode.TabIndex = 5;
-            this.cboPerfMode.SelectedIndexChanged += new System.EventHandler(this.cboPerfMode_SelectedIndexChanged);
+            this.cboPerfMode.SelectedIndexChanged += new System.EventHandler(this.cboPerfMode_IndexChanged);
             // 
             // lblWinFnSwap
             // 
@@ -656,7 +663,7 @@ namespace YAMDCC.GUI
             this.chkWinFnSwap.TabIndex = 7;
             this.chkWinFnSwap.Text = "Enabled";
             this.chkWinFnSwap.UseVisualStyleBackColor = true;
-            this.chkWinFnSwap.CheckedChanged += new System.EventHandler(this.chkWinFnSwap_CheckedChanged);
+            this.chkWinFnSwap.CheckedChanged += new System.EventHandler(this.chkWinFnSwap_Toggled);
             // 
             // lblKeyLight
             // 
@@ -672,9 +679,9 @@ namespace YAMDCC.GUI
             // flwKeyLight
             // 
             flwKeyLight.AutoSize = true;
-            flwKeyLight.Controls.Add(this.lblKeyLightLow);
+            flwKeyLight.Controls.Add(lblKeyLightLow);
             flwKeyLight.Controls.Add(this.tbKeyLight);
-            flwKeyLight.Controls.Add(this.lblKeyLightHigh);
+            flwKeyLight.Controls.Add(lblKeyLightHigh);
             flwKeyLight.Location = new System.Drawing.Point(133, 83);
             flwKeyLight.Margin = new System.Windows.Forms.Padding(0);
             flwKeyLight.Name = "flwKeyLight";
@@ -683,13 +690,13 @@ namespace YAMDCC.GUI
             // 
             // lblKeyLightLow
             // 
-            this.lblKeyLightLow.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblKeyLightLow.AutoSize = true;
-            this.lblKeyLightLow.Location = new System.Drawing.Point(3, 17);
-            this.lblKeyLightLow.Name = "lblKeyLightLow";
-            this.lblKeyLightLow.Size = new System.Drawing.Size(24, 15);
-            this.lblKeyLightLow.TabIndex = 10;
-            this.lblKeyLightLow.Text = "Off";
+            lblKeyLightLow.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            lblKeyLightLow.AutoSize = true;
+            lblKeyLightLow.Location = new System.Drawing.Point(3, 17);
+            lblKeyLightLow.Name = "lblKeyLightLow";
+            lblKeyLightLow.Size = new System.Drawing.Size(24, 15);
+            lblKeyLightLow.TabIndex = 10;
+            lblKeyLightLow.Text = "Off";
             // 
             // tbKeyLight
             // 
@@ -705,13 +712,13 @@ namespace YAMDCC.GUI
             // 
             // lblKeyLightHigh
             // 
-            this.lblKeyLightHigh.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblKeyLightHigh.AutoSize = true;
-            this.lblKeyLightHigh.Location = new System.Drawing.Point(187, 17);
-            this.lblKeyLightHigh.Name = "lblKeyLightHigh";
-            this.lblKeyLightHigh.Size = new System.Drawing.Size(39, 15);
-            this.lblKeyLightHigh.TabIndex = 11;
-            this.lblKeyLightHigh.Text = "Bright";
+            lblKeyLightHigh.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            lblKeyLightHigh.AutoSize = true;
+            lblKeyLightHigh.Location = new System.Drawing.Point(187, 17);
+            lblKeyLightHigh.Name = "lblKeyLightHigh";
+            lblKeyLightHigh.Size = new System.Drawing.Size(39, 15);
+            lblKeyLightHigh.TabIndex = 11;
+            lblKeyLightHigh.Text = "Bright";
             // 
             // flwStats
             // 
@@ -851,19 +858,14 @@ namespace YAMDCC.GUI
         private System.Windows.Forms.ToolStripMenuItem tsiRevert;
         private System.Windows.Forms.ToolStripMenuItem tsiAbout;
         private System.Windows.Forms.ToolStripMenuItem tsiSource;
-        private System.Windows.Forms.ToolStripSeparator sep5;
         private System.Windows.Forms.ToolStripMenuItem tsiUninstall;
         private System.Windows.Forms.ToolStripMenuItem tsiProfAdd;
         private System.Windows.Forms.ToolStripMenuItem tsiProfEdit;
         private System.Windows.Forms.ToolStripMenuItem tsiProfRename;
         private System.Windows.Forms.ToolStripMenuItem tsiProfChangeDesc;
-        private System.Windows.Forms.ToolStripSeparator sep3;
         private System.Windows.Forms.ToolStripMenuItem tsiProfDel;
-        private System.Windows.Forms.ToolStripSeparator sep4;
         private System.Windows.Forms.ToolStripMenuItem tsiStopSvc;
         private System.Windows.Forms.ToolStripMenuItem tsiFile;
-        private System.Windows.Forms.ToolStripSeparator sep1;
-        private System.Windows.Forms.ToolStripSeparator sep2;
         private System.Windows.Forms.ToolStripMenuItem tsiOptions;
         private System.Windows.Forms.ToolStripMenuItem tsiHelp;
         private System.Windows.Forms.TableLayoutPanel tblMain;
@@ -886,7 +888,5 @@ namespace YAMDCC.GUI
         private System.Windows.Forms.Label lblPerfMode;
         private System.Windows.Forms.Label lblWinFnSwap;
         private System.Windows.Forms.Label lblKeyLight;
-        private System.Windows.Forms.Label lblKeyLightLow;
-        private System.Windows.Forms.Label lblKeyLightHigh;
     }
 }

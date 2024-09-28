@@ -44,14 +44,18 @@ namespace YAMDCC.GUI.Dialogs
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.TableLayoutPanel tblMain;
+            System.Windows.Forms.FlowLayoutPanel flwButtons;
+            System.Windows.Forms.Button btnCancel;
+            System.Windows.Forms.Button btnOK;
             this.lblCaption = new System.Windows.Forms.Label();
-            this.tblLayout = new System.Windows.Forms.TableLayoutPanel();
             this.txtInput = new System.Windows.Forms.TextBox();
-            this.flwButtons = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.btnOK = new System.Windows.Forms.Button();
-            this.tblLayout.SuspendLayout();
-            this.flwButtons.SuspendLayout();
+            tblMain = new System.Windows.Forms.TableLayoutPanel();
+            flwButtons = new System.Windows.Forms.FlowLayoutPanel();
+            btnCancel = new System.Windows.Forms.Button();
+            btnOK = new System.Windows.Forms.Button();
+            tblMain.SuspendLayout();
+            flwButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblCaption
@@ -65,24 +69,24 @@ namespace YAMDCC.GUI.Dialogs
             this.lblCaption.TabIndex = 1;
             this.lblCaption.Text = "Caption";
             // 
-            // tblLayout
+            // tblMain
             // 
-            this.tblLayout.AutoSize = true;
-            this.tblLayout.ColumnCount = 1;
-            this.tblLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblLayout.Controls.Add(this.lblCaption, 0, 0);
-            this.tblLayout.Controls.Add(this.txtInput, 0, 1);
-            this.tblLayout.Controls.Add(this.flwButtons, 0, 2);
-            this.tblLayout.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblLayout.Location = new System.Drawing.Point(0, 0);
-            this.tblLayout.Name = "tblLayout";
-            this.tblLayout.Padding = new System.Windows.Forms.Padding(6);
-            this.tblLayout.RowCount = 3;
-            this.tblLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblLayout.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblLayout.Size = new System.Drawing.Size(300, 89);
-            this.tblLayout.TabIndex = 0;
+            tblMain.AutoSize = true;
+            tblMain.ColumnCount = 1;
+            tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tblMain.Controls.Add(this.lblCaption, 0, 0);
+            tblMain.Controls.Add(this.txtInput, 0, 1);
+            tblMain.Controls.Add(flwButtons, 0, 2);
+            tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            tblMain.Location = new System.Drawing.Point(0, 0);
+            tblMain.Name = "tblMain";
+            tblMain.Padding = new System.Windows.Forms.Padding(6);
+            tblMain.RowCount = 3;
+            tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            tblMain.Size = new System.Drawing.Size(300, 89);
+            tblMain.TabIndex = 0;
             // 
             // txtInput
             // 
@@ -95,47 +99,47 @@ namespace YAMDCC.GUI.Dialogs
             // 
             // flwButtons
             // 
-            this.flwButtons.AutoSize = true;
-            this.flwButtons.Controls.Add(this.btnCancel);
-            this.flwButtons.Controls.Add(this.btnOK);
-            this.flwButtons.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flwButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flwButtons.Location = new System.Drawing.Point(9, 53);
-            this.flwButtons.Name = "flwButtons";
-            this.flwButtons.Size = new System.Drawing.Size(282, 29);
-            this.flwButtons.TabIndex = 3;
+            flwButtons.AutoSize = true;
+            flwButtons.Controls.Add(btnCancel);
+            flwButtons.Controls.Add(btnOK);
+            flwButtons.Dock = System.Windows.Forms.DockStyle.Fill;
+            flwButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            flwButtons.Location = new System.Drawing.Point(9, 53);
+            flwButtons.Name = "flwButtons";
+            flwButtons.Size = new System.Drawing.Size(282, 29);
+            flwButtons.TabIndex = 3;
             // 
             // btnCancel
             // 
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(204, 3);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 1;
-            this.btnCancel.Text = "&Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
+            btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            btnCancel.Location = new System.Drawing.Point(204, 3);
+            btnCancel.Name = "btnCancel";
+            btnCancel.Size = new System.Drawing.Size(75, 23);
+            btnCancel.TabIndex = 1;
+            btnCancel.Text = "&Cancel";
+            btnCancel.UseVisualStyleBackColor = true;
             // 
             // btnOK
             // 
-            this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(123, 3);
-            this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(75, 23);
-            this.btnOK.TabIndex = 0;
-            this.btnOK.Text = "&OK";
-            this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+            btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
+            btnOK.Location = new System.Drawing.Point(123, 3);
+            btnOK.Name = "btnOK";
+            btnOK.Size = new System.Drawing.Size(75, 23);
+            btnOK.TabIndex = 0;
+            btnOK.Text = "&OK";
+            btnOK.UseVisualStyleBackColor = true;
+            btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
             // TextInputDialog
             // 
-            this.AcceptButton = this.btnOK;
+            this.AcceptButton = btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.CancelButton = this.btnCancel;
+            this.CancelButton = btnCancel;
             this.ClientSize = new System.Drawing.Size(300, 89);
-            this.Controls.Add(this.tblLayout);
+            this.Controls.Add(tblMain);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -144,9 +148,9 @@ namespace YAMDCC.GUI.Dialogs
             this.Name = "TextInputDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Title";
-            this.tblLayout.ResumeLayout(false);
-            this.tblLayout.PerformLayout();
-            this.flwButtons.ResumeLayout(false);
+            tblMain.ResumeLayout(false);
+            tblMain.PerformLayout();
+            flwButtons.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -155,10 +159,6 @@ namespace YAMDCC.GUI.Dialogs
         #endregion
 
         private System.Windows.Forms.Label lblCaption;
-        private System.Windows.Forms.TableLayoutPanel tblLayout;
         private System.Windows.Forms.TextBox txtInput;
-        private System.Windows.Forms.FlowLayoutPanel flwButtons;
-        private System.Windows.Forms.Button btnCancel;
-        private System.Windows.Forms.Button btnOK;
     }
 }

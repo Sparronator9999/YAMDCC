@@ -1,4 +1,4 @@
-﻿// This file is part of YAMDCC (Yet Another MSI Dragon Center Clone).
+// This file is part of YAMDCC (Yet Another MSI Dragon Center Clone).
 // Copyright © Sparronator9999 2023-2024.
 //
 // YAMDCC is free software: you can redistribute it and/or modify it
@@ -44,95 +44,101 @@ namespace YAMDCC.GUI.Dialogs
         /// </summary>
         private void InitializeComponent()
         {
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.lblError = new System.Windows.Forms.Label();
-            this.btnReportIssue = new System.Windows.Forms.Button();
-            this.btnExit = new System.Windows.Forms.Button();
-            this.btnSaveReport = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            System.Windows.Forms.TableLayoutPanel tblMain;
+            System.Windows.Forms.Button btnSaveReport;
+            System.Windows.Forms.Button btnExit;
+            System.Windows.Forms.Label lblError;
+            System.Windows.Forms.Button btnIssues;
+            System.Windows.Forms.GroupBox grpReport;
             this.txtStackTrace = new System.Windows.Forms.TextBox();
-            this.tableLayoutPanel1.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            tblMain = new System.Windows.Forms.TableLayoutPanel();
+            btnSaveReport = new System.Windows.Forms.Button();
+            btnExit = new System.Windows.Forms.Button();
+            lblError = new System.Windows.Forms.Label();
+            btnIssues = new System.Windows.Forms.Button();
+            grpReport = new System.Windows.Forms.GroupBox();
+            tblMain.SuspendLayout();
+            grpReport.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tableLayoutPanel1
+            // tblMain
             // 
-            this.tableLayoutPanel1.ColumnCount = 4;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.Controls.Add(this.btnSaveReport, 2, 2);
-            this.tableLayoutPanel1.Controls.Add(this.btnExit, 3, 2);
-            this.tableLayoutPanel1.Controls.Add(this.lblError, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.btnReportIssue, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.groupBox1, 0, 1);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(400, 250);
-            this.tableLayoutPanel1.TabIndex = 0;
-            // 
-            // lblError
-            // 
-            this.lblError.AutoSize = true;
-            this.tableLayoutPanel1.SetColumnSpan(this.lblError, 4);
-            this.lblError.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblError.Location = new System.Drawing.Point(3, 3);
-            this.lblError.Margin = new System.Windows.Forms.Padding(3);
-            this.lblError.Name = "lblError";
-            this.lblError.Size = new System.Drawing.Size(394, 60);
-            this.lblError.TabIndex = 0;
-            this.lblError.Text = "YAMDCC has crashed!\r\n\r\nBefore reporting a bug, try again on the latest commit of " +
-    "YAMDCC.\r\nIf the crash still occurs, please include the following crash report:";
-            // 
-            // btnReportIssue
-            // 
-            this.btnReportIssue.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnReportIssue.Location = new System.Drawing.Point(3, 221);
-            this.btnReportIssue.Name = "btnReportIssue";
-            this.btnReportIssue.Size = new System.Drawing.Size(100, 26);
-            this.btnReportIssue.TabIndex = 1;
-            this.btnReportIssue.Text = "GitHub Issues";
-            this.btnReportIssue.UseVisualStyleBackColor = true;
-            this.btnReportIssue.Click += new System.EventHandler(this.btnReportIssue_Click);
-            // 
-            // btnExit
-            // 
-            this.btnExit.Location = new System.Drawing.Point(322, 221);
-            this.btnExit.Name = "btnExit";
-            this.btnExit.Size = new System.Drawing.Size(75, 25);
-            this.btnExit.TabIndex = 0;
-            this.btnExit.Text = "Exit";
-            this.btnExit.UseVisualStyleBackColor = true;
-            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
+            tblMain.ColumnCount = 4;
+            tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            tblMain.Controls.Add(btnSaveReport, 2, 2);
+            tblMain.Controls.Add(btnExit, 3, 2);
+            tblMain.Controls.Add(lblError, 0, 0);
+            tblMain.Controls.Add(btnIssues, 0, 2);
+            tblMain.Controls.Add(grpReport, 0, 1);
+            tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            tblMain.Location = new System.Drawing.Point(0, 0);
+            tblMain.Name = "tblMain";
+            tblMain.RowCount = 3;
+            tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            tblMain.Size = new System.Drawing.Size(400, 250);
+            tblMain.TabIndex = 0;
             // 
             // btnSaveReport
             // 
-            this.btnSaveReport.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnSaveReport.Location = new System.Drawing.Point(226, 221);
-            this.btnSaveReport.Name = "btnSaveReport";
-            this.btnSaveReport.Size = new System.Drawing.Size(90, 25);
-            this.btnSaveReport.TabIndex = 1;
-            this.btnSaveReport.Text = "Save crash.txt";
-            this.btnSaveReport.UseVisualStyleBackColor = true;
-            this.btnSaveReport.Click += new System.EventHandler(this.btnSaveReport_Click);
+            btnSaveReport.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            btnSaveReport.Location = new System.Drawing.Point(226, 221);
+            btnSaveReport.Name = "btnSaveReport";
+            btnSaveReport.Size = new System.Drawing.Size(90, 25);
+            btnSaveReport.TabIndex = 1;
+            btnSaveReport.Text = "Save crash.txt";
+            btnSaveReport.UseVisualStyleBackColor = true;
+            btnSaveReport.Click += new System.EventHandler(this.btnSaveReport_Click);
             // 
-            // groupBox1
+            // btnExit
             // 
-            this.tableLayoutPanel1.SetColumnSpan(this.groupBox1, 4);
-            this.groupBox1.Controls.Add(this.txtStackTrace);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox1.Location = new System.Drawing.Point(3, 69);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(394, 146);
-            this.groupBox1.TabIndex = 3;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Crash report";
+            btnExit.Location = new System.Drawing.Point(322, 221);
+            btnExit.Name = "btnExit";
+            btnExit.Size = new System.Drawing.Size(75, 25);
+            btnExit.TabIndex = 0;
+            btnExit.Text = "Exit";
+            btnExit.UseVisualStyleBackColor = true;
+            btnExit.Click += new System.EventHandler(this.btnExit_Click);
+            // 
+            // lblError
+            // 
+            lblError.AutoSize = true;
+            tblMain.SetColumnSpan(lblError, 4);
+            lblError.Dock = System.Windows.Forms.DockStyle.Fill;
+            lblError.Location = new System.Drawing.Point(3, 3);
+            lblError.Margin = new System.Windows.Forms.Padding(3);
+            lblError.Name = "lblError";
+            lblError.Size = new System.Drawing.Size(394, 60);
+            lblError.TabIndex = 0;
+            lblError.Text = "YAMDCC has crashed!\r\n\r\nBefore reporting a bug, try again on the latest commit of " +
+    "YAMDCC.\r\nIf the crash still occurs, please include the following crash report:";
+            // 
+            // btnIssues
+            // 
+            btnIssues.Dock = System.Windows.Forms.DockStyle.Fill;
+            btnIssues.Location = new System.Drawing.Point(3, 221);
+            btnIssues.Name = "btnIssues";
+            btnIssues.Size = new System.Drawing.Size(100, 26);
+            btnIssues.TabIndex = 1;
+            btnIssues.Text = "GitHub Issues";
+            btnIssues.UseVisualStyleBackColor = true;
+            btnIssues.Click += new System.EventHandler(this.btnReportIssue_Click);
+            // 
+            // grpReport
+            // 
+            tblMain.SetColumnSpan(grpReport, 4);
+            grpReport.Controls.Add(this.txtStackTrace);
+            grpReport.Dock = System.Windows.Forms.DockStyle.Fill;
+            grpReport.Location = new System.Drawing.Point(3, 69);
+            grpReport.Name = "grpReport";
+            grpReport.Size = new System.Drawing.Size(394, 146);
+            grpReport.TabIndex = 3;
+            grpReport.TabStop = false;
+            grpReport.Text = "Crash report";
             // 
             // txtStackTrace
             // 
@@ -152,7 +158,7 @@ namespace YAMDCC.GUI.Dialogs
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(400, 250);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(tblMain);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -160,22 +166,16 @@ namespace YAMDCC.GUI.Dialogs
             this.Name = "CrashDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Crash!";
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            tblMain.ResumeLayout(false);
+            tblMain.PerformLayout();
+            grpReport.ResumeLayout(false);
+            grpReport.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.Label lblError;
-        private System.Windows.Forms.Button btnReportIssue;
-        private System.Windows.Forms.Button btnExit;
-        private System.Windows.Forms.Button btnSaveReport;
-        private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TextBox txtStackTrace;
     }
 }

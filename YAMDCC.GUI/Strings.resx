@@ -277,4 +277,10 @@ came last.</value>
     <value>Uninstalls the YAMDCC service and quits the YAMDCC configurator.
 Only run if you want to uninstall YAMDCC or move its program files to another location.</value>
   </data>
+  <data name="dlgSvcUninstallError" xml:space="preserve">
+    <value>Failed to uninstall the YAMDCC service!</value>
+  </data>
+  <data name="dlgSvcStopError" xml:space="preserve">
+    <value>Failed to stop the YAMDCC service!</value>
+  </data>
 </root>

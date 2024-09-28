@@ -21,7 +21,6 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
-using System.Threading;
 using System.Windows.Forms;
 using YAMDCC.Config;
 using YAMDCC.GUI.Dialogs;
@@ -181,9 +180,11 @@ namespace YAMDCC.GUI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format(CultureInfo.InvariantCulture, Strings.GetString("svcErrorConnect"), ex),
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(string.Format(CultureInfo.InvariantCulture,
+                    Strings.GetString("svcErrorConnect"), ex), "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Application.Exit();
+                return;
             }
 
             LoadConf(Path.Combine(DataPath, "CurrentConfig.xml"));
@@ -221,29 +222,7 @@ namespace YAMDCC.GUI
                 {
                     case Response.Success:
                     {
-                        if (int.TryParse(args[0], out int value))
-                        {
-                            Command cmd = (Command)value;
-
-                            switch (cmd)
-                            {
-                                case Command.ApplyConfig:
-                                    btnApply.Enabled = true;
-                                    lblStatus.Text = "Config applied successfully!";
-                                    if (Config.KeyLightConf is not null)
-                                    {
-                                        ServiceCommand command = new(Command.GetKeyLightBright, "");
-                                        IPCClient.PushMessage(command);
-                                    }
-                                    break;
-                                case Command.FullBlast:
-                                    lblStatus.Invoke(() =>
-                                    {
-                                        lblStatus.Text = "Full blast toggled successfully!";
-                                    });
-                                    break;
-                            }
-                        }
+                        HandleSuccessResponse(args);
                         break;
                     }
                     case Response.Error:
@@ -291,6 +270,33 @@ namespace YAMDCC.GUI
                         }
                         break;
                     }
+                }
+            }
+        }
+
+        private void HandleSuccessResponse(string[] args)
+        {
+            if (int.TryParse(args[0], out int value))
+            {
+                Command cmd = (Command)value;
+
+                switch (cmd)
+                {
+                    case Command.ApplyConfig:
+                        btnApply.Enabled = true;
+                        lblStatus.Text = "Config applied successfully!";
+                        if (Config.KeyLightConf is not null)
+                        {
+                            ServiceCommand command = new(Command.GetKeyLightBright, "");
+                            IPCClient.PushMessage(command);
+                        }
+                        break;
+                    case Command.FullBlast:
+                        lblStatus.Invoke(() =>
+                        {
+                            lblStatus.Text = "Full blast toggled successfully!";
+                        });
+                        break;
                 }
             }
         }
@@ -392,7 +398,7 @@ namespace YAMDCC.GUI
 
         private void tsiProfDel_Click(object sender, EventArgs e)
         {
-            DeleteFanProfile();
+            DelFanProfile();
         }
 
         private void tsiECMon_Click(object sender, EventArgs e)
@@ -426,7 +432,7 @@ namespace YAMDCC.GUI
 
                 if (!Utils.StopService("yamdccsvc"))
                 {
-                    MessageBox.Show("Failed to stop the YAMDCC service!",
+                    MessageBox.Show(Strings.GetString("dlgSvcStopError"),
                         "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -461,13 +467,13 @@ namespace YAMDCC.GUI
                     }
                     else
                     {
-                        MessageBox.Show("Failed to uninstall the YAMDCC service!",
+                        MessageBox.Show(Strings.GetString("dlgSvcUninstallError"),
                             "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Failed to stop the YAMDCC service!",
+                    MessageBox.Show(Strings.GetString("dlgSvcStopError"),
                         "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -543,7 +549,7 @@ namespace YAMDCC.GUI
 
         private void btnProfDel_Click(object sender, EventArgs e)
         {
-            DeleteFanProfile();
+            DelFanProfile();
         }
 
         private void numFanSpd_Changed(object sender, EventArgs e)
@@ -621,7 +627,7 @@ namespace YAMDCC.GUI
             }
         }
 
-        private void cboPerfMode_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboPerfMode_IndexChanged(object sender, EventArgs e)
         {
             if (Config is not null)
             {
@@ -632,7 +638,7 @@ namespace YAMDCC.GUI
             }
         }
 
-        private void chkWinFnSwap_CheckedChanged(object sender, EventArgs e)
+        private void chkWinFnSwap_Toggled(object sender, EventArgs e)
         {
             Config.KeySwapConf.Enabled = chkWinFnSwap.Checked;
             btnRevert.Enabled = true;
@@ -898,7 +904,7 @@ namespace YAMDCC.GUI
             }
         }
 
-        private void DeleteFanProfile()
+        private void DelFanProfile()
         {
             if (cboProfSel.Text != "Default" && MessageBox.Show(
                 Strings.GetString("dlgProfDel", cboProfSel.Text),
