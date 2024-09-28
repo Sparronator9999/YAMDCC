@@ -4,14 +4,6 @@ A fast, lightweight alternative to MSI Center for MSI laptops, written in C#.
 
 **Please read the whole README (or at least the [Supported Laptops](#supported-laptops) and [FAQ](#faq) sections) before downloading.**
 
-## Notice
-
-A recent commit (e2ae7b5) changed how the Full Blast setting was stored.
-
-If you want Full Blast to work, you'll have to update your config (the included configs have been updated for you).
-
-Not updating your config is safe (I think), however you will lose Full Blast functionality until you update it.
-
 ## Disclaimers
 
 - While this program is mostly complete, I still consider it to be **alpha-quality software!**
@@ -100,7 +92,7 @@ The following laptops are confirmed to work by the community:
 
 Below are some changes I would like to make before a 1.0 release of YAMDCC:
 
-- [ ] Config generation for MSI laptops *(started)*
+- [ ] Config generation for MSI laptops *(in progress)*
   - This would only work because many MSI laptops have almost identical EC register locations
     for all the relevent settings we change
   - The only thing we need to do is get the default fan curve from the user's laptop, and add
@@ -186,13 +178,9 @@ or new configs, feel free to open a pull request. Please include the following:
 
 ### What versions of Windows do you support?
 
-This program is tested by me (Sparronator9999) on 64-bit Windows 10 (specifically LTSC 2021).
-It should, however, run on any verison of Windows 10, 32- or 64-bit.
+Windows 10 and 11, both 64-bit and 32-bit (for Windows 10, but you should really be using a 64-bit OS in 2024).
 
-Windows 11 *should* be supported as well, but I have not tested it. Open an issue if you have
-trouble with Windows 11.
-
-Older versions of Windows may also work, but with no support from me.
+Older versions of Windows that support .NET Framework 4.8 may also work, but with no support from me.
 
 ### Can you please make a Linux version?
 
@@ -217,7 +205,7 @@ YAMDCC service.
 ### Why does this program need a kernel driver?
 
 Because communicating with the EC requires low-level hardware access, something only possible from
-within the kernel. This program achieves this with WinRing0.
+within the kernel. This program achieves this with [WinRing0](https://github.com/GermanAizek/WinRing0).
 
 ### Doesn't WinRing0 have security issues?
 
@@ -252,12 +240,12 @@ Reset your EC (MSI laptops only):
 
 Shut down the laptop if it's on (force shut down if needed), then find the EC reset button
 (on the GF63 Thin 11SC, it's a small hole located on the bottom of the laptop next to the charge port)
-and press it with the end of a paperclip (or similarly small object, e.g. SIM eject tool)
-for at least 5 seconds. Try rebooting.
+and press it with the end of a paperclip, SIM ejector, or similarly small tool for at least 5 seconds,
+then try rebooting.
 
-If the issue persists, try unplugging all power sources, including the laptop battery and
-CMOS/clock battery (requires disassembly of laptop), for a few seconds. Re-connect everything,
-then re-assemble and attempt another reboot. This will reset your BIOS settings.
+If the issue persists, try disconnecting all power sources, including the laptop's CMOS/clock
+battery and "main" battery (requires disassembly of laptop). Leave disconnected for a few seconds,
+then re-connect everything, re-assemble and attempt a reboot. This will reset your BIOS settings.
 
 Users of other laptop brands will need to look up instructions for their laptop.
 
