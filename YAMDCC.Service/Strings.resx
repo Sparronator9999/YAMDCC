@@ -214,4 +214,25 @@ The service will now stop.</value>
   <data name="warnArgsBadLength" xml:space="preserve">
     <value>Received a command that expected no arguments, but arguments were passed. Ignoring.</value>
   </data>
+  <data name="svcWritingCustomRegs" xml:space="preserve">
+    <value>Writing custom EC register configs ({0}/{1})...</value>
+  </data>
+  <data name="svcWritingFans" xml:space="preserve">
+    <value>Writing fan curve configuration for {0} ({1}/{2})...</value>
+  </data>
+  <data name="svcWritingChgLim" xml:space="preserve">
+    <value>Writing charge limit configuration...</value>
+  </data>
+  <data name="svcWritingPerfMode" xml:space="preserve">
+    <value>Writing performance mode setting...</value>
+  </data>
+  <data name="svcWritingKeySwap" xml:space="preserve">
+    <value>Writing Win/Fn key swap setting...</value>
+  </data>
+  <data name="svcSetKeyLightBright" xml:space="preserve">
+    <value>Setting keyboard backlight brightness to {0}...</value>
+  </data>
+  <data name="svcGetKeyLightBright" xml:space="preserve">
+    <value>Getting keyboard backlight brightness...</value>
+  </data>
 </root>
