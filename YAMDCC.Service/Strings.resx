@@ -165,10 +165,10 @@ with this log attached.</value>
     <value>Could not acquire EC bus lock.</value>
   </data>
   <data name="errECRead" xml:space="preserve">
-    <value>Failed to read from EC register {0}: {1}</value>
+    <value>Failed to read from EC register 0x{0:X2}: {1}</value>
   </data>
   <data name="errECWrite" xml:space="preserve">
-    <value>Failed to write to EC register {0}: {1}</value>
+    <value>Failed to write to EC register 0x{0:X2}: {1}</value>
   </data>
   <data name="errOffendingCmd" xml:space="preserve">
     <value>Offending command: {0}
@@ -184,16 +184,16 @@ Args: {1}</value>
     <value>This service provides functionality to apply settings from YAMDCC (Yet Another MSI Dragon Center Clone) configs to this computer. If this service's Startup Type is set to Manual, YAMDCC configs will not be applied on system startup. If this service is disabled, the YAMDCC configurator will not run, and YAMDCC configs will not be applied.</value>
   </data>
   <data name="svcECReading" xml:space="preserve">
-    <value>Reading EC register {0}...</value>
+    <value>Reading EC register 0x{0:X2}...</value>
   </data>
   <data name="svcECReadSuccess" xml:space="preserve">
-    <value>Successfully read EC register {0} (value: {1}).</value>
+    <value>Successfully read EC register 0x{0:X2} (value: 0x{1:X2}).</value>
   </data>
   <data name="svcECWriteSuccess" xml:space="preserve">
-    <value>Wrote to EC register {0} successfully.</value>
+    <value>Wrote to EC register 0x{0:X2} successfully.</value>
   </data>
   <data name="svcECWriting" xml:space="preserve">
-    <value>Writing value {0} to EC register {1}...</value>
+    <value>Writing value 0x{0:X2} to EC register 0x{1:X2}...</value>
   </data>
   <data name="svcException" xml:space="preserve">
     <value>Unhandled exception occurred: {0}

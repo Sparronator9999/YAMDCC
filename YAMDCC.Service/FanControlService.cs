@@ -252,32 +252,34 @@ namespace YAMDCC.Service
         }
         #endregion
 
-        private bool LogECReadByteError(byte reg, out byte value)
+        private bool LogECReadByte(byte reg, out byte value)
         {
+            Log.Debug(Strings.GetString("svcECReading", reg));
             bool success = _EC.ReadByte(reg, out value);
             if (!success)
             {
-                Log.Error(Strings.GetString("errECRead"), $"0x{reg:X}", new Win32Exception(_EC.GetDriverError()).Message);
+                Log.Error(Strings.GetString("errECRead"), reg, new Win32Exception(_EC.GetDriverError()).Message);
             }
             return success;
         }
 
-        private bool LogECReadWordError(byte reg, out ushort value, bool bigEndian = false)
+        private bool LogECReadWord(byte reg, out ushort value, bool bigEndian = false)
         {
             bool success = _EC.ReadWord(reg, out value, bigEndian);
             if (!success)
             {
-                Log.Error(Strings.GetString("errECRead"), $"0x{reg:X}", new Win32Exception(_EC.GetDriverError()).Message);
+                Log.Error(Strings.GetString("errECRead"), reg, new Win32Exception(_EC.GetDriverError()).Message);
             }
             return success;
         }
 
-        private bool LogECWriteError(byte reg, byte value)
+        private bool LogECWriteByte(byte reg, byte value)
         {
+            Log.Debug(Strings.GetString("svcECWriting", value, reg));
             bool success = _EC.WriteByte(reg, value);
             if (!success)
             {
-                Log.Error(Strings.GetString("errECWrite"), $"0x{reg:X}", new Win32Exception(_EC.GetDriverError()).Message);
+                Log.Error(Strings.GetString("errECWrite"), reg, new Win32Exception(_EC.GetDriverError()).Message);
             }
             return success;
         }
@@ -330,7 +332,7 @@ namespace YAMDCC.Service
         {
             if (ConfigLoaded)
             {
-                Log.Debug(Strings.GetString("cfgApplying"));
+                Log.Info(Strings.GetString("cfgApplying"));
                 if (EC.AcquireLock(1000))
                 {
                     // Write custom register values, if configured:
@@ -339,8 +341,8 @@ namespace YAMDCC.Service
                         for (int i = 0; i < Config.RegConfs.Length; i++)
                         {
                             RegConf cfg = Config.RegConfs[i];
-                            Log.Debug(Strings.GetString("svcWritingCustomRegs", i + 1, Config.RegConfs.Length));
-                            LogECWriteError(cfg.Reg, cfg.Value);
+                            Log.Info(Strings.GetString("svcWritingCustomRegs", i + 1, Config.RegConfs.Length));
+                            LogECWriteByte(cfg.Reg, cfg.Value);
                         }
                     }
 
@@ -348,19 +350,19 @@ namespace YAMDCC.Service
                     for (int i = 0; i < Config.FanConfs.Length; i++)
                     {
                         FanConf cfg = Config.FanConfs[i];
-                        Log.Debug(Strings.GetString("svcWritingCustomRegs", cfg.Name, i + 1, Config.FanConfs.Length));
+                        Log.Info(Strings.GetString("svcWritingFans", cfg.Name, i + 1, Config.FanConfs.Length));
                         FanCurveConf curveCfg = cfg.FanCurveConfs[cfg.CurveSel];
 
                         for (int j = 0; j < curveCfg.TempThresholds.Length; j++)
                         {
-                            LogECWriteError(cfg.FanCurveRegs[j], curveCfg.TempThresholds[j].FanSpeed);
+                            LogECWriteByte(cfg.FanCurveRegs[j], curveCfg.TempThresholds[j].FanSpeed);
 
                             if (j > 0)
                             {
-                                LogECWriteError(cfg.UpThresholdRegs[j - 1], curveCfg.TempThresholds[j].UpThreshold);
+                                LogECWriteByte(cfg.UpThresholdRegs[j - 1], curveCfg.TempThresholds[j].UpThreshold);
 
                                 byte downT = (byte)(curveCfg.TempThresholds[j].UpThreshold - curveCfg.TempThresholds[j].DownThreshold);
-                                LogECWriteError(cfg.DownThresholdRegs[j - 1], downT);
+                                LogECWriteByte(cfg.DownThresholdRegs[j - 1], downT);
                             }
                         }
                     }
@@ -368,28 +370,28 @@ namespace YAMDCC.Service
                     // Write the charge threshold:
                     if (Config.ChargeLimitConf is not null)
                     {
-                        Log.Debug(Strings.GetString("svcWritingChgLim"));
+                        Log.Info(Strings.GetString("svcWritingChgLim"));
                         byte value = (byte)(Config.ChargeLimitConf.MinVal + Config.ChargeLimitConf.CurVal);
-                        LogECWriteError(Config.ChargeLimitConf.Reg, value);
+                        LogECWriteByte(Config.ChargeLimitConf.Reg, value);
                     }
 
                     // Write the performance mode
                     if (Config.PerfModeConf is not null)
                     {
-                        Log.Debug(Strings.GetString("svcWritingPerfMode"));
+                        Log.Info(Strings.GetString("svcWritingPerfMode"));
                         byte value = Config.PerfModeConf.PerfModes[Config.PerfModeConf.ModeSel].Value;
-                        LogECWriteError(Config.PerfModeConf.Reg, value);
+                        LogECWriteByte(Config.PerfModeConf.Reg, value);
                     }
 
                     // Write the Win/Fn key swap setting
                     if (Config.KeySwapConf is not null)
                     {
-                        Log.Debug(Strings.GetString("svcWritingKeySwap"));
+                        Log.Info(Strings.GetString("svcWritingKeySwap"));
                         byte value = Config.KeySwapConf.Enabled
                             ? Config.KeySwapConf.OnVal
                             : Config.KeySwapConf.OffVal;
 
-                        LogECWriteError(Config.KeySwapConf.Reg, value);
+                        LogECWriteByte(Config.KeySwapConf.Reg, value);
                     }
 
                     EC.ReleaseLock();
@@ -459,13 +461,12 @@ namespace YAMDCC.Service
             {
                 if (EC.AcquireLock(1000))
                 {
-                    Log.Debug(Strings.GetString("svcECReading"), $"{pArgs[0]:X}");
-                    bool success = LogECReadByteError((byte)pArgs[0], out byte value);
+                    bool success = LogECReadByte((byte)pArgs[0], out byte value);
                     EC.ReleaseLock();
 
                     if (success)
                     {
-                        Log.Debug(Strings.GetString("svcECReadSuccess"), $"{pArgs[1]:X}", $"{value:X}");
+                        Log.Debug(Strings.GetString("svcECReadSuccess"), pArgs[1], value);
                     }
 
                     ServiceResponse response = success
@@ -486,13 +487,12 @@ namespace YAMDCC.Service
             {
                 if (EC.AcquireLock(1000))
                 {
-                    Log.Debug(Strings.GetString("svcECWriting"), $"{pArgs[1]:X}", $"{pArgs[0]:X}");
-                    bool success = LogECWriteError((byte)pArgs[0], (byte)pArgs[1]);
+                    bool success = LogECWriteByte((byte)pArgs[0], (byte)pArgs[1]);
                     EC.ReleaseLock();
 
                     if (success)
                     {
-                        Log.Debug(Strings.GetString("svcECWriteSuccess"), $"{pArgs[0]:X}");
+                        Log.Debug(Strings.GetString("svcECWriteSuccess"), pArgs[0]);
                     }
 
                     ServiceResponse response = success
@@ -519,7 +519,7 @@ namespace YAMDCC.Service
                 if (EC.AcquireLock(1000))
                 {
                     FanConf cfg = Config.FanConfs[pArgs[0]];
-                    bool success = LogECReadByteError(cfg.SpeedReadReg, out byte speed);
+                    bool success = LogECReadByte(cfg.SpeedReadReg, out byte speed);
                     EC.ReleaseLock();
 
                     ServiceResponse response = success
@@ -553,11 +553,11 @@ namespace YAMDCC.Service
                         ushort rpmValue;
                         if (cfg.RPMConf.Is16Bit)
                         {
-                            success = LogECReadWordError(cfg.RPMConf.ReadReg, out rpmValue, cfg.RPMConf.IsBigEndian);
+                            success = LogECReadWord(cfg.RPMConf.ReadReg, out rpmValue, cfg.RPMConf.IsBigEndian);
                         }
                         else
                         {
-                            success = LogECReadByteError(cfg.RPMConf.ReadReg, out byte rpmValByte);
+                            success = LogECReadByte(cfg.RPMConf.ReadReg, out byte rpmValByte);
                             rpmValue = rpmValByte;
                         }
                         EC.ReleaseLock();
@@ -619,7 +619,7 @@ namespace YAMDCC.Service
                 if (EC.AcquireLock(1000))
                 {
                     FanConf cfg = Config.FanConfs[pArgs[0]];
-                    bool success = LogECReadByteError(cfg.TempReadReg, out byte temp);
+                    bool success = LogECReadByte(cfg.TempReadReg, out byte temp);
                     EC.ReleaseLock();
 
                     ServiceResponse response = success
@@ -642,7 +642,7 @@ namespace YAMDCC.Service
                 {
                     if (EC.AcquireLock(500))
                     {
-                        if (!LogECReadByteError(Config.FullBlastConf.Reg, out byte value))
+                        if (!LogECReadByte(Config.FullBlastConf.Reg, out byte value))
                         {
                             return 0;
                         }
@@ -658,7 +658,7 @@ namespace YAMDCC.Service
                             Log.Debug("Disabling Full Blast...");
                             value &= (byte)~Config.FullBlastConf.Mask;
                         }
-                        success = LogECWriteError(Config.FullBlastConf.Reg, value);
+                        success = LogECWriteByte(Config.FullBlastConf.Reg, value);
                         EC.ReleaseLock();
 
                         ServiceResponse response = success
@@ -685,7 +685,7 @@ namespace YAMDCC.Service
             Log.Debug(Strings.GetString("svcGetKeyLightBright"));
             if (EC.AcquireLock(500))
             {
-                bool success = LogECReadByteError(Config.KeyLightConf.Reg, out byte value);
+                bool success = LogECReadByte(Config.KeyLightConf.Reg, out byte value);
                 EC.ReleaseLock();
 
                 ServiceResponse response;
@@ -716,7 +716,7 @@ namespace YAMDCC.Service
                 Log.Debug(Strings.GetString("svcSetKeyLightBright", pArgs[0]));
                 if (EC.AcquireLock(500))
                 {
-                    bool success = LogECWriteError(Config.KeyLightConf.Reg, (byte)(pArgs[0] + Config.KeyLightConf.MinVal));
+                    bool success = LogECWriteByte(Config.KeyLightConf.Reg, (byte)(pArgs[0] + Config.KeyLightConf.MinVal));
                     EC.ReleaseLock();
 
                     ServiceResponse response = success
@@ -765,7 +765,7 @@ namespace YAMDCC.Service
                             curveCfg.TempThresholds[j] = new();
                         }
 
-                        if (_EC.ReadByte(cfg.FanCurveRegs[j], out byte value))
+                        if (LogECReadByte(cfg.FanCurveRegs[j], out byte value))
                         {
                             curveCfg.TempThresholds[j].FanSpeed = value;
                         }
@@ -777,11 +777,11 @@ namespace YAMDCC.Service
                         }
                         else
                         {
-                            if (_EC.ReadByte(cfg.UpThresholdRegs[j], out value))
+                            if (LogECReadByte(cfg.UpThresholdRegs[j], out value))
                             {
                                 curveCfg.TempThresholds[j].UpThreshold = value;
                             }
-                            if (_EC.ReadByte(cfg.DownThresholdRegs[j], out value))
+                            if (LogECReadByte(cfg.DownThresholdRegs[j], out value))
                             {
                                 curveCfg.TempThresholds[j].DownThreshold = value;
                             }
