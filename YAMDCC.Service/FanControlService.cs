@@ -294,10 +294,17 @@ namespace YAMDCC.Service
                 {
                     Config = YAMDCC_Config.Load(confPath);
                 }
-                catch (InvalidConfigException)
+                catch (Exception ex)
                 {
-                    ConfigLoaded = false;
-                    Log.Error(Strings.GetString("cfgInvalid"));
+                    if (ex is InvalidConfigException or InvalidOperationException)
+                    {
+                        ConfigLoaded = false;
+                        Log.Error(Strings.GetString("cfgInvalid"));
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
 
                 if (Config.Template)

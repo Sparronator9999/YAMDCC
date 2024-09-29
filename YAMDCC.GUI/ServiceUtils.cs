@@ -25,10 +25,11 @@ namespace YAMDCC.GUI
     /// <summary>
     /// A collection of miscellaneous useful utilities
     /// </summary>
-    internal static class Utils
+    internal static class ServiceUtils
     {
         /// <summary>
-        /// Installs the specified .NET Framework service to the local computer.
+        /// Installs the specified .NET Framework
+        /// service to the local computer.
         /// </summary>
         /// <remarks>
         /// The service is not started automatically. Use
@@ -38,7 +39,8 @@ namespace YAMDCC.GUI
         /// The path to the service executable.
         /// </param>
         /// <returns>
-        /// <c>true</c> if the service installation was successful, otherwise <c>false</c>.
+        /// <c>true</c> if the service installation
+        /// was successful, otherwise <c>false</c>.
         /// </returns>
         public static bool InstallService(string svcExe)
         {
@@ -49,15 +51,15 @@ namespace YAMDCC.GUI
         }
 
         /// <summary>
-        /// Stops (if required) and uninstalls the specified .NET Framework
+        /// Uninstalls the specified .NET Framework
         /// service from the local computer.
         /// </summary>
         /// <param name="svcExe">
         /// The path to the service executable.
         /// </param>
         /// <returns>
-        /// <c>true</c> if the service uninstallation was successful,
-        /// otherwise <c>false</c>.
+        /// <c>true</c> if the service uninstallation
+        /// was successful, otherwise <c>false</c>.
         /// </returns>
         public static bool UninstallService(string svcExe)
         {
@@ -72,10 +74,11 @@ namespace YAMDCC.GUI
         /// </summary>
         /// <param name="svcName">
         /// The service name, as shown in <c>services.msc</c>
-        /// (NOT to be confused with the display name).
+        /// (NOT to be confused with its display name).
         /// </param>
         /// <returns>
-        /// <c>true</c> if the service started successfully, otherwise <c>false</c>.
+        /// <c>true</c> if the service started
+        /// successfully, otherwise <c>false</c>.
         /// </returns>
         public static bool StartService(string svcName)
         {
@@ -87,10 +90,11 @@ namespace YAMDCC.GUI
         /// </summary>
         /// <param name="svcName">
         /// The service name, as shown in <c>services.msc</c>
-        /// (NOT to be confused with the display name).
+        /// (NOT to be confused with its display name).
         /// </param>
         /// <returns>
-        /// <c>true</c> if the service was stopped successfully, otherwise <c>false</c>.
+        /// <c>true</c> if the service was stopped
+        /// successfully, otherwise <c>false</c>.
         /// </returns>
         public static bool StopService(string svcName)
         {
@@ -98,14 +102,16 @@ namespace YAMDCC.GUI
         }
 
         /// <summary>
-        /// Checks to see if the specified service is installed on the computer.
+        /// Checks to see if the specified service
+        /// is installed on the computer.
         /// </summary>
         /// <param name="svcName">
         /// The service name, as shown in <c>services.msc</c>
-        /// (NOT to be confused with the display name).
+        /// (NOT to be confused with its display name).
         /// </param>
         /// <returns>
-        /// <c>true</c> if the service was found, otherwise <c>false</c>.
+        /// <c>true</c> if the service was
+        /// found, otherwise <c>false</c>.
         /// </returns>
         public static bool ServiceExists(string svcName)
         {

@@ -283,4 +283,16 @@ Only run if you want to uninstall YAMDCC or move its program files to another lo
   <data name="dlgSvcStopError" xml:space="preserve">
     <value>Failed to stop the YAMDCC service!</value>
   </data>
+  <data name="dlgNoAdmin" xml:space="preserve">
+    <value>If you see this message, YAMDCC is not running as an Administrator.
+
+Please re-run this program as Administrator
+(by right-clicking on this program and clicking "Run as administrator").</value>
+  </data>
+  <data name="dlgOldConfMissing" xml:space="preserve">
+    <value>The last loaded/saved config was moved or deleted.</value>
+  </data>
+  <data name="dlgOldConfInvalid" xml:space="preserve">
+    <value>The last loaded/saved config is invalid.</value>
+  </data>
 </root>

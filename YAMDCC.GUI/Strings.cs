@@ -47,8 +47,8 @@ namespace YAMDCC.GUI
         }
 
         /// <summary>
-        /// Gets a string from the underlying resource file, and replaces format
-        /// items with the specified object's string representation.
+        /// Gets a string from the underlying resource file, and
+        /// replaces format objects with their string representation.
         /// </summary>
         /// <param name="name">
         /// The name of the string to find.
@@ -57,7 +57,10 @@ namespace YAMDCC.GUI
         /// The object to format the string with.
         /// </param>
         /// <returns>
-        /// <para>The formatted string corresponding to the specified string name, if found.</para>
+        /// <para>
+        /// The formatted string corresponding to
+        /// the specified string name, if found.
+        /// </para>
         /// <para><c>null</c> if the string couldn't be found.</para>
         /// </returns>
         public static string GetString(string name, object arg0)

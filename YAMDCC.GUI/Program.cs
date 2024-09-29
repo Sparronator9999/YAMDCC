@@ -15,7 +15,6 @@
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Globalization;
 using System.IO;
 using System.Security.Principal;
 using System.ServiceProcess;
@@ -48,15 +47,12 @@ namespace YAMDCC.GUI
 
             if (!IsAdmin())
             {
-                MessageBox.Show(
-                    "If you see this message, YAMDCC is not running as an Administrator.\n\n" +
-                    "Please re-run this program as Administrator\n" +
-                    "(by right-clicking on this program and clicking \"Run as administrator\").",
+                MessageBox.Show(Strings.GetString("dlgNoAdmin"),
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            if (!Utils.ServiceExists("yamdccsvc"))
+            if (!ServiceUtils.ServiceExists("yamdccsvc"))
             {
                 if (File.Exists("yamdccsvc.exe"))
                 {
@@ -66,9 +62,9 @@ namespace YAMDCC.GUI
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Information) == DialogResult.Yes)
                     {
-                        if (Utils.InstallService("yamdccsvc"))
+                        if (ServiceUtils.InstallService("yamdccsvc"))
                         {
-                            if (Utils.StartService("yamdccsvc"))
+                            if (ServiceUtils.StartService("yamdccsvc"))
                             {
                                 // Start the program when the service finishes starting:
                                 Application.Run(new MainWindow());
@@ -109,7 +105,7 @@ namespace YAMDCC.GUI
                         "Service not running", MessageBoxButtons.YesNo,
                         MessageBoxIcon.Information) == DialogResult.Yes)
                     {
-                        if (!Utils.StartService("yamdccsvc"))
+                        if (!ServiceUtils.StartService("yamdccsvc"))
                         {
                             MessageBox.Show(Strings.GetString("svcErrorCrash"),
                                 "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -125,8 +121,8 @@ namespace YAMDCC.GUI
             catch (Exception ex)
             {
                 MessageBox.Show(
-                    string.Format(CultureInfo.InvariantCulture, Strings.GetString("svcErrorStart"), ex),
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Strings.GetString("svcErrorStart", ex), "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             finally

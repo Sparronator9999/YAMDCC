@@ -292,10 +292,10 @@ namespace YAMDCC.GUI
                         }
                         break;
                     case Command.FullBlast:
-                        lblStatus.Invoke(() =>
+                        lblStatus.Invoke(new Action(delegate
                         {
                             lblStatus.Text = "Full blast toggled successfully!";
-                        });
+                        }));
                         break;
                 }
             }
@@ -430,7 +430,7 @@ namespace YAMDCC.GUI
                 IPCClient.Stop();
                 Close();
 
-                if (!Utils.StopService("yamdccsvc"))
+                if (!ServiceUtils.StopService("yamdccsvc"))
                 {
                     MessageBox.Show(Strings.GetString("dlgSvcStopError"),
                         "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -454,9 +454,9 @@ namespace YAMDCC.GUI
 
                 // Apparently this fixes the YAMDCC service not uninstalling
                 // when YAMDCC is launched by certain means
-                if (Utils.StopService("yamdccsvc"))
+                if (ServiceUtils.StopService("yamdccsvc"))
                 {
-                    if (Utils.UninstallService("yamdccsvc"))
+                    if (ServiceUtils.UninstallService("yamdccsvc"))
                     {
                         // Only delete service data if the
                         // service uninstalled successfully
@@ -705,10 +705,17 @@ namespace YAMDCC.GUI
                 Config = YAMDCC_Config.Load(confPath);
                 LoadConf(Config);
             }
-            catch
+            catch (Exception ex)
             {
-                lblStatus.Text = "Please load a config to start";
-                return;
+                if (ex is InvalidConfigException or InvalidOperationException)
+                {
+                    lblStatus.Text = "Please load a config to start";
+                    return;
+                }
+                else
+                {
+                    throw;
+                }
             }
             tsiSaveConf.Enabled = true;
         }
@@ -848,14 +855,12 @@ namespace YAMDCC.GUI
                 {
                     if (ex is FileNotFoundException)
                     {
-                        MessageBox.Show(
-                            "The last loaded/saved config was moved or deleted.",
+                        MessageBox.Show(Strings.GetString("dlgOldConfMissing"),
                             "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     else if (ex is InvalidConfigException or InvalidOperationException)
                     {
-                        MessageBox.Show(
-                            "The last loaded/saved config is invalid.",
+                        MessageBox.Show(Strings.GetString("dlgOldConfInvalid"),
                             "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     else
