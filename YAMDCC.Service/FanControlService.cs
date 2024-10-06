@@ -290,42 +290,39 @@ namespace YAMDCC.Service
 
             string confPath = Path.Combine(DataPath, "CurrentConfig.xml");
 
-            if (File.Exists(confPath))
+            try
             {
-                try
+                Config = YAMDCC_Config.Load(confPath);
+            }
+            catch (Exception ex)
+            {
+                if (ex is InvalidConfigException or InvalidOperationException)
                 {
-                    Config = YAMDCC_Config.Load(confPath);
-                }
-                catch (Exception ex)
-                {
-                    if (ex is InvalidConfigException or InvalidOperationException)
-                    {
-                        ConfigLoaded = false;
-                        Log.Error(Strings.GetString("cfgInvalid"));
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-
-                if (Config.Template)
-                {
-                    Log.Error(
-                        "Template configs are still WIP and unsupported for now.\n" +
-                        "Please load another config using the configurator app.");
                     ConfigLoaded = false;
-                    return;
+                    Log.Error(Strings.GetString("cfgInvalid"));
                 }
+                else if (ex is FileNotFoundException)
+                {
+                    Log.Warn(Strings.GetString("cfgNotFound"));
+                    ConfigLoaded = false;
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
-                ConfigLoaded = true;
-                Log.Info(Strings.GetString("cfgLoadSuccess"));
-            }
-            else
+            if (Config.Template)
             {
-                Log.Warn(Strings.GetString("cfgNotFound"));
+                Log.Error(
+                    "Template configs are still WIP and unsupported for now.\n" +
+                    "Please load another config using the configurator app.");
                 ConfigLoaded = false;
+                return;
             }
+
+            ConfigLoaded = true;
+            Log.Info(Strings.GetString("cfgLoadSuccess"));
         }
 
         private void ApplySettings()

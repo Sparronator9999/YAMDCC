@@ -15,7 +15,7 @@
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Text;
+using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -107,14 +107,9 @@ namespace YAMDCC.Config
         /// <see cref="YAMDCC_Config"/> object.
         /// </summary>
         /// <param name="xmlFile">The path to an XML config file.</param>
-        /// <exception cref="InvalidOperationException">
-        /// Thrown when an error occurred while reading the XML config,
-        /// most likely due to invalid XML syntax.
-        /// </exception>
-        /// <exception cref="InvalidConfigException">
-        /// Thrown when an invalid config was loaded. This most likely means
-        /// that certain required fields are missing from the loaded config.
-        /// </exception>
+        /// <exception cref="FileNotFoundException"/>
+        /// <exception cref="InvalidOperationException"/>
+        /// <exception cref="InvalidConfigException"/>
         public static YAMDCC_Config Load(string xmlFile)
         {
             XmlSerializer serialiser = new(typeof(YAMDCC_Config));
