@@ -298,18 +298,18 @@ namespace YAMDCC.Service
             {
                 if (ex is InvalidConfigException or InvalidOperationException)
                 {
-                    ConfigLoaded = false;
                     Log.Error(Strings.GetString("cfgInvalid"));
                 }
                 else if (ex is FileNotFoundException)
                 {
                     Log.Warn(Strings.GetString("cfgNotFound"));
-                    ConfigLoaded = false;
                 }
                 else
                 {
                     throw;
                 }
+                ConfigLoaded = false;
+                return;
             }
 
             if (Config.Template)
