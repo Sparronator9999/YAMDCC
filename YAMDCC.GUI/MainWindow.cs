@@ -707,7 +707,7 @@ namespace YAMDCC.GUI
             }
             catch (Exception ex)
             {
-                if (ex is InvalidConfigException or InvalidOperationException)
+                if (ex is InvalidConfigException or InvalidOperationException or FileNotFoundException)
                 {
                     lblStatus.Text = "Please load a config to start";
                     return;
