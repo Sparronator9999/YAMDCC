@@ -235,4 +235,7 @@ The service will now stop.</value>
   <data name="svcGetKeyLightBright" xml:space="preserve">
     <value>Getting keyboard backlight brightness...</value>
   </data>
+  <data name="ipcError" xml:space="preserve">
+    <value>IPC error occurred: {0}</value>
+  </data>
 </root>

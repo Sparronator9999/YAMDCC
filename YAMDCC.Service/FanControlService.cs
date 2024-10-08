@@ -181,73 +181,83 @@ namespace YAMDCC.Service
         private void IPCClientConnect(object sender, PipeConnectionEventArgs<ServiceCommand, ServiceResponse> e)
         {
             e.Connection.ReceiveMessage += IPCClientMessage;
-            Log.Info(Strings.GetString("ipcConnect"), e.Connection.ID);
+            Log.Info(Strings.GetString("ipcConnect", e.Connection.ID));
         }
 
         private void IPCClientDisconnect(object sender, PipeConnectionEventArgs<ServiceCommand, ServiceResponse> e)
         {
             e.Connection.ReceiveMessage -= IPCClientMessage;
-            Log.Info(Strings.GetString("ipcDC"), e.Connection.ID);
+            Log.Info(Strings.GetString("ipcDC", e.Connection.ID));
         }
 
-        private void IPCServerError(object sender, PipeErrorEventArgs<ServiceCommand, ServiceResponse> e) =>
+        private void IPCServerError(object sender, PipeErrorEventArgs<ServiceCommand, ServiceResponse> e)
+        {
+            Log.Error(Strings.GetString("ipcError", e.Exception));
             throw e.Exception;
+        }
 
         private void IPCClientMessage(object sender, PipeMessageEventArgs<ServiceCommand, ServiceResponse> e)
         {
-            int error = 0;
-
-            switch (e.Message.Command)
+            try
             {
-                case Command.ReadECByte:
-                    error = ReadECByte(e.Connection.ID, e.Message.Arguments);
-                    break;
-                case Command.WriteECByte:
-                    error = WriteECByte(e.Connection.ID, e.Message.Arguments);
-                    break;
-                case Command.GetFanSpeed:
-                    error = GetFanSpeed(e.Connection.ID, e.Message.Arguments);
-                    break;
-                case Command.GetFanRPM:
-                    error = GetFanRPM(e.Connection.ID, e.Message.Arguments);
-                    break;
-                case Command.GetTemp:
-                    error = GetTemp(e.Connection.ID, e.Message.Arguments);
-                    break;
-                case Command.ApplyConfig:
-                    LoadConf();
-                    ApplySettings();
-                    ServiceResponse response = new(Response.Success, $"{(int)e.Message.Command}");
-                    IPCServer.PushMessage(response, e.Connection.ID);
-                    error = 0;
-                    break;
-                case Command.FullBlast:
-                    error = SetFullBlast(e.Connection.ID, e.Message.Arguments);
-                    break;
-                case Command.GetKeyLightBright:
-                    error = GetKeyLightBright(e.Connection.ID);
-                    break;
-                case Command.SetKeyLightBright:
-                    error = SetKeyLightBright(e.Connection.ID, e.Message.Arguments);
-                    break;
-                case Command.FanCurveECToConf:
-                    error = FanCurveECToConf(e.Connection.ID);
-                    break;
-                default:    // Unknown command
-                    Log.Error(Strings.GetString("errBadCmd"), e.Message);
-                    break;
+                int error = 0;
+
+                switch (e.Message.Command)
+                {
+                    case Command.ReadECByte:
+                        error = ReadECByte(e.Connection.ID, e.Message.Arguments);
+                        break;
+                    case Command.WriteECByte:
+                        error = WriteECByte(e.Connection.ID, e.Message.Arguments);
+                        break;
+                    case Command.GetFanSpeed:
+                        error = GetFanSpeed(e.Connection.ID, e.Message.Arguments);
+                        break;
+                    case Command.GetFanRPM:
+                        error = GetFanRPM(e.Connection.ID, e.Message.Arguments);
+                        break;
+                    case Command.GetTemp:
+                        error = GetTemp(e.Connection.ID, e.Message.Arguments);
+                        break;
+                    case Command.ApplyConfig:
+                        LoadConf();
+                        ApplySettings();
+                        ServiceResponse response = new(Response.Success, $"{(int)e.Message.Command}");
+                        IPCServer.PushMessage(response, e.Connection.ID);
+                        error = 0;
+                        break;
+                    case Command.FullBlast:
+                        error = SetFullBlast(e.Connection.ID, e.Message.Arguments);
+                        break;
+                    case Command.GetKeyLightBright:
+                        error = GetKeyLightBright(e.Connection.ID);
+                        break;
+                    case Command.SetKeyLightBright:
+                        error = SetKeyLightBright(e.Connection.ID, e.Message.Arguments);
+                        break;
+                    case Command.FanCurveECToConf:
+                        error = FanCurveECToConf(e.Connection.ID);
+                        break;
+                    default:    // Unknown command
+                        Log.Error(Strings.GetString("errBadCmd", e.Message));
+                        break;
+                }
+
+                switch (error)
+                {
+                    case 2:
+                        Log.Error(Strings.GetString("errOffendingCmd", e.Message.Command, e.Message.Arguments));
+                        break;
+                    case 3:
+                        Log.Error(Strings.GetString("errECLock"));
+                        break;
+                    default:
+                        break;
+                }
             }
-
-            switch (error)
+            catch (Exception ex)
             {
-                case 2:
-                    Log.Error(Strings.GetString("errOffendingCmd"), e.Message.Command, e.Message.Arguments);
-                    break;
-                case 3:
-                    Log.Error(Strings.GetString("errECLock"));
-                    break;
-                default:
-                    break;
+                Log.Fatal(Strings.GetString("svcException", ex));
             }
         }
         #endregion
@@ -258,7 +268,7 @@ namespace YAMDCC.Service
             bool success = _EC.ReadByte(reg, out value);
             if (!success)
             {
-                Log.Error(Strings.GetString("errECRead"), reg, new Win32Exception(_EC.GetDriverError()).Message);
+                Log.Error(Strings.GetString("errECRead", reg, new Win32Exception(_EC.GetDriverError()).Message));
             }
             return success;
         }
@@ -268,7 +278,7 @@ namespace YAMDCC.Service
             bool success = _EC.ReadWord(reg, out value, bigEndian);
             if (!success)
             {
-                Log.Error(Strings.GetString("errECRead"), reg, new Win32Exception(_EC.GetDriverError()).Message);
+                Log.Error(Strings.GetString("errECRead", reg, new Win32Exception(_EC.GetDriverError()).Message));
             }
             return success;
         }
@@ -279,7 +289,7 @@ namespace YAMDCC.Service
             bool success = _EC.WriteByte(reg, value);
             if (!success)
             {
-                Log.Error(Strings.GetString("errECWrite"), reg, new Win32Exception(_EC.GetDriverError()).Message);
+                Log.Error(Strings.GetString("errECWrite", reg, new Win32Exception(_EC.GetDriverError()).Message));
             }
             return success;
         }
@@ -463,7 +473,7 @@ namespace YAMDCC.Service
 
                     if (success)
                     {
-                        Log.Debug(Strings.GetString("svcECReadSuccess"), pArgs[1], value);
+                        Log.Debug(Strings.GetString("svcECReadSuccess", pArgs[1], value));
                     }
 
                     ServiceResponse response = success
@@ -489,7 +499,7 @@ namespace YAMDCC.Service
 
                     if (success)
                     {
-                        Log.Debug(Strings.GetString("svcECWriteSuccess"), pArgs[0]);
+                        Log.Debug(Strings.GetString("svcECWriteSuccess", pArgs[0]));
                     }
 
                     ServiceResponse response = success
