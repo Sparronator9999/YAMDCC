@@ -236,6 +236,6 @@ The service will now stop.</value>
     <value>Getting keyboard backlight brightness...</value>
   </data>
   <data name="ipcError" xml:space="preserve">
-    <value>IPC error occurred: {0}</value>
+    <value>IPC error occurred (connection to ID: {0}): {1}</value>
   </data>
 </root>

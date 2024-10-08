@@ -140,22 +140,25 @@ namespace YAMDCC.Service
 
         private void StopService()
         {
-            Log.Info(Strings.GetString("svcStopping"));
+            if (ExitCode == 0)
+            {
+                Log.Info(Strings.GetString("svcStopping"));
 
-            // Stop the IPC server:
-            Log.Debug("Stopping IPC server...");
-            IPCServer.Stop();
-            IPCServer.ClientConnected -= IPCClientConnect;
-            IPCServer.ClientDisconnected -= IPCClientDisconnect;
-            IPCServer.Error -= IPCServerError;
+                // Stop the IPC server:
+                Log.Debug("Stopping IPC server...");
+                IPCServer.Stop();
+                IPCServer.ClientConnected -= IPCClientConnect;
+                IPCServer.ClientDisconnected -= IPCClientDisconnect;
+                IPCServer.Error -= IPCServerError;
 
-            CooldownTimer.Elapsed -= CooldownTimer_Elapsed;
+                CooldownTimer.Elapsed -= CooldownTimer_Elapsed;
 
-            // Uninstall WinRing0 to keep things clean
-            Log.Debug(Strings.GetString("drvUnload"));
-            _EC.UnloadDriver();
+                // Uninstall WinRing0 to keep things clean
+                Log.Debug(Strings.GetString("drvUnload"));
+                _EC.UnloadDriver();
 
-            Log.Info(Strings.GetString("svcStopped"));
+                Log.Info(Strings.GetString("svcStopped"));
+            }
         }
 
         protected override bool OnPowerEvent(PowerBroadcastStatus powerStatus)
@@ -192,72 +195,64 @@ namespace YAMDCC.Service
 
         private void IPCServerError(object sender, PipeErrorEventArgs<ServiceCommand, ServiceResponse> e)
         {
-            Log.Error(Strings.GetString("ipcError", e.Exception));
-            throw e.Exception;
+            Log.Error(Strings.GetString("ipcError", e.Connection.ID, e.Exception));
         }
 
         private void IPCClientMessage(object sender, PipeMessageEventArgs<ServiceCommand, ServiceResponse> e)
         {
-            try
+            int error = 0;
+
+            switch (e.Message.Command)
             {
-                int error = 0;
-
-                switch (e.Message.Command)
-                {
-                    case Command.ReadECByte:
-                        error = ReadECByte(e.Connection.ID, e.Message.Arguments);
-                        break;
-                    case Command.WriteECByte:
-                        error = WriteECByte(e.Connection.ID, e.Message.Arguments);
-                        break;
-                    case Command.GetFanSpeed:
-                        error = GetFanSpeed(e.Connection.ID, e.Message.Arguments);
-                        break;
-                    case Command.GetFanRPM:
-                        error = GetFanRPM(e.Connection.ID, e.Message.Arguments);
-                        break;
-                    case Command.GetTemp:
-                        error = GetTemp(e.Connection.ID, e.Message.Arguments);
-                        break;
-                    case Command.ApplyConfig:
-                        LoadConf();
-                        ApplySettings();
-                        ServiceResponse response = new(Response.Success, $"{(int)e.Message.Command}");
-                        IPCServer.PushMessage(response, e.Connection.ID);
-                        error = 0;
-                        break;
-                    case Command.FullBlast:
-                        error = SetFullBlast(e.Connection.ID, e.Message.Arguments);
-                        break;
-                    case Command.GetKeyLightBright:
-                        error = GetKeyLightBright(e.Connection.ID);
-                        break;
-                    case Command.SetKeyLightBright:
-                        error = SetKeyLightBright(e.Connection.ID, e.Message.Arguments);
-                        break;
-                    case Command.FanCurveECToConf:
-                        error = FanCurveECToConf(e.Connection.ID);
-                        break;
-                    default:    // Unknown command
-                        Log.Error(Strings.GetString("errBadCmd", e.Message));
-                        break;
-                }
-
-                switch (error)
-                {
-                    case 2:
-                        Log.Error(Strings.GetString("errOffendingCmd", e.Message.Command, e.Message.Arguments));
-                        break;
-                    case 3:
-                        Log.Error(Strings.GetString("errECLock"));
-                        break;
-                    default:
-                        break;
-                }
+                case Command.ReadECByte:
+                    error = ReadECByte(e.Connection.ID, e.Message.Arguments);
+                    break;
+                case Command.WriteECByte:
+                    error = WriteECByte(e.Connection.ID, e.Message.Arguments);
+                    break;
+                case Command.GetFanSpeed:
+                    error = GetFanSpeed(e.Connection.ID, e.Message.Arguments);
+                    break;
+                case Command.GetFanRPM:
+                    error = GetFanRPM(e.Connection.ID, e.Message.Arguments);
+                    break;
+                case Command.GetTemp:
+                    error = GetTemp(e.Connection.ID, e.Message.Arguments);
+                    break;
+                case Command.ApplyConfig:
+                    LoadConf();
+                    ApplySettings();
+                    ServiceResponse response = new(Response.Success, $"{(int)e.Message.Command}");
+                    IPCServer.PushMessage(response, e.Connection.ID);
+                    error = 0;
+                    break;
+                case Command.FullBlast:
+                    error = SetFullBlast(e.Connection.ID, e.Message.Arguments);
+                    break;
+                case Command.GetKeyLightBright:
+                    error = GetKeyLightBright(e.Connection.ID);
+                    break;
+                case Command.SetKeyLightBright:
+                    error = SetKeyLightBright(e.Connection.ID, e.Message.Arguments);
+                    break;
+                case Command.FanCurveECToConf:
+                    error = FanCurveECToConf(e.Connection.ID);
+                    break;
+                default:    // Unknown command
+                    Log.Error(Strings.GetString("errBadCmd", e.Message));
+                    break;
             }
-            catch (Exception ex)
+
+            switch (error)
             {
-                Log.Fatal(Strings.GetString("svcException", ex));
+                case 2:
+                    Log.Error(Strings.GetString("errOffendingCmd", e.Message.Command, e.Message.Arguments));
+                    break;
+                case 3:
+                    Log.Error(Strings.GetString("errECLock"));
+                    break;
+                default:
+                    break;
             }
         }
         #endregion
