@@ -175,7 +175,9 @@ namespace YAMDCC.GUI
             try
             {
                 IPCClient.ServerMessage += IPC_MessageReceived;
+                IPCClient.Error += IPCClient_Error;
                 IPCClient.Start();
+                IPCClient.WaitForConnection();
                 AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
             }
             catch (Exception ex)
@@ -229,7 +231,10 @@ namespace YAMDCC.GUI
                     {
                         if (int.TryParse(args[0], out int value))
                         {
-                            lblStatus.Text = $"ERROR: a {(Command)value} service command failed to run.";
+                            lblStatus.Invoke(new Action(delegate
+                            {
+                                lblStatus.Text = $"ERROR: a {(Command)value} service command failed to run.";
+                            }));
                         }
                         break;
                     }
@@ -272,6 +277,11 @@ namespace YAMDCC.GUI
                     }
                 }
             }
+        }
+
+        private void IPCClient_Error(object sender, PipeErrorEventArgs<ServiceResponse, ServiceCommand> e)
+        {
+            throw e.Exception;
         }
 
         private void HandleSuccessResponse(string[] args)

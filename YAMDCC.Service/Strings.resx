@@ -196,8 +196,7 @@ Args: {1}</value>
     <value>Writing value 0x{0:X2} to EC register 0x{1:X2}...</value>
   </data>
   <data name="svcException" xml:space="preserve">
-    <value>Unhandled exception occurred: {0}
-The service will now stop.</value>
+    <value>Unhandled exception occurred: {0}</value>
   </data>
   <data name="svcStarted" xml:space="preserve">
     <value>Service was started successfully!</value>
