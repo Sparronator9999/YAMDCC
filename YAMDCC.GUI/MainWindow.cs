@@ -281,7 +281,8 @@ namespace YAMDCC.GUI
 
         private void IPCClient_Error(object sender, PipeErrorEventArgs<ServiceResponse, ServiceCommand> e)
         {
-            throw e.Exception;
+            CrashDialog dlg = new(e.Exception, true);
+            dlg.ShowDialog();
         }
 
         private void HandleSuccessResponse(string[] args)
