@@ -52,18 +52,21 @@ namespace YAMDCC.IPC.IO
         /// <exception cref="SerializationException"/>
         internal void WriteObject(T obj)
         {
-            byte[] data;
-            if (typeof(T) == typeof(string))
+            if (obj is not null)
             {
-                data = Encoding.Unicode.GetBytes(obj.ToString());
+                byte[] data;
+                if (typeof(T) == typeof(string))
+                {
+                    data = Encoding.Unicode.GetBytes(obj.ToString());
+                }
+                else
+                {
+                    data = Serialize(obj);
+                    WriteLength(data.Length);
+                }
+                BaseStream.Write(data, 0, data.Length);
+                BaseStream.Flush();
             }
-            else
-            {
-                data = Serialize(obj);
-                WriteLength(data.Length);
-            }
-            BaseStream.Write(data, 0, data.Length);
-            BaseStream.Flush();
         }
 
         /// <summary>
