@@ -45,14 +45,14 @@ namespace YAMDCC.GUI.Dialogs
         private void InitializeComponent()
         {
             System.Windows.Forms.TableLayoutPanel tblMain;
-            System.Windows.Forms.Button btnSaveReport;
+            System.Windows.Forms.Button btnCopy;
             System.Windows.Forms.Button btnExit;
             System.Windows.Forms.Label lblError;
             System.Windows.Forms.Button btnIssues;
             System.Windows.Forms.GroupBox grpReport;
             this.txtStackTrace = new System.Windows.Forms.TextBox();
             tblMain = new System.Windows.Forms.TableLayoutPanel();
-            btnSaveReport = new System.Windows.Forms.Button();
+            btnCopy = new System.Windows.Forms.Button();
             btnExit = new System.Windows.Forms.Button();
             lblError = new System.Windows.Forms.Label();
             btnIssues = new System.Windows.Forms.Button();
@@ -68,7 +68,7 @@ namespace YAMDCC.GUI.Dialogs
             tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            tblMain.Controls.Add(btnSaveReport, 2, 2);
+            tblMain.Controls.Add(btnCopy, 2, 2);
             tblMain.Controls.Add(btnExit, 3, 2);
             tblMain.Controls.Add(lblError, 0, 0);
             tblMain.Controls.Add(btnIssues, 0, 2);
@@ -83,16 +83,16 @@ namespace YAMDCC.GUI.Dialogs
             tblMain.Size = new System.Drawing.Size(400, 250);
             tblMain.TabIndex = 0;
             // 
-            // btnSaveReport
+            // btnCopy
             // 
-            btnSaveReport.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            btnSaveReport.Location = new System.Drawing.Point(226, 221);
-            btnSaveReport.Name = "btnSaveReport";
-            btnSaveReport.Size = new System.Drawing.Size(90, 25);
-            btnSaveReport.TabIndex = 1;
-            btnSaveReport.Text = "Save crash.txt";
-            btnSaveReport.UseVisualStyleBackColor = true;
-            btnSaveReport.Click += new System.EventHandler(this.btnSaveReport_Click);
+            btnCopy.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            btnCopy.Location = new System.Drawing.Point(207, 221);
+            btnCopy.Name = "btnCopy";
+            btnCopy.Size = new System.Drawing.Size(109, 25);
+            btnCopy.TabIndex = 1;
+            btnCopy.Text = "Copy crash report";
+            btnCopy.UseVisualStyleBackColor = true;
+            btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
             // 
             // btnExit
             // 
