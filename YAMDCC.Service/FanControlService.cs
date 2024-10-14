@@ -261,7 +261,11 @@ namespace YAMDCC.Service
         {
             Log.Debug(Strings.GetString("svcECReading", reg));
             bool success = _EC.ReadByte(reg, out value);
-            if (!success)
+            if (success)
+            {
+                Log.Debug(Strings.GetString("svcECReadSuccess"), reg, value);
+            }
+            else
             {
                 Log.Error(Strings.GetString("errECRead", reg, new Win32Exception(_EC.GetDriverError()).Message));
             }
@@ -270,8 +274,13 @@ namespace YAMDCC.Service
 
         private bool LogECReadWord(byte reg, out ushort value, bool bigEndian = false)
         {
+            Log.Debug(Strings.GetString("svcECReading", reg));
             bool success = _EC.ReadWord(reg, out value, bigEndian);
-            if (!success)
+            if (success)
+            {
+                Log.Debug(Strings.GetString("svcECReadSuccess"), reg, value);
+            }
+            else
             {
                 Log.Error(Strings.GetString("errECRead", reg, new Win32Exception(_EC.GetDriverError()).Message));
             }
@@ -282,7 +291,11 @@ namespace YAMDCC.Service
         {
             Log.Debug(Strings.GetString("svcECWriting", value, reg));
             bool success = _EC.WriteByte(reg, value);
-            if (!success)
+            if (success)
+            {
+                Log.Debug(Strings.GetString("svcECWriteSuccess"), reg);
+            }
+            else
             {
                 Log.Error(Strings.GetString("errECWrite", reg, new Win32Exception(_EC.GetDriverError()).Message));
             }
@@ -466,11 +479,6 @@ namespace YAMDCC.Service
                     bool success = LogECReadByte((byte)pArgs[0], out byte value);
                     EC.ReleaseLock();
 
-                    if (success)
-                    {
-                        Log.Debug(Strings.GetString("svcECReadSuccess", pArgs[1], value));
-                    }
-
                     ServiceResponse response = success
                         ? new(Response.ReadResult, $"{pArgs[0]} {value}")
                         : new(Response.Error, $"{(int)Command.ReadECByte}");
@@ -491,11 +499,6 @@ namespace YAMDCC.Service
                 {
                     bool success = LogECWriteByte((byte)pArgs[0], (byte)pArgs[1]);
                     EC.ReleaseLock();
-
-                    if (success)
-                    {
-                        Log.Debug(Strings.GetString("svcECWriteSuccess", pArgs[0]));
-                    }
 
                     ServiceResponse response = success
                         ? new(Response.Success, $"{(int)Command.WriteECByte}")
