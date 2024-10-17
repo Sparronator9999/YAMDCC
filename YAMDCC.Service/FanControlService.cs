@@ -204,6 +204,10 @@ namespace YAMDCC.Service
 
             switch (e.Message.Command)
             {
+                case Command.Nothing:
+                    Log.Warn("Empty command received!");
+                    error = 0;
+                    break;
                 case Command.ReadECByte:
                     error = ReadECByte(e.Connection.ID, e.Message.Arguments);
                     break;

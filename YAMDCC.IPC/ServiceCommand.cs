@@ -1,4 +1,4 @@
-using System;
+using MessagePack;
 
 namespace YAMDCC.IPC
 {
@@ -9,21 +9,29 @@ namespace YAMDCC.IPC
     public enum Command
     {
         /// <summary>
-        /// <para>Get the YAMDCC Service version.</para>
+        /// Fallback value if empty (zero-length) message received by server.
+        /// </summary>
+        Nothing = 0,
+        /// <summary>
+        /// Get the YAMDCC Service version.
+        /// </summary>
+        /// <remarks>
         /// <para>
         /// The result is sent to the caller as a
         /// <see cref="Response.Version"/> message.
         /// </para>
-        /// </summary>
-        /// <remarks>This command expects no arguments.</remarks>
+        /// <para>
+        /// This command expects no arguments.
+        /// </para>
+        /// </remarks>
         GetVersion,
         /// <summary>
-        /// <para>Read a byte from the EC.</para>
+        /// Read a byte from the EC.
+        /// </summary>
+        /// <remarks>
         /// <para>The result is sent to the caller as a
         /// <see cref="Response.ReadResult"/> message.
         /// </para>
-        /// </summary>
-        /// <remarks>
         /// <para>
         /// This command expects the following arguments as
         /// a space-seperated string:<br/>
@@ -141,20 +149,22 @@ namespace YAMDCC.IPC
     /// <summary>
     /// Represents a command to send to the YAMDCC Service.
     /// </summary>
-    [Serializable]
+    [MessagePackObject]
     public class ServiceCommand
     {
         /// <summary>
         /// The <see cref="IPC.Command"/> to send to the service.
         /// </summary>
-        public Command Command { get; set; }
+        [Key(0)]
+        public Command Command { get; set; } = Command.Nothing;
 
         /// <summary>
         /// The argument(s) to send to the service with the command.
         /// The number of parameters for a service command vary depending on the
         /// specific command sent to the service.
         /// </summary>
-        public string Arguments { get; set; }
+        [Key(1)]
+        public string Arguments { get; set; } = string.Empty;
 
         public ServiceCommand(Command command, string args)
         {

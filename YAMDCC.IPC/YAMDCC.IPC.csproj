@@ -7,17 +7,18 @@
         <Description>A simple, easy to use, strongly-typed wrapper around .NET named pipes, modified for MSI Fan Control.</Description>
         <Copyright>Copyright © 2013 Andrew C. Dvorak, 2014-2018 ReliableHosting, 2020-2021 Twosense, 2023-2024 Sparronator9999</Copyright>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <AssemblyVersion>1.6.0.0</AssemblyVersion>
-        <FileVersion>1.6.0.0</FileVersion>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
         <AnalysisLevel>latest-recommended</AnalysisLevel>
         <LangVersion>latest</LangVersion>
+        <AssemblyVersion>2.0.0.0</AssemblyVersion>
+        <FileVersion>2.0.0.0</FileVersion>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>none</DebugType>
     </PropertyGroup>
     <ItemGroup>
+        <PackageReference Include="MessagePack" Version="2.5.187" />
         <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
         <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     </ItemGroup>

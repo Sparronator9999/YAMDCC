@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.IO.Pipes;
-using System.Runtime.Serialization;
 
 namespace YAMDCC.IPC.IO
 {
@@ -104,7 +103,6 @@ namespace YAMDCC.IPC.IO
         /// The next object read from the pipe, or
         /// <c>null</c> if the pipe disconnected.
         /// </returns>
-        /// <exception cref="SerializationException"/>
         internal TRead ReadObject()
         {
             return _reader.ReadObject();
@@ -119,7 +117,6 @@ namespace YAMDCC.IPC.IO
         /// <param name="obj">
         /// Tne object to write to the pipe.
         /// </param>
-        /// <exception cref="SerializationException"/>
         internal void WriteObject(TWrite obj)
         {
             _writer.WriteObject(obj);

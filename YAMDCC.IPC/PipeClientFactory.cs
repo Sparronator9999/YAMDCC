@@ -1,9 +1,9 @@
-using YAMDCC.IPC.IO;
 using System;
 using System.IO;
 using System.IO.Pipes;
 using System.Runtime.InteropServices;
 using System.Threading;
+using YAMDCC.IPC.IO;
 
 namespace YAMDCC.IPC
 {

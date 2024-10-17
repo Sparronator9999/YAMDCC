@@ -1,10 +1,8 @@
+using MessagePack;
 using System;
 using System.IO;
 using System.IO.Pipes;
 using System.Net;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 
 namespace YAMDCC.IPC.IO
 {
@@ -25,8 +23,6 @@ namespace YAMDCC.IPC.IO
         /// Gets the underlying <see cref="PipeStream"/> object.
         /// </summary>
         internal PipeStream BaseStream { get; private set; }
-
-        private readonly BinaryFormatter _binaryFormatter = new();
 
         /// <summary>
         /// Constructs a new <see cref="PipeStreamWriter{T}"/>
@@ -54,16 +50,10 @@ namespace YAMDCC.IPC.IO
         {
             if (obj is not null)
             {
-                byte[] data;
-                if (typeof(T) == typeof(string))
-                {
-                    data = Encoding.Unicode.GetBytes(obj.ToString());
-                }
-                else
-                {
-                    data = Serialize(obj);
-                    WriteLength(data.Length);
-                }
+                byte[] data = MessagePackSerializer.Serialize(obj);
+                byte[] lenBuf = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(data.Length));
+
+                BaseStream.Write(lenBuf, 0, lenBuf.Length);
                 BaseStream.Write(data, 0, data.Length);
                 BaseStream.Flush();
             }
@@ -78,22 +68,6 @@ namespace YAMDCC.IPC.IO
         internal void WaitForPipeDrain()
         {
             BaseStream.WaitForPipeDrain();
-        }
-
-        /// <exception cref="SerializationException"/>
-        private byte[] Serialize(T obj)
-        {
-            using (MemoryStream memoryStream = new())
-            {
-                _binaryFormatter.Serialize(memoryStream, obj);
-                return memoryStream.ToArray();
-            }
-        }
-
-        private void WriteLength(int len)
-        {
-            byte[] lenbuf = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(len));
-            BaseStream.Write(lenbuf, 0, lenbuf.Length);
         }
     }
 }

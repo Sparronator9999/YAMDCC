@@ -222,6 +222,14 @@ namespace YAMDCC.GUI
             {
                 switch (e.Message.Response)
                 {
+                    case Response.Nothing:
+                    {
+                        lblStatus.Invoke(new Action(delegate
+                        {
+                            lblStatus.Text = $"WARN: Received an empty response from service";
+                        }));
+                        break;
+                    }
                     case Response.Success:
                     {
                         HandleSuccessResponse(args);

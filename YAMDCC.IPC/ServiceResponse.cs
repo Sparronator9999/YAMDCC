@@ -1,4 +1,4 @@
-using System;
+using MessagePack;
 
 namespace YAMDCC.IPC
 {
@@ -7,6 +7,10 @@ namespace YAMDCC.IPC
     /// </summary>
     public enum Response
     {
+        /// <summary>
+        /// Fallback value if empty (zero-length) message received by client.
+        /// </summary>
+        Nothing = 0,
         /// <summary>
         /// Sent when any command that doesn't return data finishes successfully.
         /// </summary>
@@ -44,18 +48,20 @@ namespace YAMDCC.IPC
     /// <summary>
     /// Represents a response to a <see cref="ServiceCommand"/>.
     /// </summary>
-    [Serializable]
+    [MessagePackObject]
     public class ServiceResponse
     {
         /// <summary>
         /// The <see cref="IPC.Response"/> to send to the service.
         /// </summary>
-        public Response Response { get; set; }
+        [Key(0)]
+        public Response Response { get; set; } = Response.Nothing;
 
         /// <summary>
         /// The value associated with the <see cref="IPC.Response"/>.
         /// </summary>
-        public string Value { get; set; }
+        [Key(1)]
+        public string Value { get; set; } = string.Empty;
 
         /// <summary>
         /// Initialises a new instance of the <see cref="ServiceResponse"/>
