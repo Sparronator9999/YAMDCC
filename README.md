@@ -104,6 +104,7 @@ Below are some changes I would like to make before a 1.0 release of YAMDCC:
 
 Below are some planned features for potential future releases:
 
+- [ ] Keyboard shortcut support (requested by @grimy400)
 - [ ] Command line support
   - Development of a CLI application for YAMDCC has started, but isn't publicly available yet
 - [ ] Support for editing laptop config registers using the GUI interface
