@@ -21,6 +21,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using System.Windows.Forms;
 using YAMDCC.Config;
 using YAMDCC.GUI.Dialogs;
@@ -322,7 +323,7 @@ namespace YAMDCC.GUI
             {
                 AddExtension = true,
                 CheckFileExists = true,
-                Filter = "YAMDCC config files|*.xml",
+                Filter = Strings.GetString("dlgFileFilter"),
                 Title = "Load config",
             };
 
@@ -340,7 +341,7 @@ namespace YAMDCC.GUI
             SaveFileDialog sfd = new()
             {
                 AddExtension = true,
-                Filter = "YAMDCC config files|*.xml",
+                Filter = Strings.GetString("dlgFileFilter"),
                 Title = "Save config",
             };
 
@@ -736,10 +737,9 @@ namespace YAMDCC.GUI
         {
             if (config.Template)
             {
-                MessageBox.Show(
-                    "This is a template config.\n" +
-                    "Template configs are currently WIP and cannot be used yet.\n" +
-                    "Please load a different config.");
+                MessageBox.Show(Strings.GetString("dlgTemplateConfWIP"), "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
                 tsiSaveConf.Enabled = false;
                 chkFullBlast.Enabled = false;
                 cboFanSel.Enabled = false;
@@ -848,7 +848,7 @@ namespace YAMDCC.GUI
         private void RevertConf()
         {
             if (MessageBox.Show(
-                "Are you sure you want to revert to the last loaded/saved config?",
+                Strings.GetString("dlgRevert"),
                 "Revert?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
                 == DialogResult.Yes)
             {
@@ -906,12 +906,11 @@ namespace YAMDCC.GUI
                 newCurveCfg.Name = dlg.Result;
                 newCurveCfg.Desc = $"Copy of {oldCurveCfg.Name}";
 
-                // Add the new fan profile to the list
-                List<FanCurveConf> curveCfgList = [.. fanConfig.FanCurveConfs];
-                curveCfgList.Add(newCurveCfg);
+                // Add the new fan profile to the config's list
+                List<FanCurveConf> curveCfgList = [.. fanConfig.FanCurveConfs, newCurveCfg];
                 fanConfig.FanCurveConfs = [.. curveCfgList];
 
-                // Add the new fan profile to the list and select it:
+                // Add the new fan profile to the UI's profile list and select it:
                 cboProfSel.Items.Add(dlg.Result);
                 cboProfSel.SelectedIndex = cboProfSel.Items.Count - 1;
 
@@ -929,7 +928,7 @@ namespace YAMDCC.GUI
             {
                 FanConf fanConfig = Config.FanConfs[cboFanSel.SelectedIndex];
 
-                // Remove the fan profile
+                // Remove the fan profile from the config's list
                 List<FanCurveConf> curveCfgList = [.. fanConfig.FanCurveConfs];
                 curveCfgList.RemoveAt(cboProfSel.SelectedIndex);
                 fanConfig.FanCurveConfs = [.. curveCfgList];
@@ -946,19 +945,27 @@ namespace YAMDCC.GUI
 
         private static string GetLastConfPath()
         {
-            using (StreamReader sr = new(Path.Combine(DataPath, "LastConfig"), false))
+            StreamReader sr = new(Path.Combine(DataPath, "LastConfig"), Encoding.UTF8);
+            try
             {
                 string path = sr.ReadLine();
-                sr.Close();
                 return path;
+            }
+            finally
+            {
+                sr.Close();
             }
         }
 
         private static void SetLastConfPath(string path)
         {
-            using (StreamWriter sw = new(Path.Combine(DataPath, "LastConfig"), false))
+            StreamWriter sw = new(Path.Combine(DataPath, "LastConfig"), false, Encoding.UTF8);
+            try
             {
                 sw.WriteLine(path);
+            }
+            finally
+            {
                 sw.Close();
             }
         }
@@ -1019,23 +1026,23 @@ namespace YAMDCC.GUI
                 {
                     case StatusCode.ServiceCommandFail:
                         persist = true;
-                        lblStatus.Text = $"ERROR: A {(Command)data} service command failed to run.";
+                        lblStatus.Text = Strings.GetString("statSvcError", (Command)data);
                         break;
                     case StatusCode.ServiceResponseEmpty:
-                        lblStatus.Text = $"WARN: Received an empty response from service.";
+                        lblStatus.Text = Strings.GetString("statResponseEmpty");
                         break;
                     case StatusCode.NoConfig:
                         persist = true;
-                        lblStatus.Text = "Please load a config to start";
+                        lblStatus.Text = Strings.GetString("statNoConf");
                         break;
                     case StatusCode.ConfLoading:
-                        lblStatus.Text = "Loading config, please wait...";
+                        lblStatus.Text = Strings.GetString("statConfLoading");
                         break;
                     case StatusCode.ConfApplySuccess:
-                        lblStatus.Text = $"Config applied successfully!";
+                        lblStatus.Text = Strings.GetString("statConfApplied");
                         break;
                     case StatusCode.FullBlastToggleSuccess:
-                        lblStatus.Text = $"Full Blast toggled successfully!";
+                        lblStatus.Text = Strings.GetString("statFBToggled");
                         break;
                     default:
                         persist = true;

@@ -295,4 +295,33 @@ Please re-run this program as Administrator
   <data name="dlgOldConfInvalid" xml:space="preserve">
     <value>The last loaded/saved config is invalid.</value>
   </data>
+  <data name="dlgFileFilter" xml:space="preserve">
+    <value>YAMDCC config files|*.xml</value>
+  </data>
+  <data name="dlgRevert" xml:space="preserve">
+    <value>Are you sure you want to revert to the last loaded/saved config?</value>
+  </data>
+  <data name="statSvcError" xml:space="preserve">
+    <value>ERROR: A {0} service command failed to run.</value>
+  </data>
+  <data name="statResponseEmpty" xml:space="preserve">
+    <value>WARN: Received an empty response from service.</value>
+  </data>
+  <data name="statFBToggled" xml:space="preserve">
+    <value>Full Blast toggled successfully!</value>
+  </data>
+  <data name="statConfApplied" xml:space="preserve">
+    <value>Config applied successfully!</value>
+  </data>
+  <data name="statConfLoading" xml:space="preserve">
+    <value>Loading config, please wait...</value>
+  </data>
+  <data name="statNoConf" xml:space="preserve">
+    <value>Please load a config to start</value>
+  </data>
+  <data name="dlgTemplateConfWIP" xml:space="preserve">
+    <value>This is a template config.
+Template configs are currently a WIP and cannot be used yet.
+Please load a different config.</value>
+  </data>
 </root>
