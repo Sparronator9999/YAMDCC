@@ -52,16 +52,16 @@ are you're looking for [NoteBook FanControl](https://github.com/UraniumDonut/nbf
 
 ### Community tested laptops
 
-The following laptops are confirmed to work by the community:
+The following laptops have been tested by the community and are confirmed to be working:
 
 - MSI Katana GF66 12UG (thanks @porkmanager)
 - MSI Vector GP78 HX 13V (thanks @Twisted6)
+- MSI Raider GE66 12UGS (thanks @grimy400)
 
 ### Config disclaimers
 
 - The config format is very likely to change multiple times during YAMDCC's development before
   release, and as such will break in new updates. Check the git history before updating.
-
 - **Please avoid asking me (or other people) in the issue tracker to create a config for you.**
   **Unless we have your specific laptop model (which we probably don't), we will not be able to**
   **help you outside of the general instructions.**
@@ -70,7 +70,7 @@ The following laptops are confirmed to work by the community:
 
 | Feature                   | MSI Center | YAMDCC   |
 |---------------------------|------------|----------|
-| Installed size            | ~950 MB¹   | ~176 KB¹ |
+| Installed size            | ~950 MB¹   | ~1 MB¹   |
 | Fan control               | ✔          | ✔        |
 | Temp. threshold control   | ❌          | ✔        |
 | Multi-fan profile support | ❌          | ✔        |
@@ -82,7 +82,7 @@ The following laptops are confirmed to work by the community:
 | Other MSI Center features | ✔          | ❌        |
 | Open source               | ❌          | ✔        |
 
-1: As of v2.0.38, MSI Center takes about 950 MB of storage space when counting the UWP app (749 MB) and the files installed on first launch to `C:\Program Files (x86)\MSI` (205 MB). YAMDCC's installed size is based on the Release build of commit dc819a6, and includes all program files, but excludes config XMLs.
+1: As of v2.0.38, MSI Center takes about 950 MB of storage space when counting the UWP app (749 MB) and the files installed on first launch to `C:\Program Files (x86)\MSI` (205 MB). YAMDCC's installed size is based on the Release build of [commit 0422376](https://github.com/Sparronator9999/YAMDCC/commit/0422376), and includes all unzipped program files, but excludes config XMLs.
 
 2: MSI Center only supports setting the charge threshold to 60%, 80%, or 100%, while YAMDCC can set this to anything between 0 and 100% (with 0 meaning charge to 100% always).
 
@@ -92,7 +92,7 @@ The following laptops are confirmed to work by the community:
 
 Below are some changes I would like to make before a 1.0 release of YAMDCC:
 
-- [ ] Config generation for MSI laptops *(in progress)*
+- [ ] Config generation for MSI laptops *(implemented in service, UI in progress)*
   - This would only work because many MSI laptops have almost identical EC register locations
     for all the relevent settings we change
   - The only thing we need to do is get the default fan curve from the user's laptop, and add
@@ -101,19 +101,23 @@ Below are some changes I would like to make before a 1.0 release of YAMDCC:
   - Currently, there is no "acknowledgement" system for commands sent to the service,
     even for commands that expect data to be returned. This means no errors if the service
     crashes before fulfilling a received command.
+- [ ] Fix any remaining bugs before the 1.0 release.
+  - I will start releasing betas once the above points are complete.
 
 Below are some planned features for potential future releases:
 
 - [ ] Keyboard shortcut support (requested by @grimy400)
-- [ ] Command line support
+- [ ] CLI support
   - Development of a CLI application for YAMDCC has started, but isn't publicly available yet
-- [ ] Support for editing laptop config registers using the GUI interface
+    - It hasn't been updated for quite a while (to the point where it still has the
+      project's original name) and is missing a *lot* of features.
+- [ ] Support for editing laptop config registers using the GUI/CLI
   - This would allow for creating configs for other laptop brands from the config UI
   - Currently, the only way to do this is to edit the XML directly
 - [ ] Plugin system for additional optional features
 - [ ] .NET support
   - Mandatory for Linux support
-  - The GUI *should* compile on .NET 8, but hasn't been tested yet
+  - The GUI *should* compile on .NET 8 (and in fact *has* been compiled on .NET 8 before).
   - The Windows service on the other hand... is going to be interesting. Even
     with the `Microsoft.Windows.Compatibility` package installed, I still
     wasn't able to get the service to run without issues.
@@ -125,7 +129,8 @@ Below are some planned features for potential future releases:
 
 Development builds are available through [GitHub Actions](https://github.com/Sparronator9999/YAMDCC/actions).
 
-Alternatively, if you don't have a GitHub account, you can download the latest build from [nightly.link](https://nightly.link/Sparronator9999/YAMDCC/workflows/build/main?preview).
+Alternatively, if you don't have a GitHub account, you can download the latest build from
+[nightly.link](https://nightly.link/Sparronator9999/YAMDCC/workflows/build/main?preview).
 
 (You probably want the `Release` build, unless you're debugging issues with the program)
 
@@ -153,7 +158,8 @@ may encounter issues (that means `net stop yamdccsvc` first, then compile).
 2.  Open `Developer Command Prompt for VS 2022` and `cd` to your project directory.
 3.  Run `msbuild /t:restore` to restore the solution, including NuGet packages.
 4.  Run `msbuild YAMDCC.sln /p:platform="Any CPU" /p:configuration="Debug"` to build
-    the project, substituting `Debug` with `Release` (or `Any CPU` with `x86` or `x64`) as 
+    the project, substituting `Debug` with `Release` (or `Any CPU` with `x86` or `x64`)
+    if you want a release build instead.
 5.  Your output should be located in `YAMDCC.GUI\bin\Debug\net48\`, assuming you built
     with the above unmodified command.
 6.  ???
@@ -173,13 +179,16 @@ or new configs, feel free to open a pull request. Please include the following:
 
 - **Bug Fixes/Improvements:** Describe the changes you made and why they
   are important or useful.
-- ~~**New Config:**~~ Not currently accepting new configs.
+- ~~**New Config:**~~ Not currently accepting new configs. Wait for the config
+  generation feature to be finished.
 
 ## FAQ
 
 ### What versions of Windows do you support?
 
-Windows 10 and 11, both 64-bit and 32-bit (for Windows 10, but you should really be using a 64-bit OS in 2024).
+Windows 10 and 11 (64-bit).
+
+32-bit Windows 10 should also work, but you really should be using 64-bit Windows when possible in 2024.
 
 Older versions of Windows that support .NET Framework 4.8 may also work, but with no support from me.
 
@@ -198,10 +207,10 @@ and the Win/Fn key swap setting.
 
 ### Why do I need administrator privileges to run this program?
 
-Because admin privileges are required to install kernel drivers. Simple as that.
+1. Because admin privileges are required to install kernel drivers, and...
 
-For security reasons, only programs with admin privileges are allowed to communicate with the
-YAMDCC service.
+2. For security reasons, only programs with admin privileges are allowed to communicate with the
+YAMDCC service once it's running.
 
 ### Why does this program need a kernel driver?
 
