@@ -352,72 +352,64 @@ namespace YAMDCC.Service
             if (ConfigLoaded)
             {
                 Log.Info(Strings.GetString("cfgApplying"));
-                if (EC.AcquireLock(1000))
+
+                // Write custom register values, if configured:
+                if (Config.RegConfs is not null && Config.RegConfs.Length > 0)
                 {
-                    // Write custom register values, if configured:
-                    if (Config.RegConfs is not null && Config.RegConfs.Length > 0)
+                    for (int i = 0; i < Config.RegConfs.Length; i++)
                     {
-                        for (int i = 0; i < Config.RegConfs.Length; i++)
-                        {
-                            RegConf cfg = Config.RegConfs[i];
-                            Log.Info(Strings.GetString("svcWritingCustomRegs", i + 1, Config.RegConfs.Length));
-                            LogECWriteByte(cfg.Reg, cfg.Value);
-                        }
+                        RegConf cfg = Config.RegConfs[i];
+                        Log.Info(Strings.GetString("svcWritingCustomRegs", i + 1, Config.RegConfs.Length));
+                        LogECWriteByte(cfg.Reg, cfg.Value);
                     }
-
-                    // Write the fan curve to the appropriate registers for each fan:
-                    for (int i = 0; i < Config.FanConfs.Length; i++)
-                    {
-                        FanConf cfg = Config.FanConfs[i];
-                        Log.Info(Strings.GetString("svcWritingFans", cfg.Name, i + 1, Config.FanConfs.Length));
-                        FanCurveConf curveCfg = cfg.FanCurveConfs[cfg.CurveSel];
-
-                        for (int j = 0; j < curveCfg.TempThresholds.Length; j++)
-                        {
-                            LogECWriteByte(cfg.FanCurveRegs[j], curveCfg.TempThresholds[j].FanSpeed);
-
-                            if (j > 0)
-                            {
-                                LogECWriteByte(cfg.UpThresholdRegs[j - 1], curveCfg.TempThresholds[j].UpThreshold);
-
-                                byte downT = (byte)(curveCfg.TempThresholds[j].UpThreshold - curveCfg.TempThresholds[j].DownThreshold);
-                                LogECWriteByte(cfg.DownThresholdRegs[j - 1], downT);
-                            }
-                        }
-                    }
-
-                    // Write the charge threshold:
-                    if (Config.ChargeLimitConf is not null)
-                    {
-                        Log.Info(Strings.GetString("svcWritingChgLim"));
-                        byte value = (byte)(Config.ChargeLimitConf.MinVal + Config.ChargeLimitConf.CurVal);
-                        LogECWriteByte(Config.ChargeLimitConf.Reg, value);
-                    }
-
-                    // Write the performance mode
-                    if (Config.PerfModeConf is not null)
-                    {
-                        Log.Info(Strings.GetString("svcWritingPerfMode"));
-                        byte value = Config.PerfModeConf.PerfModes[Config.PerfModeConf.ModeSel].Value;
-                        LogECWriteByte(Config.PerfModeConf.Reg, value);
-                    }
-
-                    // Write the Win/Fn key swap setting
-                    if (Config.KeySwapConf is not null)
-                    {
-                        Log.Info(Strings.GetString("svcWritingKeySwap"));
-                        byte value = Config.KeySwapConf.Enabled
-                            ? Config.KeySwapConf.OnVal
-                            : Config.KeySwapConf.OffVal;
-
-                        LogECWriteByte(Config.KeySwapConf.Reg, value);
-                    }
-
-                    EC.ReleaseLock();
                 }
-                else
+
+                // Write the fan curve to the appropriate registers for each fan:
+                for (int i = 0; i < Config.FanConfs.Length; i++)
                 {
-                    Log.Error(Strings.GetString("errECLock"));
+                    FanConf cfg = Config.FanConfs[i];
+                    Log.Info(Strings.GetString("svcWritingFans", cfg.Name, i + 1, Config.FanConfs.Length));
+                    FanCurveConf curveCfg = cfg.FanCurveConfs[cfg.CurveSel];
+
+                    for (int j = 0; j < curveCfg.TempThresholds.Length; j++)
+                    {
+                        LogECWriteByte(cfg.FanCurveRegs[j], curveCfg.TempThresholds[j].FanSpeed);
+
+                        if (j > 0)
+                        {
+                            LogECWriteByte(cfg.UpThresholdRegs[j - 1], curveCfg.TempThresholds[j].UpThreshold);
+
+                            byte downT = (byte)(curveCfg.TempThresholds[j].UpThreshold - curveCfg.TempThresholds[j].DownThreshold);
+                            LogECWriteByte(cfg.DownThresholdRegs[j - 1], downT);
+                        }
+                    }
+                }
+
+                // Write the charge threshold:
+                if (Config.ChargeLimitConf is not null)
+                {
+                    Log.Info(Strings.GetString("svcWritingChgLim"));
+                    byte value = (byte)(Config.ChargeLimitConf.MinVal + Config.ChargeLimitConf.CurVal);
+                    LogECWriteByte(Config.ChargeLimitConf.Reg, value);
+                }
+
+                // Write the performance mode
+                if (Config.PerfModeConf is not null)
+                {
+                    Log.Info(Strings.GetString("svcWritingPerfMode"));
+                    byte value = Config.PerfModeConf.PerfModes[Config.PerfModeConf.ModeSel].Value;
+                    LogECWriteByte(Config.PerfModeConf.Reg, value);
+                }
+
+                // Write the Win/Fn key swap setting
+                if (Config.KeySwapConf is not null)
+                {
+                    Log.Info(Strings.GetString("svcWritingKeySwap"));
+                    byte value = Config.KeySwapConf.Enabled
+                        ? Config.KeySwapConf.OnVal
+                        : Config.KeySwapConf.OffVal;
+
+                    LogECWriteByte(Config.KeySwapConf.Reg, value);
                 }
             }
         }
@@ -478,19 +470,14 @@ namespace YAMDCC.Service
         {
             if (ParseArgs(args, 1, out int[] pArgs))
             {
-                if (EC.AcquireLock(1000))
-                {
-                    bool success = LogECReadByte((byte)pArgs[0], out byte value);
-                    EC.ReleaseLock();
+                bool success = LogECReadByte((byte)pArgs[0], out byte value);
 
-                    ServiceResponse response = success
-                        ? new(Response.ReadResult, $"{pArgs[0]} {value}")
-                        : new(Response.Error, $"{(int)Command.ReadECByte}");
+                ServiceResponse response = success
+                    ? new(Response.ReadResult, $"{pArgs[0]} {value}")
+                    : new(Response.Error, $"{(int)Command.ReadECByte}");
 
-                    IPCServer.PushMessage(response, clientId);
-                    return 0;
-                }
-                return 3;
+                IPCServer.PushMessage(response, clientId);
+                return 0;
             }
             return 2;
         }
@@ -499,19 +486,14 @@ namespace YAMDCC.Service
         {
             if (ParseArgs(args, 2, out int[] pArgs))
             {
-                if (EC.AcquireLock(1000))
-                {
-                    bool success = LogECWriteByte((byte)pArgs[0], (byte)pArgs[1]);
-                    EC.ReleaseLock();
+                bool success = LogECWriteByte((byte)pArgs[0], (byte)pArgs[1]);
 
-                    ServiceResponse response = success
-                        ? new(Response.Success, $"{(int)Command.WriteECByte}")
-                        : new(Response.Error, $"{(int)Command.WriteECByte}");
+                ServiceResponse response = success
+                    ? new(Response.Success, $"{(int)Command.WriteECByte}")
+                    : new(Response.Error, $"{(int)Command.WriteECByte}");
 
-                    IPCServer.PushMessage(response, clientId);
-                    return 0;
-                }
-                return 3;
+                IPCServer.PushMessage(response, clientId);
+                return 0;
             }
             return 2;
         }
@@ -525,20 +507,15 @@ namespace YAMDCC.Service
 
             if (ParseArgs(args, 1, out int[] pArgs))
             {
-                if (EC.AcquireLock(1000))
-                {
-                    FanConf cfg = Config.FanConfs[pArgs[0]];
-                    bool success = LogECReadByte(cfg.SpeedReadReg, out byte speed);
-                    EC.ReleaseLock();
+                FanConf cfg = Config.FanConfs[pArgs[0]];
+                bool success = LogECReadByte(cfg.SpeedReadReg, out byte speed);
 
-                    ServiceResponse response = success
-                        ? new(Response.FanSpeed, $"{speed}")
-                        : new(Response.Error, $"{(int)Command.GetFanSpeed}");
+                ServiceResponse response = success
+                    ? new(Response.FanSpeed, $"{speed}")
+                    : new(Response.Error, $"{(int)Command.GetFanSpeed}");
 
-                    IPCServer.PushMessage(response, clientId);
-                    return 0;
-                }
-                return 3;
+                IPCServer.PushMessage(response, clientId);
+                return 0;
             }
             return 2;
         }
@@ -556,60 +533,55 @@ namespace YAMDCC.Service
 
                 if (cfg.RPMConf is not null)
                 {
-                    if (EC.AcquireLock(1000))
+                    bool success;
+                    ushort rpmValue;
+                    if (cfg.RPMConf.Is16Bit)
                     {
-                        bool success;
-                        ushort rpmValue;
-                        if (cfg.RPMConf.Is16Bit)
-                        {
-                            success = LogECReadWord(cfg.RPMConf.ReadReg, out rpmValue, cfg.RPMConf.IsBigEndian);
-                        }
-                        else
-                        {
-                            success = LogECReadByte(cfg.RPMConf.ReadReg, out byte rpmValByte);
-                            rpmValue = rpmValByte;
-                        }
-                        EC.ReleaseLock();
+                        success = LogECReadWord(cfg.RPMConf.ReadReg, out rpmValue, cfg.RPMConf.IsBigEndian);
+                    }
+                    else
+                    {
+                        success = LogECReadByte(cfg.RPMConf.ReadReg, out byte rpmValByte);
+                        rpmValue = rpmValByte;
+                    }
 
-                        ServiceResponse response;
-                        if (success)
-                        {
+                    ServiceResponse response;
+                    if (success)
+                    {
 #pragma warning disable IDE0045 // Supress "if statement can be simplified" suggestion
-                            int rpm;
-                            if (cfg.RPMConf.Invert)
+                        int rpm;
+                        if (cfg.RPMConf.Invert)
+                        {
+                            if (rpmValue == 0)
                             {
-                                if (rpmValue == 0)
-                                {
-                                    rpm = -1;
-                                }
-                                else if (cfg.RPMConf.DivideByMult)
-                                {
-                                    rpm = cfg.RPMConf.RPMMult / rpmValue;
-                                }
-                                else
-                                {
-                                    rpm = 1 / (rpmValue * cfg.RPMConf.RPMMult);
-                                }
+                                rpm = -1;
                             }
                             else if (cfg.RPMConf.DivideByMult)
                             {
-                                rpm = rpmValue / cfg.RPMConf.RPMMult;
+                                rpm = cfg.RPMConf.RPMMult / rpmValue;
                             }
                             else
                             {
-                                rpm = rpmValue * cfg.RPMConf.RPMMult;
+                                rpm = 1 / (rpmValue * cfg.RPMConf.RPMMult);
                             }
-#pragma warning restore IDE0045
-                            response = new(Response.FanRPM, $"{rpm}");
+                        }
+                        else if (cfg.RPMConf.DivideByMult)
+                        {
+                            rpm = rpmValue / cfg.RPMConf.RPMMult;
                         }
                         else
                         {
-                            response = new(Response.FanRPM, $"{(int)Command.GetFanRPM}");
+                            rpm = rpmValue * cfg.RPMConf.RPMMult;
                         }
-                        IPCServer.PushMessage(response, clientId);
-                        return 0;
+#pragma warning restore IDE0045
+                        response = new(Response.FanRPM, $"{rpm}");
                     }
-                    return 3;
+                    else
+                    {
+                        response = new(Response.FanRPM, $"{(int)Command.GetFanRPM}");
+                    }
+                    IPCServer.PushMessage(response, clientId);
+                    return 0;
                 }
                 return 0;
             }
@@ -625,20 +597,15 @@ namespace YAMDCC.Service
 
             if (ParseArgs(args, 1, out int[] pArgs))
             {
-                if (EC.AcquireLock(1000))
-                {
-                    FanConf cfg = Config.FanConfs[pArgs[0]];
-                    bool success = LogECReadByte(cfg.TempReadReg, out byte temp);
-                    EC.ReleaseLock();
+                FanConf cfg = Config.FanConfs[pArgs[0]];
+                bool success = LogECReadByte(cfg.TempReadReg, out byte temp);
 
-                    ServiceResponse response = success
-                        ? new(Response.Temp, $"{temp}")
-                        : new(Response.Error, $"{(int)Command.GetTemp}");
+                ServiceResponse response = success
+                    ? new(Response.Temp, $"{temp}")
+                    : new(Response.Error, $"{(int)Command.GetTemp}");
 
-                    IPCServer.PushMessage(response, clientId);
-                    return 0;
-                }
-                return 3;
+                IPCServer.PushMessage(response, clientId);
+                return 0;
             }
             return 2;
         }
@@ -649,35 +616,30 @@ namespace YAMDCC.Service
             {
                 if (ParseArgs(args, 1, out int[] pArgs))
                 {
-                    if (EC.AcquireLock(500))
+                    if (!LogECReadByte(Config.FullBlastConf.Reg, out byte value))
                     {
-                        if (!LogECReadByte(Config.FullBlastConf.Reg, out byte value))
-                        {
-                            return 0;
-                        }
-
-                        bool success;
-                        if (pArgs[0] == 1)
-                        {
-                            Log.Debug("Enabling Full Blast...");
-                            value |= Config.FullBlastConf.Mask;
-                        }
-                        else
-                        {
-                            Log.Debug("Disabling Full Blast...");
-                            value &= (byte)~Config.FullBlastConf.Mask;
-                        }
-                        success = LogECWriteByte(Config.FullBlastConf.Reg, value);
-                        EC.ReleaseLock();
-
-                        ServiceResponse response = success
-                            ? new(Response.Success, $"{(int)Command.FullBlast}")
-                            : new(Response.Error, $"{(int)Command.FullBlast}");
-
-                        IPCServer.PushMessage(response, clientId);
                         return 0;
                     }
-                    return 3;
+
+                    bool success;
+                    if (pArgs[0] == 1)
+                    {
+                        Log.Debug("Enabling Full Blast...");
+                        value |= Config.FullBlastConf.Mask;
+                    }
+                    else
+                    {
+                        Log.Debug("Disabling Full Blast...");
+                        value &= (byte)~Config.FullBlastConf.Mask;
+                    }
+                    success = LogECWriteByte(Config.FullBlastConf.Reg, value);
+
+                    ServiceResponse response = success
+                        ? new(Response.Success, $"{(int)Command.FullBlast}")
+                        : new(Response.Error, $"{(int)Command.FullBlast}");
+
+                    IPCServer.PushMessage(response, clientId);
+                    return 0;
                 }
                 return 2;
             }
@@ -692,25 +654,20 @@ namespace YAMDCC.Service
             }
 
             Log.Debug(Strings.GetString("svcGetKeyLightBright"));
-            if (EC.AcquireLock(500))
-            {
-                bool success = LogECReadByte(Config.KeyLightConf.Reg, out byte value);
-                EC.ReleaseLock();
+            bool success = LogECReadByte(Config.KeyLightConf.Reg, out byte value);
 
-                ServiceResponse response;
-                if (success)
-                {
-                    int brightness = value - Config.KeyLightConf.MinVal;
-                    response = new(Response.KeyLightBright, $"{brightness}");
-                }
-                else
-                {
-                    response = new(Response.Error, $"{(int)Command.GetKeyLightBright}");
-                }
-                IPCServer.PushMessage(response, clientId);
-                return 0;
+            ServiceResponse response;
+            if (success)
+            {
+                int brightness = value - Config.KeyLightConf.MinVal;
+                response = new(Response.KeyLightBright, $"{brightness}");
             }
-            return 3;
+            else
+            {
+                response = new(Response.Error, $"{(int)Command.GetKeyLightBright}");
+            }
+            IPCServer.PushMessage(response, clientId);
+            return 0;
         }
 
         private int SetKeyLightBright(int clientId, string args)
@@ -723,23 +680,19 @@ namespace YAMDCC.Service
             if (ParseArgs(args, 1, out int[] pArgs))
             {
                 Log.Debug(Strings.GetString("svcSetKeyLightBright", pArgs[0]));
-                if (EC.AcquireLock(500))
-                {
-                    bool success = LogECWriteByte(Config.KeyLightConf.Reg, (byte)(pArgs[0] + Config.KeyLightConf.MinVal));
-                    EC.ReleaseLock();
+                bool success = LogECWriteByte(Config.KeyLightConf.Reg, (byte)(pArgs[0] + Config.KeyLightConf.MinVal));
 
-                    ServiceResponse response = success
-                        ? new(Response.Success, $"{Command.SetKeyLightBright}")
-                        : new(Response.Error, $"{Command.SetKeyLightBright}");
+                ServiceResponse response = success
+                    ? new(Response.Success, $"{Command.SetKeyLightBright}")
+                    : new(Response.Error, $"{Command.SetKeyLightBright}");
 
-                    IPCServer.PushMessage(response, clientId);
-                    return 0;
-                }
-                return 3;
+                IPCServer.PushMessage(response, clientId);
+                return 0;
             }
             return 2;
         }
 
+        // TODO: actually test this mess lol
         private int FanCurveECToConf(int clientId)
         {
             if (!ConfigLoaded)
@@ -748,52 +701,50 @@ namespace YAMDCC.Service
             }
 
             Log.Debug("Getting fan curve from EC...");
-            if (EC.AcquireLock(500))
-            {
-                for (int i = 0; i < Config.FanConfs.Length; i++)
-                {
-                    FanConf cfg = Config.FanConfs[i];
 
-                    if (cfg.FanCurveConfs is null || cfg.FanCurveConfs.Length == 0)
+            for (int i = 0; i < Config.FanConfs.Length; i++)
+            {
+                FanConf cfg = Config.FanConfs[i];
+
+                if (cfg.FanCurveConfs is null || cfg.FanCurveConfs.Length == 0)
+                {
+                    cfg.FanCurveConfs = new FanCurveConf[1];
+                    cfg.FanCurveConfs[0] = new()
                     {
-                        cfg.FanCurveConfs = new FanCurveConf[1];
-                        cfg.FanCurveConfs[0] = new()
-                        {
-                            Name = "Default",
-                            Desc = "Default fan curve (auto-generated by YAMDCC)",
-                            TempThresholds = new TempThreshold[cfg.FanCurveRegs.Length],
-                        };
-                        cfg.CurveSel = 0;
+                        Name = "Default",
+                        Desc = "Default fan curve (auto-generated by YAMDCC)",
+                        TempThresholds = new TempThreshold[cfg.FanCurveRegs.Length],
+                    };
+                    cfg.CurveSel = 0;
+                }
+
+                for (int j = 0; j < cfg.FanCurveRegs.Length; j++)
+                {
+                    FanCurveConf curveCfg = cfg.FanCurveConfs[0];
+                    if (curveCfg.TempThresholds[j] is null)
+                    {
+                        curveCfg.TempThresholds[j] = new();
                     }
 
-                    for (int j = 0; j < cfg.FanCurveRegs.Length; j++)
+                    if (LogECReadByte(cfg.FanCurveRegs[j], out byte value))
                     {
-                        FanCurveConf curveCfg = cfg.FanCurveConfs[0];
-                        if (curveCfg.TempThresholds[j] is null)
-                        {
-                            curveCfg.TempThresholds[j] = new();
-                        }
+                        curveCfg.TempThresholds[j].FanSpeed = value;
+                    }
 
-                        if (LogECReadByte(cfg.FanCurveRegs[j], out byte value))
+                    if (j == 0)
+                    {
+                        curveCfg.TempThresholds[j].UpThreshold = 0;
+                        curveCfg.TempThresholds[j].DownThreshold = 0;
+                    }
+                    else
+                    {
+                        if (LogECReadByte(cfg.UpThresholdRegs[j], out value))
                         {
-                            curveCfg.TempThresholds[j].FanSpeed = value;
+                            curveCfg.TempThresholds[j].UpThreshold = value;
                         }
-
-                        if (j == 0)
+                        if (LogECReadByte(cfg.DownThresholdRegs[j], out value))
                         {
-                            curveCfg.TempThresholds[j].UpThreshold = 0;
-                            curveCfg.TempThresholds[j].DownThreshold = 0;
-                        }
-                        else
-                        {
-                            if (LogECReadByte(cfg.UpThresholdRegs[j], out value))
-                            {
-                                curveCfg.TempThresholds[j].UpThreshold = value;
-                            }
-                            if (LogECReadByte(cfg.DownThresholdRegs[j], out value))
-                            {
-                                curveCfg.TempThresholds[j].DownThreshold = value;
-                            }
+                            curveCfg.TempThresholds[j].DownThreshold = value;
                         }
                     }
                 }

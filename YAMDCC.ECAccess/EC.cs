@@ -234,36 +234,42 @@ namespace YAMDCC.ECAccess
             return false;
         }
 
-        /// <summary>
-        /// Acquires a lock on the ISA bus. Call before any EC operation.
-        /// </summary>
-        /// <param name="timeout">The time to wait before releasing the lock.</param>
-        /// <returns>
-        /// <c>true</c> if the lock was acquired successfully, otherwise <c>false</c>.
-        /// </returns>
-        public static bool AcquireLock(int timeout) =>
-            EcMutex.WaitOne(timeout);
-
-        /// <summary>
-        /// Releases a lock on the ISA bus.
-        /// </summary>
-        public static void ReleaseLock() =>
-            EcMutex.ReleaseMutex();
-
         private bool TryReadByte(byte register, out byte value)
         {
             value = 0;
-            return WaitWrite() && WriteIOPort(PORT_COMMAND, (byte)ECCommand.Read)
-                && WaitWrite() && WriteIOPort(PORT_DATA, register)
-                && WaitWrite() && WaitRead()
-                && ReadIOPort(PORT_DATA, out value);
+            if (EcMutex.WaitOne(2000))
+            {
+                try
+                {
+                    return WaitWrite() && WriteIOPort(PORT_COMMAND, (byte)ECCommand.Read)
+                        && WaitWrite() && WriteIOPort(PORT_DATA, register)
+                        && WaitWrite() && WaitRead()
+                        && ReadIOPort(PORT_DATA, out value);
+                }
+                finally
+                {
+                    EcMutex.ReleaseMutex();
+                }
+            }
+            return false;
         }
 
         private bool TryWriteByte(byte register, byte value)
         {
-            return WaitWrite() && WriteIOPort(PORT_COMMAND, (byte)ECCommand.Write)
-                && WaitWrite() && WriteIOPort(PORT_DATA, register)
-                && WaitWrite() && WriteIOPort(PORT_DATA, value);
+            if (EcMutex.WaitOne(2000))
+            {
+                try
+                {
+                    return WaitWrite() && WriteIOPort(PORT_COMMAND, (byte)ECCommand.Write)
+                        && WaitWrite() && WriteIOPort(PORT_DATA, register)
+                        && WaitWrite() && WriteIOPort(PORT_DATA, value);
+                }
+                finally
+                {
+                    EcMutex.ReleaseMutex();
+                }
+            }
+            return false;
         }
 
         private bool TryReadWord(byte register, bool bigEndian, out ushort value)
