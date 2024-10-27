@@ -107,6 +107,7 @@ namespace YAMDCC.GUI
             this.lblTemp = new System.Windows.Forms.Label();
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
             this.tmrPoll = new System.Windows.Forms.Timer(this.components);
+            this.tmrStatusReset = new System.Windows.Forms.Timer(this.components);
             menuStrip = new System.Windows.Forms.MenuStrip();
             sep1 = new System.Windows.Forms.ToolStripSeparator();
             sep2 = new System.Windows.Forms.ToolStripSeparator();
@@ -170,45 +171,45 @@ namespace YAMDCC.GUI
             // tsiLoadConf
             // 
             this.tsiLoadConf.Name = "tsiLoadConf";
-            this.tsiLoadConf.Size = new System.Drawing.Size(180, 22);
+            this.tsiLoadConf.Size = new System.Drawing.Size(154, 22);
             this.tsiLoadConf.Text = "Load config";
             this.tsiLoadConf.Click += new System.EventHandler(this.tsiLoadConf_Click);
             // 
             // tsiSaveConf
             // 
             this.tsiSaveConf.Name = "tsiSaveConf";
-            this.tsiSaveConf.Size = new System.Drawing.Size(180, 22);
+            this.tsiSaveConf.Size = new System.Drawing.Size(154, 22);
             this.tsiSaveConf.Text = "Save config";
             this.tsiSaveConf.Click += new System.EventHandler(this.tsiSaveConf_Click);
             // 
             // sep1
             // 
             sep1.Name = "sep1";
-            sep1.Size = new System.Drawing.Size(177, 6);
+            sep1.Size = new System.Drawing.Size(151, 6);
             // 
             // tsiApply
             // 
             this.tsiApply.Name = "tsiApply";
-            this.tsiApply.Size = new System.Drawing.Size(180, 22);
+            this.tsiApply.Size = new System.Drawing.Size(154, 22);
             this.tsiApply.Text = "Apply changes";
             this.tsiApply.Click += new System.EventHandler(this.tsiApply_Click);
             // 
             // tsiRevert
             // 
             this.tsiRevert.Name = "tsiRevert";
-            this.tsiRevert.Size = new System.Drawing.Size(180, 22);
+            this.tsiRevert.Size = new System.Drawing.Size(154, 22);
             this.tsiRevert.Text = "Revert changes";
             this.tsiRevert.Click += new System.EventHandler(this.tsiRevert_Click);
             // 
             // sep2
             // 
             sep2.Name = "sep2";
-            sep2.Size = new System.Drawing.Size(177, 6);
+            sep2.Size = new System.Drawing.Size(151, 6);
             // 
             // tsiExit
             // 
             this.tsiExit.Name = "tsiExit";
-            this.tsiExit.Size = new System.Drawing.Size(180, 22);
+            this.tsiExit.Size = new System.Drawing.Size(154, 22);
             this.tsiExit.Text = "Exit";
             this.tsiExit.Click += new System.EventHandler(this.tsiExit_Click);
             // 
@@ -261,7 +262,7 @@ namespace YAMDCC.GUI
             // sep3
             // 
             sep3.Name = "sep3";
-            sep3.Size = new System.Drawing.Size(177, 6);
+            sep3.Size = new System.Drawing.Size(175, 6);
             // 
             // tsiProfDel
             // 
@@ -314,14 +315,14 @@ namespace YAMDCC.GUI
             // tsiAbout
             // 
             this.tsiAbout.Name = "tsiAbout";
-            this.tsiAbout.Size = new System.Drawing.Size(180, 22);
+            this.tsiAbout.Size = new System.Drawing.Size(141, 22);
             this.tsiAbout.Text = "About";
             this.tsiAbout.Click += new System.EventHandler(this.tsiAbout_Click);
             // 
             // tsiSource
             // 
             this.tsiSource.Name = "tsiSource";
-            this.tsiSource.Size = new System.Drawing.Size(180, 22);
+            this.tsiSource.Size = new System.Drawing.Size(141, 22);
             this.tsiSource.Text = "Source Code";
             this.tsiSource.Click += new System.EventHandler(this.tsiSrc_Click);
             // 
@@ -566,7 +567,7 @@ namespace YAMDCC.GUI
             tabOptions.Controls.Add(tblExtra);
             tabOptions.Location = new System.Drawing.Point(4, 24);
             tabOptions.Name = "tabOptions";
-            tabOptions.Size = new System.Drawing.Size(526, 364);
+            tabOptions.Size = new System.Drawing.Size(526, 366);
             tabOptions.TabIndex = 1;
             tabOptions.Text = "Extras";
             // 
@@ -592,7 +593,7 @@ namespace YAMDCC.GUI
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tblExtra.Size = new System.Drawing.Size(526, 364);
+            tblExtra.Size = new System.Drawing.Size(526, 366);
             tblExtra.TabIndex = 4;
             // 
             // lblChgLim
@@ -794,6 +795,11 @@ namespace YAMDCC.GUI
             this.tmrPoll.Interval = 1000;
             this.tmrPoll.Tick += new System.EventHandler(this.tmrPoll_Tick);
             // 
+            // tmrStatusReset
+            // 
+            this.tmrStatusReset.Interval = 10000;
+            this.tmrStatusReset.Tick += new System.EventHandler(this.tmrStatusReset_Tick);
+            // 
             // MainWindow
             // 
             this.AcceptButton = this.btnApply;
@@ -888,5 +894,6 @@ namespace YAMDCC.GUI
         private System.Windows.Forms.Label lblPerfMode;
         private System.Windows.Forms.Label lblWinFnSwap;
         private System.Windows.Forms.Label lblKeyLight;
+        private System.Windows.Forms.Timer tmrStatusReset;
     }
 }

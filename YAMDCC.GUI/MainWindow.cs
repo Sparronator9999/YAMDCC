@@ -31,6 +31,8 @@ namespace YAMDCC.GUI
     internal sealed partial class MainWindow : Form
     {
         #region Fields
+        private readonly Status AppStatus = new();
+
         /// <summary>
         /// The path where program data is stored.
         /// </summary>
@@ -224,10 +226,7 @@ namespace YAMDCC.GUI
                 {
                     case Response.Nothing:
                     {
-                        lblStatus.Invoke(new Action(delegate
-                        {
-                            lblStatus.Text = $"WARN: Received an empty response from service";
-                        }));
+                        UpdateStatus(StatusCode.ServiceResponseEmpty);
                         break;
                     }
                     case Response.Success:
@@ -239,10 +238,7 @@ namespace YAMDCC.GUI
                     {
                         if (int.TryParse(args[0], out int value))
                         {
-                            lblStatus.Invoke(new Action(delegate
-                            {
-                                lblStatus.Text = $"ERROR: a {(Command)value} service command failed to run.";
-                            }));
+                            UpdateStatus(StatusCode.ServiceCommandFail, value);
                         }
                         break;
                     }
@@ -303,7 +299,7 @@ namespace YAMDCC.GUI
                 {
                     case Command.ApplyConfig:
                         btnApply.Enabled = true;
-                        lblStatus.Text = "Config applied successfully!";
+                        UpdateStatus(StatusCode.ConfApplySuccess);
                         if (Config.KeyLightConf is not null)
                         {
                             ServiceCommand command = new(Command.GetKeyLightBright, "");
@@ -311,10 +307,7 @@ namespace YAMDCC.GUI
                         }
                         break;
                     case Command.FullBlast:
-                        lblStatus.Invoke(new Action(delegate
-                        {
-                            lblStatus.Text = "Full blast toggled successfully!";
-                        }));
+                        UpdateStatus(StatusCode.FullBlastToggleSuccess);
                         break;
                 }
             }
@@ -717,7 +710,7 @@ namespace YAMDCC.GUI
 
         private void LoadConf(string confPath)
         {
-            lblStatus.Text = "Loading config, please wait...";
+            UpdateStatus(StatusCode.ConfLoading);
 
             try
             {
@@ -728,7 +721,7 @@ namespace YAMDCC.GUI
             {
                 if (ex is InvalidConfigException or InvalidOperationException or FileNotFoundException)
                 {
-                    lblStatus.Text = "Please load a config to start";
+                    UpdateStatus(StatusCode.NoConfig);
                     return;
                 }
                 else
@@ -741,7 +734,6 @@ namespace YAMDCC.GUI
 
         private void LoadConf(YAMDCC_Config config)
         {
-            lblStatus.Text = "Loading config, please wait...";
             if (config.Template)
             {
                 MessageBox.Show(
@@ -840,7 +832,7 @@ namespace YAMDCC.GUI
             cboFanSel.SelectedIndex = 0;
             tsiECMon.Enabled = true;
 
-            lblStatus.Text = "Ready";
+            UpdateStatus(StatusCode.None);
         }
 
         private void ApplyConf()
@@ -1005,5 +997,71 @@ namespace YAMDCC.GUI
             }
         }
         #endregion
+
+        private void UpdateStatus(StatusCode status, int data = 0)
+        {
+            if (AppStatus.Code == status)
+            {
+                AppStatus.RepeatCount++;
+            }
+            else
+            {
+                AppStatus.Code = status;
+                AppStatus.RepeatCount = 0;
+            }
+
+            // set status text
+            if (AppStatus is not null)
+            {
+                bool persist = false;
+
+                switch (AppStatus.Code)
+                {
+                    case StatusCode.ServiceCommandFail:
+                        persist = true;
+                        lblStatus.Text = $"ERROR: A {(Command)data} service command failed to run.";
+                        break;
+                    case StatusCode.ServiceResponseEmpty:
+                        lblStatus.Text = $"WARN: Received an empty response from service.";
+                        break;
+                    case StatusCode.NoConfig:
+                        persist = true;
+                        lblStatus.Text = "Please load a config to start";
+                        break;
+                    case StatusCode.ConfLoading:
+                        lblStatus.Text = "Loading config, please wait...";
+                        break;
+                    case StatusCode.ConfApplySuccess:
+                        lblStatus.Text = $"Config applied successfully!";
+                        break;
+                    case StatusCode.FullBlastToggleSuccess:
+                        lblStatus.Text = $"Full Blast toggled successfully!";
+                        break;
+                    default:
+                        persist = true;
+                        lblStatus.Text = "Ready";
+                        break;
+                }
+
+                if (AppStatus.RepeatCount > 0)
+                {
+                    lblStatus.Text += $" (x{AppStatus.RepeatCount + 1})";
+                }
+
+                if (!persist)
+                {
+                    tmrStatusReset.Stop();
+                    tmrStatusReset.Start();
+                }
+            }
+        }
+
+        private void tmrStatusReset_Tick(object sender, EventArgs e)
+        {
+            AppStatus.Code = StatusCode.None;
+            AppStatus.RepeatCount = 0;
+            lblStatus.Text = "Ready";
+            tmrStatusReset.Stop();
+        }
     }
 }
