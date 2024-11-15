@@ -101,7 +101,6 @@ namespace YAMDCC.GUI
                 numFanSpds[i] = new NumericUpDown()
                 {
                     Dock = DockStyle.Fill,
-                    Enabled = false,
                     Margin = new Padding(2),
                     Tag = i,
                 };
@@ -111,7 +110,6 @@ namespace YAMDCC.GUI
                 tbFanSpds[i] = new TrackBar()
                 {
                     Dock = DockStyle.Fill,
-                    Enabled = false,
                     Orientation = Orientation.Vertical,
                     Tag = i,
                     TickFrequency = 5,
@@ -125,7 +123,6 @@ namespace YAMDCC.GUI
                     numUpTs[i - 1] = new NumericUpDown()
                     {
                         Dock = DockStyle.Fill,
-                        Enabled = false,
                         Height = (int)(23 * scale),
                         Margin = new Padding(2),
                         Tag = i - 1,
@@ -150,7 +147,6 @@ namespace YAMDCC.GUI
                     numDownTs[i] = new NumericUpDown()
                     {
                         Dock = DockStyle.Fill,
-                        Enabled = false,
                         Height = (int)(23 * scale),
                         Margin = new Padding(2),
                         Tag = i,
@@ -170,6 +166,8 @@ namespace YAMDCC.GUI
                     i + 1, 3);
                 }
             }
+
+            DisableAll();
         }
 
         #region Events
@@ -275,7 +273,7 @@ namespace YAMDCC.GUI
                             {
                                 tbKeyLight.Maximum = Config.KeyLightConf.MaxVal - Config.KeyLightConf.MinVal;
                                 tbKeyLight.Value = value;
-                                tbKeyLight.Enabled = true;
+                                tbKeyLight.Enabled = lblKeyLight.Enabled = true;
                             }));
                         }
                         break;
@@ -299,7 +297,7 @@ namespace YAMDCC.GUI
                 switch (cmd)
                 {
                     case Command.ApplyConfig:
-                        btnApply.Enabled = true;
+                        btnApply.Enabled = tsiApply.Enabled = true;
                         UpdateStatus(StatusCode.ConfApplySuccess);
                         if (Config.KeyLightConf is not null)
                         {
@@ -323,7 +321,7 @@ namespace YAMDCC.GUI
             {
                 AddExtension = true,
                 CheckFileExists = true,
-                Filter = Strings.GetString("dlgFileFilter"),
+                Filter = "YAMDCC config files|*.xml",
                 Title = "Load config",
             };
 
@@ -331,8 +329,7 @@ namespace YAMDCC.GUI
             {
                 LoadConf(ofd.FileName);
                 SetLastConfPath(ofd.FileName);
-                btnRevert.Enabled = false;
-                tsiRevert.Enabled = false;
+                btnRevert.Enabled = tsiRevert.Enabled = false;
             }
         }
 
@@ -341,7 +338,7 @@ namespace YAMDCC.GUI
             SaveFileDialog sfd = new()
             {
                 AddExtension = true,
-                Filter = Strings.GetString("dlgFileFilter"),
+                Filter = "YAMDCC config files|*.xml",
                 Title = "Save config",
             };
 
@@ -349,9 +346,37 @@ namespace YAMDCC.GUI
             {
                 Config.Save(sfd.FileName);
                 SetLastConfPath(sfd.FileName);
-                btnRevert.Enabled = false;
-                tsiRevert.Enabled = false;
+                btnRevert.Enabled = tsiRevert.Enabled = false;
             }
+        }
+
+        private void tsiLoadTemplate_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show(
+                "This feature has not been implemented yet.", "Error",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            /*if (MessageBox.Show(
+                "This option will load a template config and add your laptop's " +
+                "settings to it.\n" +
+                "Use this option if your laptop doesn't have a default config yet.\n\n" +
+                "Proceed with config generation?", "Config generator",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+            {
+                OpenFileDialog ofd = new()
+                {
+                    AddExtension = true,
+                    CheckFileExists = true,
+                    SupportMultiDottedExtensions = true,
+                    Filter = "YAMDCC template config files | *.template.xml",
+                    Title = "Load template config",
+                };
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    LoadConf(ofd.FileName);
+                }
+            }*/
         }
 
         private void tsiApply_Click(object sender, EventArgs e)
@@ -388,8 +413,7 @@ namespace YAMDCC.GUI
             {
                 curveCfg.Name = dlg.Result;
                 cboProfSel.Items[cboProfSel.SelectedIndex] = dlg.Result;
-                btnRevert.Enabled = true;
-                tsiRevert.Enabled = true;
+                btnRevert.Enabled = tsiRevert.Enabled = true;
             }
         }
 
@@ -404,8 +428,7 @@ namespace YAMDCC.GUI
             {
                 curveCfg.Desc = dlg.Result;
                 ttMain.SetToolTip(cboProfSel, dlg.Result);
-                btnRevert.Enabled = true;
-                tsiRevert.Enabled = true;
+                btnRevert.Enabled = tsiRevert.Enabled = true;
             }
         }
 
@@ -551,8 +574,8 @@ namespace YAMDCC.GUI
                     numUpTs[i].Enabled = numDownTs[i].Enabled = false;
                 }
             }
-            btnApply.Enabled = true;
-            btnProfDel.Enabled = curveConfig.Name != "Default";
+            btnApply.Enabled = tsiApply.Enabled = true;
+            btnProfDel.Enabled = tsiProfDel.Enabled = curveConfig.Name != "Default";
         }
 
         private void btnProfAdd_Click(object sender, EventArgs e)
@@ -575,8 +598,7 @@ namespace YAMDCC.GUI
                 .FanCurveConfs[cboProfSel.SelectedIndex]
                 .TempThresholds[i].FanSpeed = (byte)numFanSpds[i].Value;
 
-            btnRevert.Enabled = true;
-            tsiRevert.Enabled = true;
+            btnRevert.Enabled = tsiRevert.Enabled = true;
         }
 
         private void tbFanSpd_Scroll(object sender, EventArgs e)
@@ -589,8 +611,7 @@ namespace YAMDCC.GUI
                 .FanCurveConfs[cboProfSel.SelectedIndex]
                 .TempThresholds[i].FanSpeed = (byte)numFanSpds[i].Value;
 
-            btnRevert.Enabled = true;
-            tsiRevert.Enabled = true;
+            btnRevert.Enabled = tsiRevert.Enabled = true;
         }
 
         private void numUpT_Changed(object sender, EventArgs e)
@@ -607,8 +628,7 @@ namespace YAMDCC.GUI
 
             threshold.UpThreshold = (byte)numUpTs[i].Value;
 
-            btnRevert.Enabled = true;
-            tsiRevert.Enabled = true;
+            btnRevert.Enabled = tsiRevert.Enabled = true;
         }
 
         private void numDownT_Changed(object sender, EventArgs e)
@@ -620,8 +640,7 @@ namespace YAMDCC.GUI
                 .FanCurveConfs[cboProfSel.SelectedIndex]
                 .TempThresholds[i + 1].DownThreshold = (byte)numDownTs[i].Value;
 
-            btnRevert.Enabled = true;
-            tsiRevert.Enabled = true;
+            btnRevert.Enabled = tsiRevert.Enabled = true;
         }
 
         private void chkFullBlast_Toggled(object sender, EventArgs e)
@@ -635,8 +654,7 @@ namespace YAMDCC.GUI
             if (Config is not null)
             {
                 Config.ChargeLimitConf.CurVal = (byte)numChgLim.Value;
-                btnRevert.Enabled = true;
-                tsiRevert.Enabled = true;
+                btnRevert.Enabled = tsiRevert.Enabled = true;
             }
         }
 
@@ -646,16 +664,14 @@ namespace YAMDCC.GUI
             {
                 Config.PerfModeConf.ModeSel = cboPerfMode.SelectedIndex;
                 ttMain.SetToolTip(cboPerfMode, Config.PerfModeConf.PerfModes[cboPerfMode.SelectedIndex].Desc);
-                btnRevert.Enabled = true;
-                tsiRevert.Enabled = true;
+                btnRevert.Enabled = tsiRevert.Enabled = true;
             }
         }
 
         private void chkWinFnSwap_Toggled(object sender, EventArgs e)
         {
             Config.KeySwapConf.Enabled = chkWinFnSwap.Checked;
-            btnRevert.Enabled = true;
-            tsiRevert.Enabled = true;
+            btnRevert.Enabled = tsiRevert.Enabled = true;
         }
 
         private void tbKeyLight_Scroll(object sender, EventArgs e)
@@ -671,7 +687,7 @@ namespace YAMDCC.GUI
 
         private void btnApply_Click(object sender, EventArgs e)
         {
-            btnApply.Enabled = false;
+            btnApply.Enabled = tsiApply.Enabled = false;
             ApplyConf();
         }
 
@@ -735,32 +751,12 @@ namespace YAMDCC.GUI
 
         private void LoadConf(YAMDCC_Config config)
         {
+            DisableAll();
+
             if (config.Template)
             {
                 MessageBox.Show(Strings.GetString("dlgTemplateConfWIP"), "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                tsiSaveConf.Enabled = false;
-                chkFullBlast.Enabled = false;
-                cboFanSel.Enabled = false;
-                cboProfSel.Enabled = false;
-                for (int i = 0; i < numUpTs.Length; i++)
-                {
-                    numUpTs[i].Enabled = false;
-                }
-                for (int i = 0; i < numDownTs.Length; i++)
-                {
-                    numDownTs[i].Enabled = false;
-                }
-                for (int i = 0; i < numFanSpds.Length; i++)
-                {
-                    numFanSpds[i].Enabled = false;
-                    tbFanSpds[i].Enabled = false;
-                }
-                cboPerfMode.Enabled = false;
-                numChgLim.Enabled = false;
-                tbKeyLight.Enabled = false;
-                chkWinFnSwap.Enabled = false;
             }
 
             tsiSaveConf.Enabled = true;
@@ -768,7 +764,6 @@ namespace YAMDCC.GUI
             if (config.FullBlastConf is null)
             {
                 ttMain.SetToolTip(chkFullBlast, Strings.GetString("ttNotSupported"));
-                chkFullBlast.Enabled = false;
             }
             else
             {
@@ -779,7 +774,6 @@ namespace YAMDCC.GUI
             if (config.ChargeLimitConf is null)
             {
                 ttMain.SetToolTip(chkFullBlast, Strings.GetString("ttNotSupported"));
-                numChgLim.Enabled = lblChgLim.Enabled = false;
             }
             else
             {
@@ -794,7 +788,6 @@ namespace YAMDCC.GUI
             if (config.PerfModeConf is null)
             {
                 ttMain.SetToolTip(cboPerfMode, Strings.GetString("ttNotSupported"));
-                cboPerfMode.Enabled = lblPerfMode.Enabled = false;
             }
             else
             {
@@ -812,7 +805,6 @@ namespace YAMDCC.GUI
             if (config.KeySwapConf is null)
             {
                 ttMain.SetToolTip(chkWinFnSwap, Strings.GetString("ttNotSupported"));
-                chkWinFnSwap.Enabled = lblWinFnSwap.Enabled = false;
             }
             else
             {
@@ -827,7 +819,8 @@ namespace YAMDCC.GUI
                 cboFanSel.Items.Add(config.FanConfs[i].Name);
             }
 
-            btnProfAdd.Enabled = true;
+            btnProfAdd.Enabled = tsiProfAdd.Enabled = true;
+            tsiProfRename.Enabled = tsiProfChangeDesc.Enabled = true;
             cboFanSel.Enabled = true;
             cboFanSel.SelectedIndex = 0;
             tsiECMon.Enabled = true;
@@ -859,8 +852,7 @@ namespace YAMDCC.GUI
                     Config = tempConf;
                     UpdateFanCurveDisplay();
                     ApplyConf();
-                    btnRevert.Enabled = false;
-                    tsiRevert.Enabled = false;
+                    btnRevert.Enabled = tsiRevert.Enabled = false;
                 }
                 catch (Exception ex)
                 {
@@ -914,8 +906,7 @@ namespace YAMDCC.GUI
                 cboProfSel.Items.Add(dlg.Result);
                 cboProfSel.SelectedIndex = cboProfSel.Items.Count - 1;
 
-                btnRevert.Enabled = true;
-                tsiRevert.Enabled = true;
+                btnRevert.Enabled = tsiRevert.Enabled = true;
             }
         }
 
@@ -938,8 +929,7 @@ namespace YAMDCC.GUI
                 cboProfSel.Items.RemoveAt(cboProfSel.SelectedIndex);
                 cboProfSel.SelectedIndex = oldIndex == 1 ? 1 : oldIndex - 1;
 
-                btnRevert.Enabled = true;
-                tsiRevert.Enabled = true;
+                btnRevert.Enabled = tsiRevert.Enabled = true;
             }
         }
 
@@ -1004,6 +994,44 @@ namespace YAMDCC.GUI
             }
         }
         #endregion
+
+        private void DisableAll()
+        {
+            btnProfAdd.Enabled = false;
+            btnProfDel.Enabled = false;
+            btnRevert.Enabled = false;
+            btnApply.Enabled = false;
+            cboFanSel.Enabled = false;
+            cboProfSel.Enabled = false;
+            cboPerfMode.Enabled = false;
+            chkFullBlast.Enabled = false;
+            chkWinFnSwap.Enabled = false;
+            lblChgLim.Enabled = false;
+            lblPerfMode.Enabled = false;
+            lblWinFnSwap.Enabled = false;
+            lblKeyLight.Enabled = false;
+            numChgLim.Enabled = false;
+            tbKeyLight.Enabled = false;
+
+            tsiApply.Enabled = false;
+            tsiECMon.Enabled = false;
+            tsiProfAdd.Enabled = false;
+            tsiProfChangeDesc.Enabled = false;
+            tsiProfRename.Enabled = false;
+            tsiProfDel.Enabled = false;
+            tsiRevert.Enabled = false;
+
+            for (int i = 0; i < tbFanSpds.Length; i++)
+            {
+                tbFanSpds[i].Enabled = false;
+                numFanSpds[i].Enabled = false;
+                if (i != 0)
+                {
+                    numUpTs[i - 1].Enabled = false;
+                    numDownTs[i - 1].Enabled = false;
+                }
+            }
+        }
 
         private void UpdateStatus(StatusCode status, int data = 0)
         {

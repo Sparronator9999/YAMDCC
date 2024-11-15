@@ -46,6 +46,7 @@ namespace YAMDCC.GUI
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.MenuStrip menuStrip;
+            System.Windows.Forms.ToolStripSeparator sep6;
             System.Windows.Forms.ToolStripSeparator sep1;
             System.Windows.Forms.ToolStripSeparator sep2;
             System.Windows.Forms.ToolStripSeparator sep3;
@@ -64,6 +65,7 @@ namespace YAMDCC.GUI
             this.tsiFile = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiLoadConf = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiSaveConf = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsiLoadTemplate = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiApply = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiRevert = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiExit = new System.Windows.Forms.ToolStripMenuItem();
@@ -109,6 +111,7 @@ namespace YAMDCC.GUI
             this.tmrPoll = new System.Windows.Forms.Timer(this.components);
             this.tmrStatusReset = new System.Windows.Forms.Timer(this.components);
             menuStrip = new System.Windows.Forms.MenuStrip();
+            sep6 = new System.Windows.Forms.ToolStripSeparator();
             sep1 = new System.Windows.Forms.ToolStripSeparator();
             sep2 = new System.Windows.Forms.ToolStripSeparator();
             sep3 = new System.Windows.Forms.ToolStripSeparator();
@@ -150,8 +153,7 @@ namespace YAMDCC.GUI
             this.tsiHelp});
             menuStrip.Location = new System.Drawing.Point(0, 0);
             menuStrip.Name = "menuStrip";
-            menuStrip.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
-            menuStrip.Size = new System.Drawing.Size(540, 24);
+            menuStrip.Size = new System.Drawing.Size(675, 28);
             menuStrip.TabIndex = 0;
             // 
             // tsiFile
@@ -159,57 +161,72 @@ namespace YAMDCC.GUI
             this.tsiFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsiLoadConf,
             this.tsiSaveConf,
+            sep6,
+            this.tsiLoadTemplate,
             sep1,
             this.tsiApply,
             this.tsiRevert,
             sep2,
             this.tsiExit});
             this.tsiFile.Name = "tsiFile";
-            this.tsiFile.Size = new System.Drawing.Size(37, 20);
+            this.tsiFile.Size = new System.Drawing.Size(46, 24);
             this.tsiFile.Text = "File";
             // 
             // tsiLoadConf
             // 
             this.tsiLoadConf.Name = "tsiLoadConf";
-            this.tsiLoadConf.Size = new System.Drawing.Size(154, 22);
+            this.tsiLoadConf.Size = new System.Drawing.Size(298, 26);
             this.tsiLoadConf.Text = "Load config";
             this.tsiLoadConf.Click += new System.EventHandler(this.tsiLoadConf_Click);
             // 
             // tsiSaveConf
             // 
             this.tsiSaveConf.Name = "tsiSaveConf";
-            this.tsiSaveConf.Size = new System.Drawing.Size(154, 22);
+            this.tsiSaveConf.Size = new System.Drawing.Size(298, 26);
             this.tsiSaveConf.Text = "Save config";
             this.tsiSaveConf.Click += new System.EventHandler(this.tsiSaveConf_Click);
+            // 
+            // sep6
+            // 
+            sep6.Name = "sep6";
+            sep6.Size = new System.Drawing.Size(295, 6);
+            // 
+            // tsiLoadTemplate
+            // 
+            this.tsiLoadTemplate.Enabled = false;
+            this.tsiLoadTemplate.Name = "tsiLoadTemplate";
+            this.tsiLoadTemplate.Size = new System.Drawing.Size(298, 26);
+            this.tsiLoadTemplate.Text = "Generate config from template";
+            this.tsiLoadTemplate.Click += new System.EventHandler(this.tsiLoadTemplate_Click);
             // 
             // sep1
             // 
             sep1.Name = "sep1";
-            sep1.Size = new System.Drawing.Size(151, 6);
+            sep1.Size = new System.Drawing.Size(295, 6);
             // 
             // tsiApply
             // 
             this.tsiApply.Name = "tsiApply";
-            this.tsiApply.Size = new System.Drawing.Size(154, 22);
+            this.tsiApply.Size = new System.Drawing.Size(298, 26);
             this.tsiApply.Text = "Apply changes";
             this.tsiApply.Click += new System.EventHandler(this.tsiApply_Click);
             // 
             // tsiRevert
             // 
             this.tsiRevert.Name = "tsiRevert";
-            this.tsiRevert.Size = new System.Drawing.Size(154, 22);
+            this.tsiRevert.Size = new System.Drawing.Size(298, 26);
             this.tsiRevert.Text = "Revert changes";
             this.tsiRevert.Click += new System.EventHandler(this.tsiRevert_Click);
             // 
             // sep2
             // 
             sep2.Name = "sep2";
-            sep2.Size = new System.Drawing.Size(151, 6);
+            sep2.Size = new System.Drawing.Size(295, 6);
             // 
             // tsiExit
             // 
             this.tsiExit.Name = "tsiExit";
-            this.tsiExit.Size = new System.Drawing.Size(154, 22);
+            this.tsiExit.Size = new System.Drawing.Size(298, 26);
             this.tsiExit.Text = "Exit";
             this.tsiExit.Click += new System.EventHandler(this.tsiExit_Click);
             // 
@@ -224,13 +241,13 @@ namespace YAMDCC.GUI
             this.tsiStopSvc,
             this.tsiUninstall});
             this.tsiOptions.Name = "tsiOptions";
-            this.tsiOptions.Size = new System.Drawing.Size(61, 20);
+            this.tsiOptions.Size = new System.Drawing.Size(75, 24);
             this.tsiOptions.Text = "Options";
             // 
             // tsiProfAdd
             // 
             this.tsiProfAdd.Name = "tsiProfAdd";
-            this.tsiProfAdd.Size = new System.Drawing.Size(204, 22);
+            this.tsiProfAdd.Size = new System.Drawing.Size(255, 26);
             this.tsiProfAdd.Text = "New fan profile...";
             this.tsiProfAdd.Click += new System.EventHandler(this.tsiProfAdd_Click);
             // 
@@ -242,64 +259,64 @@ namespace YAMDCC.GUI
             sep3,
             this.tsiProfDel});
             this.tsiProfEdit.Name = "tsiProfEdit";
-            this.tsiProfEdit.Size = new System.Drawing.Size(204, 22);
+            this.tsiProfEdit.Size = new System.Drawing.Size(255, 26);
             this.tsiProfEdit.Text = "Edit current fan profile";
             // 
             // tsiProfRename
             // 
             this.tsiProfRename.Name = "tsiProfRename";
-            this.tsiProfRename.Size = new System.Drawing.Size(178, 22);
+            this.tsiProfRename.Size = new System.Drawing.Size(222, 26);
             this.tsiProfRename.Text = "Change Name";
             this.tsiProfRename.Click += new System.EventHandler(this.tsiProfRename_Click);
             // 
             // tsiProfChangeDesc
             // 
             this.tsiProfChangeDesc.Name = "tsiProfChangeDesc";
-            this.tsiProfChangeDesc.Size = new System.Drawing.Size(178, 22);
+            this.tsiProfChangeDesc.Size = new System.Drawing.Size(222, 26);
             this.tsiProfChangeDesc.Text = "Change Description";
             this.tsiProfChangeDesc.Click += new System.EventHandler(this.tsiProfChangeDesc_Click);
             // 
             // sep3
             // 
             sep3.Name = "sep3";
-            sep3.Size = new System.Drawing.Size(175, 6);
+            sep3.Size = new System.Drawing.Size(219, 6);
             // 
             // tsiProfDel
             // 
             this.tsiProfDel.Name = "tsiProfDel";
-            this.tsiProfDel.Size = new System.Drawing.Size(178, 22);
+            this.tsiProfDel.Size = new System.Drawing.Size(222, 26);
             this.tsiProfDel.Text = "Delete";
             this.tsiProfDel.Click += new System.EventHandler(this.tsiProfDel_Click);
             // 
             // sep4
             // 
             sep4.Name = "sep4";
-            sep4.Size = new System.Drawing.Size(201, 6);
+            sep4.Size = new System.Drawing.Size(252, 6);
             // 
             // tsiECMon
             // 
             this.tsiECMon.CheckOnClick = true;
             this.tsiECMon.Name = "tsiECMon";
-            this.tsiECMon.Size = new System.Drawing.Size(204, 22);
+            this.tsiECMon.Size = new System.Drawing.Size(255, 26);
             this.tsiECMon.Text = "Enable EC monitoring";
             this.tsiECMon.Click += new System.EventHandler(this.tsiECMon_Click);
             // 
             // sep5
             // 
             sep5.Name = "sep5";
-            sep5.Size = new System.Drawing.Size(201, 6);
+            sep5.Size = new System.Drawing.Size(252, 6);
             // 
             // tsiStopSvc
             // 
             this.tsiStopSvc.Name = "tsiStopSvc";
-            this.tsiStopSvc.Size = new System.Drawing.Size(204, 22);
+            this.tsiStopSvc.Size = new System.Drawing.Size(255, 26);
             this.tsiStopSvc.Text = "Stop service and exit";
             this.tsiStopSvc.Click += new System.EventHandler(this.tsiStopSvc_Click);
             // 
             // tsiUninstall
             // 
             this.tsiUninstall.Name = "tsiUninstall";
-            this.tsiUninstall.Size = new System.Drawing.Size(204, 22);
+            this.tsiUninstall.Size = new System.Drawing.Size(255, 26);
             this.tsiUninstall.Text = "Uninstall service and exit";
             this.tsiUninstall.Click += new System.EventHandler(this.tsiUninstall_Click);
             // 
@@ -309,20 +326,20 @@ namespace YAMDCC.GUI
             this.tsiAbout,
             this.tsiSource});
             this.tsiHelp.Name = "tsiHelp";
-            this.tsiHelp.Size = new System.Drawing.Size(44, 20);
+            this.tsiHelp.Size = new System.Drawing.Size(55, 24);
             this.tsiHelp.Text = "Help";
             // 
             // tsiAbout
             // 
             this.tsiAbout.Name = "tsiAbout";
-            this.tsiAbout.Size = new System.Drawing.Size(141, 22);
+            this.tsiAbout.Size = new System.Drawing.Size(176, 26);
             this.tsiAbout.Text = "About";
             this.tsiAbout.Click += new System.EventHandler(this.tsiAbout_Click);
             // 
             // tsiSource
             // 
             this.tsiSource.Name = "tsiSource";
-            this.tsiSource.Size = new System.Drawing.Size(141, 22);
+            this.tsiSource.Size = new System.Drawing.Size(176, 26);
             this.tsiSource.Text = "Source Code";
             this.tsiSource.Click += new System.EventHandler(this.tsiSrc_Click);
             // 
@@ -331,19 +348,21 @@ namespace YAMDCC.GUI
             tcMain.Controls.Add(tabFanControl);
             tcMain.Controls.Add(tabOptions);
             tcMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            tcMain.Location = new System.Drawing.Point(3, 3);
+            tcMain.Location = new System.Drawing.Point(4, 4);
+            tcMain.Margin = new System.Windows.Forms.Padding(4);
             tcMain.Name = "tcMain";
             tcMain.SelectedIndex = 0;
-            tcMain.Size = new System.Drawing.Size(534, 392);
+            tcMain.Size = new System.Drawing.Size(667, 490);
             tcMain.TabIndex = 6;
             // 
             // tabFanControl
             // 
             tabFanControl.BackColor = System.Drawing.Color.White;
             tabFanControl.Controls.Add(this.tblFanControl);
-            tabFanControl.Location = new System.Drawing.Point(4, 24);
+            tabFanControl.Location = new System.Drawing.Point(4, 29);
+            tabFanControl.Margin = new System.Windows.Forms.Padding(4);
             tabFanControl.Name = "tabFanControl";
-            tabFanControl.Size = new System.Drawing.Size(526, 364);
+            tabFanControl.Size = new System.Drawing.Size(659, 457);
             tabFanControl.TabIndex = 0;
             tabFanControl.Text = "Fan Control";
             // 
@@ -362,7 +381,7 @@ namespace YAMDCC.GUI
             this.tblFanControl.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblFanControl.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblFanControl.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblFanControl.Size = new System.Drawing.Size(526, 364);
+            this.tblFanControl.Size = new System.Drawing.Size(659, 457);
             this.tblFanControl.TabIndex = 0;
             // 
             // tblCurve
@@ -371,18 +390,18 @@ namespace YAMDCC.GUI
             this.tblCurve.ColumnCount = 2;
             this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 25F));
+            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.tblCurve.Controls.Add(this.lblSpeed, 0, 0);
             this.tblCurve.Controls.Add(this.lblUpT, 0, 2);
             this.tblCurve.Controls.Add(this.lblDownT, 0, 3);
             this.tblCurve.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblCurve.Location = new System.Drawing.Point(0, 29);
+            this.tblCurve.Location = new System.Drawing.Point(0, 37);
             this.tblCurve.Margin = new System.Windows.Forms.Padding(0);
             this.tblCurve.Name = "tblCurve";
             this.tblCurve.RowCount = 4;
@@ -390,16 +409,17 @@ namespace YAMDCC.GUI
             this.tblCurve.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblCurve.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblCurve.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblCurve.Size = new System.Drawing.Size(526, 305);
+            this.tblCurve.Size = new System.Drawing.Size(659, 382);
             this.tblCurve.TabIndex = 6;
             // 
             // lblSpeed
             // 
             this.lblSpeed.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSpeed.AutoSize = true;
-            this.lblSpeed.Location = new System.Drawing.Point(5, 0);
+            this.lblSpeed.Location = new System.Drawing.Point(4, 0);
+            this.lblSpeed.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblSpeed.Name = "lblSpeed";
-            this.lblSpeed.Size = new System.Drawing.Size(60, 15);
+            this.lblSpeed.Size = new System.Drawing.Size(77, 20);
             this.lblSpeed.TabIndex = 0;
             this.lblSpeed.Text = "Speed (%)";
             // 
@@ -407,9 +427,10 @@ namespace YAMDCC.GUI
             // 
             this.lblUpT.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblUpT.AutoSize = true;
-            this.lblUpT.Location = new System.Drawing.Point(19, 275);
+            this.lblUpT.Location = new System.Drawing.Point(24, 342);
+            this.lblUpT.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblUpT.Name = "lblUpT";
-            this.lblUpT.Size = new System.Drawing.Size(46, 15);
+            this.lblUpT.Size = new System.Drawing.Size(57, 20);
             this.lblUpT.TabIndex = 1;
             this.lblUpT.Text = "Up (°C)";
             // 
@@ -417,9 +438,10 @@ namespace YAMDCC.GUI
             // 
             this.lblDownT.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblDownT.AutoSize = true;
-            this.lblDownT.Location = new System.Drawing.Point(3, 290);
+            this.lblDownT.Location = new System.Drawing.Point(4, 362);
+            this.lblDownT.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblDownT.Name = "lblDownT";
-            this.lblDownT.Size = new System.Drawing.Size(62, 15);
+            this.lblDownT.Size = new System.Drawing.Size(77, 20);
             this.lblDownT.TabIndex = 2;
             this.lblDownT.Text = "Down (°C)";
             // 
@@ -436,58 +458,57 @@ namespace YAMDCC.GUI
             flwFanSelect.Location = new System.Drawing.Point(0, 0);
             flwFanSelect.Margin = new System.Windows.Forms.Padding(0);
             flwFanSelect.Name = "flwFanSelect";
-            flwFanSelect.Size = new System.Drawing.Size(526, 29);
+            flwFanSelect.Size = new System.Drawing.Size(659, 37);
             flwFanSelect.TabIndex = 0;
             // 
             // lblFanSel
             // 
             this.lblFanSel.AutoSize = true;
-            this.lblFanSel.Location = new System.Drawing.Point(3, 7);
-            this.lblFanSel.Margin = new System.Windows.Forms.Padding(3, 7, 0, 3);
+            this.lblFanSel.Location = new System.Drawing.Point(4, 9);
+            this.lblFanSel.Margin = new System.Windows.Forms.Padding(4, 9, 0, 4);
             this.lblFanSel.Name = "lblFanSel";
-            this.lblFanSel.Size = new System.Drawing.Size(29, 15);
+            this.lblFanSel.Size = new System.Drawing.Size(34, 20);
             this.lblFanSel.TabIndex = 0;
             this.lblFanSel.Text = "Fan:";
             // 
             // cboFanSel
             // 
             this.cboFanSel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboFanSel.Enabled = false;
             this.cboFanSel.FormattingEnabled = true;
-            this.cboFanSel.Location = new System.Drawing.Point(35, 3);
+            this.cboFanSel.Location = new System.Drawing.Point(42, 4);
+            this.cboFanSel.Margin = new System.Windows.Forms.Padding(4);
             this.cboFanSel.Name = "cboFanSel";
-            this.cboFanSel.Size = new System.Drawing.Size(120, 23);
+            this.cboFanSel.Size = new System.Drawing.Size(149, 28);
             this.cboFanSel.TabIndex = 1;
             this.cboFanSel.SelectedIndexChanged += new System.EventHandler(this.cboFanSel_IndexChanged);
             // 
             // lblProfSel
             // 
             this.lblProfSel.AutoSize = true;
-            this.lblProfSel.Location = new System.Drawing.Point(161, 7);
-            this.lblProfSel.Margin = new System.Windows.Forms.Padding(3, 7, 0, 3);
+            this.lblProfSel.Location = new System.Drawing.Point(199, 9);
+            this.lblProfSel.Margin = new System.Windows.Forms.Padding(4, 9, 0, 4);
             this.lblProfSel.Name = "lblProfSel";
-            this.lblProfSel.Size = new System.Drawing.Size(44, 15);
+            this.lblProfSel.Size = new System.Drawing.Size(55, 20);
             this.lblProfSel.TabIndex = 2;
             this.lblProfSel.Text = "Profile:";
             // 
             // cboProfSel
             // 
             this.cboProfSel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboProfSel.Enabled = false;
             this.cboProfSel.FormattingEnabled = true;
-            this.cboProfSel.Location = new System.Drawing.Point(208, 3);
+            this.cboProfSel.Location = new System.Drawing.Point(258, 4);
+            this.cboProfSel.Margin = new System.Windows.Forms.Padding(4);
             this.cboProfSel.Name = "cboProfSel";
-            this.cboProfSel.Size = new System.Drawing.Size(120, 23);
+            this.cboProfSel.Size = new System.Drawing.Size(149, 28);
             this.cboProfSel.TabIndex = 3;
             this.cboProfSel.SelectedIndexChanged += new System.EventHandler(this.cboProfSel_IndexChanged);
             // 
             // btnProfAdd
             // 
-            this.btnProfAdd.Enabled = false;
-            this.btnProfAdd.Location = new System.Drawing.Point(334, 3);
-            this.btnProfAdd.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
+            this.btnProfAdd.Location = new System.Drawing.Point(415, 4);
+            this.btnProfAdd.Margin = new System.Windows.Forms.Padding(4, 4, 0, 4);
             this.btnProfAdd.Name = "btnProfAdd";
-            this.btnProfAdd.Size = new System.Drawing.Size(23, 23);
+            this.btnProfAdd.Size = new System.Drawing.Size(29, 29);
             this.btnProfAdd.TabIndex = 4;
             this.btnProfAdd.Text = "+";
             this.btnProfAdd.UseVisualStyleBackColor = true;
@@ -495,11 +516,10 @@ namespace YAMDCC.GUI
             // 
             // btnProfDel
             // 
-            this.btnProfDel.Enabled = false;
-            this.btnProfDel.Location = new System.Drawing.Point(357, 3);
-            this.btnProfDel.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
+            this.btnProfDel.Location = new System.Drawing.Point(444, 4);
+            this.btnProfDel.Margin = new System.Windows.Forms.Padding(0, 4, 4, 4);
             this.btnProfDel.Name = "btnProfDel";
-            this.btnProfDel.Size = new System.Drawing.Size(23, 23);
+            this.btnProfDel.Size = new System.Drawing.Size(29, 29);
             this.btnProfDel.TabIndex = 5;
             this.btnProfDel.Text = "-";
             this.btnProfDel.UseVisualStyleBackColor = true;
@@ -516,22 +536,21 @@ namespace YAMDCC.GUI
             tblFCBottom.Controls.Add(this.btnApply, 2, 0);
             tblFCBottom.Controls.Add(this.btnRevert, 1, 0);
             tblFCBottom.Dock = System.Windows.Forms.DockStyle.Fill;
-            tblFCBottom.Location = new System.Drawing.Point(0, 334);
+            tblFCBottom.Location = new System.Drawing.Point(0, 419);
             tblFCBottom.Margin = new System.Windows.Forms.Padding(0);
             tblFCBottom.Name = "tblFCBottom";
             tblFCBottom.RowCount = 1;
             tblFCBottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tblFCBottom.Size = new System.Drawing.Size(526, 30);
+            tblFCBottom.Size = new System.Drawing.Size(659, 38);
             tblFCBottom.TabIndex = 4;
             // 
             // chkFullBlast
             // 
             this.chkFullBlast.AutoSize = true;
-            this.chkFullBlast.Enabled = false;
-            this.chkFullBlast.Location = new System.Drawing.Point(6, 6);
-            this.chkFullBlast.Margin = new System.Windows.Forms.Padding(6, 6, 6, 5);
+            this.chkFullBlast.Location = new System.Drawing.Point(8, 8);
+            this.chkFullBlast.Margin = new System.Windows.Forms.Padding(8, 8, 8, 6);
             this.chkFullBlast.Name = "chkFullBlast";
-            this.chkFullBlast.Size = new System.Drawing.Size(73, 19);
+            this.chkFullBlast.Size = new System.Drawing.Size(90, 24);
             this.chkFullBlast.TabIndex = 1;
             this.chkFullBlast.Text = "Full Blast";
             this.chkFullBlast.UseVisualStyleBackColor = true;
@@ -539,11 +558,10 @@ namespace YAMDCC.GUI
             // 
             // btnApply
             // 
-            this.btnApply.Enabled = false;
-            this.btnApply.Location = new System.Drawing.Point(448, 3);
-            this.btnApply.Margin = new System.Windows.Forms.Padding(3, 3, 3, 2);
+            this.btnApply.Location = new System.Drawing.Point(561, 4);
+            this.btnApply.Margin = new System.Windows.Forms.Padding(4, 4, 4, 2);
             this.btnApply.Name = "btnApply";
-            this.btnApply.Size = new System.Drawing.Size(75, 25);
+            this.btnApply.Size = new System.Drawing.Size(94, 31);
             this.btnApply.TabIndex = 4;
             this.btnApply.Text = "Apply";
             this.btnApply.UseVisualStyleBackColor = true;
@@ -552,10 +570,10 @@ namespace YAMDCC.GUI
             // btnRevert
             // 
             this.btnRevert.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnRevert.Location = new System.Drawing.Point(367, 3);
-            this.btnRevert.Margin = new System.Windows.Forms.Padding(3, 3, 3, 2);
+            this.btnRevert.Location = new System.Drawing.Point(459, 4);
+            this.btnRevert.Margin = new System.Windows.Forms.Padding(4, 4, 4, 2);
             this.btnRevert.Name = "btnRevert";
-            this.btnRevert.Size = new System.Drawing.Size(75, 25);
+            this.btnRevert.Size = new System.Drawing.Size(94, 31);
             this.btnRevert.TabIndex = 5;
             this.btnRevert.Text = "Revert";
             this.btnRevert.UseVisualStyleBackColor = true;
@@ -565,9 +583,10 @@ namespace YAMDCC.GUI
             // 
             tabOptions.BackColor = System.Drawing.Color.White;
             tabOptions.Controls.Add(tblExtra);
-            tabOptions.Location = new System.Drawing.Point(4, 24);
+            tabOptions.Location = new System.Drawing.Point(4, 29);
+            tabOptions.Margin = new System.Windows.Forms.Padding(4);
             tabOptions.Name = "tabOptions";
-            tabOptions.Size = new System.Drawing.Size(526, 366);
+            tabOptions.Size = new System.Drawing.Size(659, 461);
             tabOptions.TabIndex = 1;
             tabOptions.Text = "Extras";
             // 
@@ -586,6 +605,7 @@ namespace YAMDCC.GUI
             tblExtra.Controls.Add(flwKeyLight, 1, 3);
             tblExtra.Dock = System.Windows.Forms.DockStyle.Fill;
             tblExtra.Location = new System.Drawing.Point(0, 0);
+            tblExtra.Margin = new System.Windows.Forms.Padding(4);
             tblExtra.Name = "tblExtra";
             tblExtra.RowCount = 5;
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -593,28 +613,27 @@ namespace YAMDCC.GUI
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tblExtra.Size = new System.Drawing.Size(526, 366);
+            tblExtra.Size = new System.Drawing.Size(659, 461);
             tblExtra.TabIndex = 4;
             // 
             // lblChgLim
             // 
             this.lblChgLim.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblChgLim.AutoSize = true;
-            this.lblChgLim.Enabled = false;
-            this.lblChgLim.Location = new System.Drawing.Point(55, 5);
-            this.lblChgLim.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
+            this.lblChgLim.Location = new System.Drawing.Point(69, 5);
+            this.lblChgLim.Margin = new System.Windows.Forms.Padding(4, 0, 4, 4);
             this.lblChgLim.Name = "lblChgLim";
-            this.lblChgLim.Size = new System.Drawing.Size(75, 15);
+            this.lblChgLim.Size = new System.Drawing.Size(93, 20);
             this.lblChgLim.TabIndex = 2;
             this.lblChgLim.Text = "Charge limit:";
             // 
             // numChgLim
             // 
             this.numChgLim.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.numChgLim.Enabled = false;
-            this.numChgLim.Location = new System.Drawing.Point(136, 3);
+            this.numChgLim.Location = new System.Drawing.Point(170, 4);
+            this.numChgLim.Margin = new System.Windows.Forms.Padding(4);
             this.numChgLim.Name = "numChgLim";
-            this.numChgLim.Size = new System.Drawing.Size(50, 23);
+            this.numChgLim.Size = new System.Drawing.Size(62, 27);
             this.numChgLim.TabIndex = 3;
             this.numChgLim.ValueChanged += new System.EventHandler(this.numChargeLim_Changed);
             // 
@@ -622,10 +641,10 @@ namespace YAMDCC.GUI
             // 
             this.lblPerfMode.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblPerfMode.AutoSize = true;
-            this.lblPerfMode.Enabled = false;
-            this.lblPerfMode.Location = new System.Drawing.Point(18, 36);
+            this.lblPerfMode.Location = new System.Drawing.Point(24, 43);
+            this.lblPerfMode.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblPerfMode.Name = "lblPerfMode";
-            this.lblPerfMode.Size = new System.Drawing.Size(112, 15);
+            this.lblPerfMode.Size = new System.Drawing.Size(138, 20);
             this.lblPerfMode.TabIndex = 4;
             this.lblPerfMode.Text = "Performance mode:";
             // 
@@ -633,11 +652,11 @@ namespace YAMDCC.GUI
             // 
             this.cboPerfMode.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cboPerfMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboPerfMode.Enabled = false;
             this.cboPerfMode.FormattingEnabled = true;
-            this.cboPerfMode.Location = new System.Drawing.Point(136, 32);
+            this.cboPerfMode.Location = new System.Drawing.Point(170, 39);
+            this.cboPerfMode.Margin = new System.Windows.Forms.Padding(4);
             this.cboPerfMode.Name = "cboPerfMode";
-            this.cboPerfMode.Size = new System.Drawing.Size(150, 23);
+            this.cboPerfMode.Size = new System.Drawing.Size(186, 28);
             this.cboPerfMode.TabIndex = 5;
             this.cboPerfMode.SelectedIndexChanged += new System.EventHandler(this.cboPerfMode_IndexChanged);
             // 
@@ -645,11 +664,10 @@ namespace YAMDCC.GUI
             // 
             this.lblWinFnSwap.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblWinFnSwap.AutoSize = true;
-            this.lblWinFnSwap.Enabled = false;
-            this.lblWinFnSwap.Location = new System.Drawing.Point(3, 61);
-            this.lblWinFnSwap.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
+            this.lblWinFnSwap.Location = new System.Drawing.Point(4, 75);
+            this.lblWinFnSwap.Margin = new System.Windows.Forms.Padding(4, 0, 4, 4);
             this.lblWinFnSwap.Name = "lblWinFnSwap";
-            this.lblWinFnSwap.Size = new System.Drawing.Size(127, 15);
+            this.lblWinFnSwap.Size = new System.Drawing.Size(158, 20);
             this.lblWinFnSwap.TabIndex = 6;
             this.lblWinFnSwap.Text = "Swap Win and Fn keys:";
             // 
@@ -657,10 +675,10 @@ namespace YAMDCC.GUI
             // 
             this.chkWinFnSwap.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkWinFnSwap.AutoSize = true;
-            this.chkWinFnSwap.Enabled = false;
-            this.chkWinFnSwap.Location = new System.Drawing.Point(136, 61);
+            this.chkWinFnSwap.Location = new System.Drawing.Point(170, 75);
+            this.chkWinFnSwap.Margin = new System.Windows.Forms.Padding(4);
             this.chkWinFnSwap.Name = "chkWinFnSwap";
-            this.chkWinFnSwap.Size = new System.Drawing.Size(68, 19);
+            this.chkWinFnSwap.Size = new System.Drawing.Size(85, 24);
             this.chkWinFnSwap.TabIndex = 7;
             this.chkWinFnSwap.Text = "Enabled";
             this.chkWinFnSwap.UseVisualStyleBackColor = true;
@@ -670,10 +688,10 @@ namespace YAMDCC.GUI
             // 
             this.lblKeyLight.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKeyLight.AutoSize = true;
-            this.lblKeyLight.Location = new System.Drawing.Point(19, 100);
+            this.lblKeyLight.Location = new System.Drawing.Point(23, 123);
             this.lblKeyLight.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblKeyLight.Name = "lblKeyLight";
-            this.lblKeyLight.Size = new System.Drawing.Size(112, 15);
+            this.lblKeyLight.Size = new System.Drawing.Size(141, 20);
             this.lblKeyLight.TabIndex = 8;
             this.lblKeyLight.Text = "Keyboard backlight:";
             // 
@@ -683,30 +701,30 @@ namespace YAMDCC.GUI
             flwKeyLight.Controls.Add(lblKeyLightLow);
             flwKeyLight.Controls.Add(this.tbKeyLight);
             flwKeyLight.Controls.Add(lblKeyLightHigh);
-            flwKeyLight.Location = new System.Drawing.Point(133, 83);
+            flwKeyLight.Location = new System.Drawing.Point(166, 103);
             flwKeyLight.Margin = new System.Windows.Forms.Padding(0);
             flwKeyLight.Name = "flwKeyLight";
-            flwKeyLight.Size = new System.Drawing.Size(229, 49);
+            flwKeyLight.Size = new System.Drawing.Size(287, 60);
             flwKeyLight.TabIndex = 10;
             // 
             // lblKeyLightLow
             // 
             lblKeyLightLow.Anchor = System.Windows.Forms.AnchorStyles.Left;
             lblKeyLightLow.AutoSize = true;
-            lblKeyLightLow.Location = new System.Drawing.Point(3, 17);
+            lblKeyLightLow.Location = new System.Drawing.Point(4, 20);
+            lblKeyLightLow.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             lblKeyLightLow.Name = "lblKeyLightLow";
-            lblKeyLightLow.Size = new System.Drawing.Size(24, 15);
+            lblKeyLightLow.Size = new System.Drawing.Size(30, 20);
             lblKeyLightLow.TabIndex = 10;
             lblKeyLightLow.Text = "Off";
             // 
             // tbKeyLight
             // 
-            this.tbKeyLight.Enabled = false;
-            this.tbKeyLight.Location = new System.Drawing.Point(32, 2);
+            this.tbKeyLight.Location = new System.Drawing.Point(40, 2);
             this.tbKeyLight.Margin = new System.Windows.Forms.Padding(2);
             this.tbKeyLight.Maximum = 3;
             this.tbKeyLight.Name = "tbKeyLight";
-            this.tbKeyLight.Size = new System.Drawing.Size(150, 45);
+            this.tbKeyLight.Size = new System.Drawing.Size(188, 56);
             this.tbKeyLight.TabIndex = 9;
             this.tbKeyLight.TickStyle = System.Windows.Forms.TickStyle.Both;
             this.tbKeyLight.Scroll += new System.EventHandler(this.tbKeyLight_Scroll);
@@ -715,9 +733,10 @@ namespace YAMDCC.GUI
             // 
             lblKeyLightHigh.Anchor = System.Windows.Forms.AnchorStyles.Left;
             lblKeyLightHigh.AutoSize = true;
-            lblKeyLightHigh.Location = new System.Drawing.Point(187, 17);
+            lblKeyLightHigh.Location = new System.Drawing.Point(234, 20);
+            lblKeyLightHigh.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             lblKeyLightHigh.Name = "lblKeyLightHigh";
-            lblKeyLightHigh.Size = new System.Drawing.Size(39, 15);
+            lblKeyLightHigh.Size = new System.Drawing.Size(49, 20);
             lblKeyLightHigh.TabIndex = 11;
             lblKeyLightHigh.Text = "Bright";
             // 
@@ -729,27 +748,29 @@ namespace YAMDCC.GUI
             flwStats.Controls.Add(this.lblFanRPM);
             flwStats.Controls.Add(this.lblTemp);
             flwStats.Dock = System.Windows.Forms.DockStyle.Fill;
-            flwStats.Location = new System.Drawing.Point(0, 398);
-            flwStats.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
+            flwStats.Location = new System.Drawing.Point(0, 498);
+            flwStats.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
             flwStats.Name = "flwStats";
-            flwStats.Size = new System.Drawing.Size(540, 15);
+            flwStats.Size = new System.Drawing.Size(675, 20);
             flwStats.TabIndex = 2;
             // 
             // lblStatus
             // 
             this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(3, 0);
+            this.lblStatus.Location = new System.Drawing.Point(4, 0);
+            this.lblStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(39, 15);
+            this.lblStatus.Size = new System.Drawing.Size(50, 20);
             this.lblStatus.TabIndex = 0;
             this.lblStatus.Text = "Ready";
             // 
             // lblFanSpd
             // 
             this.lblFanSpd.AutoSize = true;
-            this.lblFanSpd.Location = new System.Drawing.Point(48, 0);
+            this.lblFanSpd.Location = new System.Drawing.Point(62, 0);
+            this.lblFanSpd.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblFanSpd.Name = "lblFanSpd";
-            this.lblFanSpd.Size = new System.Drawing.Size(86, 15);
+            this.lblFanSpd.Size = new System.Drawing.Size(106, 20);
             this.lblFanSpd.TabIndex = 1;
             this.lblFanSpd.Text = "Fan speed: --%";
             this.lblFanSpd.Visible = false;
@@ -757,9 +778,10 @@ namespace YAMDCC.GUI
             // lblFanRPM
             // 
             this.lblFanRPM.AutoSize = true;
-            this.lblFanRPM.Location = new System.Drawing.Point(140, 0);
+            this.lblFanRPM.Location = new System.Drawing.Point(176, 0);
+            this.lblFanRPM.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblFanRPM.Name = "lblFanRPM";
-            this.lblFanRPM.Size = new System.Drawing.Size(58, 15);
+            this.lblFanRPM.Size = new System.Drawing.Size(70, 20);
             this.lblFanRPM.TabIndex = 2;
             this.lblFanRPM.Text = "RPM: ----";
             this.lblFanRPM.Visible = false;
@@ -767,9 +789,10 @@ namespace YAMDCC.GUI
             // lblTemp
             // 
             this.lblTemp.AutoSize = true;
-            this.lblTemp.Location = new System.Drawing.Point(204, 0);
+            this.lblTemp.Location = new System.Drawing.Point(254, 0);
+            this.lblTemp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblTemp.Name = "lblTemp";
-            this.lblTemp.Size = new System.Drawing.Size(65, 15);
+            this.lblTemp.Size = new System.Drawing.Size(80, 20);
             this.lblTemp.TabIndex = 3;
             this.lblTemp.Text = "Temp: --°C";
             this.lblTemp.Visible = false;
@@ -781,13 +804,13 @@ namespace YAMDCC.GUI
             this.tblMain.Controls.Add(tcMain, 0, 0);
             this.tblMain.Controls.Add(flwStats, 0, 1);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblMain.Location = new System.Drawing.Point(0, 24);
+            this.tblMain.Location = new System.Drawing.Point(0, 28);
             this.tblMain.Margin = new System.Windows.Forms.Padding(0);
             this.tblMain.Name = "tblMain";
             this.tblMain.RowCount = 2;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblMain.Size = new System.Drawing.Size(540, 416);
+            this.tblMain.Size = new System.Drawing.Size(675, 522);
             this.tblMain.TabIndex = 1;
             // 
             // tmrPoll
@@ -803,15 +826,16 @@ namespace YAMDCC.GUI
             // MainWindow
             // 
             this.AcceptButton = this.btnApply;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.btnRevert;
-            this.ClientSize = new System.Drawing.Size(540, 440);
+            this.ClientSize = new System.Drawing.Size(675, 550);
             this.Controls.Add(this.tblMain);
             this.Controls.Add(menuStrip);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = menuStrip;
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.MaximizeBox = false;
             this.Name = "MainWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -895,5 +919,6 @@ namespace YAMDCC.GUI
         private System.Windows.Forms.Label lblWinFnSwap;
         private System.Windows.Forms.Label lblKeyLight;
         private System.Windows.Forms.Timer tmrStatusReset;
+        private System.Windows.Forms.ToolStripMenuItem tsiLoadTemplate;
     }
 }

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <YAMDCC_Config xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Ver="1">
-	<Model>MSI laptops (9th-gen Intel or earlier) Template Config</Model>
+	<Model>MSI laptop (9th-gen Intel or earlier) template config
+ONLY use with 9th-gen or older Intel MSI laptops!
+</Model>
 	<Author>Sparronator9999</Author>
 	<Template>true</Template>
 	<FanConfs>

@@ -295,9 +295,6 @@ Please re-run this program as Administrator
   <data name="dlgOldConfInvalid" xml:space="preserve">
     <value>The last loaded/saved config is invalid.</value>
   </data>
-  <data name="dlgFileFilter" xml:space="preserve">
-    <value>YAMDCC config files|*.xml</value>
-  </data>
   <data name="dlgRevert" xml:space="preserve">
     <value>Are you sure you want to revert to the last loaded/saved config?</value>
   </data>
