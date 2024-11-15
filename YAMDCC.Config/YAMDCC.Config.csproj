@@ -13,6 +13,7 @@
         <AnalysisLevel>latest-recommended</AnalysisLevel>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
         <LangVersion>latest</LangVersion>
+        <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>none</DebugType>
