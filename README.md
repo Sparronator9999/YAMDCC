@@ -94,7 +94,7 @@ Below are some changes I would like to make before a 1.0 release of YAMDCC:
 
 - [x] Config generation for MSI laptops
   - Finally working! BUT, it still needs some more testing.
-  - Please report bugs to the [issue tracker](https://github.com/Sparronator9999/YAMDCC/issues/new).-->
+  - Please report bugs to the [issue tracker](https://github.com/Sparronator9999/YAMDCC/issues/new).
 - [ ] Revamp IPC between service and config applications *(started)*
   - [ ] Add command timeout to GUI to make it more obvious when a service command fails
   - [ ] Implement `Success` and `Fail` responses for the rest of the service commands
@@ -179,8 +179,8 @@ or new configs, feel free to open a pull request. Please include the following:
 
 - **Bug Fixes/Improvements:** Describe the changes you made and why they
   are important or useful.
-- ~~**New Config:**~~ Not currently accepting new configs. Wait for the config
-  generation feature to be finished.
+- **New Config:** Add a config with your laptop's default fan profile so that
+  other people don't have to run the EC-to-config tool.
 
 ## FAQ
 
