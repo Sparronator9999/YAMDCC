@@ -12,7 +12,7 @@
         <FileVersion>0.6.9.420</FileVersion>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <LangVersion>latest</LangVersion>
-        <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
+        <RuntimeIdentifiers>win7-x64;win7-x86</RuntimeIdentifiers>
     </PropertyGroup>
     <PropertyGroup>
         <NoWin32Manifest>true</NoWin32Manifest>

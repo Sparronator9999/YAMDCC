@@ -14,7 +14,7 @@
         <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <LangVersion>latest</LangVersion>
-        <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
+        <RuntimeIdentifiers>win7-x64;win7-x86</RuntimeIdentifiers>
     </PropertyGroup>
     <PropertyGroup>
         <ApplicationIcon>fan.ico</ApplicationIcon>
