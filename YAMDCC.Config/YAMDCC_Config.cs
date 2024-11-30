@@ -173,11 +173,14 @@ namespace YAMDCC.Config
                     }
 
                     // the selected fan curve shouldn't be higher than
-                    // the number of fan curves in the config
-                    if (cfg.CurveSel >= FanConfs.Length ||
+                    // the number of fan curves in the config.
+                    if (cfg.CurveSel >= FanConfs[i].FanCurveConfs.Length ||
                         cfg.CurveSel < 0)
                     {
-                        return false;
+                        // if the fan profile selection is out of range,
+                        // silently set it to 0 (the first fan curve)
+                        // which should always exist:
+                        cfg.CurveSel = 0;
                     }
 
                     if (cfg.UpThresholdRegs?.Length >= 1 &&

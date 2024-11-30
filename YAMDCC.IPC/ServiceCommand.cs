@@ -128,22 +128,6 @@ namespace YAMDCC.IPC
         /// maximum brightness value (minus offset).
         /// </remarks>
         SetKeyLightBright,
-        /// <summary>
-        /// Attempts to write the default fan curves
-        /// of each fan from the EC to the config.
-        /// </summary>
-        /// <remarks>
-        /// <para>This command expects no arguments.</para>
-        /// <para>
-        /// If the loaded config is a template config, it
-        /// will be made into a full (non-template) config.
-        /// </para>
-        /// <para>
-        /// If there is no config loaded, this command will issue a
-        /// <see cref="Response.Error"/> to the requesting client.
-        /// </para>
-        /// </remarks>
-        FanCurveECToConf,
     }
 
     /// <summary>

@@ -35,13 +35,6 @@ namespace YAMDCC.GUI
         private readonly Status AppStatus = new();
 
         /// <summary>
-        /// The path where program data is stored.
-        /// </summary>
-        private static readonly string DataPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-            "Sparronator9999", "YAMDCC");
-
-        /// <summary>
         /// The YAMDCC config that is currently open for editing.
         /// </summary>
         private YAMDCC_Config Config;
@@ -190,13 +183,36 @@ namespace YAMDCC.GUI
                 return;
             }
 
-            LoadConf(Path.Combine(DataPath, "CurrentConfig.xml"));
+            LoadConf(Path.Combine(Constants.DataPath, "CurrentConfig.xml"));
 
             if (Config is not null && Config.KeyLightConf is not null)
             {
                 ServiceCommand command = new(Command.GetKeyLightBright, "");
                 IPCClient.PushMessage(command);
             }
+
+            if (File.Exists(Path.Combine(Constants.DataPath, "ECToConfFail")))
+            {
+                MessageBox.Show(
+                    "An error occurred while fetching your laptop's default fan curves.\n\n" +
+                    "This is probably a bug; please report this on YAMDCC's issue tracker,\n" +
+                    $"including the log folder (located at {Path.Combine(Constants.DataPath, "Logs")}).",
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else if (File.Exists(Path.Combine(Constants.DataPath, "ECToConfSuccess")))
+            {
+                MessageBox.Show(
+                    "Your laptop's default fan curves have been saved " +
+                    "to the currently applied config successfully.\n\n" +
+                    "Make sure to save your config! (using the \"Save config\" button)",
+                    "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            try
+            {
+                File.Delete(Path.Combine(Constants.DataPath, "ECToConfSuccess"));
+                File.Delete(Path.Combine(Constants.DataPath, "ECToConfFail"));
+            }
+            catch (DirectoryNotFoundException) { }
         }
 
         private void MainWindow_Closing(object sender, FormClosingEventArgs e)
@@ -307,11 +323,6 @@ namespace YAMDCC.GUI
                         break;
                     case Command.FullBlast:
                         UpdateStatus(StatusCode.FullBlastToggleSuccess);
-                        break;
-                    case Command.FanCurveECToConf:
-                        // call save file routine from UI thread or smth idk
-                        Invoke(() => SaveConf());
-                        LoadConf(Path.Combine(DataPath, "CurrentConfig.xml"));
                         break;
                 }
             }
@@ -461,7 +472,7 @@ namespace YAMDCC.GUI
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
                 bool delData = MessageBox.Show(
-                    Strings.GetString("dlgSvcDelData", DataPath),
+                    Strings.GetString("dlgSvcDelData", Constants.DataPath),
                     "Delete configuration data?",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
                     MessageBoxDefaultButton.Button2) == DialogResult.Yes;
@@ -479,7 +490,7 @@ namespace YAMDCC.GUI
                         // service uninstalled successfully
                         if (delData)
                         {
-                            Directory.Delete(DataPath, true);
+                            Directory.Delete(Constants.DataPath, true);
                         }
                     }
                     else
@@ -806,7 +817,7 @@ namespace YAMDCC.GUI
         private void ApplyConf()
         {
             // Save the updated config
-            Config.Save(Path.Combine(DataPath, "CurrentConfig.xml"));
+            Config.Save(Path.Combine(Constants.DataPath, "CurrentConfig.xml"));
 
             // Tell the service to reload and apply the updated config
             ServiceCommand command = new(Command.ApplyConfig, null);
@@ -910,7 +921,7 @@ namespace YAMDCC.GUI
 
         private static string GetLastConfPath()
         {
-            StreamReader sr = new(Path.Combine(DataPath, "LastConfig"), Encoding.UTF8);
+            StreamReader sr = new(Path.Combine(Constants.DataPath, "LastConfig"), Encoding.UTF8);
             try
             {
                 string path = sr.ReadLine();
@@ -924,7 +935,7 @@ namespace YAMDCC.GUI
 
         private static void SetLastConfPath(string path)
         {
-            StreamWriter sw = new(Path.Combine(DataPath, "LastConfig"), false, Encoding.UTF8);
+            StreamWriter sw = new(Path.Combine(Constants.DataPath, "LastConfig"), false, Encoding.UTF8);
             try
             {
                 sw.WriteLine(path);
@@ -1076,7 +1087,26 @@ namespace YAMDCC.GUI
 
         private void tsiGetDefaultCurve_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("TODO");
+            if (MessageBox.Show(
+                "Would you like to copy your laptop's default " +
+                "fan curve to this config?\n\n" +
+                "You will need to reboot your computer so that " +
+                "the fan settings are reset to their defaults.",
+                "Default fan profile from EC?", MessageBoxButtons.YesNo,
+                MessageBoxIcon.Information) == DialogResult.Yes)
+            {
+                StreamWriter sw = new(Path.Combine(Constants.DataPath, "ECToConfPending"), false);
+                try
+                {
+                    sw.Write(1);
+                    sw.Flush();
+                }
+                finally
+                {
+                    sw.Close();
+                }
+                Application.Exit();
+            }
         }
     }
 }

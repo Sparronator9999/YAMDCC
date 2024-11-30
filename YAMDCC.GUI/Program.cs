@@ -15,6 +15,7 @@
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.Security.Principal;
 using System.ServiceProcess;
@@ -67,7 +68,7 @@ namespace YAMDCC.GUI
                             if (ServiceUtils.StartService("yamdccsvc"))
                             {
                                 // Start the program when the service finishes starting:
-                                Application.Run(new MainWindow());
+                                Start();
                             }
                             else
                             {
@@ -131,6 +132,43 @@ namespace YAMDCC.GUI
             }
 
             // Start the program when the service finishes starting:
+            Start();
+        }
+
+        private static void Start()
+        {
+            int rebootFlag = -1;
+            try
+            {
+                StreamReader sr = new(Path.Combine(Constants.DataPath, "ECToConfPending"));
+                if (int.TryParse(sr.ReadToEnd(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int value))
+                    rebootFlag = value;
+                sr.Close();
+
+                if (rebootFlag == 1)
+                {
+                    if (MessageBox.Show(
+                        "Your laptop hasn't been rebooted yet following a " +
+                        "request to copy the default fan profile of your laptop to " +
+                        "the loaded config.\n\n" +
+                        "Cancel and continue loading YAMDCC?", "Reboot pending",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+                    {
+                        try
+                        {
+                            File.Delete(Path.Combine(Constants.DataPath, "ECToConfPending"));
+                        }
+                        catch (FileNotFoundException) { }
+                        catch (DirectoryNotFoundException) { }
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+            }
+            catch (FileNotFoundException) { }
+            catch (DirectoryNotFoundException) { }
             Application.Run(new MainWindow());
         }
 

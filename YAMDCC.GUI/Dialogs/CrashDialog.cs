@@ -24,6 +24,14 @@ namespace YAMDCC.GUI.Dialogs
         private void btnCopy_Click(object sender, EventArgs e)
         {
             Clipboard.SetText(txtStackTrace.Text);
+
+            // should never fail, but better safe than sorry
+            // (this is the crash handling dialog after all)
+            if (sender is Button b)
+            {
+                // give confirmation that the crash report has been copied
+                b.Text = "Copied!";
+            }
         }
 
         private void btnExit_Click(object sender, EventArgs e)
