@@ -334,15 +334,6 @@ namespace YAMDCC.Service
                 return;
             }
 
-            if (Config.Template)
-            {
-                Log.Error(
-                    "Template configs are still WIP and unsupported for now.\n" +
-                    "Please load another config using the configurator app.");
-                ConfigLoaded = false;
-                return;
-            }
-
             ConfigLoaded = true;
             Log.Info(Strings.GetString("cfgLoadSuccess"));
         }
@@ -700,10 +691,10 @@ namespace YAMDCC.Service
                 return 0;
             }
 
-            Log.Debug("Getting fan curve from EC...");
-
             for (int i = 0; i < Config.FanConfs.Length; i++)
             {
+                Log.Debug($"Getting fan curve from EC ({i + 1}/{Config.FanConfs.Length})...");
+
                 FanConf cfg = Config.FanConfs[i];
 
                 if (cfg.FanCurveConfs is null || cfg.FanCurveConfs.Length == 0)
@@ -738,11 +729,11 @@ namespace YAMDCC.Service
                     }
                     else
                     {
-                        if (LogECReadByte(cfg.UpThresholdRegs[j], out value))
+                        if (LogECReadByte(cfg.UpThresholdRegs[j - 1], out value))
                         {
                             curveCfg.TempThresholds[j].UpThreshold = value;
                         }
-                        if (LogECReadByte(cfg.DownThresholdRegs[j], out value))
+                        if (LogECReadByte(cfg.DownThresholdRegs[j - 1], out value))
                         {
                             curveCfg.TempThresholds[j].DownThreshold = value;
                         }
@@ -753,6 +744,8 @@ namespace YAMDCC.Service
             Log.Debug("Saving config...");
             Config.Save(Path.Combine(DataPath, "CurrentConfig.xml"));
 
+            // we (hopefully) succeeded, let's notify the calling client:
+            IPCServer.PushMessage(new ServiceResponse(Response.Success, $"{(int)Command.FanCurveECToConf}"), clientId);
             return 0;
         }
     }

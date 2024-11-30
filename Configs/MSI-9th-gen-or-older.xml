@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <YAMDCC_Config xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Ver="1">
-	<Model>MSI laptop (10th-gen Intel or newer) template config.
-ONLY use with 10th-gen or newer Intel MSI laptops!
+	<Model>MSI laptop (9th-gen Intel or earlier) config.
+ONLY use with 9th-gen or older Intel MSI laptops!
 </Model>
 	<Author>Sparronator9999</Author>
-	<Template>true</Template>
 	<FanConfs>
 		<FanConf>
 			<Name>CPU Fan</Name>
 			<MinSpeed>0</MinSpeed>
 			<MaxSpeed>100</MaxSpeed>
-			<CurveSel>1</CurveSel>
+			<CurveSel>0</CurveSel>
 			<SpeedReadReg>113</SpeedReadReg>
 			<TempReadReg>104</TempReadReg>
 			<RPMConf>
@@ -46,13 +45,55 @@ ONLY use with 10th-gen or newer Intel MSI laptops!
 				<unsignedByte>119</unsignedByte>
 				<unsignedByte>120</unsignedByte>
 			</FanCurveRegs>
-			<FanCurveConfs/>
+			<FanCurveConfs>
+				<FanCurveConf>
+					<Name>Default</Name>
+					<Desc>Generic CPU fan curve for MSI laptops.</Desc>
+					<TempThresholds>
+						<TempThreshold>
+							<UpThreshold>0</UpThreshold>
+							<DownThreshold>0</DownThreshold>
+							<FanSpeed>0</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>50</UpThreshold>
+							<DownThreshold>47</DownThreshold>
+							<FanSpeed>40</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>57</UpThreshold>
+							<DownThreshold>54</DownThreshold>
+							<FanSpeed>48</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>64</UpThreshold>
+							<DownThreshold>61</DownThreshold>
+							<FanSpeed>56</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>71</UpThreshold>
+							<DownThreshold>68</DownThreshold>
+							<FanSpeed>64</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>78</UpThreshold>
+							<DownThreshold>75</DownThreshold>
+							<FanSpeed>72</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>85</UpThreshold>
+							<DownThreshold>82</DownThreshold>
+							<FanSpeed>80</FanSpeed>
+						</TempThreshold>
+					</TempThresholds>
+				</FanCurveConf>
+			</FanCurveConfs>
 		</FanConf>
 		<FanConf>
 			<Name>GPU Fan</Name>
 			<MinSpeed>0</MinSpeed>
 			<MaxSpeed>100</MaxSpeed>
-			<CurveSel>1</CurveSel>
+			<CurveSel>0</CurveSel>
 			<SpeedReadReg>137</SpeedReadReg>
 			<TempReadReg>128</TempReadReg>
 			<RPMConf>
@@ -88,7 +129,49 @@ ONLY use with 10th-gen or newer Intel MSI laptops!
 				<unsignedByte>143</unsignedByte>
 				<unsignedByte>144</unsignedByte>
 			</FanCurveRegs>
-			<FanCurveConfs/>
+			<FanCurveConfs>
+				<FanCurveConf>
+					<Name>Default</Name>
+					<Desc>Generic GPU fan curve for MSI laptops.</Desc>
+					<TempThresholds>
+						<TempThreshold>
+							<UpThreshold>0</UpThreshold>
+							<DownThreshold>0</DownThreshold>
+							<FanSpeed>0</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>50</UpThreshold>
+							<DownThreshold>47</DownThreshold>
+							<FanSpeed>40</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>57</UpThreshold>
+							<DownThreshold>54</DownThreshold>
+							<FanSpeed>48</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>64</UpThreshold>
+							<DownThreshold>61</DownThreshold>
+							<FanSpeed>56</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>71</UpThreshold>
+							<DownThreshold>68</DownThreshold>
+							<FanSpeed>64</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>78</UpThreshold>
+							<DownThreshold>75</DownThreshold>
+							<FanSpeed>72</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>85</UpThreshold>
+							<DownThreshold>82</DownThreshold>
+							<FanSpeed>80</FanSpeed>
+						</TempThreshold>
+					</TempThresholds>
+				</FanCurveConf>
+			</FanCurveConfs>
 		</FanConf>
 	</FanConfs>
 	<FullBlastConf>
@@ -96,55 +179,20 @@ ONLY use with 10th-gen or newer Intel MSI laptops!
 		<Mask>128</Mask>
 	</FullBlastConf>
 	<ChargeLimitConf>
-		<Reg>215</Reg>
+		<Reg>239</Reg>
 		<MinVal>128</MinVal>
 		<MaxVal>228</MaxVal>
 		<CurVal>60</CurVal>
 	</ChargeLimitConf>
-	<PerfModeConf>
-		<Reg>210</Reg>
-		<ModeSel>2</ModeSel>
-		<PerfModes>
-			<PerfMode>
-				<Name>Maximum battery life</Name>
-				<Desc>Optimises your laptop for maximum battery life.
-Limits CPU power draw to 10W.
-If set to default fan curve, uses an alternative fan curve.</Desc>
-				<Value>194</Value>
-			</PerfMode>
-			<PerfMode>
-				<Name>Silent</Name>
-				<Desc>Reduces the maximum fan speed to 60%.</Desc>
-				<Value>193</Value>
-			</PerfMode>
-			<PerfMode>
-				<Name>Balanced</Name>
-				<Desc>Balances battery life and performance.</Desc>
-				<Value>192</Value>
-			</PerfMode>
-			<PerfMode>
-				<Name>High performance</Name>
-				<Desc>Optimises your laptop for maximum performance.
-Old (pre-alpha) versions of MSI Fan Control/YAMDCC set this setting.</Desc>
-				<Value>196</Value>
-			</PerfMode>
-		</PerfModes>
-	</PerfModeConf>
-	<KeySwapConf>
-		<Reg>232</Reg>
-		<Enabled>false</Enabled>
-		<OnVal>16</OnVal>
-		<OffVal>0</OffVal>
-	</KeySwapConf>
 	<KeyLightConf>
-		<Reg>211</Reg>
+		<Reg>243</Reg>
 		<MinVal>128</MinVal>
 		<MaxVal>131</MaxVal>
 	</KeyLightConf>
 	<RegConfs>
 		<RegConf>
 			<Desc>Set fan mode to Advanced. Fixes fans not working at all with certain fan settings.</Desc>
-			<Reg>212</Reg>
+			<Reg>244</Reg>
 			<Value>77</Value>
 		</RegConf>
 	</RegConfs>

@@ -92,29 +92,32 @@ The following laptops have been tested by the community and are confirmed to be 
 
 Below are some changes I would like to make before a 1.0 release of YAMDCC:
 
-- [ ] Config generation for MSI laptops *(implemented in service, UI in progress)*
-  - This would only work because many MSI laptops have almost identical EC register locations
-    for all the relevent settings we change
-  - The only thing we need to do is get the default fan curve from the user's laptop, and add
-    it to the default fan profile.
+- [ ] Config generation for MSI laptops
+  - *Almost* working, just need to finish the UI.
+  - Use the generic configs for MSI laptops while you wait.
+<!--  - Finally working! BUT, it is still in an early testing stage.
+  - The language used in the UI could be a little more user-friendly.
+  - Please report bugs to the [issue tracker](https://github.com/Sparronator9999/YAMDCC/issues/new).-->
 - [ ] Revamp IPC between service and config applications *(started)*
-  - Currently, there is no "acknowledgement" system for commands sent to the service,
-    even for commands that expect data to be returned. This means no errors if the service
-    crashes before fulfilling a received command.
+  - [ ] Add command timeout to GUI to make it more obvious when a service command fails
+  - [ ] Implement `Success` and `Fail` responses for the rest of the service commands
+  - [ ] Other things I didn't remember while writing this.
 - [ ] Fix any remaining bugs before the 1.0 release.
   - I will start releasing betas once the above points are complete.
 
 Below are some planned features for potential future releases:
 
 - [ ] Keyboard shortcut support (requested by @grimy400)
+  - This would involve some refactoring to the config GUI, or a separate background program that listens to
+    keyboard shortcuts (Windows services, or at least those running as Local System, can't "see" keyboard input).
 - [ ] CLI support
   - Development of a CLI application for YAMDCC has started, but isn't publicly available yet
-    - It hasn't been updated for quite a while (to the point where it still has the
-      project's original name) and is missing a *lot* of features.
+    - It hasn't been updated for quite a while (it still has the project's original name),
+      and is missing a *lot* of features.
 - [ ] Support for editing laptop config registers using the GUI/CLI
   - This would allow for creating configs for other laptop brands from the config UI
-  - Currently, the only way to do this is to edit the XML directly
-- [ ] Plugin system for additional optional features
+  - Currently, the only way to do this is to edit the XML directly or use the config generator.
+- [ ] Plugin system for additional optional features *(needs research)*
 - [ ] .NET support
   - Mandatory for Linux support
   - The GUI *should* compile on .NET 8 (and in fact *has* been compiled on .NET 8 before).

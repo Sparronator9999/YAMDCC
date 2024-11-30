@@ -297,7 +297,7 @@ namespace YAMDCC.GUI
                 switch (cmd)
                 {
                     case Command.ApplyConfig:
-                        btnApply.Enabled = tsiApply.Enabled = true;
+                        btnApply.Invoke(() => btnApply.Enabled = tsiApply.Enabled = true);
                         UpdateStatus(StatusCode.ConfApplySuccess);
                         if (Config.KeyLightConf is not null)
                         {
@@ -307,6 +307,11 @@ namespace YAMDCC.GUI
                         break;
                     case Command.FullBlast:
                         UpdateStatus(StatusCode.FullBlastToggleSuccess);
+                        break;
+                    case Command.FanCurveECToConf:
+                        // call save file routine from UI thread or smth idk
+                        Invoke(() => SaveConf());
+                        LoadConf(Path.Combine(DataPath, "CurrentConfig.xml"));
                         break;
                 }
             }
@@ -335,6 +340,11 @@ namespace YAMDCC.GUI
 
         private void tsiSaveConf_Click(object sender, EventArgs e)
         {
+            SaveConf();
+        }
+
+        private void SaveConf()
+        {
             SaveFileDialog sfd = new()
             {
                 AddExtension = true,
@@ -348,35 +358,6 @@ namespace YAMDCC.GUI
                 SetLastConfPath(sfd.FileName);
                 btnRevert.Enabled = tsiRevert.Enabled = false;
             }
-        }
-
-        private void tsiLoadTemplate_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show(
-                "This feature has not been implemented yet.", "Error",
-                MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-            /*if (MessageBox.Show(
-                "This option will load a template config and add your laptop's " +
-                "settings to it.\n" +
-                "Use this option if your laptop doesn't have a default config yet.\n\n" +
-                "Proceed with config generation?", "Config generator",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
-            {
-                OpenFileDialog ofd = new()
-                {
-                    AddExtension = true,
-                    CheckFileExists = true,
-                    SupportMultiDottedExtensions = true,
-                    Filter = "YAMDCC template config files | *.template.xml",
-                    Title = "Load template config",
-                };
-
-                if (ofd.ShowDialog() == DialogResult.OK)
-                {
-                    LoadConf(ofd.FileName);
-                }
-            }*/
         }
 
         private void tsiApply_Click(object sender, EventArgs e)
@@ -753,12 +734,6 @@ namespace YAMDCC.GUI
         {
             DisableAll();
 
-            if (config.Template)
-            {
-                MessageBox.Show(Strings.GetString("dlgTemplateConfWIP"), "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
             tsiSaveConf.Enabled = true;
 
             if (config.FullBlastConf is null)
@@ -1054,33 +1029,33 @@ namespace YAMDCC.GUI
                 {
                     case StatusCode.ServiceCommandFail:
                         persist = true;
-                        lblStatus.Text = Strings.GetString("statSvcError", (Command)data);
+                        lblStatus.Invoke(() => lblStatus.Text = Strings.GetString("statSvcError", (Command)data));
                         break;
                     case StatusCode.ServiceResponseEmpty:
-                        lblStatus.Text = Strings.GetString("statResponseEmpty");
+                        lblStatus.Invoke(() => lblStatus.Text = Strings.GetString("statResponseEmpty"));
                         break;
                     case StatusCode.NoConfig:
                         persist = true;
-                        lblStatus.Text = Strings.GetString("statNoConf");
+                        lblStatus.Invoke(() => lblStatus.Text = Strings.GetString("statNoConf"));
                         break;
                     case StatusCode.ConfLoading:
-                        lblStatus.Text = Strings.GetString("statConfLoading");
+                        lblStatus.Invoke(() => lblStatus.Text = Strings.GetString("statConfLoading"));
                         break;
                     case StatusCode.ConfApplySuccess:
-                        lblStatus.Text = Strings.GetString("statConfApplied");
+                        lblStatus.Invoke(() => lblStatus.Text = Strings.GetString("statConfApplied"));
                         break;
                     case StatusCode.FullBlastToggleSuccess:
-                        lblStatus.Text = Strings.GetString("statFBToggled");
+                        lblStatus.Invoke(() => lblStatus.Text = Strings.GetString("statFBToggled"));
                         break;
                     default:
                         persist = true;
-                        lblStatus.Text = "Ready";
+                        lblStatus.Invoke(() => lblStatus.Text = "Ready");
                         break;
                 }
 
                 if (AppStatus.RepeatCount > 0)
                 {
-                    lblStatus.Text += $" (x{AppStatus.RepeatCount + 1})";
+                    lblStatus.Invoke(() => lblStatus.Text += $" (x{AppStatus.RepeatCount + 1})");
                 }
 
                 if (!persist)
@@ -1095,8 +1070,13 @@ namespace YAMDCC.GUI
         {
             AppStatus.Code = StatusCode.None;
             AppStatus.RepeatCount = 0;
-            lblStatus.Text = "Ready";
+            lblStatus.Invoke(() => lblStatus.Text = "Ready");
             tmrStatusReset.Stop();
+        }
+
+        private void tsiGetDefaultCurve_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("TODO");
         }
     }
 }
