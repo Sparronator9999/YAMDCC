@@ -92,11 +92,8 @@ The following laptops have been tested by the community and are confirmed to be 
 
 Below are some changes I would like to make before a 1.0 release of YAMDCC:
 
-- [ ] Config generation for MSI laptops
-  - *Almost* working, just need to finish the UI.
-  - Use the generic configs for MSI laptops while you wait.
-<!--  - Finally working! BUT, it is still in an early testing stage.
-  - The language used in the UI could be a little more user-friendly.
+- [x] Config generation for MSI laptops
+  - Finally working! BUT, it still needs some more testing.
   - Please report bugs to the [issue tracker](https://github.com/Sparronator9999/YAMDCC/issues/new).-->
 - [ ] Revamp IPC between service and config applications *(started)*
   - [ ] Add command timeout to GUI to make it more obvious when a service command fails
