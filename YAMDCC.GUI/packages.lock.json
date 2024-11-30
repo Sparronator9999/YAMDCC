@@ -132,6 +132,8 @@
         }
       }
     },
+    ".NETFramework,Version=v4.8/win-x64": {},
+    ".NETFramework,Version=v4.8/win-x86": {},
     ".NETFramework,Version=v4.8/win7-x64": {},
     ".NETFramework,Version=v4.8/win7-x86": {}
   }
