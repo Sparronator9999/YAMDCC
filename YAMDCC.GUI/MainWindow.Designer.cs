@@ -44,7 +44,6 @@ namespace YAMDCC.GUI
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.MenuStrip menuStrip;
             System.Windows.Forms.ToolStripSeparator sep1;
             System.Windows.Forms.ToolStripSeparator sep2;
@@ -73,6 +72,7 @@ namespace YAMDCC.GUI
             this.tsiProfRename = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiProfChangeDesc = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiProfDel = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsiGetDefaultCurve = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiECMon = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiStopSvc = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiUninstall = new System.Windows.Forms.ToolStripMenuItem();
@@ -106,9 +106,6 @@ namespace YAMDCC.GUI
             this.lblFanRPM = new System.Windows.Forms.Label();
             this.lblTemp = new System.Windows.Forms.Label();
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
-            this.tmrPoll = new System.Windows.Forms.Timer(this.components);
-            this.tmrStatusReset = new System.Windows.Forms.Timer(this.components);
-            this.tsiGetDefaultCurve = new System.Windows.Forms.ToolStripMenuItem();
             menuStrip = new System.Windows.Forms.MenuStrip();
             sep1 = new System.Windows.Forms.ToolStripSeparator();
             sep2 = new System.Windows.Forms.ToolStripSeparator();
@@ -172,45 +169,45 @@ namespace YAMDCC.GUI
             // tsiLoadConf
             // 
             this.tsiLoadConf.Name = "tsiLoadConf";
-            this.tsiLoadConf.Size = new System.Drawing.Size(154, 22);
+            this.tsiLoadConf.Size = new System.Drawing.Size(180, 22);
             this.tsiLoadConf.Text = "Load config";
             this.tsiLoadConf.Click += new System.EventHandler(this.tsiLoadConf_Click);
             // 
             // tsiSaveConf
             // 
             this.tsiSaveConf.Name = "tsiSaveConf";
-            this.tsiSaveConf.Size = new System.Drawing.Size(154, 22);
+            this.tsiSaveConf.Size = new System.Drawing.Size(180, 22);
             this.tsiSaveConf.Text = "Save config";
             this.tsiSaveConf.Click += new System.EventHandler(this.tsiSaveConf_Click);
             // 
             // sep1
             // 
             sep1.Name = "sep1";
-            sep1.Size = new System.Drawing.Size(151, 6);
+            sep1.Size = new System.Drawing.Size(177, 6);
             // 
             // tsiApply
             // 
             this.tsiApply.Name = "tsiApply";
-            this.tsiApply.Size = new System.Drawing.Size(154, 22);
+            this.tsiApply.Size = new System.Drawing.Size(180, 22);
             this.tsiApply.Text = "Apply changes";
             this.tsiApply.Click += new System.EventHandler(this.tsiApply_Click);
             // 
             // tsiRevert
             // 
             this.tsiRevert.Name = "tsiRevert";
-            this.tsiRevert.Size = new System.Drawing.Size(154, 22);
+            this.tsiRevert.Size = new System.Drawing.Size(180, 22);
             this.tsiRevert.Text = "Revert changes";
             this.tsiRevert.Click += new System.EventHandler(this.tsiRevert_Click);
             // 
             // sep2
             // 
             sep2.Name = "sep2";
-            sep2.Size = new System.Drawing.Size(151, 6);
+            sep2.Size = new System.Drawing.Size(177, 6);
             // 
             // tsiExit
             // 
             this.tsiExit.Name = "tsiExit";
-            this.tsiExit.Size = new System.Drawing.Size(154, 22);
+            this.tsiExit.Size = new System.Drawing.Size(180, 22);
             this.tsiExit.Text = "Exit";
             this.tsiExit.Click += new System.EventHandler(this.tsiExit_Click);
             // 
@@ -250,28 +247,35 @@ namespace YAMDCC.GUI
             // tsiProfRename
             // 
             this.tsiProfRename.Name = "tsiProfRename";
-            this.tsiProfRename.Size = new System.Drawing.Size(180, 22);
+            this.tsiProfRename.Size = new System.Drawing.Size(178, 22);
             this.tsiProfRename.Text = "Change Name";
             this.tsiProfRename.Click += new System.EventHandler(this.tsiProfRename_Click);
             // 
             // tsiProfChangeDesc
             // 
             this.tsiProfChangeDesc.Name = "tsiProfChangeDesc";
-            this.tsiProfChangeDesc.Size = new System.Drawing.Size(180, 22);
+            this.tsiProfChangeDesc.Size = new System.Drawing.Size(178, 22);
             this.tsiProfChangeDesc.Text = "Change Description";
             this.tsiProfChangeDesc.Click += new System.EventHandler(this.tsiProfChangeDesc_Click);
             // 
             // sep3
             // 
             sep3.Name = "sep3";
-            sep3.Size = new System.Drawing.Size(177, 6);
+            sep3.Size = new System.Drawing.Size(175, 6);
             // 
             // tsiProfDel
             // 
             this.tsiProfDel.Name = "tsiProfDel";
-            this.tsiProfDel.Size = new System.Drawing.Size(180, 22);
+            this.tsiProfDel.Size = new System.Drawing.Size(178, 22);
             this.tsiProfDel.Text = "Delete";
             this.tsiProfDel.Click += new System.EventHandler(this.tsiProfDel_Click);
+            // 
+            // tsiGetDefaultCurve
+            // 
+            this.tsiGetDefaultCurve.Name = "tsiGetDefaultCurve";
+            this.tsiGetDefaultCurve.Size = new System.Drawing.Size(244, 22);
+            this.tsiGetDefaultCurve.Text = "Get default fan profile from EC...";
+            this.tsiGetDefaultCurve.Click += new System.EventHandler(this.tsiGetDefaultCurve_Click);
             // 
             // sep4
             // 
@@ -563,7 +567,7 @@ namespace YAMDCC.GUI
             tabOptions.Controls.Add(tblExtra);
             tabOptions.Location = new System.Drawing.Point(4, 24);
             tabOptions.Name = "tabOptions";
-            tabOptions.Size = new System.Drawing.Size(526, 370);
+            tabOptions.Size = new System.Drawing.Size(526, 364);
             tabOptions.TabIndex = 1;
             tabOptions.Text = "Extras";
             // 
@@ -589,7 +593,7 @@ namespace YAMDCC.GUI
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tblExtra.Size = new System.Drawing.Size(526, 370);
+            tblExtra.Size = new System.Drawing.Size(526, 368);
             tblExtra.TabIndex = 4;
             // 
             // lblChgLim
@@ -779,23 +783,6 @@ namespace YAMDCC.GUI
             this.tblMain.Size = new System.Drawing.Size(540, 416);
             this.tblMain.TabIndex = 1;
             // 
-            // tmrPoll
-            // 
-            this.tmrPoll.Interval = 1000;
-            this.tmrPoll.Tick += new System.EventHandler(this.tmrPoll_Tick);
-            // 
-            // tmrStatusReset
-            // 
-            this.tmrStatusReset.Interval = 10000;
-            this.tmrStatusReset.Tick += new System.EventHandler(this.tmrStatusReset_Tick);
-            // 
-            // tsiGetDefaultCurve
-            // 
-            this.tsiGetDefaultCurve.Name = "tsiGetDefaultCurve";
-            this.tsiGetDefaultCurve.Size = new System.Drawing.Size(244, 22);
-            this.tsiGetDefaultCurve.Text = "Get default fan profile from EC...";
-            this.tsiGetDefaultCurve.Click += new System.EventHandler(this.tsiGetDefaultCurve_Click);
-            // 
             // MainWindow
             // 
             this.AcceptButton = this.btnApply;
@@ -847,7 +834,6 @@ namespace YAMDCC.GUI
         private System.Windows.Forms.ToolStripMenuItem tsiECMon;
         private System.Windows.Forms.CheckBox chkFullBlast;
         private System.Windows.Forms.Button btnApply;
-        private System.Windows.Forms.Timer tmrPoll;
         private System.Windows.Forms.Label lblFanSpd;
         private System.Windows.Forms.Label lblFanRPM;
         private System.Windows.Forms.Label lblTemp;
@@ -890,7 +876,6 @@ namespace YAMDCC.GUI
         private System.Windows.Forms.Label lblPerfMode;
         private System.Windows.Forms.Label lblWinFnSwap;
         private System.Windows.Forms.Label lblKeyLight;
-        private System.Windows.Forms.Timer tmrStatusReset;
         private System.Windows.Forms.ToolStripMenuItem tsiGetDefaultCurve;
     }
 }

@@ -51,6 +51,8 @@ namespace YAMDCC.GUI
         private readonly TrackBar[] tbFanSpds = new TrackBar[7];
 
         private readonly ToolTip ttMain = new();
+
+        private readonly Timer tmrPoll, tmrStatusReset, tmrSvcTimeout;
         #endregion
 
         public MainWindow()
@@ -160,6 +162,24 @@ namespace YAMDCC.GUI
                 }
             }
 
+            tmrPoll = new()
+            {
+                Interval = 1000,
+            };
+            tmrPoll.Tick += tmrPoll_Tick;
+
+            tmrStatusReset = new()
+            {
+                Interval = 10000,
+            };
+            tmrStatusReset.Tick += tmrStatusReset_Tick;
+
+            tmrSvcTimeout = new()
+            {
+                Interval = 10000,
+            };
+            tmrSvcTimeout.Tick += tmrSvcTimeout_Tick;
+
             DisableAll();
         }
 
@@ -193,18 +213,12 @@ namespace YAMDCC.GUI
 
             if (File.Exists(Path.Combine(Constants.DataPath, "ECToConfFail")))
             {
-                MessageBox.Show(
-                    "An error occurred while fetching your laptop's default fan curves.\n\n" +
-                    "This is probably a bug; please report this on YAMDCC's issue tracker,\n" +
-                    $"including the log folder (located at {Path.Combine(Constants.DataPath, "Logs")}).",
+                MessageBox.Show(Strings.GetString("dlgECtoConfError", Path.Combine(Constants.DataPath, "Logs")),
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else if (File.Exists(Path.Combine(Constants.DataPath, "ECToConfSuccess")))
             {
-                MessageBox.Show(
-                    "Your laptop's default fan curves have been saved " +
-                    "to the currently applied config successfully.\n\n" +
-                    "Make sure to save your config! (using the \"Save config\" button)",
+                MessageBox.Show(Strings.GetString("dlgECtoConfSuccess"),
                     "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             try
@@ -427,6 +441,26 @@ namespace YAMDCC.GUI
         private void tsiProfDel_Click(object sender, EventArgs e)
         {
             DelFanProfile();
+        }
+
+        private void tsiGetDefaultCurve_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show(Strings.GetString("dlgECtoConfStart"),
+                "Default fan profile from EC?", MessageBoxButtons.YesNo,
+                MessageBoxIcon.Information) == DialogResult.Yes)
+            {
+                StreamWriter sw = new(Path.Combine(Constants.DataPath, "ECToConfPending"), false);
+                try
+                {
+                    sw.Write(1);
+                    sw.Flush();
+                }
+                finally
+                {
+                    sw.Close();
+                }
+                Application.Exit();
+            }
         }
 
         private void tsiECMon_Click(object sender, EventArgs e)
@@ -687,6 +721,21 @@ namespace YAMDCC.GUI
         {
             PollEC();
         }
+
+        private void tmrStatusReset_Tick(object sender, EventArgs e)
+        {
+            AppStatus.Code = StatusCode.None;
+            AppStatus.RepeatCount = 0;
+            lblStatus.Invoke(() => lblStatus.Text = "Ready");
+            tmrStatusReset.Stop();
+        }
+
+        private void tmrSvcTimeout_Tick(object sender, EventArgs e)
+        {
+            UpdateStatus(StatusCode.ServiceTimeout);
+            tmrSvcTimeout.Stop();
+        }
+
         #endregion
 
         #region Private methods
@@ -1045,6 +1094,9 @@ namespace YAMDCC.GUI
                     case StatusCode.ServiceResponseEmpty:
                         lblStatus.Invoke(() => lblStatus.Text = Strings.GetString("statResponseEmpty"));
                         break;
+                    case StatusCode.ServiceTimeout:
+                        lblStatus.Invoke(() => lblStatus.Text = Strings.GetString("statSvcTimeout"));
+                        break;
                     case StatusCode.NoConfig:
                         persist = true;
                         lblStatus.Invoke(() => lblStatus.Text = Strings.GetString("statNoConf"));
@@ -1074,38 +1126,6 @@ namespace YAMDCC.GUI
                     tmrStatusReset.Stop();
                     tmrStatusReset.Start();
                 }
-            }
-        }
-
-        private void tmrStatusReset_Tick(object sender, EventArgs e)
-        {
-            AppStatus.Code = StatusCode.None;
-            AppStatus.RepeatCount = 0;
-            lblStatus.Invoke(() => lblStatus.Text = "Ready");
-            tmrStatusReset.Stop();
-        }
-
-        private void tsiGetDefaultCurve_Click(object sender, EventArgs e)
-        {
-            if (MessageBox.Show(
-                "Would you like to copy your laptop's default " +
-                "fan curve to this config?\n\n" +
-                "You will need to reboot your computer so that " +
-                "the fan settings are reset to their defaults.",
-                "Default fan profile from EC?", MessageBoxButtons.YesNo,
-                MessageBoxIcon.Information) == DialogResult.Yes)
-            {
-                StreamWriter sw = new(Path.Combine(Constants.DataPath, "ECToConfPending"), false);
-                try
-                {
-                    sw.Write(1);
-                    sw.Flush();
-                }
-                finally
-                {
-                    sw.Close();
-                }
-                Application.Exit();
             }
         }
     }

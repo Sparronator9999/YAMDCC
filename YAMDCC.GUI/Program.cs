@@ -147,12 +147,9 @@ namespace YAMDCC.GUI
 
                 if (rebootFlag == 1)
                 {
-                    if (MessageBox.Show(
-                        "Your laptop hasn't been rebooted yet following a " +
-                        "request to copy the default fan profile of your laptop to " +
-                        "the loaded config.\n\n" +
-                        "Cancel and continue loading YAMDCC?", "Reboot pending",
-                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+                    if (MessageBox.Show(Strings.GetString("dlgECtoConfRebootPending"),
+                        "Reboot pending", MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
+                        MessageBoxDefaultButton.Button2) == DialogResult.Yes)
                     {
                         try
                         {

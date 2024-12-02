@@ -321,4 +321,28 @@ Please re-run this program as Administrator
 Template configs are currently a WIP and cannot be used yet.
 Please load a different config.</value>
   </data>
+  <data name="statSvcTimeout" xml:space="preserve">
+    <value>WARN: Service has not responded for a while. Try restarting YAMDCC.</value>
+  </data>
+  <data name="dlgECtoConfStart" xml:space="preserve">
+    <value>Would you like to copy your laptop's default fan curve to this config?
+
+You will need to reboot your computer so that the fan settings are reset to their defaults.</value>
+  </data>
+  <data name="dlgECtoConfError" xml:space="preserve">
+    <value>An error occurred while fetching your laptop's default fan curves.
+
+This is probably a bug; please report this on YAMDCC's issue tracker,
+including the log folder (located at {0}).</value>
+  </data>
+  <data name="dlgECtoConfSuccess" xml:space="preserve">
+    <value>Your laptop's default fan curves have been saved to the currently applied config successfully.
+
+Make sure to save your config (using the "Save config" button)!</value>
+  </data>
+  <data name="dlgECtoConfRebootPending" xml:space="preserve">
+    <value>Your laptop hasn't been rebooted yet following a request to copy the default fan profile of your laptop to the loaded config.
+
+Cancel and continue loading YAMDCC?</value>
+  </data>
 </root>

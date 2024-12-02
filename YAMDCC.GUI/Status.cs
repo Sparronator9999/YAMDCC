@@ -23,6 +23,7 @@ namespace YAMDCC.GUI
         None = 0,
         ServiceCommandFail,
         ServiceResponseEmpty,
+        ServiceTimeout,
         ConfLoading,
         NoConfig,
         ConfApplySuccess,
