@@ -207,8 +207,7 @@ namespace YAMDCC.GUI
 
             if (Config is not null && Config.KeyLightConf is not null)
             {
-                ServiceCommand command = new(Command.GetKeyLightBright, "");
-                IPCClient.PushMessage(command);
+                SendServiceMessage(new ServiceCommand(Command.GetKeyLightBright, ""));
             }
 
             if (File.Exists(Path.Combine(Constants.DataPath, "ECToConfFail")))
@@ -234,8 +233,7 @@ namespace YAMDCC.GUI
             // Disable Full Blast if it was enabled while the program was running:
             if (chkFullBlast.Checked)
             {
-                ServiceCommand command = new(Command.FullBlast, "0");
-                IPCClient.PushMessage(command);
+                SendServiceMessage(new ServiceCommand(Command.FullBlast, "0"));
             }
         }
 
@@ -331,8 +329,7 @@ namespace YAMDCC.GUI
                         UpdateStatus(StatusCode.ConfApplySuccess);
                         if (Config.KeyLightConf is not null)
                         {
-                            ServiceCommand command = new(Command.GetKeyLightBright, "");
-                            IPCClient.PushMessage(command);
+                            SendServiceMessage(new ServiceCommand(Command.GetKeyLightBright, ""));
                         }
                         break;
                     case Command.FullBlast:
@@ -671,8 +668,7 @@ namespace YAMDCC.GUI
 
         private void chkFullBlast_Toggled(object sender, EventArgs e)
         {
-            ServiceCommand command = new(Command.FullBlast, chkFullBlast.Checked ? "1" : "0");
-            IPCClient.PushMessage(command);
+            SendServiceMessage(new ServiceCommand(Command.FullBlast, chkFullBlast.Checked ? "1" : "0"));
         }
 
         private void numChargeLim_Changed(object sender, EventArgs e)
@@ -702,8 +698,7 @@ namespace YAMDCC.GUI
 
         private void tbKeyLight_Scroll(object sender, EventArgs e)
         {
-            ServiceCommand command = new(Command.SetKeyLightBright, $"{tbKeyLight.Value}");
-            IPCClient.PushMessage(command);
+            SendServiceMessage(new ServiceCommand(Command.SetKeyLightBright, $"{tbKeyLight.Value}"));
         }
 
         private void btnRevert_Click(object sender, EventArgs e)
@@ -869,8 +864,7 @@ namespace YAMDCC.GUI
             Config.Save(Path.Combine(Constants.DataPath, "CurrentConfig.xml"));
 
             // Tell the service to reload and apply the updated config
-            ServiceCommand command = new(Command.ApplyConfig, null);
-            IPCClient.PushMessage(command);
+            SendServiceMessage(new ServiceCommand(Command.ApplyConfig, null));
         }
 
         private void RevertConf()
@@ -911,9 +905,9 @@ namespace YAMDCC.GUI
 
         private void PollEC()
         {
-            IPCClient.PushMessage(new ServiceCommand(Command.GetTemp, $"{cboFanSel.SelectedIndex}"));
-            IPCClient.PushMessage(new ServiceCommand(Command.GetFanSpeed, $"{cboFanSel.SelectedIndex}"));
-            IPCClient.PushMessage(new ServiceCommand(Command.GetFanRPM, $"{cboFanSel.SelectedIndex}"));
+            SendServiceMessage(new ServiceCommand(Command.GetTemp, $"{cboFanSel.SelectedIndex}"));
+            SendServiceMessage(new ServiceCommand(Command.GetFanSpeed, $"{cboFanSel.SelectedIndex}"));
+            SendServiceMessage(new ServiceCommand(Command.GetFanRPM, $"{cboFanSel.SelectedIndex}"));
         }
 
         private void AddFanProfile()
@@ -1127,6 +1121,12 @@ namespace YAMDCC.GUI
                     tmrStatusReset.Start();
                 }
             }
+        }
+
+        private void SendServiceMessage(ServiceCommand command)
+        {
+            IPCClient.PushMessage(command);
+            tmrSvcTimeout.Start();
         }
     }
 }
