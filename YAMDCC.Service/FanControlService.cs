@@ -125,7 +125,9 @@ namespace YAMDCC.Service
             {
                 StreamReader sr = new(Path.Combine(DataPath, "ECToConfPending"));
                 if (int.TryParse(sr.ReadToEnd(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int value))
+                {
                     rebootFlag = value;
+                }
                 sr.Close();
 
                 if (rebootFlag == 0)
@@ -159,7 +161,9 @@ namespace YAMDCC.Service
             {
                 StreamReader sr = new(Path.Combine(DataPath, "ECToConfPending"));
                 if (int.TryParse(sr.ReadToEnd(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int value))
+                {
                     rebootFlag = value;
+                }
                 sr.Close();
 
                 if (rebootFlag == 1)
@@ -609,7 +613,7 @@ namespace YAMDCC.Service
                     }
                     else
                     {
-                        response = new(Response.FanRPM, $"{(int)Command.GetFanRPM}");
+                        response = new(Response.Error, $"{(int)Command.GetFanRPM}");
                     }
                     IPCServer.PushMessage(response, clientId);
                     return 0;
