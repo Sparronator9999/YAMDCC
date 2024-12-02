@@ -95,10 +95,10 @@ Below are some changes I would like to make before a 1.0 release of YAMDCC:
 - [x] Config generation for MSI laptops
   - Finally working! BUT, it still needs some more testing.
   - Please report bugs to the [issue tracker](https://github.com/Sparronator9999/YAMDCC/issues/new).
-- [ ] Revamp IPC between service and config applications *(started)*
-  - [ ] Add command timeout to GUI to make it more obvious when a service command fails
+- [x] Revamp IPC between service and config applications *(started)*
+  - [x] Add command timeout to GUI to make it more obvious when a service command fails
   - [x] Implement `Success` and `Fail` responses for the rest of the service commands
-  - [ ] Other things I didn't remember while writing this.
+  - [x] Other things I didn't remember while writing this (probably none).
 - [ ] Fix any remaining bugs before the 1.0 release.
   - I will start releasing betas once the above points are complete.
 
