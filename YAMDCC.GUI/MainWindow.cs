@@ -246,6 +246,7 @@ namespace YAMDCC.GUI
 
         private void IPC_MessageReceived(object sender, PipeMessageEventArgs<ServiceResponse, ServiceCommand> e)
         {
+            tmrSvcTimeout.Stop();
             string[] args = e.Message.Value.Split(' ');
             if (args.Length == 1)
             {
