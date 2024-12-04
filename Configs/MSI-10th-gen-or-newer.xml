@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <YAMDCC_Config xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Ver="1">
-	<Model>MSI laptop (10th-gen Intel or newer) config.
-ONLY use with 10th-gen or newer Intel MSI laptops!
-</Model>
+	<Model>MSI laptop - generic 10th-gen Intel (or newer)</Model>
 	<Author>Sparronator9999</Author>
 	<FanConfs>
 		<FanConf>
 			<Name>CPU Fan</Name>
 			<MinSpeed>0</MinSpeed>
 			<MaxSpeed>100</MaxSpeed>
-			<CurveSel>1</CurveSel>
+			<CurveSel>0</CurveSel>
 			<SpeedReadReg>113</SpeedReadReg>
 			<TempReadReg>104</TempReadReg>
 			<RPMConf>
@@ -93,7 +91,7 @@ ONLY use with 10th-gen or newer Intel MSI laptops!
 			<Name>GPU Fan</Name>
 			<MinSpeed>0</MinSpeed>
 			<MaxSpeed>100</MaxSpeed>
-			<CurveSel>1</CurveSel>
+			<CurveSel>0</CurveSel>
 			<SpeedReadReg>137</SpeedReadReg>
 			<TempReadReg>128</TempReadReg>
 			<RPMConf>
