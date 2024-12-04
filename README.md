@@ -95,15 +95,9 @@ The following laptops have been tested by the community and are confirmed to be 
 
 Below are some changes I would like to make before a 1.0 release of YAMDCC:
 
-- [x] Config generation for MSI laptops
-  - Finally working! BUT, it still needs some more testing.
-  - Please report bugs to the [issue tracker](https://github.com/Sparronator9999/YAMDCC/issues/new).
-- [x] Revamp IPC between service and config applications *(started)*
-  - [x] Add command timeout to GUI to make it more obvious when a service command fails
-  - [x] Implement `Success` and `Fail` responses for the rest of the service commands
-  - [x] Other things I didn't remember while writing this (probably none).
 - [ ] Fix any remaining bugs before the 1.0 release.
-  - I will start releasing betas once the above points are complete.
+  - [ ] Add VBS (Core isolation) detection to prevent issues with EC access.
+  - [ ] Other bugs as they get found.
 
 Below are some planned features for potential future releases:
 
@@ -171,6 +165,7 @@ may encounter issues (that means `net stop yamdccsvc` first, then compile).
 ## Issues
 
 If your question isn't already answered in the [FAQ](#faq) or [issues megathread](https://github.com/Sparronator9999/YAMDCC/issues/1),
+and there isn't already another similar issue in [the issue tracker](https://github.com/Sparronator9999/YAMDCC/issues),
 feel free to open an issue. Please make sure to use the correct issue template for your problem.
 
 ## Contributing
@@ -238,6 +233,20 @@ driver instead. If it was installed with, e.g. [LibreHardwareMonitor](https://gi
 you should be fine, as they implement the same fix that YAMDCC does.
 
 Please read the [disclaimer](#disclaimers), especially the bold text, if you haven't already.
+
+### Help! My fan profiles aren't being applied!
+
+You may need to disable virtualisation-based security (VBS, or "Core isolation" in Windows Security):
+
+1.  Open Windows Security (by searching for it, or from `Settings` > `Update & security` > `Windows Security`).
+2.  Go to `Device security` > `Core isolation`, then toggle `Memory integrity` off.
+3.  Reboot and try to apply your fan profiles again.
+
+A warning will be added in the future to YAMDCC if VBS is enabled.
+
+If the above steps don't fix your problem, search the [issue tracker](https://github.com/Sparronator9999/YAMDCC/issues)
+for similar issues, or [open a new issue](https://github.com/Sparronator9999/YAMDCC/issues/new)
+if a similar issue doesn't already exist (see the [Issues section](#issues) of the README).
 
 ### My laptop isn't supported! What do I do?
 
