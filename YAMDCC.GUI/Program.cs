@@ -174,14 +174,14 @@ namespace YAMDCC.GUI
         {
             if (e.ExceptionObject is Exception ex)
             {
-                CrashDialog dlg = new(ex, false);
+                CrashDialog dlg = new(ex);
                 dlg.ShowDialog();
             }
         }
 
         private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
         {
-            CrashDialog dlg = new(e.Exception, true);
+            CrashDialog dlg = new(e.Exception);
             dlg.ShowDialog();
         }
 

@@ -80,13 +80,13 @@ namespace YAMDCC.GUI.Dialogs
             tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            tblMain.Size = new System.Drawing.Size(400, 250);
+            tblMain.Size = new System.Drawing.Size(480, 320);
             tblMain.TabIndex = 0;
             // 
             // btnCopy
             // 
             btnCopy.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            btnCopy.Location = new System.Drawing.Point(207, 221);
+            btnCopy.Location = new System.Drawing.Point(287, 291);
             btnCopy.Name = "btnCopy";
             btnCopy.Size = new System.Drawing.Size(109, 25);
             btnCopy.TabIndex = 1;
@@ -96,7 +96,7 @@ namespace YAMDCC.GUI.Dialogs
             // 
             // btnExit
             // 
-            btnExit.Location = new System.Drawing.Point(322, 221);
+            btnExit.Location = new System.Drawing.Point(402, 291);
             btnExit.Name = "btnExit";
             btnExit.Size = new System.Drawing.Size(75, 25);
             btnExit.TabIndex = 0;
@@ -112,15 +112,17 @@ namespace YAMDCC.GUI.Dialogs
             lblError.Location = new System.Drawing.Point(3, 3);
             lblError.Margin = new System.Windows.Forms.Padding(3);
             lblError.Name = "lblError";
-            lblError.Size = new System.Drawing.Size(394, 60);
+            lblError.Padding = new System.Windows.Forms.Padding(3);
+            lblError.Size = new System.Drawing.Size(474, 66);
             lblError.TabIndex = 0;
-            lblError.Text = "YAMDCC has crashed!\r\n\r\nBefore reporting a bug, try again on the latest commit of " +
-    "YAMDCC.\r\nIf the crash still occurs, please include the following crash report:";
+            lblError.Text = "YAMDCC has crashed!\r\n\r\nBefore reporting a bug, try again on the latest release of" +
+    " YAMDCC.\r\nIf the crash still occurs, please create an issue with the following c" +
+    "rash report:";
             // 
             // btnIssues
             // 
             btnIssues.Dock = System.Windows.Forms.DockStyle.Fill;
-            btnIssues.Location = new System.Drawing.Point(3, 221);
+            btnIssues.Location = new System.Drawing.Point(3, 291);
             btnIssues.Name = "btnIssues";
             btnIssues.Size = new System.Drawing.Size(100, 26);
             btnIssues.TabIndex = 1;
@@ -133,9 +135,9 @@ namespace YAMDCC.GUI.Dialogs
             tblMain.SetColumnSpan(grpReport, 4);
             grpReport.Controls.Add(this.txtStackTrace);
             grpReport.Dock = System.Windows.Forms.DockStyle.Fill;
-            grpReport.Location = new System.Drawing.Point(3, 69);
+            grpReport.Location = new System.Drawing.Point(3, 75);
             grpReport.Name = "grpReport";
-            grpReport.Size = new System.Drawing.Size(394, 146);
+            grpReport.Size = new System.Drawing.Size(474, 210);
             grpReport.TabIndex = 3;
             grpReport.TabStop = false;
             grpReport.Text = "Crash report";
@@ -150,14 +152,14 @@ namespace YAMDCC.GUI.Dialogs
             this.txtStackTrace.Name = "txtStackTrace";
             this.txtStackTrace.ReadOnly = true;
             this.txtStackTrace.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtStackTrace.Size = new System.Drawing.Size(388, 124);
+            this.txtStackTrace.Size = new System.Drawing.Size(468, 188);
             this.txtStackTrace.TabIndex = 0;
             // 
             // CrashDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(400, 250);
+            this.ClientSize = new System.Drawing.Size(480, 320);
             this.Controls.Add(tblMain);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

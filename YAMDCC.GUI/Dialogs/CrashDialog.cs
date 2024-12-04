@@ -22,14 +22,10 @@ namespace YAMDCC.GUI.Dialogs
 {
     internal sealed partial class CrashDialog : Form
     {
-        public CrashDialog(Exception ex, bool threadException)
+        public CrashDialog(Exception ex)
         {
             InitializeComponent();
-            txtStackTrace.Text = threadException
-                ? "(called from Application.ThreadException)\r\n"
-                : "(called from AppDomain.CurrentDomain.UnhandledException)\r\n";
-
-            txtStackTrace.Text += $"{ex.GetType()}: {ex.Message}\r\n{ex.StackTrace}";
+            txtStackTrace.Text = $"{ex.GetType()}: {ex.Message}\r\n{ex.StackTrace}";
         }
 
         private void btnReportIssue_Click(object sender, EventArgs e)
