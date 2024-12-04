@@ -6,9 +6,9 @@ A fast, lightweight alternative to MSI Center for MSI laptops, written in C#.
 
 ## Disclaimers
 
-- While this program is mostly complete, I still consider it to be **alpha-quality software!**
-- While measures are taken to reduce the program crash chance, you *will* still likely encounter
-  bugs while using this program, especially if feeding the program garbage configs.
+- While this program is mostly complete, it is still **beta-quality software!**
+- While measures are taken to reduce the program crash chance, you may still encounter
+  some bugs while using this program.
 - This program requires low-level access to some of your computer hardware to apply settings. While
   no issues should arise from this, **I (Sparronator9999) and any other contributers**
   **shall not be held responsible if this program fries your computer.**
@@ -42,10 +42,13 @@ A fast, lightweight alternative to MSI Center for MSI laptops, written in C#.
 
 ## Supported Laptops
 
-Currently, there is only a config for the MSI GF63 Thin 11SC, but other MSI laptops with a 10th-gen
-or later Intel CPU should also work, just with an incorrect default fan curve.
+Currently, there are configs for the following laptops:
 
-An update will add support for reading the default fan curve of more MSI laptops (including 9th-gen and older).
+  - MSI GF63 Thin 11SC
+
+There are also generic configs that should work with most MSI laptops, but with an incorrect default
+config. You can use the EC-to-config feature to get the proper fan curves for your laptop, then
+[create a pull request](https://github.com/Sparronator9999/YAMDCC/pulls) to get your laptop's config added to the project.
 
 Other laptop brands are not officially supported. You can still try and make your own config, but chances
 are you're looking for [NoteBook FanControl](https://github.com/UraniumDonut/nbfc-revive) instead.
