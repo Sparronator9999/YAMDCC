@@ -298,6 +298,14 @@ namespace YAMDCC.GUI
                     {
                         if (int.TryParse(args[0], out int value))
                         {
+                            // value received from service should be valid,
+                            // but let's check anyway to avoid potential crashes
+                            // from non-official YAMDCC services
+                            if (value < 0 || value > Config.KeyLightConf.MaxVal - Config.KeyLightConf.MinVal)
+                            {
+                                break;
+                            }
+
                             tbKeyLight.Invoke(new Action(delegate
                             {
                                 tbKeyLight.Maximum = Config.KeyLightConf.MaxVal - Config.KeyLightConf.MinVal;

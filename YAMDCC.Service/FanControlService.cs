@@ -695,7 +695,10 @@ namespace YAMDCC.Service
             if (success)
             {
                 int brightness = value - Config.KeyLightConf.MinVal;
-                response = new(Response.KeyLightBright, $"{brightness}");
+
+                response = value < Config.KeyLightConf.MinVal || value > Config.KeyLightConf.MaxVal
+                    ? new(Response.Error, $"{(int)Command.GetKeyLightBright}")
+                    : new(Response.KeyLightBright, $"{brightness}");
             }
             else
             {
