@@ -221,6 +221,10 @@ Set to "0" to disable this feature.</value>
     <value>When enabled, prints information about the fan speed and RPM,
 and the temperature of the component being cooled by the fan.</value>
   </data>
+  <data name="ttExit" xml:space="preserve">
+    <value>Click to quit YAMDCC.
+The YAMDCC service will continue to run in the background.</value>
+  </data>
   <data name="ttFanSel" xml:space="preserve">
     <value>The fan to adjust a fan curve for.
 Depending on your laptop, there may be multiple fans listed here,
@@ -263,9 +267,6 @@ came last.</value>
   </data>
   <data name="ttSaveConf" xml:space="preserve">
     <value>Saves the currently loaded config to an XML file.</value>
-  </data>
-  <data name="ttSelfExplan" xml:space="preserve">
-    <value>Do you really need a tooltip to know what this does?</value>
   </data>
   <data name="ttSource" xml:space="preserve">
     <value>Go to the GitHub page for this project.</value>

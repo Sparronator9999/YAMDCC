@@ -67,7 +67,7 @@ namespace YAMDCC.GUI
             tsiSaveConf.ToolTipText = Strings.GetString("ttSaveConf");
             tsiApply.ToolTipText = Strings.GetString("ttApply");
             tsiRevert.ToolTipText = Strings.GetString("ttRevert");
-            tsiExit.ToolTipText = Strings.GetString("ttSelfExplan");
+            tsiExit.ToolTipText = Strings.GetString("ttExit");
             tsiProfAdd.ToolTipText = Strings.GetString("ttProfAdd");
             tsiProfRename.ToolTipText = Strings.GetString("ttProfRename");
             tsiProfChangeDesc.ToolTipText = Strings.GetString("ttProfChangeDesc");

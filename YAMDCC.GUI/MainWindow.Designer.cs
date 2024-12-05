@@ -53,12 +53,12 @@ namespace YAMDCC.GUI
             System.Windows.Forms.TabControl tcMain;
             System.Windows.Forms.TabPage tabFanControl;
             System.Windows.Forms.FlowLayoutPanel flwFanSelect;
-            System.Windows.Forms.TableLayoutPanel tblFCBottom;
             System.Windows.Forms.TabPage tabOptions;
             System.Windows.Forms.TableLayoutPanel tblExtra;
             System.Windows.Forms.FlowLayoutPanel flwKeyLight;
             System.Windows.Forms.Label lblKeyLightLow;
             System.Windows.Forms.Label lblKeyLightHigh;
+            System.Windows.Forms.TableLayoutPanel tblFCBottom;
             System.Windows.Forms.FlowLayoutPanel flwStats;
             this.tsiFile = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiLoadConf = new System.Windows.Forms.ToolStripMenuItem();
@@ -90,9 +90,6 @@ namespace YAMDCC.GUI
             this.cboProfSel = new System.Windows.Forms.ComboBox();
             this.btnProfAdd = new System.Windows.Forms.Button();
             this.btnProfDel = new System.Windows.Forms.Button();
-            this.chkFullBlast = new System.Windows.Forms.CheckBox();
-            this.btnApply = new System.Windows.Forms.Button();
-            this.btnRevert = new System.Windows.Forms.Button();
             this.lblChgLim = new System.Windows.Forms.Label();
             this.numChgLim = new System.Windows.Forms.NumericUpDown();
             this.lblPerfMode = new System.Windows.Forms.Label();
@@ -101,6 +98,9 @@ namespace YAMDCC.GUI
             this.chkWinFnSwap = new System.Windows.Forms.CheckBox();
             this.lblKeyLight = new System.Windows.Forms.Label();
             this.tbKeyLight = new System.Windows.Forms.TrackBar();
+            this.chkFullBlast = new System.Windows.Forms.CheckBox();
+            this.btnApply = new System.Windows.Forms.Button();
+            this.btnRevert = new System.Windows.Forms.Button();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lblFanSpd = new System.Windows.Forms.Label();
             this.lblFanRPM = new System.Windows.Forms.Label();
@@ -115,12 +115,12 @@ namespace YAMDCC.GUI
             tcMain = new System.Windows.Forms.TabControl();
             tabFanControl = new System.Windows.Forms.TabPage();
             flwFanSelect = new System.Windows.Forms.FlowLayoutPanel();
-            tblFCBottom = new System.Windows.Forms.TableLayoutPanel();
             tabOptions = new System.Windows.Forms.TabPage();
             tblExtra = new System.Windows.Forms.TableLayoutPanel();
             flwKeyLight = new System.Windows.Forms.FlowLayoutPanel();
             lblKeyLightLow = new System.Windows.Forms.Label();
             lblKeyLightHigh = new System.Windows.Forms.Label();
+            tblFCBottom = new System.Windows.Forms.TableLayoutPanel();
             flwStats = new System.Windows.Forms.FlowLayoutPanel();
             menuStrip.SuspendLayout();
             tcMain.SuspendLayout();
@@ -128,12 +128,12 @@ namespace YAMDCC.GUI
             this.tblFanControl.SuspendLayout();
             this.tblCurve.SuspendLayout();
             flwFanSelect.SuspendLayout();
-            tblFCBottom.SuspendLayout();
             tabOptions.SuspendLayout();
             tblExtra.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numChgLim)).BeginInit();
             flwKeyLight.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbKeyLight)).BeginInit();
+            tblFCBottom.SuspendLayout();
             flwStats.SuspendLayout();
             this.tblMain.SuspendLayout();
             this.SuspendLayout();
@@ -338,9 +338,10 @@ namespace YAMDCC.GUI
             tcMain.Controls.Add(tabOptions);
             tcMain.Dock = System.Windows.Forms.DockStyle.Fill;
             tcMain.Location = new System.Drawing.Point(3, 3);
+            tcMain.Margin = new System.Windows.Forms.Padding(3, 3, 3, 2);
             tcMain.Name = "tcMain";
             tcMain.SelectedIndex = 0;
-            tcMain.Size = new System.Drawing.Size(534, 392);
+            tcMain.Size = new System.Drawing.Size(534, 364);
             tcMain.TabIndex = 6;
             // 
             // tabFanControl
@@ -349,7 +350,7 @@ namespace YAMDCC.GUI
             tabFanControl.Controls.Add(this.tblFanControl);
             tabFanControl.Location = new System.Drawing.Point(4, 24);
             tabFanControl.Name = "tabFanControl";
-            tabFanControl.Size = new System.Drawing.Size(526, 364);
+            tabFanControl.Size = new System.Drawing.Size(526, 336);
             tabFanControl.TabIndex = 0;
             tabFanControl.Text = "Fan Control";
             // 
@@ -359,7 +360,6 @@ namespace YAMDCC.GUI
             this.tblFanControl.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblFanControl.Controls.Add(this.tblCurve, 0, 1);
             this.tblFanControl.Controls.Add(flwFanSelect, 0, 0);
-            this.tblFanControl.Controls.Add(tblFCBottom, 0, 2);
             this.tblFanControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblFanControl.Location = new System.Drawing.Point(0, 0);
             this.tblFanControl.Margin = new System.Windows.Forms.Padding(0);
@@ -368,7 +368,7 @@ namespace YAMDCC.GUI
             this.tblFanControl.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblFanControl.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblFanControl.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblFanControl.Size = new System.Drawing.Size(526, 364);
+            this.tblFanControl.Size = new System.Drawing.Size(526, 336);
             this.tblFanControl.TabIndex = 0;
             // 
             // tblCurve
@@ -396,7 +396,7 @@ namespace YAMDCC.GUI
             this.tblCurve.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblCurve.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblCurve.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblCurve.Size = new System.Drawing.Size(526, 305);
+            this.tblCurve.Size = new System.Drawing.Size(526, 307);
             this.tblCurve.TabIndex = 6;
             // 
             // lblSpeed
@@ -413,7 +413,7 @@ namespace YAMDCC.GUI
             // 
             this.lblUpT.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblUpT.AutoSize = true;
-            this.lblUpT.Location = new System.Drawing.Point(19, 275);
+            this.lblUpT.Location = new System.Drawing.Point(19, 277);
             this.lblUpT.Name = "lblUpT";
             this.lblUpT.Size = new System.Drawing.Size(46, 15);
             this.lblUpT.TabIndex = 1;
@@ -423,7 +423,7 @@ namespace YAMDCC.GUI
             // 
             this.lblDownT.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblDownT.AutoSize = true;
-            this.lblDownT.Location = new System.Drawing.Point(3, 290);
+            this.lblDownT.Location = new System.Drawing.Point(3, 292);
             this.lblDownT.Name = "lblDownT";
             this.lblDownT.Size = new System.Drawing.Size(62, 15);
             this.lblDownT.TabIndex = 2;
@@ -507,67 +507,13 @@ namespace YAMDCC.GUI
             this.btnProfDel.UseVisualStyleBackColor = true;
             this.btnProfDel.Click += new System.EventHandler(this.btnProfDel_Click);
             // 
-            // tblFCBottom
-            // 
-            tblFCBottom.AutoSize = true;
-            tblFCBottom.ColumnCount = 3;
-            tblFCBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tblFCBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            tblFCBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            tblFCBottom.Controls.Add(this.chkFullBlast, 0, 0);
-            tblFCBottom.Controls.Add(this.btnApply, 2, 0);
-            tblFCBottom.Controls.Add(this.btnRevert, 1, 0);
-            tblFCBottom.Dock = System.Windows.Forms.DockStyle.Fill;
-            tblFCBottom.Location = new System.Drawing.Point(0, 334);
-            tblFCBottom.Margin = new System.Windows.Forms.Padding(0);
-            tblFCBottom.Name = "tblFCBottom";
-            tblFCBottom.RowCount = 1;
-            tblFCBottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tblFCBottom.Size = new System.Drawing.Size(526, 30);
-            tblFCBottom.TabIndex = 4;
-            // 
-            // chkFullBlast
-            // 
-            this.chkFullBlast.AutoSize = true;
-            this.chkFullBlast.Location = new System.Drawing.Point(6, 6);
-            this.chkFullBlast.Margin = new System.Windows.Forms.Padding(6, 6, 6, 5);
-            this.chkFullBlast.Name = "chkFullBlast";
-            this.chkFullBlast.Size = new System.Drawing.Size(73, 19);
-            this.chkFullBlast.TabIndex = 1;
-            this.chkFullBlast.Text = "Full Blast";
-            this.chkFullBlast.UseVisualStyleBackColor = true;
-            this.chkFullBlast.CheckedChanged += new System.EventHandler(this.chkFullBlast_Toggled);
-            // 
-            // btnApply
-            // 
-            this.btnApply.Location = new System.Drawing.Point(448, 3);
-            this.btnApply.Margin = new System.Windows.Forms.Padding(3, 3, 3, 2);
-            this.btnApply.Name = "btnApply";
-            this.btnApply.Size = new System.Drawing.Size(75, 25);
-            this.btnApply.TabIndex = 4;
-            this.btnApply.Text = "Apply";
-            this.btnApply.UseVisualStyleBackColor = true;
-            this.btnApply.Click += new System.EventHandler(this.btnApply_Click);
-            // 
-            // btnRevert
-            // 
-            this.btnRevert.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnRevert.Location = new System.Drawing.Point(367, 3);
-            this.btnRevert.Margin = new System.Windows.Forms.Padding(3, 3, 3, 2);
-            this.btnRevert.Name = "btnRevert";
-            this.btnRevert.Size = new System.Drawing.Size(75, 25);
-            this.btnRevert.TabIndex = 5;
-            this.btnRevert.Text = "Revert";
-            this.btnRevert.UseVisualStyleBackColor = true;
-            this.btnRevert.Click += new System.EventHandler(this.btnRevert_Click);
-            // 
             // tabOptions
             // 
             tabOptions.BackColor = System.Drawing.Color.White;
             tabOptions.Controls.Add(tblExtra);
             tabOptions.Location = new System.Drawing.Point(4, 24);
             tabOptions.Name = "tabOptions";
-            tabOptions.Size = new System.Drawing.Size(526, 366);
+            tabOptions.Size = new System.Drawing.Size(526, 392);
             tabOptions.TabIndex = 1;
             tabOptions.Text = "Extras";
             // 
@@ -593,7 +539,7 @@ namespace YAMDCC.GUI
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tblExtra.Size = new System.Drawing.Size(526, 366);
+            tblExtra.Size = new System.Drawing.Size(526, 392);
             tblExtra.TabIndex = 4;
             // 
             // lblChgLim
@@ -714,6 +660,60 @@ namespace YAMDCC.GUI
             lblKeyLightHigh.TabIndex = 11;
             lblKeyLightHigh.Text = "Bright";
             // 
+            // tblFCBottom
+            // 
+            tblFCBottom.AutoSize = true;
+            tblFCBottom.ColumnCount = 3;
+            tblFCBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tblFCBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            tblFCBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            tblFCBottom.Controls.Add(this.chkFullBlast, 0, 0);
+            tblFCBottom.Controls.Add(this.btnApply, 2, 0);
+            tblFCBottom.Controls.Add(this.btnRevert, 1, 0);
+            tblFCBottom.Dock = System.Windows.Forms.DockStyle.Fill;
+            tblFCBottom.Location = new System.Drawing.Point(2, 369);
+            tblFCBottom.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            tblFCBottom.Name = "tblFCBottom";
+            tblFCBottom.RowCount = 1;
+            tblFCBottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tblFCBottom.Size = new System.Drawing.Size(536, 29);
+            tblFCBottom.TabIndex = 4;
+            // 
+            // chkFullBlast
+            // 
+            this.chkFullBlast.AutoSize = true;
+            this.chkFullBlast.Location = new System.Drawing.Point(5, 5);
+            this.chkFullBlast.Margin = new System.Windows.Forms.Padding(5, 5, 6, 5);
+            this.chkFullBlast.Name = "chkFullBlast";
+            this.chkFullBlast.Size = new System.Drawing.Size(73, 19);
+            this.chkFullBlast.TabIndex = 1;
+            this.chkFullBlast.Text = "Full Blast";
+            this.chkFullBlast.UseVisualStyleBackColor = true;
+            this.chkFullBlast.CheckedChanged += new System.EventHandler(this.chkFullBlast_Toggled);
+            // 
+            // btnApply
+            // 
+            this.btnApply.Location = new System.Drawing.Point(458, 2);
+            this.btnApply.Margin = new System.Windows.Forms.Padding(2, 2, 3, 2);
+            this.btnApply.Name = "btnApply";
+            this.btnApply.Size = new System.Drawing.Size(75, 25);
+            this.btnApply.TabIndex = 4;
+            this.btnApply.Text = "Apply";
+            this.btnApply.UseVisualStyleBackColor = true;
+            this.btnApply.Click += new System.EventHandler(this.btnApply_Click);
+            // 
+            // btnRevert
+            // 
+            this.btnRevert.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnRevert.Location = new System.Drawing.Point(378, 2);
+            this.btnRevert.Margin = new System.Windows.Forms.Padding(2, 2, 3, 2);
+            this.btnRevert.Name = "btnRevert";
+            this.btnRevert.Size = new System.Drawing.Size(75, 25);
+            this.btnRevert.TabIndex = 5;
+            this.btnRevert.Text = "Revert";
+            this.btnRevert.UseVisualStyleBackColor = true;
+            this.btnRevert.Click += new System.EventHandler(this.btnRevert_Click);
+            // 
             // flwStats
             // 
             flwStats.AutoSize = true;
@@ -772,13 +772,15 @@ namespace YAMDCC.GUI
             this.tblMain.ColumnCount = 1;
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblMain.Controls.Add(tcMain, 0, 0);
-            this.tblMain.Controls.Add(flwStats, 0, 1);
+            this.tblMain.Controls.Add(flwStats, 0, 2);
+            this.tblMain.Controls.Add(tblFCBottom, 0, 1);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblMain.Location = new System.Drawing.Point(0, 24);
             this.tblMain.Margin = new System.Windows.Forms.Padding(0);
             this.tblMain.Name = "tblMain";
-            this.tblMain.RowCount = 2;
+            this.tblMain.RowCount = 3;
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblMain.Size = new System.Drawing.Size(540, 416);
             this.tblMain.TabIndex = 1;
@@ -811,8 +813,6 @@ namespace YAMDCC.GUI
             this.tblCurve.PerformLayout();
             flwFanSelect.ResumeLayout(false);
             flwFanSelect.PerformLayout();
-            tblFCBottom.ResumeLayout(false);
-            tblFCBottom.PerformLayout();
             tabOptions.ResumeLayout(false);
             tblExtra.ResumeLayout(false);
             tblExtra.PerformLayout();
@@ -820,6 +820,8 @@ namespace YAMDCC.GUI
             flwKeyLight.ResumeLayout(false);
             flwKeyLight.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbKeyLight)).EndInit();
+            tblFCBottom.ResumeLayout(false);
+            tblFCBottom.PerformLayout();
             flwStats.ResumeLayout(false);
             flwStats.PerformLayout();
             this.tblMain.ResumeLayout(false);
