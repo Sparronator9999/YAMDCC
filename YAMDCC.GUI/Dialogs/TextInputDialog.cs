@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
+using System;
 using System.Windows.Forms;
 
 namespace YAMDCC.GUI.Dialogs
@@ -35,9 +36,16 @@ namespace YAMDCC.GUI.Dialogs
             Text = title;
         }
 
-        private void btnOK_Click(object sender, System.EventArgs e)
+        private void btnOK_Click(object sender, EventArgs e)
         {
             Result = txtInput.Text;
+        }
+
+        private void txtInput_TextChanged(object sender, EventArgs e)
+        {
+            // make sure text input isn't empty
+            // before allowing user to click "OK":
+            btnOK.Enabled = !string.IsNullOrEmpty(txtInput.Text);
         }
     }
 }
