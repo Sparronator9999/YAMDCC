@@ -33,8 +33,8 @@ namespace YAMDCC.Logs
         private StreamWriter LogWriter;
 
         /// <summary>
-        /// Used with <c>lock</c> to prevent more than one thread
-        /// writing to the file at once.
+        /// Used with <see langword="lock"/> to prevent more
+        /// than one thread writing to the file at once.
         /// </summary>
         private readonly object
             fileLock = new(),
@@ -56,8 +56,6 @@ namespace YAMDCC.Logs
             "Sparronator9999", "YAMDCC", "Logs");
 
         private string LogPath => Path.Combine(LogDir, AppDomain.CurrentDomain.FriendlyName);
-
-        //public string LogPath = Process.GetCurrentProcess().MainModule.FileName;
 
         /// <summary>
         /// The maximum number of logs to archive.
@@ -87,7 +85,9 @@ namespace YAMDCC.Logs
         /// <summary>
         /// Writes a Debug event to the <see cref="Logger"/>.
         /// </summary>
-        /// <param name="message">The event to write to the log.</param>
+        /// <param name="message">
+        /// The event to write to the log.
+        /// </param>
         public void Debug(string message)
         {
             if (FileLogLevel >= LogLevel.Debug)
@@ -365,8 +365,8 @@ namespace YAMDCC.Logs
                 // do nothing to avoid crash
             }
 
-            // if anyone knows why the fuck directory.createdirectory
-            // is doing nothing when running as yamdccsvc.exe and
+            // if anyone knows why the fuck Directory.CreateDirectory
+            // is doing nothing when running from a windows service and
             // pretending everything is ok i would LOVE to know
             // (workaround in YAMDCC.GUI/Program.cs)
             Directory.CreateDirectory(LogDir);
