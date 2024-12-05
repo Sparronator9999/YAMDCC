@@ -42,10 +42,10 @@ namespace YAMDCC.Config
         public TempThreshold[] TempThresholds { get; set; }
 
         /// <summary>
-        /// Creates a deep copy of this <seealso cref="FanCurveConf"/>.
+        /// Creates a deep copy of this <see cref="FanCurveConf"/>.
         /// </summary>
         /// <returns>
-        /// A copy of this <seealso cref="FanCurveConf"/>.
+        /// A copy of this <see cref="FanCurveConf"/>.
         /// </returns>
         public FanCurveConf Copy()
         {

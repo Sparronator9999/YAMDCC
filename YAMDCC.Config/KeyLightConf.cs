@@ -18,6 +18,9 @@ using System.Xml.Serialization;
 
 namespace YAMDCC.Config
 {
+    /// <summary>
+    /// Represents a configuration for the keyboard backlight in a laptop.
+    /// </summary>
     public sealed class KeyLightConf
     {
         /// <summary>

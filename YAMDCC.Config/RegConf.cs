@@ -20,7 +20,7 @@ namespace YAMDCC.Config
 {
     /// <summary>
     /// Represents miscellaneous register configurations for the target
-    /// system. May be required to enable fan control via MSI Fan Control.
+    /// system. May be required to enable fan control via YAMDCC.
     /// </summary>
     /// <remarks>
     /// All RegConfigs defined here will be applied on service start.

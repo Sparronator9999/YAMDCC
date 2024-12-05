@@ -22,7 +22,7 @@ using System.Xml.Serialization;
 namespace YAMDCC.Config
 {
     /// <summary>
-    /// Represents an MSI Fan Control configuration.
+    /// Represents a YAMDCC configuration.
     /// </summary>
     public sealed class YAMDCC_Config
     {
@@ -58,51 +58,69 @@ namespace YAMDCC.Config
         public FanConf[] FanConfs { get; set; }
 
         /// <summary>
-        /// The laptop's Cooler Boost config. May be <c>null</c>.
+        /// The laptop's Full Blast config.
         /// </summary>
+        /// <remarks>
+        /// May be <c>null</c> if not supported on the laptop.
+        /// </remarks>
         [XmlElement]
         public FullBlastConf FullBlastConf { get; set; }
 
         /// <summary>
-        /// The laptop's charge threshold config. May be <c>null</c>.
+        /// The laptop's charge threshold config.
         /// </summary>
+        /// <remarks>
+        /// May be <c>null</c> if not supported on the laptop.
+        /// </remarks>
         [XmlElement]
         public ChargeLimitConf ChargeLimitConf { get; set; }
 
         /// <summary>
-        /// The laptop's performance mode config. May be <c>null</c>.
+        /// The laptop's performance mode config.
         /// </summary>
+        /// <remarks>
+        /// May be <c>null</c> if not supported on the laptop.
+        /// </remarks>
         [XmlElement]
         public PerfModeConf PerfModeConf { get; set; }
 
         /// <summary>
-        /// The laptop's Win/Fn keyboard swap config. May be <c>null</c>.
+        /// The laptop's Win/Fn keyboard swap config.
         /// </summary>
+        /// <remarks>
+        /// May be <c>null</c> if not supported on the laptop.
+        /// </remarks>
         [XmlElement]
         public KeySwapConf KeySwapConf { get; set; }
 
         /// <summary>
-        /// The laptop's keyboard backlight config. May be <c>null</c>.
+        /// The laptop's keyboard backlight config.
         /// </summary>
+        /// <remarks>
+        /// May be <c>null</c> if not supported on the laptop.
+        /// </remarks>
         [XmlElement]
         public KeyLightConf KeyLightConf { get; set; }
 
         /// <summary>
         /// A list of registers to write when applying a fan config.
+        /// </summary>
+        /// <remarks>
         /// May be <c>null</c>, but if not <c>null</c>, must have
         /// at least one <see cref="RegConf"/>.
-        /// </summary>
+        /// </remarks>
         [XmlArray]
         public RegConf[] RegConfs { get; set; }
 
         /// <summary>
-        /// Parses an MSI Fan Control config XML and returns an
+        /// Parses a YAMDCC config XML and returns an
         /// <see cref="YAMDCC_Config"/> object.
         /// </summary>
         /// <param name="xmlFile">The path to an XML config file.</param>
+        /// <exception cref="InvalidConfigException"/>
+        /// <exception cref="ArgumentNullException"/>
         /// <exception cref="FileNotFoundException"/>
         /// <exception cref="InvalidOperationException"/>
-        /// <exception cref="InvalidConfigException"/>
         public static YAMDCC_Config Load(string xmlFile)
         {
             XmlSerializer serialiser = new(typeof(YAMDCC_Config));
@@ -114,9 +132,10 @@ namespace YAMDCC.Config
         }
 
         /// <summary>
-        /// Saves an MSI Fan Control config to the specified location.
+        /// Saves a YAMDCC config to the specified location.
         /// </summary>
         /// <param name="xmlFile">The XML file to write to.</param>
+        /// <exception cref="ArgumentNullException"/>
         /// <exception cref="InvalidOperationException"/>
         public void Save(string xmlFile)
         {
@@ -145,9 +164,10 @@ namespace YAMDCC.Config
         /// </returns>
         private bool IsValid()
         {
-            // Check config version:
-            // if the loaded config is older/newer than the version expected
-            // by the config library, don't bother checking anything else
+            // Check the config version.
+            // Pretty self-explanatory, if the loaded config is older/newer
+            // than the version expected by the config library, don't bother
+            // checking anything else as some/all of it is probably invalid.
             if (Ver != ExpectedVer)
             {
                 return false;

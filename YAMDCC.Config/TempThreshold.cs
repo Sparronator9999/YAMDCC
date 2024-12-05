@@ -34,7 +34,8 @@ namespace YAMDCC.Config
         public byte UpThreshold { get; set; }
 
         /// <summary>
-        /// The temperature threshold before the fan slows down to the previous fan speed.
+        /// The temperature threshold before the fan
+        /// slows down to the previous fan speed.
         /// </summary>
         /// <remarks>
         /// Ignored if this is the first temperature threshold in the list

@@ -18,6 +18,10 @@ using System.Xml.Serialization;
 
 namespace YAMDCC.Config
 {
+    /// <summary>
+    /// Represents a configuration for the performance modes of a laptop
+    /// (separate from the Windows power plans).
+    /// </summary>
     public sealed class PerfModeConf
     {
         /// <summary>

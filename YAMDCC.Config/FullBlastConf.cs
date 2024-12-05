@@ -19,12 +19,12 @@ using System.Xml.Serialization;
 namespace YAMDCC.Config
 {
     /// <summary>
-    /// Represents a Cooler Boost configuration.
+    /// Represents a Full Blast configuration.
     /// </summary>
     public sealed class FullBlastConf
     {
         /// <summary>
-        /// The register that controls the Cooler Boost function.
+        /// The register that controls the Full Blast function.
         /// </summary>
         [XmlElement]
         public byte Reg { get; set; }

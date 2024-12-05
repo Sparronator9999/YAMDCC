@@ -18,6 +18,9 @@ using System.Xml.Serialization;
 
 namespace YAMDCC.Config
 {
+    /// <summary>
+    /// Represents a configuration for the Win/Fn key swap feature of a laptop.
+    /// </summary>
     public sealed class KeySwapConf
     {
         /// <summary>

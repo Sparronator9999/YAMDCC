@@ -19,7 +19,10 @@ using System.Xml.Serialization;
 
 namespace YAMDCC.Config
 {
-    [Serializable]
+    /// <summary>
+    /// Represents a configuration describing how
+    /// a fan RPM is obtained and displayed.
+    /// </summary>
     public sealed class FanRPMConf
     {
         /// <summary>
