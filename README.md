@@ -73,25 +73,32 @@ The following laptops have been tested by the community and are confirmed to be 
 
 ## Comparison
 
-| Feature                   | MSI Center | YAMDCC   |
-|---------------------------|------------|----------|
-| Installed size            | ~950 MB¹   | ~1 MB¹   |
-| Fan control               | ✔          | ✔        |
-| Temp. threshold control   | ❌          | ✔        |
-| Multi-fan profile support | ❌          | ✔        |
-| Charge threshold setting  | Limited²   | ✔        |
-| Perf. mode setting        | ✔          | ✔        |
-| Win/Fn key swap           | ✔          | ✔        |
-| Win key disable           | ✔          | ❌        |
-| Hardware monitoring       | ✔          | Limited³ |
-| Other MSI Center features | ✔          | ❌        |
-| Open source               | ❌          | ✔        |
+| Feature                         | MSI Center | YAMDCC      |
+|---------------------------------|------------|-------------|
+| Installed size                  | ~950 MB²   | ~1.05 MB²   |
+| Fan control                     | ✔          | ✔           |
+| Temp. threshold control         | ❌          | ✔           |
+| Multi-fan profile support       | ❌          | ✔           |
+| Charge threshold setting        | Limited³   | ✔           |
+| Perf. mode setting¹             | ✔          | ✔           |
+| Win/Fn key swap¹                | ✔          | ✔           |
+| Win key disable                 | ✔          | ❌           |
+| Keyboard backlight adjustment¹  | ❌          | ✔           |
+| Hardware monitoring             | ✔          | Limited⁴    |
+| Other MSI Center features       | ✔          | ❌           |
+| Open source                     | ❌          | ✔           |
 
-1: As of v2.0.38, MSI Center takes about 950 MB of storage space when counting the UWP app (749 MB) and the files installed on first launch to `C:\Program Files (x86)\MSI` (205 MB). YAMDCC's installed size is based on the Release build of [commit 0422376](https://github.com/Sparronator9999/YAMDCC/commit/0422376), and includes all unzipped program files, but excludes config XMLs.
+1: Support for this feature depends on the specific MSI laptop model and YAMDCC support.
 
-2: MSI Center only supports setting the charge threshold to 60%, 80%, or 100%, while YAMDCC can set this to anything between 0 and 100% (with 0 meaning charge to 100% always).
+2: As of v2.0.38, MSI Center takes about 950 MB of storage space when counting the UWP app (749 MB)
+and the files installed on first launch to `C:\Program Files (x86)\MSI` (205 MB). YAMDCC's installed
+size is based on the Release build of [commit 1ad9a1f](https://github.com/Sparronator9999/YAMDCC/commit/1ad9a1f),
+and includes all unzipped program files, but excludes config XMLs.
 
-3: YAMDCC only supports monitoring the CPU/GPU temperatures and fan speeds via EC.
+3: MSI Center only supports setting the charge threshold to 60%, 80%, or 100%, while YAMDCC can set
+this to anything between 0 and 100% (with 0 meaning charge to 100% always).
+
+4: YAMDCC only supports monitoring the CPU/GPU temperatures and fan speeds via EC.
 
 ## Roadmap
 
