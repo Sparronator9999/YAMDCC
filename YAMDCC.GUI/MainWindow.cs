@@ -200,26 +200,26 @@ namespace YAMDCC.GUI
                 return;
             }
 
-            LoadConf(Constants.CurrentConfigPath);
+            LoadConf(Paths.CurrentConfig);
 
             if (Config is not null && Config.KeyLightConf is not null)
             {
                 SendServiceMessage(new ServiceCommand(Command.GetKeyLightBright, ""));
             }
 
-            if (File.Exists(Path.Combine(Constants.DataPath, "ECToConfFail")))
+            if (File.Exists(Paths.ECToConfFail))
             {
-                Utils.ShowError(Strings.GetString("dlgECtoConfError", Constants.LogPath));
+                Utils.ShowError(Strings.GetString("dlgECtoConfError", Paths.Logs));
             }
-            else if (File.Exists(Path.Combine(Constants.DataPath, "ECToConfSuccess")))
+            else if (File.Exists(Paths.ECToConfSuccess))
             {
                 MessageBox.Show(Strings.GetString("dlgECtoConfSuccess"),
                     "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             try
             {
-                File.Delete(Path.Combine(Constants.DataPath, "ECToConfSuccess"));
-                File.Delete(Path.Combine(Constants.DataPath, "ECToConfFail"));
+                File.Delete(Paths.ECToConfSuccess);
+                File.Delete(Paths.ECToConfFail);
             }
             catch (DirectoryNotFoundException) { }
         }
@@ -445,13 +445,13 @@ namespace YAMDCC.GUI
             DelFanProfile();
         }
 
-        private void tsiGetDefaultCurve_Click(object sender, EventArgs e)
+        private void tsiECtoConf_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show(Strings.GetString("dlgECtoConfStart"),
                 "Default fan profile from EC?", MessageBoxButtons.YesNo,
                 MessageBoxIcon.Information) == DialogResult.Yes)
             {
-                StreamWriter sw = new(Path.Combine(Constants.DataPath, "ECToConfPending"), false);
+                StreamWriter sw = new(Paths.ECToConfPending, false);
                 try
                 {
                     sw.Write(1);
@@ -507,7 +507,7 @@ namespace YAMDCC.GUI
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
                 bool delData = MessageBox.Show(
-                    Strings.GetString("dlgSvcDelData", Constants.DataPath),
+                    Strings.GetString("dlgSvcDelData", Paths.Data),
                     "Delete configuration data?",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
                     MessageBoxDefaultButton.Button2) == DialogResult.Yes;
@@ -525,7 +525,7 @@ namespace YAMDCC.GUI
                         // service uninstalled successfully
                         if (delData)
                         {
-                            Directory.Delete(Constants.DataPath, true);
+                            Directory.Delete(Paths.Data, true);
                         }
                     }
                     else
@@ -853,6 +853,7 @@ namespace YAMDCC.GUI
 
             btnProfAdd.Enabled = tsiProfAdd.Enabled = true;
             tsiProfRename.Enabled = tsiProfChangeDesc.Enabled = true;
+            tsiECtoConf.Enabled = true;
             cboFanSel.Enabled = true;
             cboFanSel.SelectedIndex = 0;
             tsiECMon.Enabled = true;
@@ -863,7 +864,7 @@ namespace YAMDCC.GUI
         private void ApplyConf()
         {
             // Save the updated config
-            Config.Save(Constants.CurrentConfigPath);
+            Config.Save(Paths.CurrentConfig);
 
             // Tell the service to reload and apply the updated config
             SendServiceMessage(new ServiceCommand(Command.ApplyConfig, null));
@@ -964,7 +965,7 @@ namespace YAMDCC.GUI
 
         private static string GetLastConfPath()
         {
-            StreamReader sr = new(Constants.LastConfigPath, Encoding.UTF8);
+            StreamReader sr = new(Paths.LastConfig, Encoding.UTF8);
             try
             {
                 string path = sr.ReadLine();
@@ -978,7 +979,7 @@ namespace YAMDCC.GUI
 
         private static void SetLastConfPath(string path)
         {
-            StreamWriter sw = new(Constants.LastConfigPath, false, Encoding.UTF8);
+            StreamWriter sw = new(Paths.LastConfig, false, Encoding.UTF8);
             try
             {
                 sw.WriteLine(path);
@@ -1043,12 +1044,13 @@ namespace YAMDCC.GUI
             tbKeyLight.Enabled = false;
 
             tsiApply.Enabled = false;
-            tsiECMon.Enabled = false;
+            tsiRevert.Enabled = false;
             tsiProfAdd.Enabled = false;
             tsiProfChangeDesc.Enabled = false;
             tsiProfRename.Enabled = false;
             tsiProfDel.Enabled = false;
-            tsiRevert.Enabled = false;
+            tsiECtoConf.Enabled = false;
+            tsiECMon.Enabled = false;
 
             for (int i = 0; i < tbFanSpds.Length; i++)
             {

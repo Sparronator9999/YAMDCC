@@ -72,7 +72,7 @@ namespace YAMDCC.GUI
             this.tsiProfRename = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiProfChangeDesc = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiProfDel = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsiGetDefaultCurve = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsiECtoConf = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiECMon = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiStopSvc = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiUninstall = new System.Windows.Forms.ToolStripMenuItem();
@@ -169,45 +169,45 @@ namespace YAMDCC.GUI
             // tsiLoadConf
             // 
             this.tsiLoadConf.Name = "tsiLoadConf";
-            this.tsiLoadConf.Size = new System.Drawing.Size(180, 22);
+            this.tsiLoadConf.Size = new System.Drawing.Size(154, 22);
             this.tsiLoadConf.Text = "Load config";
             this.tsiLoadConf.Click += new System.EventHandler(this.tsiLoadConf_Click);
             // 
             // tsiSaveConf
             // 
             this.tsiSaveConf.Name = "tsiSaveConf";
-            this.tsiSaveConf.Size = new System.Drawing.Size(180, 22);
+            this.tsiSaveConf.Size = new System.Drawing.Size(154, 22);
             this.tsiSaveConf.Text = "Save config";
             this.tsiSaveConf.Click += new System.EventHandler(this.tsiSaveConf_Click);
             // 
             // sep1
             // 
             sep1.Name = "sep1";
-            sep1.Size = new System.Drawing.Size(177, 6);
+            sep1.Size = new System.Drawing.Size(151, 6);
             // 
             // tsiApply
             // 
             this.tsiApply.Name = "tsiApply";
-            this.tsiApply.Size = new System.Drawing.Size(180, 22);
+            this.tsiApply.Size = new System.Drawing.Size(154, 22);
             this.tsiApply.Text = "Apply changes";
             this.tsiApply.Click += new System.EventHandler(this.tsiApply_Click);
             // 
             // tsiRevert
             // 
             this.tsiRevert.Name = "tsiRevert";
-            this.tsiRevert.Size = new System.Drawing.Size(180, 22);
+            this.tsiRevert.Size = new System.Drawing.Size(154, 22);
             this.tsiRevert.Text = "Revert changes";
             this.tsiRevert.Click += new System.EventHandler(this.tsiRevert_Click);
             // 
             // sep2
             // 
             sep2.Name = "sep2";
-            sep2.Size = new System.Drawing.Size(177, 6);
+            sep2.Size = new System.Drawing.Size(151, 6);
             // 
             // tsiExit
             // 
             this.tsiExit.Name = "tsiExit";
-            this.tsiExit.Size = new System.Drawing.Size(180, 22);
+            this.tsiExit.Size = new System.Drawing.Size(154, 22);
             this.tsiExit.Text = "Exit";
             this.tsiExit.Click += new System.EventHandler(this.tsiExit_Click);
             // 
@@ -216,7 +216,7 @@ namespace YAMDCC.GUI
             this.tsiOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsiProfAdd,
             this.tsiProfEdit,
-            this.tsiGetDefaultCurve,
+            this.tsiECtoConf,
             sep4,
             this.tsiECMon,
             sep5,
@@ -270,12 +270,12 @@ namespace YAMDCC.GUI
             this.tsiProfDel.Text = "Delete";
             this.tsiProfDel.Click += new System.EventHandler(this.tsiProfDel_Click);
             // 
-            // tsiGetDefaultCurve
+            // tsiECtoConf
             // 
-            this.tsiGetDefaultCurve.Name = "tsiGetDefaultCurve";
-            this.tsiGetDefaultCurve.Size = new System.Drawing.Size(244, 22);
-            this.tsiGetDefaultCurve.Text = "Get default fan profile from EC...";
-            this.tsiGetDefaultCurve.Click += new System.EventHandler(this.tsiGetDefaultCurve_Click);
+            this.tsiECtoConf.Name = "tsiECtoConf";
+            this.tsiECtoConf.Size = new System.Drawing.Size(244, 22);
+            this.tsiECtoConf.Text = "Get default fan profile from EC...";
+            this.tsiECtoConf.Click += new System.EventHandler(this.tsiECtoConf_Click);
             // 
             // sep4
             // 
@@ -567,7 +567,7 @@ namespace YAMDCC.GUI
             tabOptions.Controls.Add(tblExtra);
             tabOptions.Location = new System.Drawing.Point(4, 24);
             tabOptions.Name = "tabOptions";
-            tabOptions.Size = new System.Drawing.Size(526, 364);
+            tabOptions.Size = new System.Drawing.Size(526, 366);
             tabOptions.TabIndex = 1;
             tabOptions.Text = "Extras";
             // 
@@ -593,7 +593,7 @@ namespace YAMDCC.GUI
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tblExtra.Size = new System.Drawing.Size(526, 368);
+            tblExtra.Size = new System.Drawing.Size(526, 366);
             tblExtra.TabIndex = 4;
             // 
             // lblChgLim
@@ -847,7 +847,6 @@ namespace YAMDCC.GUI
         private System.Windows.Forms.ToolStripMenuItem tsiAbout;
         private System.Windows.Forms.ToolStripMenuItem tsiSource;
         private System.Windows.Forms.ToolStripMenuItem tsiUninstall;
-        private System.Windows.Forms.ToolStripMenuItem tsiProfAdd;
         private System.Windows.Forms.ToolStripMenuItem tsiProfEdit;
         private System.Windows.Forms.ToolStripMenuItem tsiProfRename;
         private System.Windows.Forms.ToolStripMenuItem tsiProfChangeDesc;
@@ -876,6 +875,7 @@ namespace YAMDCC.GUI
         private System.Windows.Forms.Label lblPerfMode;
         private System.Windows.Forms.Label lblWinFnSwap;
         private System.Windows.Forms.Label lblKeyLight;
-        private System.Windows.Forms.ToolStripMenuItem tsiGetDefaultCurve;
+        private System.Windows.Forms.ToolStripMenuItem tsiProfAdd;
+        private System.Windows.Forms.ToolStripMenuItem tsiECtoConf;
     }
 }

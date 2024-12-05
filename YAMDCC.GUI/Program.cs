@@ -43,7 +43,7 @@ namespace YAMDCC.GUI
             // Make sure the application data directory structure is set up
             // because apparently windows services don't know how to create
             // directories:
-            Directory.CreateDirectory(Constants.LogPath);
+            Directory.CreateDirectory(Paths.Logs);
 
             if (!IsAdmin())
             {
@@ -132,7 +132,7 @@ namespace YAMDCC.GUI
             int rebootFlag = -1;
             try
             {
-                StreamReader sr = new(Path.Combine(Constants.DataPath, "ECToConfPending"));
+                StreamReader sr = new(Paths.ECToConfPending);
                 if (int.TryParse(sr.ReadToEnd(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int value))
                 {
                     rebootFlag = value;
@@ -150,7 +150,7 @@ namespace YAMDCC.GUI
                 {
                     try
                     {
-                        File.Delete(Path.Combine(Constants.DataPath, "ECToConfPending"));
+                        File.Delete(Paths.ECToConfPending);
                     }
                     catch (DirectoryNotFoundException) { }
                 }

@@ -37,7 +37,7 @@ namespace YAMDCC.GUI
         /// <returns>
         /// One of the <see cref="DialogResult"/> values.
         /// </returns>
-        internal static DialogResult ShowError(string message)
+        public static DialogResult ShowError(string message)
         {
             return MessageBox.Show(message, "Error",
                 MessageBoxButtons.OK, MessageBoxIcon.Error);

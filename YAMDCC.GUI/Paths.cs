@@ -17,9 +17,9 @@
 using System;
 using System.IO;
 
-namespace YAMDCC.Service
+namespace YAMDCC.GUI
 {
-    internal static class Constants
+    internal static class Paths
     {
         /// <summary>
         /// The path where program data is stored.
@@ -27,7 +27,7 @@ namespace YAMDCC.Service
         /// <remarks>
         /// (C:\ProgramData\Sparronator9999\YAMDCC on Windows)
         /// </remarks>
-        public static readonly string DataPath = Path.Combine(
+        public static readonly string Data = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
             "Sparronator9999", "YAMDCC");
 
@@ -37,7 +37,7 @@ namespace YAMDCC.Service
         /// <remarks>
         /// (C:\ProgramData\Sparronator9999\YAMDCC\Logs on Windows)
         /// </remarks>
-        public static readonly string LogPath = Path.Combine(DataPath, "Logs");
+        public static readonly string Logs = Path.Combine(Data, "Logs");
 
         /// <summary>
         /// The path where the currently applied YAMDCC config is saved.
@@ -45,8 +45,18 @@ namespace YAMDCC.Service
         /// <remarks>
         /// (C:\ProgramData\Sparronator9999\YAMDCC\CurrentConfig.xml on Windows)
         /// </remarks>
-        public static readonly string CurrentConfigPath = Path.Combine(DataPath, "CurrentConfig.xml");
+        public static readonly string CurrentConfig = Path.Combine(Data, "CurrentConfig.xml");
 
-        public static readonly string ECtoConfPendingPath = Path.Combine(DataPath, "ECToConfPending");
+        /// <summary>
+        /// The path where the path to the last saved YAMDCC config is saved.
+        /// </summary>
+        /// <remarks>
+        /// (C:\ProgramData\Sparronator9999\YAMDCC\CurrentConfig.xml on Windows)
+        /// </remarks>
+        public static readonly string LastConfig = Path.Combine(Data, "LastConfig");
+
+        public static readonly string ECToConfSuccess = Path.Combine(Data, "ECToConfSuccess");
+        public static readonly string ECToConfFail = Path.Combine(Data, "ECToConfFail");
+        public static readonly string ECToConfPending = Path.Combine(Data, "ECToConfPending");
     }
 }

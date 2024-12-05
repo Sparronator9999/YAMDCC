@@ -119,7 +119,7 @@ namespace YAMDCC.Service
             int rebootFlag = -1;
             try
             {
-                StreamReader sr = new(Constants.ECtoConfPendingPath);
+                StreamReader sr = new(Paths.ECtoConfPending);
                 if (int.TryParse(sr.ReadToEnd(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int value))
                 {
                     rebootFlag = value;
@@ -129,7 +129,7 @@ namespace YAMDCC.Service
                 if (rebootFlag == 0)
                 {
                     FanCurveECToConf();
-                    File.Delete(Constants.ECtoConfPendingPath);
+                    File.Delete(Paths.ECtoConfPending);
                 }
             }
             catch (FileNotFoundException) { }
@@ -155,7 +155,7 @@ namespace YAMDCC.Service
             int rebootFlag = -1;
             try
             {
-                StreamReader sr = new(Constants.ECtoConfPendingPath);
+                StreamReader sr = new(Paths.ECtoConfPending);
                 if (int.TryParse(sr.ReadToEnd(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int value))
                 {
                     rebootFlag = value;
@@ -164,7 +164,7 @@ namespace YAMDCC.Service
 
                 if (rebootFlag == 1)
                 {
-                    StreamWriter sw = new(Constants.ECtoConfPendingPath);
+                    StreamWriter sw = new(Paths.ECtoConfPending);
                     try
                     {
                         sw.Write(0);
@@ -350,7 +350,7 @@ namespace YAMDCC.Service
         {
             Log.Info(Strings.GetString("cfgLoading"));
 
-            string confPath = Constants.CurrentConfigPath;
+            string confPath = Paths.CurrentConfig;
 
             try
             {
@@ -786,14 +786,14 @@ namespace YAMDCC.Service
                 }
 
                 Log.Debug("Saving config...");
-                Config.Save(Constants.CurrentConfigPath);
+                Config.Save(Paths.CurrentConfig);
 
-                FileStream fs = File.Create(Path.Combine(Constants.DataPath, "ECToConfSuccess"));
+                FileStream fs = File.Create(Paths.ECToConfSuccess);
                 fs.Close();
             }
             catch
             {
-                FileStream fs = File.Create(Path.Combine(Constants.DataPath, "ECToConfFail"));
+                FileStream fs = File.Create(Paths.ECToConfFail);
                 fs.Close();
             }
         }
