@@ -16,6 +16,7 @@
 
 using System;
 using System.ServiceProcess;
+using System.Windows.Forms;
 using YAMDCC.Logs;
 
 namespace YAMDCC.Service
@@ -37,7 +38,15 @@ namespace YAMDCC.Service
         private static void Main()
         {
             AppDomain.CurrentDomain.UnhandledException += LogUnhandledException;
-            ServiceBase.Run(new FanControlService(Log));
+            if (Environment.UserInteractive)
+            {
+                MessageBox.Show(Strings.GetString("errDirectRun"),
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                ServiceBase.Run(new FanControlService(Log));
+            }
         }
 
         private static void LogUnhandledException(object sender, UnhandledExceptionEventArgs e)

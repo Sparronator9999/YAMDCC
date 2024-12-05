@@ -17,7 +17,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace YAMDCC.ECAccess
+namespace YAMDCC.ECAccess.Win32
 {
     /// <summary>
     /// Wraps native Win32 functions from <c>advapi32.dll</c>.

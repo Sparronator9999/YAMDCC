@@ -16,7 +16,7 @@
 
 namespace YAMDCC.GUI
 {
-    internal class Status
+    internal sealed class Status
     {
         internal StatusCode Code;
         internal int RepeatCount;
@@ -25,12 +25,6 @@ namespace YAMDCC.GUI
         {
             Code = StatusCode.None;
             RepeatCount = 0;
-        }
-
-        internal Status(StatusCode code, int repeatCount)
-        {
-            Code = code;
-            RepeatCount = repeatCount;
         }
     }
 

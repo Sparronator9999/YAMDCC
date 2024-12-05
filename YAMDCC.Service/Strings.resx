@@ -237,4 +237,9 @@ Args: {1}</value>
   <data name="ipcError" xml:space="preserve">
     <value>IPC error occurred (connection to ID: {0}): {1}</value>
   </data>
+  <data name="errDirectRun" xml:space="preserve">
+    <value>This program is not intended to be run directly.
+
+Please run 'YAMDCC.exe' instead.</value>
+  </data>
 </root>

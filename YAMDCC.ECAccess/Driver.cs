@@ -18,6 +18,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
+using YAMDCC.ECAccess.Win32;
 
 namespace YAMDCC.ECAccess
 {

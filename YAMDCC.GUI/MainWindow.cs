@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Text;
@@ -196,14 +195,12 @@ namespace YAMDCC.GUI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(string.Format(CultureInfo.InvariantCulture,
-                    Strings.GetString("svcErrorConnect"), ex), "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Utils.ShowError(Strings.GetString("svcErrorConnect", ex));
                 Application.Exit();
                 return;
             }
 
-            LoadConf(Path.Combine(Constants.DataPath, "CurrentConfig.xml"));
+            LoadConf(Constants.CurrentConfigPath);
 
             if (Config is not null && Config.KeyLightConf is not null)
             {
@@ -212,8 +209,7 @@ namespace YAMDCC.GUI
 
             if (File.Exists(Path.Combine(Constants.DataPath, "ECToConfFail")))
             {
-                MessageBox.Show(Strings.GetString("dlgECtoConfError", Path.Combine(Constants.DataPath, "Logs")),
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Utils.ShowError(Strings.GetString("dlgECtoConfError", Constants.LogPath));
             }
             else if (File.Exists(Path.Combine(Constants.DataPath, "ECToConfSuccess")))
             {
@@ -498,10 +494,9 @@ namespace YAMDCC.GUI
                 IPCClient.Stop();
                 Close();
 
-                if (!ServiceUtils.StopService("yamdccsvc"))
+                if (!Utils.StopService("yamdccsvc"))
                 {
-                    MessageBox.Show(Strings.GetString("dlgSvcStopError"),
-                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Utils.ShowError(Strings.GetString("dlgSvcStopError"));
                 }
             }
         }
@@ -522,9 +517,9 @@ namespace YAMDCC.GUI
 
                 // Apparently this fixes the YAMDCC service not uninstalling
                 // when YAMDCC is launched by certain means
-                if (ServiceUtils.StopService("yamdccsvc"))
+                if (Utils.StopService("yamdccsvc"))
                 {
-                    if (ServiceUtils.UninstallService("yamdccsvc"))
+                    if (Utils.UninstallService("yamdccsvc"))
                     {
                         // Only delete service data if the
                         // service uninstalled successfully
@@ -535,14 +530,12 @@ namespace YAMDCC.GUI
                     }
                     else
                     {
-                        MessageBox.Show(Strings.GetString("dlgSvcUninstallError"),
-                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Utils.ShowError(Strings.GetString("dlgSvcUninstallError"));
                     }
                 }
                 else
                 {
-                    MessageBox.Show(Strings.GetString("dlgSvcStopError"),
-                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Utils.ShowError(Strings.GetString("dlgSvcStopError"));
                 }
             }
         }
@@ -870,7 +863,7 @@ namespace YAMDCC.GUI
         private void ApplyConf()
         {
             // Save the updated config
-            Config.Save(Path.Combine(Constants.DataPath, "CurrentConfig.xml"));
+            Config.Save(Constants.CurrentConfigPath);
 
             // Tell the service to reload and apply the updated config
             SendServiceMessage(new ServiceCommand(Command.ApplyConfig, null));
@@ -896,13 +889,11 @@ namespace YAMDCC.GUI
                 {
                     if (ex is FileNotFoundException)
                     {
-                        MessageBox.Show(Strings.GetString("dlgOldConfMissing"),
-                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Utils.ShowError(Strings.GetString("dlgOldConfMissing"));
                     }
                     else if (ex is InvalidConfigException or InvalidOperationException)
                     {
-                        MessageBox.Show(Strings.GetString("dlgOldConfInvalid"),
-                            "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Utils.ShowError(Strings.GetString("dlgOldConfInvalid"));
                     }
                     else
                     {
@@ -973,7 +964,7 @@ namespace YAMDCC.GUI
 
         private static string GetLastConfPath()
         {
-            StreamReader sr = new(Path.Combine(Constants.DataPath, "LastConfig"), Encoding.UTF8);
+            StreamReader sr = new(Constants.LastConfigPath, Encoding.UTF8);
             try
             {
                 string path = sr.ReadLine();
@@ -987,7 +978,7 @@ namespace YAMDCC.GUI
 
         private static void SetLastConfPath(string path)
         {
-            StreamWriter sw = new(Path.Combine(Constants.DataPath, "LastConfig"), false, Encoding.UTF8);
+            StreamWriter sw = new(Constants.LastConfigPath, false, Encoding.UTF8);
             try
             {
                 sw.WriteLine(path);
@@ -1124,9 +1115,9 @@ namespace YAMDCC.GUI
                     lblStatus.Invoke(() => lblStatus.Text += $" (x{AppStatus.RepeatCount + 1})");
                 }
 
+                tmrStatusReset.Stop();
                 if (!persist)
                 {
-                    tmrStatusReset.Stop();
                     tmrStatusReset.Start();
                 }
             }

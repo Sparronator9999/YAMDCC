@@ -19,7 +19,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace YAMDCC.ECAccess
+namespace YAMDCC.ECAccess.Win32
 {
     /// <summary>
     /// Wraps native Win32 functions from <c>kernel32.dll</c>.

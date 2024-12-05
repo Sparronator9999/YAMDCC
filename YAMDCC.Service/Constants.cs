@@ -17,7 +17,7 @@
 using System;
 using System.IO;
 
-namespace YAMDCC.GUI
+namespace YAMDCC.Service
 {
     internal static class Constants
     {
@@ -47,13 +47,6 @@ namespace YAMDCC.GUI
         /// </remarks>
         public static readonly string CurrentConfigPath = Path.Combine(DataPath, "CurrentConfig.xml");
 
-        /// <summary>
-        /// The path where the path to the last saved YAMDCC config is saved.
-        /// </summary>
-        /// <remarks>
-        /// (C:\ProgramData\Sparronator9999\YAMDCC\CurrentConfig.xml on Windows)
-        /// </remarks>
-        public static readonly string LastConfigPath = Path.Combine(DataPath, "LastConfig");
-
+        public static readonly string ECtoConfPendingPath = Path.Combine(DataPath, "ECToConfPending");
     }
 }

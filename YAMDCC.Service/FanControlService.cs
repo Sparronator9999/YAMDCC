@@ -32,10 +32,6 @@ namespace YAMDCC.Service
     {
         #region Fields
 
-        private static readonly string DataPath = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-            "Sparronator9999", "YAMDCC");
-
         /// <summary>
         /// The currently loaded MSI Fan Control config.
         /// </summary>
@@ -123,7 +119,7 @@ namespace YAMDCC.Service
             int rebootFlag = -1;
             try
             {
-                StreamReader sr = new(Path.Combine(DataPath, "ECToConfPending"));
+                StreamReader sr = new(Constants.ECtoConfPendingPath);
                 if (int.TryParse(sr.ReadToEnd(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int value))
                 {
                     rebootFlag = value;
@@ -133,7 +129,7 @@ namespace YAMDCC.Service
                 if (rebootFlag == 0)
                 {
                     FanCurveECToConf();
-                    File.Delete(Path.Combine(DataPath, "ECToConfPending"));
+                    File.Delete(Constants.ECtoConfPendingPath);
                 }
             }
             catch (FileNotFoundException) { }
@@ -159,7 +155,7 @@ namespace YAMDCC.Service
             int rebootFlag = -1;
             try
             {
-                StreamReader sr = new(Path.Combine(DataPath, "ECToConfPending"));
+                StreamReader sr = new(Constants.ECtoConfPendingPath);
                 if (int.TryParse(sr.ReadToEnd(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int value))
                 {
                     rebootFlag = value;
@@ -168,7 +164,7 @@ namespace YAMDCC.Service
 
                 if (rebootFlag == 1)
                 {
-                    StreamWriter sw = new(Path.Combine(DataPath, "ECToConfPending"));
+                    StreamWriter sw = new(Constants.ECtoConfPendingPath);
                     try
                     {
                         sw.Write(0);
@@ -354,7 +350,7 @@ namespace YAMDCC.Service
         {
             Log.Info(Strings.GetString("cfgLoading"));
 
-            string confPath = Path.Combine(DataPath, "CurrentConfig.xml");
+            string confPath = Constants.CurrentConfigPath;
 
             try
             {
@@ -790,14 +786,14 @@ namespace YAMDCC.Service
                 }
 
                 Log.Debug("Saving config...");
-                Config.Save(Path.Combine(DataPath, "CurrentConfig.xml"));
+                Config.Save(Constants.CurrentConfigPath);
 
-                FileStream fs = File.Create(Path.Combine(DataPath, "ECToConfSuccess"));
+                FileStream fs = File.Create(Path.Combine(Constants.DataPath, "ECToConfSuccess"));
                 fs.Close();
             }
             catch
             {
-                FileStream fs = File.Create(Path.Combine(DataPath, "ECToConfFail"));
+                FileStream fs = File.Create(Path.Combine(Constants.DataPath, "ECToConfFail"));
                 fs.Close();
             }
         }

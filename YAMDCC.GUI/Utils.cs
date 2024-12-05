@@ -19,14 +19,30 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
+using System.Windows.Forms;
 
 namespace YAMDCC.GUI
 {
     /// <summary>
     /// A collection of miscellaneous useful utilities
     /// </summary>
-    internal static class ServiceUtils
+    internal static class Utils
     {
+        /// <summary>
+        /// Shows an error dialog.
+        /// </summary>
+        /// <param name="message">
+        /// The message to show in the error dialog.
+        /// </param>
+        /// <returns>
+        /// One of the <see cref="DialogResult"/> values.
+        /// </returns>
+        internal static DialogResult ShowError(string message)
+        {
+            return MessageBox.Show(message, "Error",
+                MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
         /// <summary>
         /// Installs the specified .NET Framework
         /// service to the local computer.

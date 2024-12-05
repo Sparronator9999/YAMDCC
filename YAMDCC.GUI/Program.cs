@@ -19,6 +19,7 @@ using System.Globalization;
 using System.IO;
 using System.Security.Principal;
 using System.ServiceProcess;
+using System.Threading;
 using System.Windows.Forms;
 using YAMDCC.GUI.Dialogs;
 
@@ -42,18 +43,15 @@ namespace YAMDCC.GUI
             // Make sure the application data directory structure is set up
             // because apparently windows services don't know how to create
             // directories:
-            Directory.CreateDirectory(Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-                "Sparronator9999", "YAMDCC", "Logs"));
+            Directory.CreateDirectory(Constants.LogPath);
 
             if (!IsAdmin())
             {
-                MessageBox.Show(Strings.GetString("dlgNoAdmin"),
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Utils.ShowError(Strings.GetString("dlgNoAdmin"));
                 return;
             }
 
-            if (!ServiceUtils.ServiceExists("yamdccsvc"))
+            if (!Utils.ServiceExists("yamdccsvc"))
             {
                 if (File.Exists("yamdccsvc.exe"))
                 {
@@ -63,31 +61,28 @@ namespace YAMDCC.GUI
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Information) == DialogResult.Yes)
                     {
-                        if (ServiceUtils.InstallService("yamdccsvc"))
+                        if (Utils.InstallService("yamdccsvc"))
                         {
-                            if (ServiceUtils.StartService("yamdccsvc"))
+                            if (Utils.StartService("yamdccsvc"))
                             {
                                 // Start the program when the service finishes starting:
                                 Start();
                             }
                             else
                             {
-                                MessageBox.Show(Strings.GetString("svcErrorCrash"),
-                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                Utils.ShowError(Strings.GetString("svcErrorCrash"));
                             }
                         }
                         else
                         {
-                            MessageBox.Show(Strings.GetString("svcInstallFail"),
-                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Utils.ShowError(Strings.GetString("svcInstallFail"));
                         }
                     }
                     return;
                 }
                 else
                 {
-                    MessageBox.Show(Strings.GetString("svcNotFound"),
-                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Utils.ShowError(Strings.GetString("svcNotFound"));
                     return;
                 }
             }
@@ -106,10 +101,9 @@ namespace YAMDCC.GUI
                         "Service not running", MessageBoxButtons.YesNo,
                         MessageBoxIcon.Information) == DialogResult.Yes)
                     {
-                        if (!ServiceUtils.StartService("yamdccsvc"))
+                        if (!Utils.StartService("yamdccsvc"))
                         {
-                            MessageBox.Show(Strings.GetString("svcErrorCrash"),
-                                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Utils.ShowError(Strings.GetString("svcErrorCrash"));
                             return;
                         }
                     }
@@ -121,9 +115,7 @@ namespace YAMDCC.GUI
             }
             catch (Exception ex)
             {
-                MessageBox.Show(
-                    Strings.GetString("svcErrorStart", ex), "Error",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Utils.ShowError(Strings.GetString("svcErrorStart", ex));
                 return;
             }
             finally
@@ -142,47 +134,33 @@ namespace YAMDCC.GUI
             {
                 StreamReader sr = new(Path.Combine(Constants.DataPath, "ECToConfPending"));
                 if (int.TryParse(sr.ReadToEnd(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int value))
-                    rebootFlag = value;
-                sr.Close();
-
-                if (rebootFlag == 1)
                 {
-                    if (MessageBox.Show(Strings.GetString("dlgECtoConfRebootPending"),
-                        "Reboot pending", MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
-                        MessageBoxDefaultButton.Button2) == DialogResult.Yes)
-                    {
-                        try
-                        {
-                            File.Delete(Path.Combine(Constants.DataPath, "ECToConfPending"));
-                        }
-                        catch (FileNotFoundException) { }
-                        catch (DirectoryNotFoundException) { }
-                    }
-                    else
-                    {
-                        return;
-                    }
+                    rebootFlag = value;
                 }
+                sr.Close();
             }
             catch (FileNotFoundException) { }
             catch (DirectoryNotFoundException) { }
-            Application.Run(new MainWindow());
-        }
 
-        #region Global exception handlers
-        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            if (e.ExceptionObject is Exception ex)
+            if (rebootFlag == 1)
             {
-                CrashDialog dlg = new(ex);
-                dlg.ShowDialog();
+                if (MessageBox.Show(Strings.GetString("dlgECtoConfRebootPending"),
+                    "Reboot pending", MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
+                    MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+                {
+                    try
+                    {
+                        File.Delete(Path.Combine(Constants.DataPath, "ECToConfPending"));
+                    }
+                    catch (DirectoryNotFoundException) { }
+                }
+                else
+                {
+                    return;
+                }
             }
-        }
 
-        private static void Application_ThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)
-        {
-            CrashDialog dlg = new(e.Exception);
-            dlg.ShowDialog();
+            Application.Run(new MainWindow());
         }
 
         private static bool IsAdmin()
@@ -201,6 +179,22 @@ namespace YAMDCC.GUI
             {
                 identity.Dispose();
             }
+        }
+
+        #region Global exception handlers
+        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            if (e.ExceptionObject is Exception ex)
+            {
+                CrashDialog dlg = new(ex);
+                dlg.ShowDialog();
+            }
+        }
+
+        private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
+        {
+            CrashDialog dlg = new(e.Exception);
+            dlg.ShowDialog();
         }
         #endregion
     }
