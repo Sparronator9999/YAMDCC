@@ -34,11 +34,9 @@ namespace YAMDCC.Logs
 
         /// <summary>
         /// Used with <see langword="lock"/> to prevent more
-        /// than one thread writing to the file at once.
+        /// than one thread writing to the console at once.
         /// </summary>
-        private readonly object
-            fileLock = new(),
-            consoleLock = new();
+        private readonly object consoleLock = new();
 
         /// <summary>
         /// The newline characters to split provided log message lines by.
@@ -75,12 +73,12 @@ namespace YAMDCC.Logs
         /// <summary>
         /// Should the log time be shown in console logs?
         /// </summary>
-        public bool ShowTimeInConsole { get; set; }
+        public bool LogTimeToConsole { get; set; }
 
         /// <summary>
         /// Should the log time be shown in logs written to disk?
         /// </summary>
-        public bool ShowTimeInFile { get; set; } = true;
+        public bool LogTimeToFile { get; set; } = true;
 
         /// <summary>
         /// Writes a Debug event to the <see cref="Logger"/>.
@@ -263,16 +261,16 @@ namespace YAMDCC.Logs
 
         private void WriteFile(string message, LogLevel level)
         {
-            lock (fileLock)
+            if (LogWriter is null)
             {
-                if (LogWriter is null || LogWriter == null || LogWriter.Equals(null))
-                {
-                    InitLogFile();
-                }
+                InitLogFile();
+            }
 
+            lock (LogWriter)
+            {
                 foreach (string str in message.Split(NewlineChars, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    LogWriter.WriteLine(LogString(str, level, ShowTimeInFile));
+                    LogWriter.WriteLine(LogString(str, level, LogTimeToFile));
                 }
             }
         }
@@ -288,7 +286,7 @@ namespace YAMDCC.Logs
                 {
                     case LogLevel.Fatal:
                         Console.BackgroundColor = ConsoleColor.Yellow;
-                        Console.ForegroundColor = ConsoleColor.DarkBlue;
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
                         break;
                     case LogLevel.Error:
                         Console.ForegroundColor = ConsoleColor.Red;
@@ -306,7 +304,7 @@ namespace YAMDCC.Logs
 
                 foreach (string str in message.Split(NewlineChars, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    Console.WriteLine(LogString(str, level, ShowTimeInConsole));
+                    Console.WriteLine(LogString(str, level, LogTimeToConsole));
                 }
 
                 Console.BackgroundColor = bgColour;
