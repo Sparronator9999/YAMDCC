@@ -17,7 +17,7 @@
 using System;
 using System.Windows.Forms;
 
-namespace YAMDCC.GUI.Dialogs
+namespace YAMDCC.ConfigEditor.Dialogs
 {
     internal sealed partial class TextInputDialog : Form
     {

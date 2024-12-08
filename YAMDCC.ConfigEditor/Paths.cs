@@ -17,7 +17,7 @@
 using System;
 using System.IO;
 
-namespace YAMDCC.GUI
+namespace YAMDCC.ConfigEditor
 {
     internal static class Paths
     {

@@ -17,7 +17,7 @@
 using System.Globalization;
 using System.Resources;
 
-namespace YAMDCC.GUI
+namespace YAMDCC.ConfigEditor
 {
     /// <summary>
     /// A resource class for retrieving strings.

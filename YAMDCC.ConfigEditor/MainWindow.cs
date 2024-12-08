@@ -23,10 +23,10 @@ using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using YAMDCC.Config;
-using YAMDCC.GUI.Dialogs;
+using YAMDCC.ConfigEditor.Dialogs;
 using YAMDCC.IPC;
 
-namespace YAMDCC.GUI
+namespace YAMDCC.ConfigEditor
 {
     internal sealed partial class MainWindow : Form
     {

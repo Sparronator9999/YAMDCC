@@ -18,7 +18,7 @@ using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 
-namespace YAMDCC.GUI.Dialogs
+namespace YAMDCC.ConfigEditor.Dialogs
 {
     internal sealed partial class CrashDialog : Form
     {

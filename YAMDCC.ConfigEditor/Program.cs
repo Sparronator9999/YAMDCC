@@ -20,9 +20,9 @@ using System.IO;
 using System.Security.Principal;
 using System.ServiceProcess;
 using System.Windows.Forms;
-using YAMDCC.GUI.Dialogs;
+using YAMDCC.ConfigEditor.Dialogs;
 
-namespace YAMDCC.GUI
+namespace YAMDCC.ConfigEditor
 {
     internal static class Program
     {

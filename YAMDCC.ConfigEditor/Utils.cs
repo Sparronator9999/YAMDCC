@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 using System.ServiceProcess;
 using System.Windows.Forms;
 
-namespace YAMDCC.GUI
+namespace YAMDCC.ConfigEditor
 {
     /// <summary>
     /// A collection of miscellaneous useful utilities
