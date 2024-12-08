@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <YAMDCC_Config xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Ver="1">
-	<Model>MSI laptop - generic 10th-gen Intel (or newer)</Model>
+	<Manufacturer>Micro-Star International Co., Ltd.</Manufacturer>
+	<Model>~Generic: 10th-gen Intel (or newer)</Model>
 	<Author>Sparronator9999</Author>
 	<FanConfs>
 		<FanConf>

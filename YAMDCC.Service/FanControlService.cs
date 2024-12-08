@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Win32;
 using System;
 using System.ComponentModel;
 using System.Globalization;
@@ -735,9 +736,32 @@ namespace YAMDCC.Service
 
             try
             {
+                Log.Info("Getting computer manufacturer and model...");
+
+                string pcManufacturer = GetComputerManufacturer(),
+                    pcModel = GetComputerModel();
+
+                if (string.IsNullOrEmpty(pcManufacturer))
+                {
+                    Log.Error("Failed to get computer manufacturer!");
+                }
+                else
+                {
+                    Config.Manufacturer = pcManufacturer.Trim();
+                }
+
+                if (string.IsNullOrEmpty(pcModel))
+                {
+                    Log.Error("Failed to get computer model!");
+                }
+                else
+                {
+                    Config.Model = pcModel.Trim();
+                }
+
                 for (int i = 0; i < Config.FanConfs.Length; i++)
                 {
-                    Log.Debug($"Getting fan curve from EC ({i + 1}/{Config.FanConfs.Length})...");
+                    Log.Info($"Getting fan curve from EC ({i + 1}/{Config.FanConfs.Length})...");
 
                     FanConf cfg = Config.FanConfs[i];
 
@@ -785,7 +809,7 @@ namespace YAMDCC.Service
                     }
                 }
 
-                Log.Debug("Saving config...");
+                Log.Info("Saving config...");
                 Config.Save(Paths.CurrentConfig);
 
                 FileStream fs = File.Create(Paths.ECToConfSuccess);
@@ -795,6 +819,43 @@ namespace YAMDCC.Service
             {
                 FileStream fs = File.Create(Paths.ECToConfFail);
                 fs.Close();
+            }
+        }
+
+        /// <summary>
+        /// Gets the computer model name from registry.
+        /// </summary>
+        /// <returns>
+        /// The computer model if the function succeeds,
+        /// otherwise <c>null</c>.
+        /// </returns>
+        private static string GetComputerModel()
+        {
+            return GetBIOSRegValue("SystemProductName");
+        }
+
+        /// <summary>
+        /// Gets the computer manufacturer from registry.
+        /// </summary>
+        /// <returns>
+        /// The computer manufacturer if the function succeeds,
+        /// otherwise <c>null</c>.
+        /// </returns>
+        private static string GetComputerManufacturer()
+        {
+            return GetBIOSRegValue("SystemManufacturer");
+        }
+
+        private static string GetBIOSRegValue(string name)
+        {
+            RegistryKey biosKey = Registry.LocalMachine.OpenSubKey(@"HARDWARE\DESCRIPTION\System\BIOS");
+            try
+            {
+                return (string)biosKey?.GetValue(name, null);
+            }
+            finally
+            {
+                biosKey?.Close();
             }
         }
     }

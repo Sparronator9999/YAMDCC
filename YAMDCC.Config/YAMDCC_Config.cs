@@ -40,6 +40,12 @@ namespace YAMDCC.Config
         public int Ver { get; set; }
 
         /// <summary>
+        /// The manufacturer of the laptop the config was made for.
+        /// </summary>
+        [XmlElement]
+        public string Manufacturer { get; set; }
+
+        /// <summary>
         /// The laptop model the config was made for.
         /// </summary>
         [XmlElement]
@@ -173,7 +179,8 @@ namespace YAMDCC.Config
                 return false;
             }
 
-            if (string.IsNullOrEmpty(Model) ||
+            if (string.IsNullOrEmpty(Manufacturer) ||
+                string.IsNullOrEmpty(Model) ||
                 string.IsNullOrEmpty(Author))
             {
                 return false;

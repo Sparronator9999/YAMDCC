@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <YAMDCC_Config xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Ver="1">
-	<Model>MSI laptop - generic 9th-gen Intel (or older)</Model>
+	<Manufacturer>Micro-Star International Co., Ltd.</Manufacturer>
+	<Model>~Generic: 9th-gen Intel (or older)</Model>
 	<Author>Sparronator9999</Author>
 	<FanConfs>
 		<FanConf>
@@ -180,7 +181,7 @@
 		<Reg>239</Reg>
 		<MinVal>128</MinVal>
 		<MaxVal>228</MaxVal>
-		<CurVal>60</CurVal>
+		<CurVal>0</CurVal>
 	</ChargeLimitConf>
 	<KeyLightConf>
 		<Reg>243</Reg>

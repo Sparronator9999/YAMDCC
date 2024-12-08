@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <YAMDCC_Config xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Ver="1">
-	<Model>MSI GF63 Thin 11SC</Model>
+	<Manufacturer>Micro-Star International Co., Ltd.</Manufacturer>
+	<Model>GF63 Thin 11SC</Model>
 	<Author>Sparronator9999</Author>
 	<FanConfs>
 		<FanConf>
 			<Name>CPU Fan</Name>
 			<MinSpeed>0</MinSpeed>
 			<MaxSpeed>100</MaxSpeed>
-			<CurveSel>1</CurveSel>
+			<CurveSel>0</CurveSel>
 			<SpeedReadReg>113</SpeedReadReg>
 			<TempReadReg>104</TempReadReg>
 			<RPMConf>
@@ -132,7 +133,7 @@
 			<Name>GPU Fan</Name>
 			<MinSpeed>0</MinSpeed>
 			<MaxSpeed>100</MaxSpeed>
-			<CurveSel>1</CurveSel>
+			<CurveSel>0</CurveSel>
 			<SpeedReadReg>137</SpeedReadReg>
 			<TempReadReg>128</TempReadReg>
 			<RPMConf>
@@ -262,7 +263,7 @@
 		<Reg>215</Reg>
 		<MinVal>128</MinVal>
 		<MaxVal>228</MaxVal>
-		<CurVal>60</CurVal>
+		<CurVal>0</CurVal>
 	</ChargeLimitConf>
 	<PerfModeConf>
 		<Reg>210</Reg>
