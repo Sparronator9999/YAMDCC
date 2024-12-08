@@ -104,15 +104,15 @@ this to anything between 0 and 100% (with 0 meaning charge to 100% always).
 
 Below are some changes I would like to make before a 1.0 release of YAMDCC:
 
+- [ ] Add auto-rename of computer model to EC-to-config feature.
+- [ ] Add VBS (Core isolation) detection to prevent issues with EC access.
 - [ ] Fix any remaining bugs before the 1.0 release.
-  - [ ] Add VBS (Core isolation) detection to prevent issues with EC access.
-  - [ ] Other bugs as they get found.
 
 Below are some planned features for potential future releases:
 
 - [ ] Keyboard shortcut support (requested by @grimy400)
-  - This would involve some refactoring to the config GUI, or a separate background program that listens to
-    keyboard shortcuts (Windows services, or at least those running as Local System, can't "see" keyboard input).
+  - This will most likely be implemented as a separate background program that listens to keyboard shortcuts,
+    since Windows services (or at least those running as Local System) can't "see" keyboard input.
 - [ ] CLI support
   - Development of a CLI application for YAMDCC has started, but isn't publicly available yet
     - It hasn't been updated for quite a while (it still has the project's original name),
