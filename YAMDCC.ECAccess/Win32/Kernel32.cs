@@ -29,7 +29,13 @@ namespace YAMDCC.ECAccess.Win32
         /// <summary>
         /// Closes an open handle.
         /// </summary>
-        /// <param name="hObject">An handle to close.</param>
+        /// <remarks>
+        /// See the MSDN documentation for more info:
+        /// <see href="https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle"/>
+        /// </remarks>
+        /// <param name="hObject">
+        /// An handle to close.
+        /// </param>
         /// <returns>
         /// <para><c>true</c> if the function succeeds, otherwise <c>false</c>.</para>
         /// <para>To get error information, call <see cref="Marshal.GetLastWin32Error"/>.</para>
@@ -42,9 +48,10 @@ namespace YAMDCC.ECAccess.Win32
         /// <summary>
         /// Open an installed device driver for direct communication.
         /// </summary>
-        /// <param name="serviceName">
-        /// <para>The name of the device driver.</para>
-        /// </param>
+        /// <remarks>
+        /// See the MSDN documentation for more info:
+        /// <see href="https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilew"/>
+        /// </remarks>
         /// <returns>
         /// <para>
         /// An open handle (as an <see cref="IntPtr"/>) to the specified
@@ -71,18 +78,10 @@ namespace YAMDCC.ECAccess.Win32
         /// <summary>
         /// Sends an IO control code directly to a specified device driver.
         /// </summary>
-        /// <param name="hDevice">
-        /// The handle to the device on which the operation is to be performed.
-        /// </param>
-        /// <param name="dwIoControlCode">
-        /// The control code for the operation.
-        /// </param>
-        /// <param name="lpInBuffer">
-        /// The input buffer to pass to the device driver.
-        /// </param>
-        /// <param name="lpOutBuffer">
-        /// The output buffer to be returned by the driver.
-        /// </param>
+        /// <remarks>
+        /// See the MSDN documentation for more info:
+        /// <see href="https://learn.microsoft.com/en-us/windows/win32/api/ioapiset/nf-ioapiset-deviceiocontrol"/>
+        /// </remarks>
         /// <returns>
         /// <c>true</c> if the operation was successful, otherwise <c>false</c>.
         /// </returns>

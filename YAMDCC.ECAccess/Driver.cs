@@ -25,7 +25,7 @@ namespace YAMDCC.ECAccess
     /// <summary>
     /// Contains functions to install and manage kernel-level device drivers.
     /// </summary>
-    internal sealed class Driver : IDisposable
+    internal sealed class Driver
     {
         private readonly string DeviceName;
         private readonly string DriverPath = string.Empty;
@@ -325,30 +325,8 @@ namespace YAMDCC.ECAccess
         #region Cleanup code
         ~Driver()
         {
-            Cleanup();
-        }
-
-        /// <summary>
-        /// Releases all resources associated with this <see cref="Driver"/>.
-        /// </summary>
-        public void Dispose()
-        {
-            Cleanup();
-            GC.SuppressFinalize(this);
-        }
-
-        private void Cleanup()
-        {
-            // Don't do anything if we already called Dispose:
-            if (!IsOpen)
-            {
-                return;
-            }
-
             // Close all open file and service handles
             Close();
-
-            IsOpen = false;
         }
         #endregion
     }

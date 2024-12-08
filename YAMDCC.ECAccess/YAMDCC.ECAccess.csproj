@@ -3,7 +3,7 @@
         <TargetFramework>net48</TargetFramework>
         <OutputType>Library</OutputType>
         <Title>YAMDCC EC access library</Title>
-        <AssemblyTitle>YAMDCC EC access library</AssemblyTitle>
+        <AssemblyTitle>YAMDCC EC library</AssemblyTitle>
         <Authors>Sparronator9999</Authors>
         <Copyright>Copyright © 2023-2024 Sparronator9999</Copyright>
         <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>

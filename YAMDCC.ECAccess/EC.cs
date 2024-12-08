@@ -25,7 +25,7 @@ namespace YAMDCC.ECAccess
     /// <summary>
     /// Methods to access the embedded controller in a computer.
     /// </summary>
-    public sealed class EC : IDisposable
+    public sealed class EC
     {
         // See ACPI specs ch 12.2
         [Flags]
@@ -54,7 +54,7 @@ namespace YAMDCC.ECAccess
         private const byte PORT_DATA = 0x62;      //EC_DATA
 
         /// <summary>
-        /// The maximum number of read/write attempts before skipping the operation.
+        /// The maximum number of read/write attempts before returning an error.
         /// </summary>
         private const int RW_MAX_RETRIES = 5;
 
@@ -70,7 +70,7 @@ namespace YAMDCC.ECAccess
         private static readonly Mutex EcMutex = new();
 
         /// <summary>
-        /// Gets whether the WinRing0 driver is currently loaded.
+        /// The underlying driver interface object.
         /// </summary>
         private readonly Driver _Driver;
 
@@ -88,7 +88,7 @@ namespace YAMDCC.ECAccess
         /// </summary>
         /// <remarks>
         /// If <c>false</c> was returned by this function,
-        /// <seealso cref="GetDriverStatus"/> can be called to check for errors.
+        /// <see cref="GetDriverError"/> can be called to check for driver errors.
         /// </remarks>
         /// <returns>
         /// <c>true</c> if the WinRing0 driver was loaded successfully
@@ -118,7 +118,7 @@ namespace YAMDCC.ECAccess
         /// </summary>
         /// <remarks>
         /// This function should be called when the program exits
-        /// or no longer requires EC access.
+        /// or otherwise no longer requires EC access.
         /// </remarks>
         public void UnloadDriver()
         {
@@ -138,8 +138,15 @@ namespace YAMDCC.ECAccess
         /// <summary>
         /// Reads a byte from the EC at the specified register.
         /// </summary>
-        /// <param name="register">The register to read from.</param>
-        /// <returns>The value at the specified register.</returns>
+        /// <param name="register">
+        /// The register to read from.
+        /// </param>
+        /// <param name="value">
+        /// If successful, contains the value at the specified register (otherwise zero).
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if the operation was successful, otherwise <c>false</c>.
+        /// </returns>
         public bool ReadByte(byte register, out byte value)
         {
             value = 0;
@@ -161,8 +168,15 @@ namespace YAMDCC.ECAccess
         /// <summary>
         /// Writes a byte to the EC at the specified register.
         /// </summary>
-        /// <param name="register">The register to write to.</param>
-        /// <param name="value">The value to write at the register.</param>
+        /// <param name="register">
+        /// The register to write to.
+        /// </param>
+        /// <param name="value">
+        /// The value to write to the register.
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if the operation was successful, otherwise <c>false</c>.
+        /// </returns>
         public bool WriteByte(byte register, byte value)
         {
             // only attempt to write EC if driver connection has been opened
@@ -183,12 +197,19 @@ namespace YAMDCC.ECAccess
         /// <summary>
         /// Reads a 16-bit integer (aka "word") from the EC at the specified register.
         /// </summary>
-        /// <param name="register">The register to read from.</param>
+        /// <param name="register">
+        /// The register to read from.
+        /// </param>
         /// <param name="bigEndian">
         /// Indicates the endianness of the value to be read.
         /// Defaults to <c>false</c> (little-endian).
         /// </param>
-        /// <returns>The value at the specified register.</returns>
+        /// <param name="value">
+        /// If successful, contains the value at the specified register (otherwise zero).
+        /// </param>
+        /// <returns>
+        /// <c>true</c> if the operation was successful, otherwise <c>false</c>.
+        /// </returns>
         public bool ReadWord(byte register, out ushort value, bool bigEndian = false)
         {
             value = 0;
@@ -211,12 +232,19 @@ namespace YAMDCC.ECAccess
         /// <summary>
         /// Writes a 16-bit integer (aka "word") to the EC at the specified register.
         /// </summary>
-        /// <param name="register">The register to write to.</param>
-        /// <param name="value">The value to write at the register.</param>
+        /// <param name="register">
+        /// The register to write to.
+        /// </param>
+        /// <param name="value">
+        /// The value to write at the register.
+        /// </param>
         /// <param name="bigEndian">
         /// Indicates the endianness of the value to be written.
         /// Defaults to <c>false</c> (little-endian).
         /// </param>
+        /// <returns>
+        /// <c>true</c> if the operation was successful, otherwise <c>false</c>.
+        /// </returns>
         public bool WriteWord(byte register, ushort value, bool bigEndian = false)
         {
             // only attempt to write EC if driver connection has been opened
@@ -312,22 +340,20 @@ namespace YAMDCC.ECAccess
         }
 
         /// <summary>
-        /// Waits for the EC output buffer to fill.
+        /// Waits for the EC to process a read command.
         /// </summary>
         /// <returns>
-        /// <c>true</c> if the EC is ready to have data read from it
-        /// (with <see cref="ReadByte(byte, out byte)"/>,
+        /// <c>true</c> if the EC is ready to have data read from it,
         /// <c>false</c> if the operation timed out.
         /// </returns>
         private bool WaitRead() =>
             WaitForECStatus(ECStatus.OutputBufferFull, true);
 
         /// <summary>
-        /// Waits for the EC input buffer to be free.
+        /// Waits for the EC to process a write command.
         /// </summary>
         /// <returns>
-        /// <c>true</c> if the EC is ready to accept data
-        /// (with <see cref="WriteByte(byte, byte)"/>),
+        /// <c>true</c> if the EC is ready to accept data,
         /// <c>false</c> if the operation timed out.
         /// </returns>
         private bool WaitWrite() =>
@@ -336,39 +362,42 @@ namespace YAMDCC.ECAccess
         /// <summary>
         /// Waits for the specified <see cref="ECStatus"/> to be set/unset.
         /// </summary>
-        /// <param name="status">The <see cref="ECStatus"/> to wait for.</param>
-        /// <param name="isSet">Whether to wait for the status to be set or unset.</param>
+        /// <param name="status">
+        /// The <see cref="ECStatus"/> to wait for.
+        /// </param>
+        /// <param name="isSet">
+        /// Whether to wait for the status to be set or unset.
+        /// </param>
         /// <returns>
         /// <c>true</c> if the EC status was (un)set before timing out,
         /// otherwise <c>false</c>.
         /// </returns>
         private bool WaitForECStatus(ECStatus status, bool isSet)
         {
-            bool success = false;
-
             Stopwatch sw = Stopwatch.StartNew();
-            while (sw.ElapsedTicks < ECStatusTimeoutTicks)
+            try
             {
-                // Read the EC status from the command port
-                if (ReadIOPort(PORT_COMMAND, out byte value))
+                while (sw.ElapsedTicks < ECStatusTimeoutTicks)
                 {
-                    ECStatus status2 = (ECStatus)value;
+                    // Read the EC status from the command port
+                    if (ReadIOPort(PORT_COMMAND, out byte value))
+                    {
+                        ECStatus ecStatus = (ECStatus)value;
+                        bool ecIsSet = (status & ecStatus) == status;
 
-                    if (isSet && (status2 & status) == status)
-                    {
-                        success = true;
-                        break;
-                    }
-                    else if (!isSet && (status2 & status) != status)
-                    {
-                        success = true;
-                        break;
+                        if (isSet == ecIsSet)
+                        {
+                            return true;
+                        }
                     }
                 }
             }
-            sw.Stop();
+            finally
+            {
+                sw.Stop();
+            }
 
-            return success;
+            return false;
         }
 
         private bool ReadIOPort(uint port, out byte value)
@@ -394,7 +423,16 @@ namespace YAMDCC.ECAccess
             return _Driver.IOControl((uint)Ring0Control.GetRefCount, ref refCount, out refCount) ? refCount : 0;
         }
 
-        public int GetDriverError() => _Driver.ErrorCode;
+        /// <summary>
+        /// Gets the last error produced by the underlying driver library.
+        /// </summary>
+        /// <returns>
+        /// The last error code produced by the driver library.
+        /// </returns>
+        public int GetDriverError()
+        {
+            return _Driver.ErrorCode;
+        }
 
         private enum Ring0Control : uint
         {
@@ -416,12 +454,6 @@ namespace YAMDCC.ECAccess
                 Port = port;
                 Value = value;
             }
-        }
-
-        public void Dispose()
-        {
-            _Driver?.Dispose();
-            GC.SuppressFinalize(this);
         }
     }
 }

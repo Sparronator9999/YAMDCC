@@ -28,6 +28,10 @@ namespace YAMDCC.ECAccess.Win32
         /// Opens an handle with full access to the local computer's
         /// active service control manager (SCM) database.
         /// </summary>
+        /// <remarks>
+        /// See the MSDN documentation for more info:
+        /// <see href="https://learn.microsoft.com/en-us/windows/win32/api/winsvc/nf-winsvc-openscmanagerw"/>
+        /// </remarks>
         /// <returns>
         /// <para>An handle (as an <see cref="IntPtr"/>) to the local computer's
         /// active SCM database, if the function succeeds.</para>
@@ -46,26 +50,10 @@ namespace YAMDCC.ECAccess.Win32
         /// <summary>
         /// Creates and adds a service to the local computer.
         /// </summary>
-        /// <param name="hSCManager">
-        /// <para>An <see cref="IntPtr"/> that represents an handle (returned
-        /// by <see cref="OpenSCManager"/>) to the SCM database.</para>
-        /// <para>The handle must have the
-        /// <see cref="SCMAccess.CreateService"/> right.</para>
-        /// </param>
-        /// <param name="serviceName">
-        /// <para>The name of the service to install.</para>
-        /// <para>Must be at most 256 characters long, and not contain
-        /// forward-slash or backslash characters.</para>
-        /// </param>
-        /// <param name="displayName">
-        /// <para>The display name of the service.</para>
-        /// <para>Must be at most 256 characters long.</para>
-        /// </param>
-        /// <param name="driverPath">
-        /// <para>The fully qualified path to the driver file.</para>
-        /// <para>If the path contains spaces, the string must be
-        /// double-quoted, for example <c>""C:\path\to\service.exe""</c>.</para>
-        /// </param>
+        /// <remarks>
+        /// See the MSDN documentation for more info:
+        /// <see href="https://learn.microsoft.com/en-us/windows/win32/api/winsvc/nf-winsvc-createservicew"/>
+        /// </remarks>
         /// <returns>
         /// <para>An handle to the service if the function succeeds.</para>
         /// <para><see cref="IntPtr.Zero"/> if the function fails. Call
@@ -93,18 +81,10 @@ namespace YAMDCC.ECAccess.Win32
         /// <summary>
         /// Opens an existing service.
         /// </summary>
-        /// <param name="hSCManager">
-        /// <para>An handle to the SCM database.</para>
-        /// <para>
-        /// Call <see cref="OpenSCManager"/> to get a handle
-        /// to the local computer's active SCM database.
-        /// </para>
-        /// </param>
-        /// <param name="lpServiceName">
-        /// <para>The name of the service to open.</para>
-        /// <para>Must be at most 256 characters long, and not contain
-        /// forward-slash or backslash characters.</para>
-        /// </param>
+        /// <remarks>
+        /// See the MSDN documentation for more info:
+        /// <see href="https://learn.microsoft.com/en-us/windows/win32/api/winsvc/nf-winsvc-openservicew"/>
+        /// </remarks>
         /// <returns>
         /// <para>An handle to the service if the function succeeds.</para>
         /// <para><see cref="IntPtr.Zero"/> if the function fails. Call
@@ -122,14 +102,10 @@ namespace YAMDCC.ECAccess.Win32
         /// <summary>
         /// Starts a service.
         /// </summary>
-        /// <param name="hService">
-        /// <para>
-        /// An handle to the service, returned from calling
-        /// <see cref="OpenService"/> or
-        /// <see cref="CreateService"/>.
-        /// </para>
-        /// <para>Must have the <see cref="ServiceAccess.Start"/> right.</para>
-        /// </param>
+        /// <remarks>
+        /// See the MSDN documentation for more info:
+        /// <see href="https://learn.microsoft.com/en-us/windows/win32/api/winsvc/nf-winsvc-startservicew"/>
+        /// </remarks>
         /// <returns>
         /// <para><c>true</c> if the function succeeds, otherwise <c>false.</c></para>
         /// <para>Call <see cref="Marshal.GetLastWin32Error"/> to get error information.</para>
@@ -147,14 +123,10 @@ namespace YAMDCC.ECAccess.Win32
         /// <summary>
         /// Sends a control code to a service.
         /// </summary>
-        /// <param name="hService">
-        /// An handle to the service.
-        /// </param>
-        /// <param name="dwControl">
-        /// <para>The service control code to send to the service.</para>
-        /// <para>This can be one of the standard codes (stop, pause, etc.)
-        /// or a user-defined code (from 128 to 255).</para>
-        /// </param>
+        /// <remarks>
+        /// See the MSDN documentation for more info:
+        /// <see href="https://learn.microsoft.com/en-us/windows/win32/api/winsvc/nf-winsvc-controlservice"/>
+        /// </remarks>
         /// <returns>
         /// <para><c>true</c> if the function succeeds, otherwise <c>false.</c></para>
         /// <para>Call <see cref="Marshal.GetLastWin32Error"/> to get error information.</para>
@@ -178,6 +150,17 @@ namespace YAMDCC.ECAccess.Win32
             [MarshalAs(UnmanagedType.U4)] ServiceControlCode dwControl,
             out ServiceStatus lpServiceStatus);
 
+        /// <summary>
+        /// Deletes a service from the system.
+        /// </summary>
+        /// <remarks>
+        /// See the MSDN documentation for more info:
+        /// <see href="https://learn.microsoft.com/en-us/windows/win32/api/winsvc/nf-winsvc-deleteservice"/>
+        /// </remarks>
+        /// <returns>
+        /// <para><c>true</c> if the function succeeds, otherwise <c>false.</c></para>
+        /// <para>Call <see cref="Marshal.GetLastWin32Error"/> to get error information.</para>
+        /// </returns>
         [DllImport("advapi32.dll",
             ExactSpelling = true, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
@@ -186,9 +169,10 @@ namespace YAMDCC.ECAccess.Win32
         /// <summary>
         /// Closes an handle to a service control manager or service.
         /// </summary>
-        /// <param name="hSCObject">
-        /// An handle to the SCM or service object to close.
-        /// </param>
+        /// <remarks>
+        /// See the MSDN documentation for more info:
+        /// <see href="https://learn.microsoft.com/en-us/windows/win32/api/winsvc/nf-winsvc-closeservicehandle"/>
+        /// </remarks>
         /// <returns>
         /// <para><c>true</c> if the function succeeds, otherwise <c>false.</c></para>
         /// <para>To get error information, call <see cref="Marshal.GetLastWin32Error"/>.</para>
