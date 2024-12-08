@@ -73,21 +73,22 @@ namespace YAMDCC.IPC.IO
         {
             byte[] lenbuf = new byte[SIZE_INT];
             int bytesRead = BaseStream.Read(lenbuf, 0, SIZE_INT);
-            if (bytesRead == 0)
-            {
-                return 0;
-            }
-            return bytesRead != SIZE_INT
-                ? throw new IOException($"Expected {SIZE_INT} bytes but read {bytesRead}")
-                : IPAddress.NetworkToHostOrder(BitConverter.ToInt32(lenbuf, 0));
+            return bytesRead == 0
+                ? 0
+                : bytesRead != SIZE_INT
+                    ? throw new IOException($"Expected {SIZE_INT} bytes, but read {bytesRead}.")
+                    : IPAddress.NetworkToHostOrder(BitConverter.ToInt32(lenbuf, 0));
         }
 
         /// <exception cref="MessagePackSerializationException"/>
         private T ReadObject(int len)
         {
             byte[] data = new byte[len];
-            BaseStream.Read(data, 0, len);
-            return MessagePackSerializer.Deserialize<T>(data, _options);
+            int bytesRead = BaseStream.Read(data, 0, data.Length);
+            return bytesRead == len
+                ? MessagePackSerializer.Deserialize<T>(data, _options)
+                : throw new IOException($"Expected {SIZE_INT} bytes, but read {bytesRead}.");
+
         }
     }
 }
