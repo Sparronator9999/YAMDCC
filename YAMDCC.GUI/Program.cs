@@ -19,7 +19,6 @@ using System.Globalization;
 using System.IO;
 using System.Security.Principal;
 using System.ServiceProcess;
-using System.Threading;
 using System.Windows.Forms;
 using YAMDCC.GUI.Dialogs;
 
@@ -36,9 +35,19 @@ namespace YAMDCC.GUI
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            #region Global exception handlers
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
-            Application.ThreadException += Application_ThreadException;
-            AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+            Application.ThreadException += static (sender, e) =>
+                new CrashDialog(e.Exception).ShowDialog();
+
+            AppDomain.CurrentDomain.UnhandledException += static (sender, e) =>
+            {
+                if (e.ExceptionObject is Exception ex)
+                {
+                    new CrashDialog(ex).ShowDialog();
+                }
+            };
+            #endregion
 
             // Make sure the application data directory structure is set up
             // because apparently windows services don't know how to create
@@ -180,22 +189,5 @@ namespace YAMDCC.GUI
                 identity.Dispose();
             }
         }
-
-        #region Global exception handlers
-        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            if (e.ExceptionObject is Exception ex)
-            {
-                CrashDialog dlg = new(ex);
-                dlg.ShowDialog();
-            }
-        }
-
-        private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
-        {
-            CrashDialog dlg = new(e.Exception);
-            dlg.ShowDialog();
-        }
-        #endregion
     }
 }

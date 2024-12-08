@@ -1,20 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net48</TargetFramework>
-        <OutputType>Library</OutputType>
-        <Title>YAMDCC EC access library</Title>
+        <AnalysisLevel>latest-recommended</AnalysisLevel>
+        <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
         <AssemblyTitle>YAMDCC EC library</AssemblyTitle>
         <Authors>Sparronator9999</Authors>
         <Copyright>Copyright © 2023-2024 Sparronator9999</Copyright>
-        <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
-        <AssemblyVersion>0.6.9.420</AssemblyVersion>
-        <FileVersion>0.6.9.420</FileVersion>
-        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
-        <AnalysisLevel>latest-recommended</AnalysisLevel>
-        <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
         <LangVersion>latest</LangVersion>
+        <OutputType>Library</OutputType>
+        <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <RuntimeIdentifiers>win7-x64;win7-x86;win-x64;win-x86</RuntimeIdentifiers>
+        <TargetFramework>net48</TargetFramework>
+        <Title>YAMDCC EC access library</Title>
+        <VersionPrefix>0.6.9.420</VersionPrefix>
+        <VersionSuffix>SNAPSHOT</VersionSuffix>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>none</DebugType>

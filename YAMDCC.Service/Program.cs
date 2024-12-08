@@ -37,7 +37,9 @@ namespace YAMDCC.Service
         /// </summary>
         private static void Main()
         {
-            AppDomain.CurrentDomain.UnhandledException += LogUnhandledException;
+            AppDomain.CurrentDomain.UnhandledException += static (sender, e) =>
+                Log.Fatal(Strings.GetString("svcException"), e.ExceptionObject);
+
             if (Environment.UserInteractive)
             {
                 MessageBox.Show(Strings.GetString("errDirectRun"),
@@ -45,13 +47,11 @@ namespace YAMDCC.Service
             }
             else
             {
+                Log.Info(
+                    $"OS version: {Environment.OSVersion}\n" +
+                    $"Service version: {Application.ProductVersion}");
                 ServiceBase.Run(new FanControlService(Log));
             }
-        }
-
-        private static void LogUnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            Log.Fatal(Strings.GetString("svcException"), e.ExceptionObject);
         }
     }
 }

@@ -62,6 +62,9 @@ namespace YAMDCC.GUI
             // Saves about 8-9 KB from not having to embed the same icon twice.
             Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
 
+            // set title text to include program version
+            Text = $"YAMDCC config editor - v{Utils.GetShortVerString()}";
+
             // set literally every tooltip
             tsiLoadConf.ToolTipText = Strings.GetString("ttLoadConf");
             tsiSaveConf.ToolTipText = Strings.GetString("ttSaveConf");
@@ -543,7 +546,7 @@ namespace YAMDCC.GUI
 
         #region Help
         private void tsiAbout_Click(object sender, EventArgs e) =>
-            MessageBox.Show(Strings.GetString("dlgAbout"), "About",
+            MessageBox.Show(Strings.GetString("dlgAbout", Utils.GetShortVerString()), "About",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
 
         private void tsiSrc_Click(object sender, EventArgs e) =>

@@ -1,31 +1,27 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net48</TargetFramework>
-        <OutputType>WinExe</OutputType>
+        <AnalysisLevel>latest-recommended</AnalysisLevel>
+        <ApplicationIcon>fan.ico</ApplicationIcon>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
         <AssemblyName>YAMDCC</AssemblyName>
         <AssemblyTitle>YAMDCC configuration utility</AssemblyTitle>
-        <Title>YAMDCC configuration utility</Title>
         <Authors>Sparronator9999</Authors>
-        <Copyright>Copyright © 2023-2024 Sparronator9999</Copyright>
-        <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
-        <PublishUrl>publish\</PublishUrl>
         <BootstrapperEnabled>true</BootstrapperEnabled>
-        <UseWindowsForms>true</UseWindowsForms>
-        <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-        <LangVersion>latest</LangVersion>
-        <RuntimeIdentifiers>win7-x64;win7-x86;win-x64;win-x86</RuntimeIdentifiers>
-    </PropertyGroup>
-    <PropertyGroup>
-        <ApplicationIcon>fan.ico</ApplicationIcon>
-    </PropertyGroup>
-    <PropertyGroup>
-        <ApplicationManifest>app.manifest</ApplicationManifest>
-        <AssemblyVersion>0.6.9.420</AssemblyVersion>
-        <FileVersion>0.6.9.420</FileVersion>
-        <PlatformTarget>AnyCPU</PlatformTarget>
+        <Copyright>Copyright © 2023-2024 Sparronator9999</Copyright>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
-        <AnalysisLevel>latest-recommended</AnalysisLevel>
+        <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+        <LangVersion>latest</LangVersion>
+        <OutputType>WinExe</OutputType>
+        <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <PublishUrl>publish\</PublishUrl>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <RuntimeIdentifiers>win7-x64;win7-x86;win-x64;win-x86</RuntimeIdentifiers>
+        <TargetFramework>net48</TargetFramework>
+        <Title>YAMDCC configuration utility</Title>
+        <UseWindowsForms>true</UseWindowsForms>
+        <VersionPrefix>0.6.9.420</VersionPrefix>
+        <VersionSuffix>SNAPSHOT</VersionSuffix>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>none</DebugType>

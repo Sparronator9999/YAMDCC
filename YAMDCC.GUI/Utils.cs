@@ -43,6 +43,18 @@ namespace YAMDCC.GUI
                 MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+        public static string GetShortVerString()
+        {
+            string prodVer = Application.ProductVersion;
+
+            return prodVer.Contains("+")
+                // only show shortened Git commit hash if it exists
+                // (plus(+) symbol + 7 characters)
+                ? prodVer.Remove(prodVer.IndexOf('+') + 8)
+                // otherwise just return the product version
+                : prodVer;
+        }
+
         /// <summary>
         /// Installs the specified .NET Framework
         /// service to the local computer.

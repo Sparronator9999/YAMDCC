@@ -1,26 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net48</TargetFramework>
-        <OutputType>WinExe</OutputType>
-        <Title>YAMDCC helper service</Title>
+        <AnalysisLevel>latest-recommended</AnalysisLevel>
+        <ApplicationIcon>ec.ico</ApplicationIcon>
+        <AssemblyName>yamdccsvc</AssemblyName>
         <AssemblyTitle>YAMDCC helper service</AssemblyTitle>
         <Authors>Sparronator9999</Authors>
         <Copyright>Copyright © 2023-2024 Sparronator9999</Copyright>
-        <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
-        <AssemblyName>yamdccsvc</AssemblyName>
-        <AssemblyVersion>0.6.9.420</AssemblyVersion>
-        <FileVersion>0.6.9.420</FileVersion>
-        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-        <LangVersion>latest</LangVersion>
-        <RuntimeIdentifiers>win7-x64;win7-x86;win-x64;win-x86</RuntimeIdentifiers>
-    </PropertyGroup>
-    <PropertyGroup>
-        <NoWin32Manifest>true</NoWin32Manifest>
-    </PropertyGroup>
-    <PropertyGroup>
-        <ApplicationIcon>ec.ico</ApplicationIcon>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
-        <AnalysisLevel>latest-recommended</AnalysisLevel>
+        <LangVersion>latest</LangVersion>
+        <OutputType>WinExe</OutputType>
+        <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <RuntimeIdentifiers>win7-x64;win7-x86;win-x64;win-x86</RuntimeIdentifiers>
+        <TargetFramework>net48</TargetFramework>
+        <Title>YAMDCC helper service</Title>
+        <VersionPrefix>0.6.9.420</VersionPrefix>
+        <VersionSuffix>SNAPSHOT</VersionSuffix>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>none</DebugType>

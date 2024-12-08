@@ -119,6 +119,7 @@
   </resheader>
   <data name="dlgAbout" xml:space="preserve">
     <value>YAMDCC - Yet Another MSI Dragon Center Clone
+Version {0}
 A fast, lightweight alternative to MSI Center for MSI laptops, written in C#.
 Copyright © Sparronator9999, 2023-2024
 

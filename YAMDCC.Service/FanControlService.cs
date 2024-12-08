@@ -15,8 +15,8 @@
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Globalization;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.IO.Pipes;
 using System.ServiceProcess;
