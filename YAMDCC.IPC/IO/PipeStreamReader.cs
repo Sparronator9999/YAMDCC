@@ -87,7 +87,7 @@ namespace YAMDCC.IPC.IO
             int bytesRead = BaseStream.Read(data, 0, data.Length);
             return bytesRead == len
                 ? MessagePackSerializer.Deserialize<T>(data, _options)
-                : throw new IOException($"Expected {SIZE_INT} bytes, but read {bytesRead}.");
+                : throw new IOException($"Expected {len} bytes, but read {bytesRead}.");
 
         }
     }
