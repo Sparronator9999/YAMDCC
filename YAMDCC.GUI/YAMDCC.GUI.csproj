@@ -10,7 +10,7 @@
         <Copyright>Copyright © 2023-2024 Sparronator9999</Copyright>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
         <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-        <LangVersion>latest</LangVersion>
+        <LangVersion>13.0</LangVersion>
         <OutputType>WinExe</OutputType>
         <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
         <PlatformTarget>AnyCPU</PlatformTarget>

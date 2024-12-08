@@ -6,7 +6,7 @@
         <Authors>Sparronator9999</Authors>
         <Copyright>Copyright © 2023-2024 Sparronator9999</Copyright>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
-        <LangVersion>latest</LangVersion>
+        <LangVersion>13.0</LangVersion>
         <OutputType>Library</OutputType>
         <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
