@@ -15,9 +15,7 @@
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Drawing;
 using System.Diagnostics;
-using System.Reflection;
 using System.Windows.Forms;
 
 namespace YAMDCC.ConfigEditor.Dialogs

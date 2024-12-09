@@ -172,7 +172,7 @@ namespace YAMDCC.ConfigEditor
 
             tmrStatusReset = new()
             {
-                Interval = 10000,
+                Interval = 5000,
             };
             tmrStatusReset.Tick += tmrStatusReset_Tick;
 
@@ -719,9 +719,7 @@ namespace YAMDCC.ConfigEditor
 
         private void tmrStatusReset_Tick(object sender, EventArgs e)
         {
-            AppStatus.Code = StatusCode.None;
-            AppStatus.RepeatCount = 0;
-            lblStatus.Invoke(() => lblStatus.Text = "Ready");
+            UpdateStatus(StatusCode.None);
             tmrStatusReset.Stop();
         }
 
@@ -1064,55 +1062,55 @@ namespace YAMDCC.ConfigEditor
 
         private void UpdateStatus(StatusCode status, int data = 0)
         {
-            if (AppStatus.Code == status)
+            lblStatus.Invoke(() =>
             {
-                AppStatus.RepeatCount++;
-            }
-            else
-            {
-                AppStatus.Code = status;
-                AppStatus.RepeatCount = 0;
-            }
+                if (AppStatus.Code == status)
+                {
+                    AppStatus.RepeatCount++;
+                }
+                else
+                {
+                    AppStatus.Code = status;
+                    AppStatus.RepeatCount = 0;
+                }
 
-            // set status text
-            if (AppStatus is not null)
-            {
+                // set status text
                 bool persist = false;
-
                 switch (AppStatus.Code)
                 {
                     case StatusCode.ServiceCommandFail:
                         persist = true;
-                        lblStatus.Invoke(() => lblStatus.Text = Strings.GetString("statSvcError", (Command)data));
+                        lblStatus.Text = Strings.GetString("statSvcError", (Command)data);
                         break;
                     case StatusCode.ServiceResponseEmpty:
-                        lblStatus.Invoke(() => lblStatus.Text = Strings.GetString("statResponseEmpty"));
+                        lblStatus.Text = Strings.GetString("statResponseEmpty");
                         break;
                     case StatusCode.ServiceTimeout:
-                        lblStatus.Invoke(() => lblStatus.Text = Strings.GetString("statSvcTimeout"));
+                        lblStatus.Text = Strings.GetString("statSvcTimeout");
                         break;
                     case StatusCode.NoConfig:
                         persist = true;
-                        lblStatus.Invoke(() => lblStatus.Text = Strings.GetString("statNoConf"));
+                        lblStatus.Text = Strings.GetString("statNoConf");
                         break;
                     case StatusCode.ConfLoading:
-                        lblStatus.Invoke(() => lblStatus.Text = Strings.GetString("statConfLoading"));
+                        lblStatus.Text = Strings.GetString("statConfLoading");
                         break;
                     case StatusCode.ConfApplySuccess:
-                        lblStatus.Invoke(() => lblStatus.Text = Strings.GetString("statConfApplied"));
+                        lblStatus.Text = Strings.GetString("statConfApplied");
                         break;
                     case StatusCode.FullBlastToggleSuccess:
-                        lblStatus.Invoke(() => lblStatus.Text = Strings.GetString("statFBToggled"));
+                        lblStatus.Text = Strings.GetString("statFBToggled");
                         break;
                     default:
                         persist = true;
-                        lblStatus.Invoke(() => lblStatus.Text = "Ready");
+                        AppStatus.RepeatCount = 0;
+                        lblStatus.Text = "Ready";
                         break;
                 }
 
                 if (AppStatus.RepeatCount > 0)
                 {
-                    lblStatus.Invoke(() => lblStatus.Text += $" (x{AppStatus.RepeatCount + 1})");
+                    lblStatus.Text += $" (x{AppStatus.RepeatCount + 1})";
                 }
 
                 tmrStatusReset.Stop();
@@ -1120,7 +1118,7 @@ namespace YAMDCC.ConfigEditor
                 {
                     tmrStatusReset.Start();
                 }
-            }
+            });
         }
 
         private void SendServiceMessage(ServiceCommand command)
