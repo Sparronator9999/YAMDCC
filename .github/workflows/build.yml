@@ -47,11 +47,11 @@ jobs:
       run: msbuild.exe YAMDCC.sln /nologo /nr:false /p:DeployOnBuild=true /p:platform="Any CPU" /p:configuration="${{ matrix.config }}"
 
     - name: Copy fan configs to build path
-      run: mkdir YAMDCC.GUI\bin\${{ matrix.config }}\net48\Configs && copy Configs\* YAMDCC.GUI\bin\${{ matrix.config }}\net48\Configs
+      run: mkdir YAMDCC.ConfigEditor\bin\${{ matrix.config }}\net48\Configs && copy Configs\* YAMDCC.ConfigEditor\bin\${{ matrix.config }}\net48\Configs
 
     - name: Upload build artifact
       uses: actions/upload-artifact@v4
       with:
         name: "YAMDCC-${{ github.ref_name }}-${{ env.sha_short }}-${{ matrix.config }}"
-        path: "./YAMDCC.GUI/bin/${{ matrix.config }}/net48/"
+        path: "./YAMDCC.ConfigEditor/bin/${{ matrix.config }}/net48/"
         compression-level: 9
