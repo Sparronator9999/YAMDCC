@@ -117,17 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="dlgAbout" xml:space="preserve">
-    <value>YAMDCC - Yet Another MSI Dragon Center Clone
-Version {0}
-A fast, lightweight alternative to MSI Center for MSI laptops, written in C#.
-Copyright © Sparronator9999, 2023-2024
-
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with this program. If not, visit &lt;https://www.gnu.org/licenses/gpl-3.0.html&gt; for a copy.</value>
+  <data name="dlgAboutDesc" xml:space="preserve">
+    <value>A fast, lightweight alternative to MSI Center for MSI laptops, written in C#.</value>
   </data>
   <data name="dlgProfAdd" xml:space="preserve">
     <value>Please enter a name for your new fan profile:</value>
@@ -261,10 +252,8 @@ A dialog will open, in which you can enter the fan profile's new name.</value>
     <value>The fan profile to adjust for the current fan.</value>
   </data>
   <data name="ttRevert" xml:space="preserve">
-    <value>Revert the currently loaded config to when
-it was first loaded using "Load Config",
-or saved using "Save Config", whichever 
-came last.</value>
+    <value>Revert the currently loaded config to when it was first loaded
+using "Load Config", or saved using "Save Config", whichever came last.</value>
   </data>
   <data name="ttSaveConf" xml:space="preserve">
     <value>Saves the currently loaded config to an XML file.</value>
@@ -346,5 +335,9 @@ Make sure to save your config (using the "Save config" button)!</value>
     <value>Your laptop hasn't been rebooted yet following a request to copy the default fan profile of your laptop to the loaded config.
 
 Cancel and continue loading YAMDCC?</value>
+  </data>
+  <data name="dlgAboutCopyright" xml:space="preserve">
+    <value>Copyright © Sparronator9999 (and contributors), 2023-2024.
+YAMDCC and its authors are not affiliated with Micro-Star International Co., Ltd. in any way, shape, or form.</value>
   </data>
 </root>

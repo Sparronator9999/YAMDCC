@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -43,16 +44,66 @@ namespace YAMDCC.ConfigEditor
                 MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        public static string GetShortVerString()
+        public static string GetVerString()
+        {
+            // format: X.Y.Z-SUFFIX[.W]+REVISION,
+            // where W is a beta/release candidate version if applicable
+            string prodVer = Application.ProductVersion;
+
+            string suffix;
+            if (prodVer.Contains("-"))
+            {
+                // remove the version number (SUFFIX[.W]+REVISION at this point):
+                suffix = prodVer.Remove(0, prodVer.IndexOf('-') + 1);
+
+                // remove Git hash, if it exists (for "dev" detection)
+                if (suffix.Contains("+"))
+                {
+                    suffix = suffix.Remove(suffix.IndexOf('+'));
+                }
+            }
+            else
+            {
+                // suffix probably doesn't exist...
+                suffix = string.Empty;
+            }
+
+            switch (suffix.ToLowerInvariant())
+            {
+                case "release":
+                    // only show the version number (e.g. X.Y.Z):
+                    return prodVer.Remove(prodVer.IndexOf('-'));
+                case "dev":
+                    return prodVer.Contains("+")
+                        // probably a snapshot release (e.g. X.Y.Z-SNAPSHOT+REVISION);
+                        // show shortened Git commit hash if it exists:
+                        ? prodVer.Remove(prodVer.IndexOf('+') + 8)
+                        // Return the product version if not in expected format
+                        : prodVer;
+                default:    // beta, RC, etc.
+                    return prodVer.Contains(".") && prodVer.Contains("+")
+                        // Beta releases should be in format X.Y.Z-beta.W+REVISION.
+                        // Remove the revision (i.e. only show X.Y.Z-beta.W):
+                        ? prodVer.Remove(prodVer.IndexOf('+'))
+                        // Return the product version if not in expected format
+                        : prodVer;
+            }
+        }
+
+        /// <summary>
+        /// Gets the Git revision of this program, if available.
+        /// </summary>
+        /// <returns>
+        /// The Git hash of the program version if available,
+        /// otherwise <see cref="string.Empty"/>.
+        /// </returns>
+        public static string GetRevision()
         {
             string prodVer = Application.ProductVersion;
 
             return prodVer.Contains("+")
-                // only show shortened Git commit hash if it exists
-                // (plus(+) symbol + 7 characters)
-                ? prodVer.Remove(prodVer.IndexOf('+') + 8)
-                // otherwise just return the product version
-                : prodVer;
+                ? prodVer.Remove(0, prodVer.IndexOf('+') + 1)
+                : string.Empty;
         }
 
         /// <summary>

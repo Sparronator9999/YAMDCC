@@ -63,7 +63,7 @@ namespace YAMDCC.ConfigEditor
             Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
 
             // set title text to include program version
-            Text = $"YAMDCC config editor - v{Utils.GetShortVerString()}";
+            Text = $"YAMDCC config editor - v{Utils.GetVerString()}";
 
             // set literally every tooltip
             tsiLoadConf.ToolTipText = Strings.GetString("ttLoadConf");
@@ -542,8 +542,7 @@ namespace YAMDCC.ConfigEditor
 
         #region Help
         private void tsiAbout_Click(object sender, EventArgs e) =>
-            MessageBox.Show(Strings.GetString("dlgAbout", Utils.GetShortVerString()), "About",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
+            new VersionDialog().ShowDialog();
 
         private void tsiSrc_Click(object sender, EventArgs e) =>
             // TODO: add GitHub project link

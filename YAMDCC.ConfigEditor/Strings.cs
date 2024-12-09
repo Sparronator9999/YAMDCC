@@ -70,17 +70,5 @@ namespace YAMDCC.ConfigEditor
                 ? null
                 : string.Format(CultureInfo.InvariantCulture, temp, arg0);
         }
-
-        /// <inheritdoc cref="GetString(string)"/>
-        /// <param name="args">
-        /// The objects to format the string with.
-        /// </param>
-        public static string GetString(string name, params object[] args)
-        {
-            string temp = GetString(name);
-            return temp is null
-                ? null
-                : string.Format(CultureInfo.InvariantCulture, temp, args);
-        }
     }
 }

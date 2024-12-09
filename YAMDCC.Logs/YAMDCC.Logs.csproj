@@ -13,7 +13,7 @@
         <TargetFramework>net48</TargetFramework>
         <Title>YAMDCC logging library</Title>
         <VersionPrefix>0.6.9.420</VersionPrefix>
-        <VersionSuffix>SNAPSHOT</VersionSuffix>
+        <VersionSuffix>dev</VersionSuffix>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>none</DebugType>
