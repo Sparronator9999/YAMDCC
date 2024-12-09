@@ -370,15 +370,11 @@ namespace YAMDCC.ConfigEditor
 
         private void tsiSaveConf_Click(object sender, EventArgs e)
         {
-            SaveConf();
-        }
-
-        private void SaveConf()
-        {
             SaveFileDialog sfd = new()
             {
                 AddExtension = true,
                 Filter = "YAMDCC config files|*.xml",
+                FileName = Config.Model.Replace(' ', '-'),
                 Title = "Save config",
             };
 
