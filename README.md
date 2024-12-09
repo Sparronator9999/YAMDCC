@@ -63,10 +63,8 @@ The following laptops have been tested by the community and are confirmed to be 
 - MSI Vector 17 HX A14VHG (thanks @injitools)
   - Use `MSI-10th-gen-or-newer-nokeylight.xml` - this laptop does not support keyboard backlight adjustment via YAMDCC.
 
-### Config disclaimers
+### Config disclaimer
 
-- The config format is very likely to change multiple times during YAMDCC's development before
-  release, and as such will break in new updates. Check the git history before updating.
 - **Please avoid asking me (or other people) in the issue tracker to create a config for you.**
   **Unless we have your specific laptop model (which we probably don't), we will not be able to**
   **help you outside of the general instructions.**
@@ -104,9 +102,9 @@ this to anything between 0 and 100% (with 0 meaning charge to 100% always).
 
 Below are some changes I would like to make before a 1.0 release of YAMDCC:
 
-- [ ] Add auto-rename of computer model to EC-to-config feature.
+- [x] Add auto-rename of computer model to EC-to-config feature.
 - [ ] Add VBS (Core isolation) detection to prevent issues with EC access.
-- [ ] Fix any remaining bugs before the 1.0 release.
+- [ ] Fix any remaining bugs and QoL features before the 1.0 release.
 
 Below are some planned features for potential future releases:
 
