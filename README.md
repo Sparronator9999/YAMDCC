@@ -103,7 +103,6 @@ this to anything between 0 and 100% (with 0 meaning charge to 100% always).
 Below are some changes I would like to make before a 1.0 release of YAMDCC:
 
 - [x] Add auto-rename of computer model to EC-to-config feature.
-- [ ] Add VBS (Core isolation) detection to prevent issues with EC access.
 - [ ] Fix any remaining bugs and QoL features before the 1.0 release.
 
 Below are some planned features for potential future releases:
@@ -243,13 +242,14 @@ Please read the [disclaimer](#disclaimers), especially the bold text, if you hav
 
 ### Help! My fan profiles aren't being applied!
 
-You may need to disable virtualisation-based security (VBS, or "Core isolation" in Windows Security):
+You may need to disable virtualisation-based security (VBS). See
+[this page](https://www.thewindowsclub.com/disable-vbs-windows) for more info,
+but generally this boils down to disabling a Windows Defender feature (Memory
+integrity), and/or uninstalling virtualisation features (Hyper-V, WSL, etc.)
 
-1.  Open Windows Security (by searching for it, or from `Settings` > `Update & security` > `Windows Security`).
-2.  Go to `Device security` > `Core isolation`, then toggle `Memory integrity` off.
-3.  Reboot and try to apply your fan profiles again.
-
-A warning will be added in the future to YAMDCC if VBS is enabled.
+A warning may be added in the future to YAMDCC if VBS is enabled once more
+information is available on what settings break YAMDCC (and related software,
+e.g. ThrottleStop)
 
 If the above steps don't fix your problem, search the [issue tracker](https://github.com/Sparronator9999/YAMDCC/issues)
 for similar issues, or [open a new issue](https://github.com/Sparronator9999/YAMDCC/issues/new)
