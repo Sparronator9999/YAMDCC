@@ -99,8 +99,8 @@ namespace YAMDCC.ConfigEditor
             this.lblKeyLight = new System.Windows.Forms.Label();
             this.tbKeyLight = new System.Windows.Forms.TrackBar();
             this.chkFullBlast = new System.Windows.Forms.CheckBox();
-            this.btnApply = new System.Windows.Forms.Button();
             this.btnRevert = new System.Windows.Forms.Button();
+            this.btnApply = new System.Windows.Forms.Button();
             this.lblStatus = new System.Windows.Forms.Label();
             this.lblFanSpd = new System.Windows.Forms.Label();
             this.lblFanRPM = new System.Windows.Forms.Label();
@@ -403,9 +403,11 @@ namespace YAMDCC.ConfigEditor
             // 
             this.lblSpeed.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSpeed.AutoSize = true;
-            this.lblSpeed.Location = new System.Drawing.Point(5, 0);
+            this.lblSpeed.Location = new System.Drawing.Point(4, 2);
+            this.lblSpeed.Margin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.lblSpeed.Name = "lblSpeed";
-            this.lblSpeed.Size = new System.Drawing.Size(60, 15);
+            this.lblSpeed.Padding = new System.Windows.Forms.Padding(0, 0, 0, 3);
+            this.lblSpeed.Size = new System.Drawing.Size(60, 18);
             this.lblSpeed.TabIndex = 0;
             this.lblSpeed.Text = "Speed (%)";
             // 
@@ -413,9 +415,11 @@ namespace YAMDCC.ConfigEditor
             // 
             this.lblUpT.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblUpT.AutoSize = true;
-            this.lblUpT.Location = new System.Drawing.Point(19, 277);
+            this.lblUpT.Location = new System.Drawing.Point(18, 265);
+            this.lblUpT.Margin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.lblUpT.Name = "lblUpT";
-            this.lblUpT.Size = new System.Drawing.Size(46, 15);
+            this.lblUpT.Padding = new System.Windows.Forms.Padding(0, 0, 0, 3);
+            this.lblUpT.Size = new System.Drawing.Size(46, 18);
             this.lblUpT.TabIndex = 1;
             this.lblUpT.Text = "Up (°C)";
             // 
@@ -423,9 +427,11 @@ namespace YAMDCC.ConfigEditor
             // 
             this.lblDownT.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblDownT.AutoSize = true;
-            this.lblDownT.Location = new System.Drawing.Point(3, 292);
+            this.lblDownT.Location = new System.Drawing.Point(2, 287);
+            this.lblDownT.Margin = new System.Windows.Forms.Padding(2, 2, 0, 2);
             this.lblDownT.Name = "lblDownT";
-            this.lblDownT.Size = new System.Drawing.Size(62, 15);
+            this.lblDownT.Padding = new System.Windows.Forms.Padding(0, 0, 0, 3);
+            this.lblDownT.Size = new System.Drawing.Size(62, 18);
             this.lblDownT.TabIndex = 2;
             this.lblDownT.Text = "Down (°C)";
             // 
@@ -447,11 +453,13 @@ namespace YAMDCC.ConfigEditor
             // 
             // lblFanSel
             // 
+            this.lblFanSel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblFanSel.AutoSize = true;
-            this.lblFanSel.Location = new System.Drawing.Point(3, 7);
-            this.lblFanSel.Margin = new System.Windows.Forms.Padding(3, 7, 0, 3);
+            this.lblFanSel.Location = new System.Drawing.Point(4, 6);
+            this.lblFanSel.Margin = new System.Windows.Forms.Padding(4, 3, 0, 3);
             this.lblFanSel.Name = "lblFanSel";
-            this.lblFanSel.Size = new System.Drawing.Size(29, 15);
+            this.lblFanSel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            this.lblFanSel.Size = new System.Drawing.Size(29, 17);
             this.lblFanSel.TabIndex = 0;
             this.lblFanSel.Text = "Fan:";
             // 
@@ -459,19 +467,22 @@ namespace YAMDCC.ConfigEditor
             // 
             this.cboFanSel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboFanSel.FormattingEnabled = true;
-            this.cboFanSel.Location = new System.Drawing.Point(35, 3);
+            this.cboFanSel.Location = new System.Drawing.Point(37, 3);
+            this.cboFanSel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.cboFanSel.Name = "cboFanSel";
-            this.cboFanSel.Size = new System.Drawing.Size(120, 23);
+            this.cboFanSel.Size = new System.Drawing.Size(119, 23);
             this.cboFanSel.TabIndex = 1;
             this.cboFanSel.SelectedIndexChanged += new System.EventHandler(this.cboFanSel_IndexChanged);
             // 
             // lblProfSel
             // 
+            this.lblProfSel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblProfSel.AutoSize = true;
-            this.lblProfSel.Location = new System.Drawing.Point(161, 7);
-            this.lblProfSel.Margin = new System.Windows.Forms.Padding(3, 7, 0, 3);
+            this.lblProfSel.Location = new System.Drawing.Point(164, 6);
+            this.lblProfSel.Margin = new System.Windows.Forms.Padding(4, 3, 0, 3);
             this.lblProfSel.Name = "lblProfSel";
-            this.lblProfSel.Size = new System.Drawing.Size(44, 15);
+            this.lblProfSel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            this.lblProfSel.Size = new System.Drawing.Size(44, 17);
             this.lblProfSel.TabIndex = 2;
             this.lblProfSel.Text = "Profile:";
             // 
@@ -479,16 +490,17 @@ namespace YAMDCC.ConfigEditor
             // 
             this.cboProfSel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboProfSel.FormattingEnabled = true;
-            this.cboProfSel.Location = new System.Drawing.Point(208, 3);
+            this.cboProfSel.Location = new System.Drawing.Point(212, 3);
+            this.cboProfSel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.cboProfSel.Name = "cboProfSel";
-            this.cboProfSel.Size = new System.Drawing.Size(120, 23);
+            this.cboProfSel.Size = new System.Drawing.Size(119, 23);
             this.cboProfSel.TabIndex = 3;
             this.cboProfSel.SelectedIndexChanged += new System.EventHandler(this.cboProfSel_IndexChanged);
             // 
             // btnProfAdd
             // 
-            this.btnProfAdd.Location = new System.Drawing.Point(334, 3);
-            this.btnProfAdd.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
+            this.btnProfAdd.Location = new System.Drawing.Point(339, 3);
+            this.btnProfAdd.Margin = new System.Windows.Forms.Padding(4, 3, 0, 3);
             this.btnProfAdd.Name = "btnProfAdd";
             this.btnProfAdd.Size = new System.Drawing.Size(23, 23);
             this.btnProfAdd.TabIndex = 4;
@@ -498,8 +510,8 @@ namespace YAMDCC.ConfigEditor
             // 
             // btnProfDel
             // 
-            this.btnProfDel.Location = new System.Drawing.Point(357, 3);
-            this.btnProfDel.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
+            this.btnProfDel.Location = new System.Drawing.Point(362, 3);
+            this.btnProfDel.Margin = new System.Windows.Forms.Padding(0, 3, 4, 3);
             this.btnProfDel.Name = "btnProfDel";
             this.btnProfDel.Size = new System.Drawing.Size(23, 23);
             this.btnProfDel.TabIndex = 5;
@@ -513,7 +525,7 @@ namespace YAMDCC.ConfigEditor
             tabOptions.Controls.Add(tblExtra);
             tabOptions.Location = new System.Drawing.Point(4, 24);
             tabOptions.Name = "tabOptions";
-            tabOptions.Size = new System.Drawing.Size(526, 392);
+            tabOptions.Size = new System.Drawing.Size(526, 336);
             tabOptions.TabIndex = 1;
             tabOptions.Text = "Extras";
             // 
@@ -532,6 +544,7 @@ namespace YAMDCC.ConfigEditor
             tblExtra.Controls.Add(flwKeyLight, 1, 3);
             tblExtra.Dock = System.Windows.Forms.DockStyle.Fill;
             tblExtra.Location = new System.Drawing.Point(0, 0);
+            tblExtra.Margin = new System.Windows.Forms.Padding(0);
             tblExtra.Name = "tblExtra";
             tblExtra.RowCount = 5;
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -539,24 +552,26 @@ namespace YAMDCC.ConfigEditor
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tblExtra.Size = new System.Drawing.Size(526, 392);
+            tblExtra.Size = new System.Drawing.Size(526, 336);
             tblExtra.TabIndex = 4;
             // 
             // lblChgLim
             // 
             this.lblChgLim.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblChgLim.AutoSize = true;
-            this.lblChgLim.Location = new System.Drawing.Point(55, 5);
-            this.lblChgLim.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
+            this.lblChgLim.Location = new System.Drawing.Point(56, 4);
+            this.lblChgLim.Margin = new System.Windows.Forms.Padding(4, 3, 0, 3);
             this.lblChgLim.Name = "lblChgLim";
-            this.lblChgLim.Size = new System.Drawing.Size(75, 15);
+            this.lblChgLim.Padding = new System.Windows.Forms.Padding(0, 0, 0, 3);
+            this.lblChgLim.Size = new System.Drawing.Size(75, 18);
             this.lblChgLim.TabIndex = 2;
             this.lblChgLim.Text = "Charge limit:";
             // 
             // numChgLim
             // 
             this.numChgLim.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.numChgLim.Location = new System.Drawing.Point(136, 3);
+            this.numChgLim.Location = new System.Drawing.Point(133, 2);
+            this.numChgLim.Margin = new System.Windows.Forms.Padding(2);
             this.numChgLim.Name = "numChgLim";
             this.numChgLim.Size = new System.Drawing.Size(50, 23);
             this.numChgLim.TabIndex = 3;
@@ -566,7 +581,8 @@ namespace YAMDCC.ConfigEditor
             // 
             this.lblPerfMode.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblPerfMode.AutoSize = true;
-            this.lblPerfMode.Location = new System.Drawing.Point(18, 36);
+            this.lblPerfMode.Location = new System.Drawing.Point(19, 34);
+            this.lblPerfMode.Margin = new System.Windows.Forms.Padding(4, 3, 0, 3);
             this.lblPerfMode.Name = "lblPerfMode";
             this.lblPerfMode.Size = new System.Drawing.Size(112, 15);
             this.lblPerfMode.TabIndex = 4;
@@ -577,7 +593,8 @@ namespace YAMDCC.ConfigEditor
             this.cboPerfMode.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cboPerfMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPerfMode.FormattingEnabled = true;
-            this.cboPerfMode.Location = new System.Drawing.Point(136, 32);
+            this.cboPerfMode.Location = new System.Drawing.Point(135, 30);
+            this.cboPerfMode.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.cboPerfMode.Name = "cboPerfMode";
             this.cboPerfMode.Size = new System.Drawing.Size(150, 23);
             this.cboPerfMode.TabIndex = 5;
@@ -587,10 +604,11 @@ namespace YAMDCC.ConfigEditor
             // 
             this.lblWinFnSwap.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblWinFnSwap.AutoSize = true;
-            this.lblWinFnSwap.Location = new System.Drawing.Point(3, 61);
-            this.lblWinFnSwap.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
+            this.lblWinFnSwap.Location = new System.Drawing.Point(4, 60);
+            this.lblWinFnSwap.Margin = new System.Windows.Forms.Padding(4, 3, 0, 3);
             this.lblWinFnSwap.Name = "lblWinFnSwap";
-            this.lblWinFnSwap.Size = new System.Drawing.Size(127, 15);
+            this.lblWinFnSwap.Padding = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            this.lblWinFnSwap.Size = new System.Drawing.Size(127, 17);
             this.lblWinFnSwap.TabIndex = 6;
             this.lblWinFnSwap.Text = "Swap Win and Fn keys:";
             // 
@@ -598,7 +616,8 @@ namespace YAMDCC.ConfigEditor
             // 
             this.chkWinFnSwap.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkWinFnSwap.AutoSize = true;
-            this.chkWinFnSwap.Location = new System.Drawing.Point(136, 61);
+            this.chkWinFnSwap.Location = new System.Drawing.Point(135, 59);
+            this.chkWinFnSwap.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.chkWinFnSwap.Name = "chkWinFnSwap";
             this.chkWinFnSwap.Size = new System.Drawing.Size(68, 19);
             this.chkWinFnSwap.TabIndex = 7;
@@ -610,8 +629,8 @@ namespace YAMDCC.ConfigEditor
             // 
             this.lblKeyLight.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKeyLight.AutoSize = true;
-            this.lblKeyLight.Location = new System.Drawing.Point(19, 100);
-            this.lblKeyLight.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblKeyLight.Location = new System.Drawing.Point(19, 99);
+            this.lblKeyLight.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
             this.lblKeyLight.Name = "lblKeyLight";
             this.lblKeyLight.Size = new System.Drawing.Size(112, 15);
             this.lblKeyLight.TabIndex = 8;
@@ -623,17 +642,18 @@ namespace YAMDCC.ConfigEditor
             flwKeyLight.Controls.Add(lblKeyLightLow);
             flwKeyLight.Controls.Add(this.tbKeyLight);
             flwKeyLight.Controls.Add(lblKeyLightHigh);
-            flwKeyLight.Location = new System.Drawing.Point(133, 83);
+            flwKeyLight.Location = new System.Drawing.Point(131, 81);
             flwKeyLight.Margin = new System.Windows.Forms.Padding(0);
             flwKeyLight.Name = "flwKeyLight";
-            flwKeyLight.Size = new System.Drawing.Size(229, 49);
+            flwKeyLight.Size = new System.Drawing.Size(225, 51);
             flwKeyLight.TabIndex = 10;
             // 
             // lblKeyLightLow
             // 
             lblKeyLightLow.Anchor = System.Windows.Forms.AnchorStyles.Left;
             lblKeyLightLow.AutoSize = true;
-            lblKeyLightLow.Location = new System.Drawing.Point(3, 17);
+            lblKeyLightLow.Location = new System.Drawing.Point(3, 18);
+            lblKeyLightLow.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
             lblKeyLightLow.Name = "lblKeyLightLow";
             lblKeyLightLow.Size = new System.Drawing.Size(24, 15);
             lblKeyLightLow.TabIndex = 10;
@@ -641,8 +661,7 @@ namespace YAMDCC.ConfigEditor
             // 
             // tbKeyLight
             // 
-            this.tbKeyLight.Location = new System.Drawing.Point(32, 2);
-            this.tbKeyLight.Margin = new System.Windows.Forms.Padding(2);
+            this.tbKeyLight.Location = new System.Drawing.Point(30, 3);
             this.tbKeyLight.Maximum = 3;
             this.tbKeyLight.Name = "tbKeyLight";
             this.tbKeyLight.Size = new System.Drawing.Size(150, 45);
@@ -654,7 +673,8 @@ namespace YAMDCC.ConfigEditor
             // 
             lblKeyLightHigh.Anchor = System.Windows.Forms.AnchorStyles.Left;
             lblKeyLightHigh.AutoSize = true;
-            lblKeyLightHigh.Location = new System.Drawing.Point(187, 17);
+            lblKeyLightHigh.Location = new System.Drawing.Point(183, 18);
+            lblKeyLightHigh.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
             lblKeyLightHigh.Name = "lblKeyLightHigh";
             lblKeyLightHigh.Size = new System.Drawing.Size(39, 15);
             lblKeyLightHigh.TabIndex = 11;
@@ -668,8 +688,8 @@ namespace YAMDCC.ConfigEditor
             tblFCBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             tblFCBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             tblFCBottom.Controls.Add(this.chkFullBlast, 0, 0);
-            tblFCBottom.Controls.Add(this.btnApply, 2, 0);
             tblFCBottom.Controls.Add(this.btnRevert, 1, 0);
+            tblFCBottom.Controls.Add(this.btnApply, 2, 0);
             tblFCBottom.Dock = System.Windows.Forms.DockStyle.Fill;
             tblFCBottom.Location = new System.Drawing.Point(2, 369);
             tblFCBottom.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
@@ -691,28 +711,28 @@ namespace YAMDCC.ConfigEditor
             this.chkFullBlast.UseVisualStyleBackColor = true;
             this.chkFullBlast.CheckedChanged += new System.EventHandler(this.chkFullBlast_Toggled);
             // 
-            // btnApply
-            // 
-            this.btnApply.Location = new System.Drawing.Point(458, 2);
-            this.btnApply.Margin = new System.Windows.Forms.Padding(2, 2, 3, 2);
-            this.btnApply.Name = "btnApply";
-            this.btnApply.Size = new System.Drawing.Size(75, 25);
-            this.btnApply.TabIndex = 4;
-            this.btnApply.Text = "Apply";
-            this.btnApply.UseVisualStyleBackColor = true;
-            this.btnApply.Click += new System.EventHandler(this.btnApply_Click);
-            // 
             // btnRevert
             // 
             this.btnRevert.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnRevert.Location = new System.Drawing.Point(378, 2);
-            this.btnRevert.Margin = new System.Windows.Forms.Padding(2, 2, 3, 2);
+            this.btnRevert.Location = new System.Drawing.Point(376, 2);
+            this.btnRevert.Margin = new System.Windows.Forms.Padding(2, 2, 4, 2);
             this.btnRevert.Name = "btnRevert";
             this.btnRevert.Size = new System.Drawing.Size(75, 25);
             this.btnRevert.TabIndex = 5;
             this.btnRevert.Text = "Revert";
             this.btnRevert.UseVisualStyleBackColor = true;
             this.btnRevert.Click += new System.EventHandler(this.btnRevert_Click);
+            // 
+            // btnApply
+            // 
+            this.btnApply.Location = new System.Drawing.Point(457, 2);
+            this.btnApply.Margin = new System.Windows.Forms.Padding(2, 2, 4, 2);
+            this.btnApply.Name = "btnApply";
+            this.btnApply.Size = new System.Drawing.Size(75, 25);
+            this.btnApply.TabIndex = 4;
+            this.btnApply.Text = "Apply";
+            this.btnApply.UseVisualStyleBackColor = true;
+            this.btnApply.Click += new System.EventHandler(this.btnApply_Click);
             // 
             // flwStats
             // 
@@ -731,7 +751,8 @@ namespace YAMDCC.ConfigEditor
             // lblStatus
             // 
             this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(3, 0);
+            this.lblStatus.Location = new System.Drawing.Point(4, 0);
+            this.lblStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(39, 15);
             this.lblStatus.TabIndex = 0;
@@ -740,7 +761,8 @@ namespace YAMDCC.ConfigEditor
             // lblFanSpd
             // 
             this.lblFanSpd.AutoSize = true;
-            this.lblFanSpd.Location = new System.Drawing.Point(48, 0);
+            this.lblFanSpd.Location = new System.Drawing.Point(51, 0);
+            this.lblFanSpd.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblFanSpd.Name = "lblFanSpd";
             this.lblFanSpd.Size = new System.Drawing.Size(86, 15);
             this.lblFanSpd.TabIndex = 1;
@@ -750,7 +772,8 @@ namespace YAMDCC.ConfigEditor
             // lblFanRPM
             // 
             this.lblFanRPM.AutoSize = true;
-            this.lblFanRPM.Location = new System.Drawing.Point(140, 0);
+            this.lblFanRPM.Location = new System.Drawing.Point(145, 0);
+            this.lblFanRPM.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblFanRPM.Name = "lblFanRPM";
             this.lblFanRPM.Size = new System.Drawing.Size(58, 15);
             this.lblFanRPM.TabIndex = 2;
@@ -760,7 +783,8 @@ namespace YAMDCC.ConfigEditor
             // lblTemp
             // 
             this.lblTemp.AutoSize = true;
-            this.lblTemp.Location = new System.Drawing.Point(204, 0);
+            this.lblTemp.Location = new System.Drawing.Point(211, 0);
+            this.lblTemp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblTemp.Name = "lblTemp";
             this.lblTemp.Size = new System.Drawing.Size(65, 15);
             this.lblTemp.TabIndex = 3;
@@ -772,9 +796,10 @@ namespace YAMDCC.ConfigEditor
             this.tblMain.ColumnCount = 1;
             this.tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblMain.Controls.Add(tcMain, 0, 0);
-            this.tblMain.Controls.Add(flwStats, 0, 2);
             this.tblMain.Controls.Add(tblFCBottom, 0, 1);
+            this.tblMain.Controls.Add(flwStats, 0, 2);
             this.tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tblMain.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tblMain.Location = new System.Drawing.Point(0, 24);
             this.tblMain.Margin = new System.Windows.Forms.Padding(0);
             this.tblMain.Name = "tblMain";
@@ -794,9 +819,9 @@ namespace YAMDCC.ConfigEditor
             this.ClientSize = new System.Drawing.Size(540, 440);
             this.Controls.Add(this.tblMain);
             this.Controls.Add(menuStrip);
-            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = menuStrip;
+            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.MaximizeBox = false;
             this.Name = "MainWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -832,31 +857,25 @@ namespace YAMDCC.ConfigEditor
 
         #endregion
 
-        private System.Windows.Forms.ToolStripMenuItem tsiECMon;
-        private System.Windows.Forms.CheckBox chkFullBlast;
-        private System.Windows.Forms.Button btnApply;
-        private System.Windows.Forms.Label lblFanSpd;
-        private System.Windows.Forms.Label lblFanRPM;
-        private System.Windows.Forms.Label lblTemp;
+        private System.Windows.Forms.ToolStripMenuItem tsiFile;
         private System.Windows.Forms.ToolStripMenuItem tsiLoadConf;
         private System.Windows.Forms.ToolStripMenuItem tsiSaveConf;
-        private System.Windows.Forms.Label lblStatus;
-        private System.Windows.Forms.ToolStripMenuItem tsiExit;
         private System.Windows.Forms.ToolStripMenuItem tsiApply;
-        private System.Windows.Forms.Button btnRevert;
         private System.Windows.Forms.ToolStripMenuItem tsiRevert;
-        private System.Windows.Forms.ToolStripMenuItem tsiAbout;
-        private System.Windows.Forms.ToolStripMenuItem tsiSource;
-        private System.Windows.Forms.ToolStripMenuItem tsiUninstall;
+        private System.Windows.Forms.ToolStripMenuItem tsiExit;
+        private System.Windows.Forms.ToolStripMenuItem tsiOptions;
+        private System.Windows.Forms.ToolStripMenuItem tsiProfAdd;
         private System.Windows.Forms.ToolStripMenuItem tsiProfEdit;
         private System.Windows.Forms.ToolStripMenuItem tsiProfRename;
         private System.Windows.Forms.ToolStripMenuItem tsiProfChangeDesc;
         private System.Windows.Forms.ToolStripMenuItem tsiProfDel;
+        private System.Windows.Forms.ToolStripMenuItem tsiECtoConf;
+        private System.Windows.Forms.ToolStripMenuItem tsiECMon;
         private System.Windows.Forms.ToolStripMenuItem tsiStopSvc;
-        private System.Windows.Forms.ToolStripMenuItem tsiFile;
-        private System.Windows.Forms.ToolStripMenuItem tsiOptions;
+        private System.Windows.Forms.ToolStripMenuItem tsiUninstall;
         private System.Windows.Forms.ToolStripMenuItem tsiHelp;
-        private System.Windows.Forms.TableLayoutPanel tblMain;
+        private System.Windows.Forms.ToolStripMenuItem tsiAbout;
+        private System.Windows.Forms.ToolStripMenuItem tsiSource;
         private System.Windows.Forms.TableLayoutPanel tblFanControl;
         private System.Windows.Forms.TableLayoutPanel tblCurve;
         private System.Windows.Forms.Label lblSpeed;
@@ -868,15 +887,21 @@ namespace YAMDCC.ConfigEditor
         private System.Windows.Forms.ComboBox cboProfSel;
         private System.Windows.Forms.Button btnProfAdd;
         private System.Windows.Forms.Button btnProfDel;
-        private System.Windows.Forms.NumericUpDown numChgLim;
-        private System.Windows.Forms.ComboBox cboPerfMode;
-        private System.Windows.Forms.CheckBox chkWinFnSwap;
-        private System.Windows.Forms.TrackBar tbKeyLight;
         private System.Windows.Forms.Label lblChgLim;
+        private System.Windows.Forms.NumericUpDown numChgLim;
         private System.Windows.Forms.Label lblPerfMode;
+        private System.Windows.Forms.ComboBox cboPerfMode;
         private System.Windows.Forms.Label lblWinFnSwap;
+        private System.Windows.Forms.CheckBox chkWinFnSwap;
         private System.Windows.Forms.Label lblKeyLight;
-        private System.Windows.Forms.ToolStripMenuItem tsiProfAdd;
-        private System.Windows.Forms.ToolStripMenuItem tsiECtoConf;
+        private System.Windows.Forms.TrackBar tbKeyLight;
+        private System.Windows.Forms.CheckBox chkFullBlast;
+        private System.Windows.Forms.Button btnApply;
+        private System.Windows.Forms.Button btnRevert;
+        private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.Label lblFanSpd;
+        private System.Windows.Forms.Label lblFanRPM;
+        private System.Windows.Forms.Label lblTemp;
+        private System.Windows.Forms.TableLayoutPanel tblMain;
     }
 }

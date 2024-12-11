@@ -104,16 +104,6 @@ namespace YAMDCC.ConfigEditor.Dialogs
             lblSubtitle.TabIndex = 2;
             lblSubtitle.Text = "(Yet Another MSI Dragon Center Clone)";
             // 
-            // lblVersion
-            // 
-            this.lblVersion.AutoSize = true;
-            this.lblVersion.Location = new System.Drawing.Point(140, 56);
-            this.lblVersion.Margin = new System.Windows.Forms.Padding(3);
-            this.lblVersion.Name = "lblVersion";
-            this.lblVersion.Size = new System.Drawing.Size(48, 15);
-            this.lblVersion.TabIndex = 3;
-            this.lblVersion.Text = "Version ";
-            // 
             // tblMain
             // 
             tblMain.AutoSize = true;
@@ -125,10 +115,10 @@ namespace YAMDCC.ConfigEditor.Dialogs
             tblMain.Controls.Add(lblTitle, 1, 0);
             tblMain.Controls.Add(lblSubtitle, 1, 1);
             tblMain.Controls.Add(this.lblVersion, 1, 2);
-            tblMain.Controls.Add(this.lblCopyright, 0, 6);
+            tblMain.Controls.Add(this.lblRevision, 1, 3);
             tblMain.Controls.Add(this.lblDesc, 1, 4);
             tblMain.Controls.Add(flwLinks, 1, 5);
-            tblMain.Controls.Add(this.lblRevision, 1, 3);
+            tblMain.Controls.Add(this.lblCopyright, 0, 6);
             tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             tblMain.Location = new System.Drawing.Point(0, 0);
             tblMain.Name = "tblMain";
@@ -144,16 +134,25 @@ namespace YAMDCC.ConfigEditor.Dialogs
             tblMain.Size = new System.Drawing.Size(524, 181);
             tblMain.TabIndex = 5;
             // 
+            // lblVersion
+            // 
+            this.lblVersion.AutoSize = true;
+            this.lblVersion.Location = new System.Drawing.Point(140, 56);
+            this.lblVersion.Margin = new System.Windows.Forms.Padding(3);
+            this.lblVersion.Name = "lblVersion";
+            this.lblVersion.Size = new System.Drawing.Size(48, 15);
+            this.lblVersion.TabIndex = 3;
+            this.lblVersion.Text = "Version ";
+            // 
             // lblCopyright
             // 
             this.lblCopyright.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lblCopyright.AutoSize = true;
             tblMain.SetColumnSpan(this.lblCopyright, 2);
-            this.lblCopyright.Location = new System.Drawing.Point(232, 151);
+            this.lblCopyright.Location = new System.Drawing.Point(262, 151);
             this.lblCopyright.Name = "lblCopyright";
-            this.lblCopyright.Size = new System.Drawing.Size(60, 15);
+            this.lblCopyright.Size = new System.Drawing.Size(0, 15);
             this.lblCopyright.TabIndex = 4;
-            this.lblCopyright.Text = "Copyright";
             this.lblCopyright.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // lblDesc
@@ -162,9 +161,8 @@ namespace YAMDCC.ConfigEditor.Dialogs
             this.lblDesc.Location = new System.Drawing.Point(140, 98);
             this.lblDesc.Margin = new System.Windows.Forms.Padding(3);
             this.lblDesc.Name = "lblDesc";
-            this.lblDesc.Size = new System.Drawing.Size(67, 15);
+            this.lblDesc.Size = new System.Drawing.Size(0, 15);
             this.lblDesc.TabIndex = 5;
-            this.lblDesc.Text = "Description";
             // 
             // flwLinks
             // 
@@ -254,9 +252,10 @@ namespace YAMDCC.ConfigEditor.Dialogs
         }
 
         #endregion
+
         private System.Windows.Forms.Label lblVersion;
+        private System.Windows.Forms.Label lblRevision;
         private System.Windows.Forms.Label lblDesc;
         private System.Windows.Forms.Label lblCopyright;
-        private System.Windows.Forms.Label lblRevision;
     }
 }

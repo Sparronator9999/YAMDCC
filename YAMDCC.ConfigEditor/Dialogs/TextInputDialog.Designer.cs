@@ -85,7 +85,6 @@ namespace YAMDCC.ConfigEditor.Dialogs
             this.lblCaption.Name = "lblCaption";
             this.lblCaption.Size = new System.Drawing.Size(280, 15);
             this.lblCaption.TabIndex = 1;
-            this.lblCaption.Text = "Caption";
             // 
             // txtInput
             // 
@@ -147,7 +146,6 @@ namespace YAMDCC.ConfigEditor.Dialogs
             this.MinimizeBox = false;
             this.Name = "TextInputDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Title";
             tblMain.ResumeLayout(false);
             tblMain.PerformLayout();
             flwButtons.ResumeLayout(false);

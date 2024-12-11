@@ -132,7 +132,8 @@ namespace YAMDCC.ConfigEditor
                     tblCurve.Controls.Add(new Label
                     {
                         Dock = DockStyle.Fill,
-                        Margin = new Padding(4),
+                        Margin = new Padding(2),
+                        Padding = new Padding(0, 0, 0, 3),
                         Text = "Default",
                         TextAlign = ContentAlignment.MiddleCenter,
                     },
@@ -156,7 +157,8 @@ namespace YAMDCC.ConfigEditor
                     tblCurve.Controls.Add(new Label
                     {
                         Dock = DockStyle.Fill,
-                        Margin = new Padding(4),
+                        Margin = new Padding(2),
+                        Padding = new Padding(0, 0, 0, 3),
                         Text = "Max",
                         TextAlign = ContentAlignment.MiddleCenter,
                     },
