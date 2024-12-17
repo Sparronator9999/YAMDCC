@@ -101,17 +101,20 @@ namespace YAMDCC.ConfigEditor
                     Margin = new Padding(2),
                     Tag = i,
                 };
+                ttMain.SetToolTip(numFanSpds[i], Strings.GetString("ttFanSpd"));
                 numFanSpds[i].ValueChanged += numFanSpd_Changed;
                 tblCurve.Controls.Add(numFanSpds[i], i + 1, 0);
 
                 tbFanSpds[i] = new TrackBar()
                 {
                     Dock = DockStyle.Fill,
+                    Margin = new Padding((int)(9 * scale), 0, (int)(9 * scale), 0),
                     Orientation = Orientation.Vertical,
                     Tag = i,
                     TickFrequency = 5,
                     TickStyle = TickStyle.Both,
                 };
+                ttMain.SetToolTip(tbFanSpds[i], Strings.GetString("ttFanSpdTB"));
                 tbFanSpds[i].ValueChanged += tbFanSpd_Scroll;
                 tblCurve.Controls.Add(tbFanSpds[i], i + 1, 1);
 
@@ -124,6 +127,7 @@ namespace YAMDCC.ConfigEditor
                         Margin = new Padding(2),
                         Tag = i - 1,
                     };
+                    ttMain.SetToolTip(numUpTs[i - 1], Strings.GetString("ttUpT"));
                     numUpTs[i - 1].ValueChanged += numUpT_Changed;
                     tblCurve.Controls.Add(numUpTs[i - 1], i + 1, 2);
                 }
@@ -149,6 +153,7 @@ namespace YAMDCC.ConfigEditor
                         Margin = new Padding(2),
                         Tag = i,
                     };
+                    ttMain.SetToolTip(numDownTs[i], Strings.GetString("ttDownT"));
                     numDownTs[i].ValueChanged += numDownT_Changed;
                     tblCurve.Controls.Add(numDownTs[i], i + 1, 3);
                 }
@@ -207,9 +212,16 @@ namespace YAMDCC.ConfigEditor
 
             LoadConf(Paths.CurrentConfig);
 
-            if (Config is not null && Config.KeyLightConf is not null)
+            if (Config is not null)
             {
-                SendServiceMessage(new ServiceCommand(Command.GetKeyLightBright, ""));
+                if (Config.KeyLightConf is null)
+                {
+                    ttMain.SetToolTip(tbKeyLight, Strings.GetString("ttNotSupported"));
+                }
+                else
+                {
+                    SendServiceMessage(new ServiceCommand(Command.GetKeyLightBright, ""));
+                }
             }
 
             if (File.Exists(Paths.ECToConfFail))
@@ -312,6 +324,7 @@ namespace YAMDCC.ConfigEditor
                                 tbKeyLight.Maximum = Config.KeyLightConf.MaxVal - Config.KeyLightConf.MinVal;
                                 tbKeyLight.Value = value;
                                 tbKeyLight.Enabled = lblKeyLight.Enabled = true;
+                                ttMain.SetToolTip(tbKeyLight, Strings.GetString("ttKeyLight"));
                             }));
                         }
                         break;
@@ -436,7 +449,8 @@ namespace YAMDCC.ConfigEditor
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 curveCfg.Desc = dlg.Result;
-                ttMain.SetToolTip(cboProfSel, dlg.Result);
+                ttMain.SetToolTip(cboProfSel, Strings.GetString(
+                    "ttProfSel", dlg.Result));
                 btnRevert.Enabled = tsiRevert.Enabled = true;
             }
         }
@@ -567,7 +581,8 @@ namespace YAMDCC.ConfigEditor
             FanCurveConf curveConfig = config.FanCurveConfs[cboProfSel.SelectedIndex];
 
             config.CurveSel = cboProfSel.SelectedIndex;
-            ttMain.SetToolTip(cboProfSel, config.FanCurveConfs[config.CurveSel].Desc);
+            ttMain.SetToolTip(cboProfSel, Strings.GetString(
+                "ttProfSel", config.FanCurveConfs[config.CurveSel].Desc));
 
             int numTempThresholds = config.UpThresholdRegs.Length;
 
@@ -686,8 +701,10 @@ namespace YAMDCC.ConfigEditor
         {
             if (Config is not null)
             {
-                Config.PerfModeConf.ModeSel = cboPerfMode.SelectedIndex;
-                ttMain.SetToolTip(cboPerfMode, Config.PerfModeConf.PerfModes[cboPerfMode.SelectedIndex].Desc);
+                int idx = cboPerfMode.SelectedIndex;
+                Config.PerfModeConf.ModeSel = idx;
+                ttMain.SetToolTip(cboPerfMode,
+                    Strings.GetString("ttPerfMode", Config.PerfModeConf.PerfModes[idx].Desc));
                 btnRevert.Enabled = tsiRevert.Enabled = true;
             }
         }
@@ -828,7 +845,8 @@ namespace YAMDCC.ConfigEditor
                 }
 
                 cboPerfMode.SelectedIndex = cfg.ModeSel;
-                ttMain.SetToolTip(cboPerfMode, cfg.PerfModes[cfg.ModeSel].Desc);
+                ttMain.SetToolTip(cboPerfMode, Strings.GetString(
+                    "ttPerfMode", cfg.PerfModes[cfg.ModeSel].Desc));
                 cboPerfMode.Enabled = lblPerfMode.Enabled = true;
             }
 
