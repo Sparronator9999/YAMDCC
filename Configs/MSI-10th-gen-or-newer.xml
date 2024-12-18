@@ -225,7 +225,10 @@ Old (pre-alpha) versions of MSI Fan Control/YAMDCC set this setting.</Desc>
 	</KeyLightConf>
 	<RegConfs>
 		<RegConf>
-			<Desc>Set fan mode to Advanced. Fixes fans not working at all with certain fan settings.</Desc>
+			<Enabled>true</Enabled>
+			<Name>YAMDCC compatibility fix</Name>
+			<Desc>Set fan mode to Advanced. Fixes fans not working at all with certain fan settings.
+It is recommended you leave this enabled.</Desc>
 			<Reg>212</Reg>
 			<Value>77</Value>
 		</RegConf>
