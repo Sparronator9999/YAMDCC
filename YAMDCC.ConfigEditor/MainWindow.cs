@@ -72,7 +72,7 @@ namespace YAMDCC.ConfigEditor
             tsiRevert.ToolTipText = Strings.GetString("ttRevert");
             tsiExit.ToolTipText = Strings.GetString("ttExit");
             tsiProfAdd.ToolTipText = Strings.GetString("ttProfAdd");
-            tsiProfRename.ToolTipText = Strings.GetString("ttProfRename");
+            tsiProfRename.ToolTipText = Strings.GetString("ttProfRen");
             tsiProfChangeDesc.ToolTipText = Strings.GetString("ttProfChangeDesc");
             tsiProfDel.ToolTipText = Strings.GetString("ttProfDel");
             tsiECMon.ToolTipText = Strings.GetString("ttECMon");
@@ -114,7 +114,7 @@ namespace YAMDCC.ConfigEditor
                     TickFrequency = 5,
                     TickStyle = TickStyle.Both,
                 };
-                ttMain.SetToolTip(tbFanSpds[i], Strings.GetString("ttFanSpdTB"));
+                ttMain.SetToolTip(tbFanSpds[i], Strings.GetString("ttFanSpd"));
                 tbFanSpds[i].ValueChanged += tbFanSpd_Scroll;
                 tblCurve.Controls.Add(tbFanSpds[i], i + 1, 1);
 
@@ -205,7 +205,7 @@ namespace YAMDCC.ConfigEditor
             }
             catch (Exception ex)
             {
-                Utils.ShowError(Strings.GetString("svcErrorConnect", ex));
+                Utils.ShowError(Strings.GetString("svcErrConnect", ex));
                 Application.Exit();
                 return;
             }
@@ -220,13 +220,13 @@ namespace YAMDCC.ConfigEditor
                 }
                 else
                 {
-                    SendServiceMessage(new ServiceCommand(Command.GetKeyLightBright, ""));
+                    SendServiceMessage(new ServiceCommand(Command.GetKeyLightBright, string.Empty));
                 }
             }
 
             if (File.Exists(Paths.ECToConfFail))
             {
-                Utils.ShowError(Strings.GetString("dlgECtoConfError", Paths.Logs));
+                Utils.ShowError(Strings.GetString("dlgECtoConfErr", Paths.Logs));
             }
             else if (File.Exists(Paths.ECToConfSuccess))
             {
@@ -429,7 +429,7 @@ namespace YAMDCC.ConfigEditor
                 .FanCurveConfs[cboProfSel.SelectedIndex];
 
             TextInputDialog dlg = new(
-                Strings.GetString("dlgProfRename"),
+                Strings.GetString("dlgProfRen"),
                 "Change Profile Name", curveCfg.Name);
             if (dlg.ShowDialog() == DialogResult.OK)
             {
@@ -511,14 +511,14 @@ namespace YAMDCC.ConfigEditor
 
                 if (!Utils.StopService("yamdccsvc"))
                 {
-                    Utils.ShowError(Strings.GetString("dlgSvcStopError"));
+                    Utils.ShowError(Strings.GetString("dlgSvcStopErr"));
                 }
             }
         }
 
         private void tsiUninstall_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show(Strings.GetString("dlgSvcUninstall"), "Uninstall Service",
+            if (MessageBox.Show(Strings.GetString("dlgUninstall"), "Uninstall Service",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
                 bool delData = MessageBox.Show(
@@ -545,12 +545,12 @@ namespace YAMDCC.ConfigEditor
                     }
                     else
                     {
-                        Utils.ShowError(Strings.GetString("dlgSvcUninstallError"));
+                        Utils.ShowError(Strings.GetString("dlgUninstallErr"));
                     }
                 }
                 else
                 {
-                    Utils.ShowError(Strings.GetString("dlgSvcStopError"));
+                    Utils.ShowError(Strings.GetString("dlgSvcStopErr"));
                 }
             }
         }
@@ -1100,7 +1100,7 @@ namespace YAMDCC.ConfigEditor
                 {
                     case StatusCode.ServiceCommandFail:
                         persist = true;
-                        lblStatus.Text = Strings.GetString("statSvcError", (Command)data);
+                        lblStatus.Text = Strings.GetString("statSvcErr", (Command)data);
                         break;
                     case StatusCode.ServiceResponseEmpty:
                         lblStatus.Text = Strings.GetString("statResponseEmpty");

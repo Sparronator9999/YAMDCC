@@ -22,6 +22,11 @@ namespace YAMDCC.ConfigEditor
     internal static class Paths
     {
         /// <summary>
+        /// The URL to this project's GitHub page.
+        /// </summary>
+        public static readonly string SourcePrefix = "https://github.com/Sparronator9999/YAMDCC";
+
+        /// <summary>
         /// The path where program data is stored.
         /// </summary>
         /// <remarks>

@@ -79,7 +79,7 @@ namespace YAMDCC.ConfigEditor
                             }
                             else
                             {
-                                Utils.ShowError(Strings.GetString("svcErrorCrash"));
+                                Utils.ShowError(Strings.GetString("svcErrCrash"));
                             }
                         }
                         else
@@ -112,7 +112,7 @@ namespace YAMDCC.ConfigEditor
                     {
                         if (!Utils.StartService("yamdccsvc"))
                         {
-                            Utils.ShowError(Strings.GetString("svcErrorCrash"));
+                            Utils.ShowError(Strings.GetString("svcErrCrash"));
                             return;
                         }
                     }
@@ -124,7 +124,7 @@ namespace YAMDCC.ConfigEditor
             }
             catch (Exception ex)
             {
-                Utils.ShowError(Strings.GetString("svcErrorStart", ex));
+                Utils.ShowError(Strings.GetString("svcErrStart", ex));
                 return;
             }
             finally
@@ -153,7 +153,7 @@ namespace YAMDCC.ConfigEditor
 
             if (rebootFlag == 1)
             {
-                if (MessageBox.Show(Strings.GetString("dlgECtoConfRebootPending"),
+                if (MessageBox.Show(Strings.GetString("dlgECtoConfReboot"),
                     "Reboot pending", MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
                     MessageBoxDefaultButton.Button2) == DialogResult.Yes)
                 {

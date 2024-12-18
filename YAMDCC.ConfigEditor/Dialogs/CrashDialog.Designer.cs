@@ -47,14 +47,13 @@ namespace YAMDCC.ConfigEditor.Dialogs
             System.Windows.Forms.TableLayoutPanel tblMain;
             System.Windows.Forms.Button btnCopy;
             System.Windows.Forms.Button btnExit;
-            System.Windows.Forms.Label lblError;
             System.Windows.Forms.Button btnIssues;
             System.Windows.Forms.GroupBox grpReport;
-            this.txtStackTrace = new System.Windows.Forms.TextBox();
+            this.lblError = new System.Windows.Forms.Label();
+            this.txtReport = new System.Windows.Forms.TextBox();
             tblMain = new System.Windows.Forms.TableLayoutPanel();
             btnCopy = new System.Windows.Forms.Button();
             btnExit = new System.Windows.Forms.Button();
-            lblError = new System.Windows.Forms.Label();
             btnIssues = new System.Windows.Forms.Button();
             grpReport = new System.Windows.Forms.GroupBox();
             tblMain.SuspendLayout();
@@ -70,7 +69,7 @@ namespace YAMDCC.ConfigEditor.Dialogs
             tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             tblMain.Controls.Add(btnCopy, 2, 2);
             tblMain.Controls.Add(btnExit, 3, 2);
-            tblMain.Controls.Add(lblError, 0, 0);
+            tblMain.Controls.Add(this.lblError, 0, 0);
             tblMain.Controls.Add(btnIssues, 0, 2);
             tblMain.Controls.Add(grpReport, 0, 1);
             tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -106,22 +105,18 @@ namespace YAMDCC.ConfigEditor.Dialogs
             // 
             // lblError
             // 
-            lblError.AutoSize = true;
-            tblMain.SetColumnSpan(lblError, 4);
-            lblError.Dock = System.Windows.Forms.DockStyle.Fill;
-            lblError.Location = new System.Drawing.Point(3, 3);
-            lblError.Margin = new System.Windows.Forms.Padding(3);
-            lblError.Name = "lblError";
-            lblError.Padding = new System.Windows.Forms.Padding(3);
-            lblError.Size = new System.Drawing.Size(474, 66);
-            lblError.TabIndex = 0;
-            lblError.Text = "YAMDCC has crashed!\r\n\r\nBefore reporting a bug, try again on the latest release of" +
-    " YAMDCC.\r\nIf the crash still occurs, please create an issue with the following c" +
-    "rash report:";
+            this.lblError.AutoSize = true;
+            tblMain.SetColumnSpan(this.lblError, 4);
+            this.lblError.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblError.Location = new System.Drawing.Point(3, 3);
+            this.lblError.Margin = new System.Windows.Forms.Padding(3);
+            this.lblError.Name = "lblError";
+            this.lblError.Padding = new System.Windows.Forms.Padding(3);
+            this.lblError.Size = new System.Drawing.Size(474, 21);
+            this.lblError.TabIndex = 0;
             // 
             // btnIssues
             // 
-            btnIssues.Dock = System.Windows.Forms.DockStyle.Fill;
             btnIssues.Location = new System.Drawing.Point(3, 291);
             btnIssues.Name = "btnIssues";
             btnIssues.Size = new System.Drawing.Size(100, 26);
@@ -133,27 +128,27 @@ namespace YAMDCC.ConfigEditor.Dialogs
             // grpReport
             // 
             tblMain.SetColumnSpan(grpReport, 4);
-            grpReport.Controls.Add(this.txtStackTrace);
+            grpReport.Controls.Add(this.txtReport);
             grpReport.Dock = System.Windows.Forms.DockStyle.Fill;
-            grpReport.Location = new System.Drawing.Point(3, 75);
+            grpReport.Location = new System.Drawing.Point(3, 30);
             grpReport.Name = "grpReport";
-            grpReport.Size = new System.Drawing.Size(474, 210);
+            grpReport.Size = new System.Drawing.Size(474, 255);
             grpReport.TabIndex = 3;
             grpReport.TabStop = false;
             grpReport.Text = "Crash report";
             // 
-            // txtStackTrace
+            // txtReport
             // 
-            this.txtStackTrace.BackColor = System.Drawing.Color.White;
-            this.txtStackTrace.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtStackTrace.Location = new System.Drawing.Point(3, 19);
-            this.txtStackTrace.MaxLength = 2147483647;
-            this.txtStackTrace.Multiline = true;
-            this.txtStackTrace.Name = "txtStackTrace";
-            this.txtStackTrace.ReadOnly = true;
-            this.txtStackTrace.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtStackTrace.Size = new System.Drawing.Size(468, 188);
-            this.txtStackTrace.TabIndex = 0;
+            this.txtReport.BackColor = System.Drawing.Color.White;
+            this.txtReport.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtReport.Location = new System.Drawing.Point(3, 19);
+            this.txtReport.MaxLength = 2147483647;
+            this.txtReport.Multiline = true;
+            this.txtReport.Name = "txtReport";
+            this.txtReport.ReadOnly = true;
+            this.txtReport.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtReport.Size = new System.Drawing.Size(468, 233);
+            this.txtReport.TabIndex = 0;
             // 
             // CrashDialog
             // 
@@ -178,6 +173,7 @@ namespace YAMDCC.ConfigEditor.Dialogs
 
         #endregion
 
-        private System.Windows.Forms.TextBox txtStackTrace;
+        private System.Windows.Forms.TextBox txtReport;
+        private System.Windows.Forms.Label lblError;
     }
 }

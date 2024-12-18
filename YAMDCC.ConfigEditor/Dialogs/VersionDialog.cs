@@ -22,13 +22,11 @@ namespace YAMDCC.ConfigEditor.Dialogs
 {
     internal sealed partial class VersionDialog : Form
     {
-        private static readonly string SourcePrefix = "https://github.com/Sparronator9999/YAMDCC";
-
         public VersionDialog()
         {
             InitializeComponent();
-            lblDesc.Text = Strings.GetString("dlgAboutDesc");
-            lblCopyright.Text = Strings.GetString("dlgAboutCopyright");
+            lblDesc.Text = Strings.GetString("abtDesc");
+            lblCopyright.Text = Strings.GetString("abtCopyright");
             lblVersion.Text += Utils.GetVerString();
 
             string revision = Utils.GetRevision();
@@ -50,17 +48,17 @@ namespace YAMDCC.ConfigEditor.Dialogs
 
         private void btnSource_Click(object sender, EventArgs e)
         {
-            Process.Start(SourcePrefix);
+            Process.Start(Paths.SourcePrefix);
         }
 
         private void btnFAQ_Click(object sender, EventArgs e)
         {
-            Process.Start($"{SourcePrefix}#faq");
+            Process.Start($"{Paths.SourcePrefix}#faq");
         }
 
         private void btnIssues_Click(object sender, EventArgs e)
         {
-            Process.Start($"{SourcePrefix}/issues");
+            Process.Start($"{Paths.SourcePrefix}/issues");
         }
     }
 }

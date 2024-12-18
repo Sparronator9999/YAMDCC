@@ -25,17 +25,18 @@ namespace YAMDCC.ConfigEditor.Dialogs
         public CrashDialog(Exception ex)
         {
             InitializeComponent();
-            txtStackTrace.Text = $"{ex.GetType()}: {ex.Message}\r\n{ex.StackTrace}";
+            lblError.Text = Strings.GetString("Crash");
+            txtReport.Text = $"{ex.GetType()}: {ex.Message}\r\n{ex.StackTrace}";
         }
 
         private void btnReportIssue_Click(object sender, EventArgs e)
         {
-            Process.Start("https://github.com/Sparronator9999/YAMDCC/issues");
+            Process.Start($"{Paths.SourcePrefix}/issues");
         }
 
         private void btnCopy_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(txtStackTrace.Text);
+            Clipboard.SetText(txtReport.Text);
 
             // should never fail, but better safe than sorry
             // (this is the crash handling dialog after all)

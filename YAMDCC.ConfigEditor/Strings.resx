@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="dlgAboutDesc" xml:space="preserve">
+  <data name="abtDesc" xml:space="preserve">
     <value>A fast, lightweight alternative to MSI Center for MSI laptops, written in C#.</value>
   </data>
   <data name="dlgProfAdd" xml:space="preserve">
@@ -131,7 +131,7 @@
 {0}
 Are you sure you want to delete this profile?</value>
   </data>
-  <data name="dlgProfRename" xml:space="preserve">
+  <data name="dlgProfRen" xml:space="preserve">
     <value>Please enter a new name for your fan profile:</value>
   </data>
   <data name="dlgSvcDelData" xml:space="preserve">
@@ -148,7 +148,7 @@ Make sure you save your config using the "Save config" button before clicking "Y
 
 Proceed?</value>
   </data>
-  <data name="dlgSvcUninstall" xml:space="preserve">
+  <data name="dlgUninstall" xml:space="preserve">
     <value>This will uninstall the YAMDCC service from your computer.
 
 Only proceed if you would like to delete YAMDCC from your computer (or move its program files to another folder).
@@ -157,18 +157,18 @@ YAMDCC will close once the uninstall is complete.
 
 Proceed?</value>
   </data>
-  <data name="svcErrorConnect" xml:space="preserve">
+  <data name="svcErrConnect" xml:space="preserve">
     <value>Failed to connect to the YAMDCC service.
 Make sure the service is running, then try again.
 
 Details (provide this when reporting bugs):
 {0}</value>
   </data>
-  <data name="svcErrorCrash" xml:space="preserve">
+  <data name="svcErrCrash" xml:space="preserve">
     <value>The YAMDCC service crashed while starting.
 Check the Event viewer and service log for crash details.</value>
   </data>
-  <data name="svcErrorStart" xml:space="preserve">
+  <data name="svcErrStart" xml:space="preserve">
     <value>The YAMDCC service failed to start.
 
 If the service continues to fail to start, the service may not be installed or is crashing on start (due to a programming bug).
@@ -243,7 +243,7 @@ listed here, even if your laptop only has one physical fan.</value>
   <data name="ttProfDel" xml:space="preserve">
     <value>Click to delete the currently selected fan profile.</value>
   </data>
-  <data name="ttProfRename" xml:space="preserve">
+  <data name="ttProfRen" xml:space="preserve">
     <value>Click to change the currently selected fan profile's name.</value>
   </data>
   <data name="ttProfSel" xml:space="preserve">
@@ -270,10 +270,10 @@ This will also quit the YAMDCC config editor (this program).</value>
     <value>Click to uninstall the YAMDCC service (and quit the YAMDCC config editor).
 Only do this if you want to uninstall YAMDCC or move its program files to another location.</value>
   </data>
-  <data name="dlgSvcUninstallError" xml:space="preserve">
+  <data name="dlgUninstallErr" xml:space="preserve">
     <value>Failed to uninstall the YAMDCC service!</value>
   </data>
-  <data name="dlgSvcStopError" xml:space="preserve">
+  <data name="dlgSvcStopErr" xml:space="preserve">
     <value>Failed to stop the YAMDCC service!</value>
   </data>
   <data name="dlgNoAdmin" xml:space="preserve">
@@ -291,7 +291,7 @@ Please re-run this program as Administrator
   <data name="dlgRevert" xml:space="preserve">
     <value>Are you sure you want to revert to the last loaded/saved config?</value>
   </data>
-  <data name="statSvcError" xml:space="preserve">
+  <data name="statSvcErr" xml:space="preserve">
     <value>ERROR: A {0} service command failed to run.</value>
   </data>
   <data name="statResponseEmpty" xml:space="preserve">
@@ -317,7 +317,7 @@ Please re-run this program as Administrator
 
 You will need to reboot your computer so that the fan settings are reset to their defaults.</value>
   </data>
-  <data name="dlgECtoConfError" xml:space="preserve">
+  <data name="dlgECtoConfErr" xml:space="preserve">
     <value>An error occurred while fetching your laptop's default fan curves.
 
 This is probably a bug; please report this to YAMDCC's issue tracker, including the log folder
@@ -328,12 +328,12 @@ This is probably a bug; please report this to YAMDCC's issue tracker, including 
 
 Make sure to save your config (using the "Save config" button)!</value>
   </data>
-  <data name="dlgECtoConfRebootPending" xml:space="preserve">
+  <data name="dlgECtoConfReboot" xml:space="preserve">
     <value>Your laptop hasn't been rebooted yet following a request to copy the default fan profile of your laptop to the loaded config.
 
 Cancel and continue loading YAMDCC?</value>
   </data>
-  <data name="dlgAboutCopyright" xml:space="preserve">
+  <data name="abtCopyright" xml:space="preserve">
     <value>Copyright © Sparronator9999 (and contributors), 2023-2024.
 YAMDCC and its authors are not affiliated with Micro-Star International Co., Ltd. in any way, shape, or form.</value>
   </data>
@@ -356,9 +356,6 @@ Set every down threshold to ~3°C below the next up threshold
 Increase the gap (e.g. to 5°C) if your fan often cycles on and off
 or between two speeds while idling.</value>
   </data>
-  <data name="ttFanSpdTB" xml:space="preserve">
-    <value>Placeholder (fan speed (trackbar))</value>
-  </data>
   <data name="ttFanSpd" xml:space="preserve">
     <value>This is the fan speed that the fan will run at when the component's
 temperature is between the up and down thresholds below.
@@ -378,5 +375,11 @@ Note that this is different from Windows' power plans.
 
 Performance mode description:
 {0}</value>
+  </data>
+  <data name="Crash" xml:space="preserve">
+    <value>YAMDCC has crashed!
+
+Before reporting a bug, try again on the latest release of YAMDCC.
+If the crash still occurs, please create an issue with the following crash report:</value>
   </data>
 </root>

@@ -26,7 +26,7 @@ namespace YAMDCC.ConfigEditor.Dialogs
         /// </summary>
         public string Result;
 
-        public TextInputDialog(string caption, string title = "", string text = "", bool multiline = false)
+        public TextInputDialog(string caption, string title, string text, bool multiline = false)
         {
             InitializeComponent();
             lblCaption.Text = caption;
