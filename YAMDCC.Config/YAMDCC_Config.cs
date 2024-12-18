@@ -112,17 +112,18 @@ namespace YAMDCC.Config
         /// A list of registers to write when applying a fan config.
         /// </summary>
         /// <remarks>
-        /// May be <c>null</c>, but if not <c>null</c>, must have
-        /// at least one <see cref="RegConf"/>.
+        /// May be <c>null</c> or empty if not needed.
         /// </remarks>
         [XmlArray]
         public RegConf[] RegConfs { get; set; }
 
         /// <summary>
-        /// Parses a YAMDCC config XML and returns an
+        /// Parses a YAMDCC config XML and returns a
         /// <see cref="YAMDCC_Config"/> object.
         /// </summary>
-        /// <param name="xmlFile">The path to an XML config file.</param>
+        /// <param name="xmlFile">
+        /// The path to an XML config file.
+        /// </param>
         /// <exception cref="InvalidConfigException"/>
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="FileNotFoundException"/>
@@ -140,7 +141,9 @@ namespace YAMDCC.Config
         /// <summary>
         /// Saves a YAMDCC config to the specified location.
         /// </summary>
-        /// <param name="xmlFile">The XML file to write to.</param>
+        /// <param name="xmlFile">
+        /// The XML file to write to.
+        /// </param>
         /// <exception cref="ArgumentNullException"/>
         /// <exception cref="InvalidOperationException"/>
         public void Save(string xmlFile)
@@ -164,6 +167,7 @@ namespace YAMDCC.Config
         /// </summary>
         /// <remarks>
         /// This does NOT guarantee the loaded config is valid!
+        /// (e.g. register values are not checked)
         /// </remarks>
         /// <returns>
         /// <c>true</c> if the config is valid, otherwise <c>false</c>.
@@ -188,76 +192,152 @@ namespace YAMDCC.Config
 
             // 1. Check if FanConfigs is not null
             // 2. Check if there's at least 1 FanConfig
-            if (FanConfs?.Length >= 1)
+            if (FanConfs?.Length < 1)
             {
-                for (int i = 0; i < FanConfs.Length; i++)
+                return false;
+            }
+
+            for (int i = 0; i < FanConfs.Length; i++)
+            {
+                FanConf cfg = FanConfs[i];
+
+                if (string.IsNullOrEmpty(cfg.Name))
                 {
-                    FanConf cfg = FanConfs[i];
+                    return false;
+                }
 
-                    if (string.IsNullOrEmpty(cfg.Name))
-                    {
-                        return false;
-                    }
+                // YAMDCC doesn't handle MinSpeed lower than MaxSpeed,
+                // so return false if MinSpeed is lower or equal to MaxSpeed:
+                if (cfg.MinSpeed >= cfg.MaxSpeed)
+                {
+                    return false;
+                }
 
-                    // the selected fan curve shouldn't be higher than
-                    // the number of fan curves in the config.
-                    if (cfg.CurveSel >= FanConfs[i].FanCurveConfs.Length ||
-                        cfg.CurveSel < 0)
-                    {
-                        // if the fan profile selection is out of range,
-                        // silently set it to 0 (the first fan curve)
-                        // which should always exist:
-                        cfg.CurveSel = 0;
-                    }
+                // the selected fan curve shouldn't be higher than
+                // the number of fan curves in the config.
+                if (cfg.CurveSel >= FanConfs[i].FanCurveConfs.Length ||
+                    cfg.CurveSel < 0)
+                {
+                    // if the fan profile selection is out of range,
+                    // silently set it to 0 (the first fan curve)
+                    // which should always exist:
+                    cfg.CurveSel = 0;
+                }
 
-                    if (cfg.UpThresholdRegs?.Length >= 1 &&
-                        cfg.DownThresholdRegs?.Length >= 1 &&
-                        cfg.FanCurveRegs?.Length >= 2 &&
-                        cfg.FanCurveConfs?.Length >= 1)
-                    {
-                        for (int j = 0; j < cfg.FanCurveConfs.Length; j++)
-                        {
-                            FanCurveConf curveCfg = cfg.FanCurveConfs[j];
-                            if (string.IsNullOrEmpty(curveCfg.Name) ||
-                                string.IsNullOrEmpty(curveCfg.Desc) ||
-                                // there should be exactly one temperature threshold
-                                // per fan curve register; if there isn't, return false
-                                curveCfg.TempThresholds?.Length != cfg.FanCurveRegs.Length)
-                            {
-                                return false;
-                            }
-                        }
-                    }
-                    else
+                // make sure that:
+                // - there is at least one each of up threshold, down threshold,
+                //   and fan curve registers
+                // - there are the same amount of up threshold registers
+                //   as down threshold registers
+                // - there is one more fan curve register than up/down threshold registers
+                // - there is at least one fan profile to apply (first should be Default)
+                if (cfg.UpThresholdRegs?.Length < 1 ||
+                    cfg.UpThresholdRegs?.Length != cfg.DownThresholdRegs?.Length ||
+                    cfg.FanCurveRegs?.Length != cfg.UpThresholdRegs?.Length + 1 ||
+                    cfg.FanCurveConfs?.Length < 1)
+                {
+                    return false;
+                }
+
+                for (int j = 0; j < cfg.FanCurveConfs.Length; j++)
+                {
+                    FanCurveConf curveCfg = cfg.FanCurveConfs[j];
+                    if (string.IsNullOrEmpty(curveCfg.Name) ||
+                        string.IsNullOrEmpty(curveCfg.Desc) ||
+                        // there should be exactly one temperature threshold
+                        // per fan curve register; if there isn't, return false
+                        curveCfg.TempThresholds?.Length != cfg.FanCurveRegs.Length)
                     {
                         return false;
                     }
                 }
             }
-            else
-            {
-                return false;
-            }
 
-            // If the RegConfigs tag is defined in the XML,
-            // but has no elements, return false
-            if (RegConfs?.Length == 0)
+            if (FullBlastConf is not null)
             {
-                return false;
-            }
-
-            if (PerfModeConf is not null)
-            {
-                // the selected performance mode shouldn't be higher than
-                // the number of performance modes in the config
-                if (PerfModeConf.ModeSel >= PerfModeConf.PerfModes.Length ||
-                    PerfModeConf.ModeSel < 0)
+                // full blast mask shouldn't be 0, as that would make it impossible
+                // to change the full blast register's value when full blast toggled on/off
+                if (FullBlastConf.Mask == 0)
                 {
                     return false;
                 }
             }
 
-            // All other values are considered to be valid; return true
+            if (ChargeLimitConf is not null)
+            {
+                // YAMDCC cannot handle a lower min value than max value,
+                // so return false if that's the case for this config
+                if (ChargeLimitConf.MinVal >= ChargeLimitConf.MaxVal)
+                {
+                    return false;
+                }
+
+                // make sure charge limit to apply is within the config's
+                // defined bounds, but don't fail validation if it's not:
+                if (ChargeLimitConf.CurVal > ChargeLimitConf.MaxVal - ChargeLimitConf.MinVal)
+                {
+                    ChargeLimitConf.CurVal = ChargeLimitConf.MaxVal;
+                }
+                else if (ChargeLimitConf.CurVal < 0)
+                {
+                    ChargeLimitConf.CurVal = ChargeLimitConf.MinVal;
+                }
+            }
+
+            if (PerfModeConf is not null)
+            {
+                if (PerfModeConf.PerfModes?.Length < 1)
+                {
+                    return false;
+                }
+
+                // the selected performance mode shouldn't be higher than
+                // the number of performance modes in the config
+                if (PerfModeConf.ModeSel >= PerfModeConf.PerfModes.Length ||
+                    PerfModeConf.ModeSel < 0)
+                {
+                    // same as fan profile selection, set the performance
+                    // mode to the first available performance mode:
+                    PerfModeConf.ModeSel = 0;
+                }
+
+                for (int i = 0; i < PerfModeConf.PerfModes.Length; i++)
+                {
+                    PerfMode perfMode = PerfModeConf.PerfModes[i];
+
+                    if (string.IsNullOrEmpty(perfMode.Name) ||
+                        string.IsNullOrEmpty(perfMode.Desc))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            if (KeySwapConf?.OnVal == KeySwapConf?.OffVal)
+            {
+                return false;
+            }
+
+            if (KeyLightConf?.MinVal >= KeyLightConf?.MaxVal)
+            {
+                return false;
+            }
+
+            if (RegConfs?.Length > 0)
+            {
+                for (int i = 0; i < RegConfs.Length; i++)
+                {
+                    if (string.IsNullOrEmpty(RegConfs[i].Name) ||
+                        string.IsNullOrEmpty(RegConfs[i].Desc))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            // All other values are considered to be valid; return true.
+            // Note that registers aren't checked and are (almost) always
+            // expected to be nonzero.
             return true;
         }
     }

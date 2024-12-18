@@ -19,30 +19,30 @@ using System.Xml.Serialization;
 namespace YAMDCC.Config
 {
     /// <summary>
-    /// Represents a charge threshold (a.k.a charge limit) config for a laptop.
+    /// Represents a charge limit config for a laptop.
     /// </summary>
     public sealed class ChargeLimitConf
     {
         /// <summary>
-        /// The register that controls the charge threshold.
+        /// The register that controls the charge limit.
         /// </summary>
         [XmlElement]
         public byte Reg { get; set; }
 
         /// <summary>
-        /// The value that corresponds to 0% battery threshold.
+        /// The value that corresponds to 0% charge limit (i.e. disabled).
         /// </summary>
         [XmlElement]
         public byte MinVal { get; set; }
 
         /// <summary>
-        /// The value that corresponds to 100% battery threshold.
+        /// The value that corresponds to 100% charge limit.
         /// </summary>
         [XmlElement]
         public byte MaxVal { get; set; }
 
         /// <summary>
-        /// The currently set Charge Threshold value.
+        /// The currently set charge limit value.
         /// </summary>
         [XmlElement]
         public byte CurVal { get; set; }

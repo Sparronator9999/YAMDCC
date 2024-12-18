@@ -24,7 +24,7 @@ namespace YAMDCC.Config
     public sealed class FanConf
     {
         /// <summary>
-        /// The display name of the fan in the curve editor.
+        /// The display name of the fan in the config editor.
         /// </summary>
         [XmlElement]
         public string Name { get; set; }
