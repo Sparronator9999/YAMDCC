@@ -148,7 +148,7 @@ namespace YAMDCC.Service
 
         protected override void OnStop()
         {
-            StopService();
+            StopSvc();
         }
 
         protected override void OnShutdown()
@@ -184,10 +184,10 @@ namespace YAMDCC.Service
             }
             catch (FileNotFoundException) { }
             catch (DirectoryNotFoundException) { }
-            StopService();
+            StopSvc();
         }
 
-        private void StopService()
+        private void StopSvc()
         {
             if (ExitCode == 0)
             {
@@ -380,7 +380,7 @@ namespace YAMDCC.Service
             }
 
             ConfigLoaded = true;
-            Log.Info(Strings.GetString("cfgLoadSuccess"));
+            Log.Info(Strings.GetString("cfgLoaded"));
         }
 
         private void ApplySettings()
@@ -472,10 +472,6 @@ namespace YAMDCC.Service
 
             if (numExpectedArgs == 0)
             {
-                if (!string.IsNullOrEmpty(argsIn))
-                {
-                    Log.Warn(Strings.GetString("warnArgsBadLength"));
-                }
                 return true;
             }
 
@@ -593,32 +589,22 @@ namespace YAMDCC.Service
 
                 if (success)
                 {
-#pragma warning disable IDE0045 // Supress "if statement can be simplified" suggestion
                     int rpm;
-                    if (cfg.RPMConf.Invert)
+                    if (rpmValue <= 0)
                     {
-                        if (rpmValue == 0)
-                        {
-                            rpm = -1;
-                        }
-                        else if (cfg.RPMConf.DivideByMult)
-                        {
-                            rpm = cfg.RPMConf.RPMMult / rpmValue;
-                        }
-                        else
-                        {
-                            rpm = 1 / (rpmValue * cfg.RPMConf.RPMMult);
-                        }
-                    }
-                    else if (cfg.RPMConf.DivideByMult)
-                    {
-                        rpm = rpmValue / cfg.RPMConf.RPMMult;
+                        rpm = 0;
                     }
                     else
                     {
-                        rpm = rpmValue * cfg.RPMConf.RPMMult;
+                        rpm = cfg.RPMConf.DivideByMult
+                            ? rpmValue / cfg.RPMConf.RPMMult
+                            : rpmValue * cfg.RPMConf.RPMMult;
+
+                        if (cfg.RPMConf.Invert)
+                        {
+                            rpm = 1 / rpm;
+                        }
                     }
-#pragma warning restore IDE0045
                     IPCServer.PushMessage(new ServiceResponse(
                         Response.FanRPM, $"{rpm}"), clientId);
                     return 0;
@@ -659,27 +645,25 @@ namespace YAMDCC.Service
 
             if (ParseArgs(args, 1, out int[] pArgs))
             {
-                if (!LogECReadByte(Config.FullBlastConf.Reg, out byte value))
+                if (LogECReadByte(Config.FullBlastConf.Reg, out byte value))
                 {
-                    return 1;
-                }
+                    if (pArgs[0] == 1)
+                    {
+                        Log.Debug("Enabling Full Blast...");
+                        value |= Config.FullBlastConf.Mask;
+                    }
+                    else
+                    {
+                        Log.Debug("Disabling Full Blast...");
+                        value &= (byte)~Config.FullBlastConf.Mask;
+                    }
 
-                if (pArgs[0] == 1)
-                {
-                    Log.Debug("Enabling Full Blast...");
-                    value |= Config.FullBlastConf.Mask;
-                }
-                else
-                {
-                    Log.Debug("Disabling Full Blast...");
-                    value &= (byte)~Config.FullBlastConf.Mask;
-                }
-
-                if (LogECWriteByte(Config.FullBlastConf.Reg, value))
-                {
-                    IPCServer.PushMessage(new ServiceResponse(
-                        Response.Success, $"{(int)Command.FullBlast}"), clientId);
-                    return 0;
+                    if (LogECWriteByte(Config.FullBlastConf.Reg, value))
+                    {
+                        IPCServer.PushMessage(new ServiceResponse(
+                            Response.Success, $"{(int)Command.FullBlast}"), clientId);
+                        return 0;
+                    }
                 }
                 return 1;
             }
@@ -766,22 +750,14 @@ namespace YAMDCC.Service
                     Log.Info(Strings.GetString("svcReadingCurves", i + 1, Config.FanConfs.Length));
 
                     FanConf cfg = Config.FanConfs[i];
+                    FanCurveConf curveCfg = cfg.FanCurveConfs[0];
 
-                    if (cfg.FanCurveConfs is null || cfg.FanCurveConfs.Length == 0)
-                    {
-                        cfg.FanCurveConfs = new FanCurveConf[1];
-                        cfg.FanCurveConfs[0] = new()
-                        {
-                            Name = "Default",
-                            TempThresholds = new TempThreshold[cfg.FanCurveRegs.Length],
-                        };
-                        cfg.CurveSel = 0;
-                    }
-                    cfg.FanCurveConfs[0].Desc = Strings.GetString("confDefaultDesc");
+                    // reset first fan curve config name and description
+                    curveCfg.Name = "Default";
+                    curveCfg.Desc = Strings.GetString("confDefaultDesc");
 
                     for (int j = 0; j < cfg.FanCurveRegs.Length; j++)
                     {
-                        FanCurveConf curveCfg = cfg.FanCurveConfs[0];
                         if (curveCfg.TempThresholds[j] is null)
                         {
                             curveCfg.TempThresholds[j] = new();
