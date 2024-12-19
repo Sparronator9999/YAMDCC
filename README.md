@@ -29,10 +29,10 @@ A fast, lightweight alternative to MSI Center for MSI laptops, written in C#.
   with Windows' built-in power plans). You can change it here.
 - **Charging threshold:** This program can limit how much your laptop's battery charges to, which
   can help reduce battery degradation, especially if you leave your laptop plugged in all the time.
-- **Lightweight:** YAMDCC takes up less than a megabyte of disk space when installed, and is
+- **Lightweight:** YAMDCC only takes up around a megabyte of disk space when installed, and is
   designed to be light on your laptop's CPU.
-- **Configurable:** Almost all settings (including those not accessible through the config GUI) can
-  be changed with the power of XML.
+- **Configurable:** Almost all settings (including those not accessible through the config editor)
+  can be changed with the power of XML.
 
 ## Screenshots
 
@@ -48,10 +48,12 @@ Currently, there are configs for the following laptops:
 
 There are also generic configs that should work with most MSI laptops, but with an incorrect default
 config. You can use the EC-to-config feature to get the proper fan curves for your laptop, then
-[create a pull request](https://github.com/Sparronator9999/YAMDCC/pulls) to get your laptop's config added to the project.
+[create a pull request](https://github.com/Sparronator9999/YAMDCC/pulls) to get your laptop's
+config added to the project.
 
-Other laptop brands are not officially supported. You can still try and make your own config, but chances
-are you're looking for [NoteBook FanControl](https://github.com/UraniumDonut/nbfc-revive) instead.
+Other laptop brands are not officially supported. You can still try and make your own config, but
+chances are you're looking for [NoteBook FanControl](https://github.com/UraniumDonut/nbfc-revive)
+instead.
 
 ### Community tested laptops
 
@@ -61,13 +63,14 @@ The following laptops have been tested by the community and are confirmed to be 
 - MSI Vector GP78 HX 13V (thanks @Twisted6)
 - MSI Raider GE66 12UGS (thanks @grimy400)
 - MSI Vector 17 HX A14VHG (thanks @injitools)
-  - Use `MSI-10th-gen-or-newer-nokeylight.xml` - this laptop does not support keyboard backlight adjustment via YAMDCC.
+  - Use `MSI-10th-gen-or-newer-nokeylight.xml` - this laptop does not support keyboard backlight
+    adjustment via YAMDCC.
 
 ### Config disclaimer
 
-- **Please avoid asking me (or other people) in the issue tracker to create a config for you.**
-  **Unless we have your specific laptop model (which we probably don't), we will not be able to**
-  **help you outside of the general instructions.**
+**Please avoid asking me (or other people) in the issue tracker to create a config for you.**
+**Unless we have your specific laptop model (which we probably don't), we will not be able to**
+**help you outside of the general instructions.**
 
 ## Comparison
 
@@ -141,6 +144,8 @@ Alternatively, you can [build the program yourself](#build).
 
 ## Build
 
+See also the [wiki page](https://github.com/Sparronator9999/YAMDCC/wiki/Building).
+
 ### Using Visual Studio
 
 1.  Install Visual Studio 2022 with the `.NET Desktop Development` workload checked.
@@ -192,7 +197,7 @@ or new configs, feel free to open a pull request. Please include the following:
 
 Windows 10 and 11 (64-bit).
 
-32-bit Windows 10 should also work, but you really should be using 64-bit Windows when possible in 2024.
+32-bit Windows 10 should also work, but you really should be using 64-bit Windows in 2024.
 
 Older versions of Windows that support .NET Framework 4.8 may also work, but with no support from me.
 
@@ -236,7 +241,7 @@ requirements.
 NOTE:
 If YAMDCC finds the driver already installed, it may try to use that (potentially vulnerable)
 driver instead. If it was installed with, e.g. [LibreHardwareMonitor](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor),
-you should be fine, as they implement the same fix that YAMDCC does.
+you should be fine, as they implement the same workaround that YAMDCC does.
 
 Please read the [disclaimer](#disclaimers), especially the bold text, if you haven't already.
 
@@ -286,6 +291,13 @@ Technical explanation: A few specific WinForms controls used by YAMDCC look real
 when trying to recolour them to be dark themed. Also, built-in dialog boxes (for C# programmers,
 think `MessageBox.Show`) cannot be recoloured from their default white theme. Also, I have little
 to no experience with other UI kits (e.g. WPF).
+
+### Why are you still using WinForms in 2024?
+
+Because it's what I know (thanks, my high school programming classes).
+
+I've tried WPF before, but without much success (although I might look into it more once I find a
+suitable replacement for some WinForms controls missing in WPF, and get some more WPF experience).
 
 ### .NET (Core) 5/6/8/<insert latest .NET version>!
 
