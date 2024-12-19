@@ -590,21 +590,20 @@ namespace YAMDCC.Service
                 if (success)
                 {
                     int rpm;
-                    if (rpmValue <= 0)
+#pragma warning disable IDE0045 // Supress "if statement can be simplified" suggestion
+                    if (cfg.RPMConf.Invert)
                     {
-                        rpm = 0;
+                        rpm = cfg.RPMConf.DivideByMult
+                            ? cfg.RPMConf.RPMMult / rpmValue
+                            : 1 / (rpmValue * cfg.RPMConf.RPMMult);
                     }
                     else
                     {
                         rpm = cfg.RPMConf.DivideByMult
                             ? rpmValue / cfg.RPMConf.RPMMult
                             : rpmValue * cfg.RPMConf.RPMMult;
-
-                        if (cfg.RPMConf.Invert)
-                        {
-                            rpm = 1 / rpm;
-                        }
                     }
+#pragma warning restore IDE0045
                     IPCServer.PushMessage(new ServiceResponse(
                         Response.FanRPM, $"{rpm}"), clientId);
                     return 0;
