@@ -250,6 +250,14 @@ namespace YAMDCC.Config
                     {
                         return false;
                     }
+
+                    for (int k = 0; k < curveCfg.TempThresholds.Length; k++)
+                    {
+                        if (curveCfg.TempThresholds[k] is null)
+                        {
+                            return false;
+                        }
+                    }
                 }
             }
 
