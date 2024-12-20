@@ -34,17 +34,12 @@ namespace YAMDCC.Service
         #region Fields
 
         /// <summary>
-        /// The currently loaded MSI Fan Control config.
+        /// The currently loaded YAMDCC config.
         /// </summary>
         private YAMDCC_Config Config;
 
         /// <summary>
-        /// Has a valid MSI Fan Control config been loaded?
-        /// </summary>
-        private bool ConfigLoaded;
-
-        /// <summary>
-        /// The named message pipe server that MSI Fan Control connects to.
+        /// The named message pipe server that YAMDCC connects to.
         /// </summary>
         private readonly NamedPipeServer<ServiceCommand, ServiceResponse> IPCServer;
 
@@ -63,7 +58,9 @@ namespace YAMDCC.Service
         /// <summary>
         /// Initialises a new instance of the <see cref="FanControlService"/> class.
         /// </summary>
-        /// <param name="logger">The <see cref="Logger"/> instance to write logs to.</param>
+        /// <param name="logger">
+        /// The <see cref="Logger"/> instance to write logs to.
+        /// </param>
         public FanControlService(Logger logger)
         {
             CanHandlePowerEvent = true;
@@ -73,7 +70,11 @@ namespace YAMDCC.Service
             _EC = new EC();
 
             PipeSecurity security = new();
-            //security.AddAccessRule(new PipeAccessRule("Administrators", PipeAccessRights.ReadWrite, AccessControlType.Allow));
+            // use SDDL descriptor since not everyone uses english Windows.
+            // the SDDL descriptor should be roughly equivalent to the old
+            // behaviour (commented out below):
+            // security.AddAccessRule(new PipeAccessRule(
+            //     "Administrators", PipeAccessRights.ReadWrite, AccessControlType.Allow));
             security.SetSecurityDescriptorSddlForm("O:BAG:SYD:(A;;GA;;;SY)(A;;GRGW;;;BA)");
 
             IPCServer = new NamedPipeServer<ServiceCommand, ServiceResponse>("YAMDCC-Server", security);
@@ -85,7 +86,7 @@ namespace YAMDCC.Service
             Log.Info(Strings.GetString("svcStarting"));
 
             // Load the service config.
-            LoadConf();
+            bool confLoaded = LoadConf();
 
             // Install WinRing0 to get EC access
             try
@@ -137,7 +138,10 @@ namespace YAMDCC.Service
             catch (DirectoryNotFoundException) { }
 
             // Apply the fan curve and charging threshold:
-            ApplySettings();
+            if (confLoaded)
+            {
+                ApplySettings();
+            }
         }
 
         private void CooldownElapsed(object sender, ElapsedEventArgs e)
@@ -249,59 +253,109 @@ namespace YAMDCC.Service
 
         private void IPCClientMessage(object sender, PipeMessageEventArgs<ServiceCommand, ServiceResponse> e)
         {
-            int error = 0;
+            bool parseSuccess = false,
+                cmdSuccess = false,
+                sendSuccessMsg = true;
 
-            switch (e.Message.Command)
+            if (ParseArgs(e.Message.Arguments, out int[] args))
             {
-                case Command.Nothing:
-                    Log.Warn("Empty command received!");
-                    break;
-                case Command.ReadECByte:
-                    error = ReadECByte(e.Connection.ID, e.Message.Arguments);
-                    break;
-                case Command.WriteECByte:
-                    error = WriteECByte(e.Connection.ID, e.Message.Arguments);
-                    break;
-                case Command.GetFanSpeed:
-                    error = GetFanSpeed(e.Connection.ID, e.Message.Arguments);
-                    break;
-                case Command.GetFanRPM:
-                    error = GetFanRPM(e.Connection.ID, e.Message.Arguments);
-                    break;
-                case Command.GetTemp:
-                    error = GetTemp(e.Connection.ID, e.Message.Arguments);
-                    break;
-                case Command.ApplyConfig:
-                    LoadConf();
-                    ApplySettings();
-                    IPCServer.PushMessage(new ServiceResponse(
-                        Response.Success, $"{(int)e.Message.Command}"), e.Connection.ID);
-                    break;
-                case Command.FullBlast:
-                    error = SetFullBlast(e.Connection.ID, e.Message.Arguments);
-                    break;
-                case Command.GetKeyLightBright:
-                    error = GetKeyLightBright(e.Connection.ID);
-                    break;
-                case Command.SetKeyLightBright:
-                    error = SetKeyLightBright(e.Connection.ID, e.Message.Arguments);
-                    break;
-                default:    // Unknown command
-                    Log.Error(Strings.GetString("errBadCmd", e.Message));
-                    break;
+                switch (e.Message.Command)
+                {
+                    case Command.Nothing:
+                        Log.Warn("Empty command received!");
+                        return;
+                    case Command.ReadECByte:
+                        if (args.Length == 1)
+                        {
+                            parseSuccess = true;
+                            sendSuccessMsg = false;
+                            cmdSuccess = LogECReadByte((byte)args[0], out byte value);
+                            if (cmdSuccess)
+                            {
+                                IPCServer.PushMessage(new ServiceResponse(
+                                    Response.ReadResult, $"{args[0]} {value}"), e.Connection.ID);
+                            }
+                        }
+                        break;
+                    case Command.WriteECByte:
+                        if (args.Length == 2)
+                        {
+                            parseSuccess = true;
+                            cmdSuccess = LogECWriteByte((byte)args[0], (byte)args[1]);
+                        }
+                        break;
+                    case Command.GetFanSpeed:
+                        if (args.Length == 1)
+                        {
+                            parseSuccess = true;
+                            sendSuccessMsg = false;
+                            cmdSuccess = GetFanSpeed(e.Connection.ID, args[0]);
+                        }
+                        break;
+                    case Command.GetFanRPM:
+                        if (args.Length == 1)
+                        {
+                            parseSuccess = true;
+                            sendSuccessMsg = false;
+                            cmdSuccess = GetFanRPM(e.Connection.ID, args[0]);
+                        }
+                        break;
+                    case Command.GetTemp:
+                        if (args.Length == 1)
+                        {
+                            parseSuccess = true;
+                            sendSuccessMsg = false;
+                            cmdSuccess = GetTemp(e.Connection.ID, args[0]);
+                        }
+                        break;
+                    case Command.ApplyConfig:
+                        parseSuccess = true;
+                        cmdSuccess = LoadConf() && ApplySettings();
+                        break;
+                    case Command.FullBlast:
+                        if (args.Length == 1)
+                        {
+                            parseSuccess = true;
+                            cmdSuccess = SetFullBlast(args[0] == 1);
+                        }
+                        break;
+                    case Command.GetKeyLightBright:
+                        parseSuccess = true;
+                        sendSuccessMsg = false;
+                        cmdSuccess = GetKeyLightBright(e.Connection.ID);
+                        break;
+                    case Command.SetKeyLightBright:
+                        if (args.Length == 1)
+                        {
+                            parseSuccess = true;
+                            cmdSuccess = SetKeyLightBright((byte)args[0]);
+                        }
+                        break;
+                    default:    // Unknown command
+                        Log.Error(Strings.GetString("errBadCmd", e.Message));
+                        return;
+                }
+            }
+            else
+            {
+                Log.Error(Strings.GetString("errArgsBadType"));
+                Log.Error(Strings.GetString("errOffendingCmd", e.Message.Command, e.Message.Arguments));
             }
 
-            switch (error)
+            if (!cmdSuccess)
             {
-                case 1:
-                    IPCServer.PushMessage(new ServiceResponse(
-                        Response.Error, $"{(int)e.Message.Command}"), e.Connection.ID);
-                        break;
-                case 2:
+                if (!parseSuccess)
+                {
+                    Log.Error(Strings.GetString("errArgsBadLen"));
                     Log.Error(Strings.GetString("errOffendingCmd", e.Message.Command, e.Message.Arguments));
-                    break;
-                default:
-                    break;
+                }
+                IPCServer.PushMessage(new ServiceResponse(
+                    Response.Error, $"{(int)e.Message.Command}"), e.Connection.ID);
+            }
+            else if (sendSuccessMsg)
+            {
+                IPCServer.PushMessage(new ServiceResponse(
+                    Response.Success, $"{(int)e.Message.Command}"), e.Connection.ID);
             }
         }
         #endregion
@@ -321,7 +375,7 @@ namespace YAMDCC.Service
             return success;
         }
 
-        private bool LogECReadWord(byte reg, out ushort value, bool bigEndian = false)
+        private bool LogECReadWord(byte reg, out ushort value, bool bigEndian)
         {
             Log.Debug(Strings.GetString("svcECReading", reg));
             bool success = _EC.ReadWord(reg, out value, bigEndian);
@@ -338,7 +392,7 @@ namespace YAMDCC.Service
 
         private bool LogECWriteByte(byte reg, byte value)
         {
-            Log.Debug(Strings.GetString("svcECWriting", value, reg));
+            Log.Debug(Strings.GetString("svcECWriting", reg, value));
             bool success = _EC.WriteByte(reg, value);
             if (success)
             {
@@ -351,15 +405,13 @@ namespace YAMDCC.Service
             return success;
         }
 
-        private void LoadConf()
+        private bool LoadConf()
         {
             Log.Info(Strings.GetString("cfgLoading"));
 
-            string confPath = Paths.CurrentConfig;
-
             try
             {
-                Config = YAMDCC_Config.Load(confPath);
+                Config = YAMDCC_Config.Load(Paths.CurrentConfig);
             }
             catch (Exception ex)
             {
@@ -375,79 +427,102 @@ namespace YAMDCC.Service
                 {
                     throw;
                 }
-                ConfigLoaded = false;
-                return;
+                Config = null;
+                return false;
             }
 
-            ConfigLoaded = true;
             Log.Info(Strings.GetString("cfgLoaded"));
+            return true;
         }
 
-        private void ApplySettings()
+        private bool ApplySettings()
         {
-            if (ConfigLoaded)
+            if (Config is null)
             {
-                Log.Info(Strings.GetString("cfgApplying"));
+                return false;
+            }
 
-                // Write custom register values, if configured:
-                if (Config.RegConfs is not null && Config.RegConfs.Length > 0)
+            Log.Info(Strings.GetString("cfgApplying"));
+            bool success = true;
+
+            // Write custom register values, if configured:
+            if (Config.RegConfs?.Length > 0)
+            {
+                for (int i = 0; i < Config.RegConfs.Length; i++)
                 {
-                    for (int i = 0; i < Config.RegConfs.Length; i++)
+                    RegConf cfg = Config.RegConfs[i];
+                    Log.Info(Strings.GetString("svcWritingCustomRegs", i + 1, Config.RegConfs.Length));
+                    if (!LogECWriteByte(cfg.Reg, cfg.Value))
                     {
-                        RegConf cfg = Config.RegConfs[i];
-                        Log.Info(Strings.GetString("svcWritingCustomRegs", i + 1, Config.RegConfs.Length));
-                        LogECWriteByte(cfg.Reg, cfg.Value);
+                        success = false;
                     }
                 }
+            }
 
-                // Write the fan curve to the appropriate registers for each fan:
-                for (int i = 0; i < Config.FanConfs.Length; i++)
+            // Write the fan curve to the appropriate registers for each fan:
+            for (int i = 0; i < Config.FanConfs.Length; i++)
+            {
+                FanConf cfg = Config.FanConfs[i];
+                Log.Info(Strings.GetString("svcWritingFans", cfg.Name, i + 1, Config.FanConfs.Length));
+                FanCurveConf curveCfg = cfg.FanCurveConfs[cfg.CurveSel];
+
+                for (int j = 0; j < curveCfg.TempThresholds.Length; j++)
                 {
-                    FanConf cfg = Config.FanConfs[i];
-                    Log.Info(Strings.GetString("svcWritingFans", cfg.Name, i + 1, Config.FanConfs.Length));
-                    FanCurveConf curveCfg = cfg.FanCurveConfs[cfg.CurveSel];
-
-                    for (int j = 0; j < curveCfg.TempThresholds.Length; j++)
+                    if (!LogECWriteByte(cfg.FanCurveRegs[j], curveCfg.TempThresholds[j].FanSpeed))
                     {
-                        LogECWriteByte(cfg.FanCurveRegs[j], curveCfg.TempThresholds[j].FanSpeed);
-
-                        if (j > 0)
+                        success = false;
+                    }
+                    if (j > 0)
+                    {
+                        if (!LogECWriteByte(cfg.UpThresholdRegs[j - 1], curveCfg.TempThresholds[j].UpThreshold))
                         {
-                            LogECWriteByte(cfg.UpThresholdRegs[j - 1], curveCfg.TempThresholds[j].UpThreshold);
-
-                            byte downT = (byte)(curveCfg.TempThresholds[j].UpThreshold - curveCfg.TempThresholds[j].DownThreshold);
-                            LogECWriteByte(cfg.DownThresholdRegs[j - 1], downT);
+                            success = false;
+                        }
+                        byte downT = (byte)(curveCfg.TempThresholds[j].UpThreshold - curveCfg.TempThresholds[j].DownThreshold);
+                        if (!LogECWriteByte(cfg.DownThresholdRegs[j - 1], downT))
+                        {
+                            success = false;
                         }
                     }
                 }
+            }
 
-                // Write the charge threshold:
-                if (Config.ChargeLimitConf is not null)
+            // Write the charge threshold:
+            if (Config.ChargeLimitConf is not null)
+            {
+                Log.Info(Strings.GetString("svcWritingChgLim"));
+                byte value = (byte)(Config.ChargeLimitConf.MinVal + Config.ChargeLimitConf.CurVal);
+                if (!LogECWriteByte(Config.ChargeLimitConf.Reg, value))
                 {
-                    Log.Info(Strings.GetString("svcWritingChgLim"));
-                    byte value = (byte)(Config.ChargeLimitConf.MinVal + Config.ChargeLimitConf.CurVal);
-                    LogECWriteByte(Config.ChargeLimitConf.Reg, value);
-                }
-
-                // Write the performance mode
-                if (Config.PerfModeConf is not null)
-                {
-                    Log.Info(Strings.GetString("svcWritingPerfMode"));
-                    byte value = Config.PerfModeConf.PerfModes[Config.PerfModeConf.ModeSel].Value;
-                    LogECWriteByte(Config.PerfModeConf.Reg, value);
-                }
-
-                // Write the Win/Fn key swap setting
-                if (Config.KeySwapConf is not null)
-                {
-                    Log.Info(Strings.GetString("svcWritingKeySwap"));
-                    byte value = Config.KeySwapConf.Enabled
-                        ? Config.KeySwapConf.OnVal
-                        : Config.KeySwapConf.OffVal;
-
-                    LogECWriteByte(Config.KeySwapConf.Reg, value);
+                    success = false;
                 }
             }
+
+            // Write the performance mode
+            if (Config.PerfModeConf is not null)
+            {
+                Log.Info(Strings.GetString("svcWritingPerfMode"));
+                byte value = Config.PerfModeConf.PerfModes[Config.PerfModeConf.ModeSel].Value;
+                if (!LogECWriteByte(Config.PerfModeConf.Reg, value))
+                {
+                    success = false;
+                }
+            }
+
+            // Write the Win/Fn key swap setting
+            if (Config.KeySwapConf is not null)
+            {
+                Log.Info(Strings.GetString("svcWritingKeySwap"));
+                byte value = Config.KeySwapConf.Enabled
+                    ? Config.KeySwapConf.OnVal
+                    : Config.KeySwapConf.OffVal;
+
+                if (!LogECWriteByte(Config.KeySwapConf.Reg, value))
+                {
+                    success = false;
+                }
+            }
+            return success;
         }
 
         /// <summary>
@@ -456,9 +531,6 @@ namespace YAMDCC.Service
         /// <param name="argsIn">
         /// The string containing the space-delimited arguments.
         /// </param>
-        /// <param name="numExpectedArgs">
-        /// The expected number of arguments. Must be zero or positive.
-        /// </param>
         /// <param name="argsOut">
         /// The parsed arguments. Will be empty if parsing fails.
         /// </param>
@@ -466,214 +538,139 @@ namespace YAMDCC.Service
         /// <c>true</c> if the arguments were parsed successfully,
         /// otherise <c>false</c>.
         /// </returns>
-        private bool ParseArgs(string argsIn, int numExpectedArgs, out int[] argsOut)
+        private static bool ParseArgs(string argsIn, out int[] argsOut)
         {
-            argsOut = new int[numExpectedArgs];
-
-            if (numExpectedArgs == 0)
+            if (string.IsNullOrEmpty(argsIn))
             {
-                return true;
-            }
-
-            if (!string.IsNullOrEmpty(argsIn))
-            {
-                string[] args_str = argsIn.Split(' ');
-                if (args_str.Length == numExpectedArgs)
-                {
-                    for (int i = 0; i < numExpectedArgs; i++)
-                    {
-                        if (int.TryParse(args_str[i], out int value))
-                        {
-                            argsOut[i] = value;
-                        }
-                        else
-                        {
-                            Log.Error(Strings.GetString("errArgsBadType"));
-                            return false;
-                        }
-                    }
-                    return true;
-                }
-                else
-                {
-                    Log.Error(Strings.GetString("errArgsBadLength"));
-                }
+                argsOut = [];
             }
             else
             {
-                Log.Error(Strings.GetString("errArgsMissing"));
+                string[] args_str = argsIn.Split(' ');
+                argsOut = new int[args_str.Length];
+
+                for (int i = 0; i < args_str.Length; i++)
+                {
+                    if (!int.TryParse(args_str[i], out argsOut[i]))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        private bool GetFanSpeed(int clientId, int fan)
+        {
+            if (Config is null)
+            {
+                return false;
             }
 
+            FanConf cfg = Config.FanConfs[fan];
+
+            if (LogECReadByte(cfg.SpeedReadReg, out byte speed))
+            {
+                IPCServer.PushMessage(new ServiceResponse(
+                    Response.FanSpeed, $"{speed}"), clientId);
+                return true;
+            }
             return false;
         }
 
-        private int ReadECByte(int clientId, string args)
+        private bool GetFanRPM(int clientId, int fan)
         {
-            if (ParseArgs(args, 1, out int[] pArgs))
+            if (Config?.FanConfs[fan].RPMConf is null)
             {
-                if (LogECReadByte((byte)pArgs[0], out byte value))
-                {
-                    IPCServer.PushMessage(new ServiceResponse(
-                        Response.ReadResult, $"{pArgs[0]} {value}"), clientId);
-                    return 0;
-                }
-                return 1;
+                return false;
             }
-            return 2;
+
+            FanConf cfg = Config.FanConfs[fan];
+
+            bool success;
+            ushort rpmValue;
+            if (cfg.RPMConf.Is16Bit)
+            {
+                success = LogECReadWord(cfg.RPMConf.ReadReg, out rpmValue, cfg.RPMConf.IsBigEndian);
+            }
+            else
+            {
+                success = LogECReadByte(cfg.RPMConf.ReadReg, out byte rpmValByte);
+                rpmValue = rpmValByte;
+            }
+
+            if (success)
+            {
+                float rpm = 0;
+                if (rpmValue > 0)
+                {
+                    rpm = cfg.RPMConf.DivideByMult
+                        ? (float)rpmValue / cfg.RPMConf.RPMMult
+                        : (float)rpmValue * cfg.RPMConf.RPMMult;
+
+                    if (cfg.RPMConf.Invert)
+                    {
+                        rpm = 1 / rpm;
+                    }
+                }
+                IPCServer.PushMessage(new ServiceResponse(
+                    Response.FanRPM, $"{(int)rpm}"), clientId);
+                return true;
+            }
+            return false;
         }
 
-        private int WriteECByte(int clientId, string args)
+        private bool GetTemp(int clientId, int fan)
         {
-            if (ParseArgs(args, 2, out int[] pArgs))
+            if (Config is null)
             {
-                if (LogECWriteByte((byte)pArgs[0], (byte)pArgs[1]))
-                {
-                    IPCServer.PushMessage(new ServiceResponse(
-                        Response.Success, $"{(int)Command.WriteECByte}"), clientId);
-                    return 0;
-                }
-                return 1;
+                return false;
             }
-            return 2;
+
+            FanConf cfg = Config.FanConfs[fan];
+
+            if (LogECReadByte(cfg.TempReadReg, out byte temp))
+            {
+                IPCServer.PushMessage(new ServiceResponse(
+                    Response.Temp, $"{temp}"), clientId);
+                return true;
+            }
+            return false;
         }
 
-        private int GetFanSpeed(int clientId, string args)
+        private bool SetFullBlast(bool enable)
         {
-            if (!ConfigLoaded)
+            if (Config?.FullBlastConf is null)
             {
-                return 0;
+                return false;
             }
 
-            if (ParseArgs(args, 1, out int[] pArgs))
+            if (LogECReadByte(Config.FullBlastConf.Reg, out byte value))
             {
-                FanConf cfg = Config.FanConfs[pArgs[0]];
-
-                if (LogECReadByte(cfg.SpeedReadReg, out byte speed))
+                if (enable)
                 {
-                    IPCServer.PushMessage(new ServiceResponse(
-                        Response.FanSpeed, $"{speed}"), clientId);
-                    return 0;
-                }
-                return 1;
-            }
-            return 2;
-        }
-
-        private int GetFanRPM(int clientId, string args)
-        {
-            if (!ConfigLoaded)
-            {
-                return 0;
-            }
-
-            if (ParseArgs(args, 1, out int[] pArgs))
-            {
-                FanConf cfg = Config.FanConfs[pArgs[0]];
-
-                if (cfg.RPMConf is null)
-                {
-                    return 0;
-                }
-
-                bool success;
-                ushort rpmValue;
-                if (cfg.RPMConf.Is16Bit)
-                {
-                    success = LogECReadWord(cfg.RPMConf.ReadReg, out rpmValue, cfg.RPMConf.IsBigEndian);
+                    Log.Debug("Enabling Full Blast...");
+                    value |= Config.FullBlastConf.Mask;
                 }
                 else
                 {
-                    success = LogECReadByte(cfg.RPMConf.ReadReg, out byte rpmValByte);
-                    rpmValue = rpmValByte;
+                    Log.Debug("Disabling Full Blast...");
+                    value &= (byte)~Config.FullBlastConf.Mask;
                 }
 
-                if (success)
+                if (LogECWriteByte(Config.FullBlastConf.Reg, value))
                 {
-                    int rpm;
-#pragma warning disable IDE0045 // Supress "if statement can be simplified" suggestion
-                    if (cfg.RPMConf.Invert)
-                    {
-                        rpm = cfg.RPMConf.DivideByMult
-                            ? cfg.RPMConf.RPMMult / rpmValue
-                            : 1 / (rpmValue * cfg.RPMConf.RPMMult);
-                    }
-                    else
-                    {
-                        rpm = cfg.RPMConf.DivideByMult
-                            ? rpmValue / cfg.RPMConf.RPMMult
-                            : rpmValue * cfg.RPMConf.RPMMult;
-                    }
-#pragma warning restore IDE0045
-                    IPCServer.PushMessage(new ServiceResponse(
-                        Response.FanRPM, $"{rpm}"), clientId);
-                    return 0;
+                    return true;
                 }
-                return 1;
             }
-            return 2;
+            return false;
         }
 
-        private int GetTemp(int clientId, string args)
+        private bool GetKeyLightBright(int clientId)
         {
-            if (!ConfigLoaded)
+            if (Config?.KeyLightConf is null)
             {
-                return 0;
-            }
-
-            if (ParseArgs(args, 1, out int[] pArgs))
-            {
-                FanConf cfg = Config.FanConfs[pArgs[0]];
-
-                if (LogECReadByte(cfg.TempReadReg, out byte temp))
-                {
-                    IPCServer.PushMessage(new ServiceResponse(
-                        Response.Temp, $"{temp}"), clientId);
-                    return 0;
-                }
-                return 1;
-            }
-            return 2;
-        }
-
-        private int SetFullBlast(int clientId, string args)
-        {
-            if (!ConfigLoaded || Config.FullBlastConf is null)
-            {
-                return 0;
-            }
-
-            if (ParseArgs(args, 1, out int[] pArgs))
-            {
-                if (LogECReadByte(Config.FullBlastConf.Reg, out byte value))
-                {
-                    if (pArgs[0] == 1)
-                    {
-                        Log.Debug("Enabling Full Blast...");
-                        value |= Config.FullBlastConf.Mask;
-                    }
-                    else
-                    {
-                        Log.Debug("Disabling Full Blast...");
-                        value &= (byte)~Config.FullBlastConf.Mask;
-                    }
-
-                    if (LogECWriteByte(Config.FullBlastConf.Reg, value))
-                    {
-                        IPCServer.PushMessage(new ServiceResponse(
-                            Response.Success, $"{(int)Command.FullBlast}"), clientId);
-                        return 0;
-                    }
-                }
-                return 1;
-            }
-            return 2;
-        }
-
-        private int GetKeyLightBright(int clientId)
-        {
-            if (!ConfigLoaded || Config.KeyLightConf is null)
-            {
-                return 0;
+                return false;
             }
 
             Log.Debug(Strings.GetString("svcGetKeyLightBright"));
@@ -685,38 +682,28 @@ namespace YAMDCC.Service
 
                 IPCServer.PushMessage(new ServiceResponse(
                     Response.KeyLightBright, $"{brightness}"), clientId);
-                return 0;
+                return true;
             }
-            return 1;
+            return false;
         }
 
-        private int SetKeyLightBright(int clientId, string args)
+        private bool SetKeyLightBright(byte brightness)
         {
-            if (!ConfigLoaded || Config.KeyLightConf is null)
+            if (Config?.KeyLightConf is null)
             {
-                return 0;
+                return false;
             }
 
-            if (ParseArgs(args, 1, out int[] pArgs))
-            {
-                Log.Debug(Strings.GetString("svcSetKeyLightBright", pArgs[0]));
+            Log.Debug(Strings.GetString("svcSetKeyLightBright", brightness));
 
-                if (LogECWriteByte(Config.KeyLightConf.Reg, (byte)(pArgs[0] + Config.KeyLightConf.MinVal)))
-                {
-                    IPCServer.PushMessage(new ServiceResponse(
-                        Response.Success, $"{Command.SetKeyLightBright}"), clientId);
-                    return 0;
-                }
-                return 1;
-            }
-            return 2;
+            return LogECWriteByte(Config.KeyLightConf.Reg, (byte)(brightness + Config.KeyLightConf.MinVal));
         }
 
-        private void ECToConf()
+        private bool ECToConf()
         {
-            if (!ConfigLoaded)
+            if (Config is null)
             {
-                return;
+                return false;
             }
 
             try
@@ -791,11 +778,13 @@ namespace YAMDCC.Service
 
                 FileStream fs = File.Create(Paths.ECToConfSuccess);
                 fs.Close();
+                return true;
             }
             catch
             {
                 FileStream fs = File.Create(Paths.ECToConfFail);
                 fs.Close();
+                return false;
             }
         }
 

@@ -148,14 +148,11 @@ If the issue still occurs, open a bug report with this log attached.</value>
   <data name="drvUnload" xml:space="preserve">
     <value>Unloading WinRing0 driver...</value>
   </data>
-  <data name="errArgsBadLength" xml:space="preserve">
+  <data name="errArgsBadLen" xml:space="preserve">
     <value>Received a command with incorrect number of arguments.</value>
   </data>
   <data name="errArgsBadType" xml:space="preserve">
     <value>Received a command with incorrect type of arguments.</value>
-  </data>
-  <data name="errArgsMissing" xml:space="preserve">
-    <value>Received a command that expected arguments, but no arguments were specified.</value>
   </data>
   <data name="errBadCmd" xml:space="preserve">
     <value>Unknown command received: {0}</value>
@@ -189,7 +186,7 @@ Args: {1}</value>
     <value>Wrote to EC register 0x{0:X2} successfully.</value>
   </data>
   <data name="svcECWriting" xml:space="preserve">
-    <value>Writing value 0x{0:X2} to EC register 0x{1:X2}...</value>
+    <value>Writing value 0x{1:X2} to EC register 0x{0:X2}...</value>
   </data>
   <data name="svcException" xml:space="preserve">
     <value>Unhandled exception occurred: {0}</value>
