@@ -323,7 +323,7 @@ namespace YAMDCC.ConfigEditor
                             {
                                 tbKeyLight.Maximum = Config.KeyLightConf.MaxVal - Config.KeyLightConf.MinVal;
                                 tbKeyLight.Value = value;
-                                tbKeyLight.Enabled = lblKeyLight.Enabled = true;
+                                tbKeyLight.Enabled = lblKeyLightLow.Enabled = lblKeyLightHigh.Enabled = true;
                                 ttMain.SetToolTip(tbKeyLight, Strings.GetString("ttKeyLight"));
                             }));
                         }
@@ -799,7 +799,6 @@ namespace YAMDCC.ConfigEditor
                     throw;
                 }
             }
-            tsiSaveConf.Enabled = true;
         }
 
         private void LoadConf(YAMDCC_Config config)
@@ -826,7 +825,7 @@ namespace YAMDCC.ConfigEditor
             {
                 ttMain.SetToolTip(numChgLim, Strings.GetString("ttChgLim"));
                 ChargeLimitConf cfg = config.ChargeLimitConf;
-                numChgLim.Enabled = lblChgLim.Enabled = true;
+                numChgLim.Enabled = true;
                 numChgLim.Value = cfg.CurVal;
                 numChgLim.Maximum = Math.Abs(cfg.MaxVal - cfg.MinVal);
             }
@@ -847,7 +846,7 @@ namespace YAMDCC.ConfigEditor
                 cboPerfMode.SelectedIndex = cfg.ModeSel;
                 ttMain.SetToolTip(cboPerfMode, Strings.GetString(
                     "ttPerfMode", cfg.PerfModes[cfg.ModeSel].Desc));
-                cboPerfMode.Enabled = lblPerfMode.Enabled = true;
+                cboPerfMode.Enabled = true;
             }
 
             if (config.KeySwapConf is null)
@@ -858,7 +857,7 @@ namespace YAMDCC.ConfigEditor
             {
                 chkWinFnSwap.Checked = config.KeySwapConf.Enabled;
                 ttMain.SetToolTip(chkWinFnSwap, Strings.GetString("ttKeySwap"));
-                chkWinFnSwap.Enabled = lblWinFnSwap.Enabled = true;
+                chkWinFnSwap.Enabled = true;
             }
 
             cboFanSel.Items.Clear();
@@ -867,8 +866,8 @@ namespace YAMDCC.ConfigEditor
                 cboFanSel.Items.Add(config.FanConfs[i].Name);
             }
 
-            btnProfAdd.Enabled = tsiProfAdd.Enabled = true;
-            tsiProfRename.Enabled = tsiProfChangeDesc.Enabled = true;
+            btnProfAdd.Enabled = true;
+            tsiProfAdd.Enabled = tsiProfEdit.Enabled = true;
             tsiECtoConf.Enabled = true;
             cboFanSel.Enabled = true;
             cboFanSel.SelectedIndex = 0;
@@ -1052,18 +1051,16 @@ namespace YAMDCC.ConfigEditor
             cboPerfMode.Enabled = false;
             chkFullBlast.Enabled = false;
             chkWinFnSwap.Enabled = false;
-            lblChgLim.Enabled = false;
-            lblPerfMode.Enabled = false;
-            lblWinFnSwap.Enabled = false;
-            lblKeyLight.Enabled = false;
             numChgLim.Enabled = false;
+            lblKeyLightLow.Enabled = false;
+            lblKeyLightHigh.Enabled = false;
             tbKeyLight.Enabled = false;
 
+            tsiSaveConf.Enabled = false;
             tsiApply.Enabled = false;
             tsiRevert.Enabled = false;
             tsiProfAdd.Enabled = false;
-            tsiProfChangeDesc.Enabled = false;
-            tsiProfRename.Enabled = false;
+            tsiProfEdit.Enabled = false;
             tsiProfDel.Enabled = false;
             tsiECtoConf.Enabled = false;
             tsiECMon.Enabled = false;

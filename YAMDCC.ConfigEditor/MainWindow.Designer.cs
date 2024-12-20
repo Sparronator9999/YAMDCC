@@ -55,9 +55,11 @@ namespace YAMDCC.ConfigEditor
             System.Windows.Forms.FlowLayoutPanel flwFanSelect;
             System.Windows.Forms.TabPage tabOptions;
             System.Windows.Forms.TableLayoutPanel tblExtra;
+            System.Windows.Forms.Label lblChgLim;
+            System.Windows.Forms.Label lblPerfMode;
+            System.Windows.Forms.Label lblWinFnSwap;
+            System.Windows.Forms.Label lblKeyLight;
             System.Windows.Forms.FlowLayoutPanel flwKeyLight;
-            System.Windows.Forms.Label lblKeyLightLow;
-            System.Windows.Forms.Label lblKeyLightHigh;
             System.Windows.Forms.TableLayoutPanel tblFCBottom;
             System.Windows.Forms.FlowLayoutPanel flwStats;
             this.tsiFile = new System.Windows.Forms.ToolStripMenuItem();
@@ -90,14 +92,12 @@ namespace YAMDCC.ConfigEditor
             this.cboProfSel = new System.Windows.Forms.ComboBox();
             this.btnProfAdd = new System.Windows.Forms.Button();
             this.btnProfDel = new System.Windows.Forms.Button();
-            this.lblChgLim = new System.Windows.Forms.Label();
             this.numChgLim = new System.Windows.Forms.NumericUpDown();
-            this.lblPerfMode = new System.Windows.Forms.Label();
             this.cboPerfMode = new System.Windows.Forms.ComboBox();
-            this.lblWinFnSwap = new System.Windows.Forms.Label();
             this.chkWinFnSwap = new System.Windows.Forms.CheckBox();
-            this.lblKeyLight = new System.Windows.Forms.Label();
+            this.lblKeyLightLow = new System.Windows.Forms.Label();
             this.tbKeyLight = new System.Windows.Forms.TrackBar();
+            this.lblKeyLightHigh = new System.Windows.Forms.Label();
             this.chkFullBlast = new System.Windows.Forms.CheckBox();
             this.btnRevert = new System.Windows.Forms.Button();
             this.btnApply = new System.Windows.Forms.Button();
@@ -117,9 +117,11 @@ namespace YAMDCC.ConfigEditor
             flwFanSelect = new System.Windows.Forms.FlowLayoutPanel();
             tabOptions = new System.Windows.Forms.TabPage();
             tblExtra = new System.Windows.Forms.TableLayoutPanel();
+            lblChgLim = new System.Windows.Forms.Label();
+            lblPerfMode = new System.Windows.Forms.Label();
+            lblWinFnSwap = new System.Windows.Forms.Label();
+            lblKeyLight = new System.Windows.Forms.Label();
             flwKeyLight = new System.Windows.Forms.FlowLayoutPanel();
-            lblKeyLightLow = new System.Windows.Forms.Label();
-            lblKeyLightHigh = new System.Windows.Forms.Label();
             tblFCBottom = new System.Windows.Forms.TableLayoutPanel();
             flwStats = new System.Windows.Forms.FlowLayoutPanel();
             menuStrip.SuspendLayout();
@@ -532,13 +534,13 @@ namespace YAMDCC.ConfigEditor
             tblExtra.ColumnCount = 2;
             tblExtra.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             tblExtra.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tblExtra.Controls.Add(this.lblChgLim, 0, 0);
+            tblExtra.Controls.Add(lblChgLim, 0, 0);
             tblExtra.Controls.Add(this.numChgLim, 1, 0);
-            tblExtra.Controls.Add(this.lblPerfMode, 0, 1);
+            tblExtra.Controls.Add(lblPerfMode, 0, 1);
             tblExtra.Controls.Add(this.cboPerfMode, 1, 1);
-            tblExtra.Controls.Add(this.lblWinFnSwap, 0, 2);
+            tblExtra.Controls.Add(lblWinFnSwap, 0, 2);
             tblExtra.Controls.Add(this.chkWinFnSwap, 1, 2);
-            tblExtra.Controls.Add(this.lblKeyLight, 0, 3);
+            tblExtra.Controls.Add(lblKeyLight, 0, 3);
             tblExtra.Controls.Add(flwKeyLight, 1, 3);
             tblExtra.Dock = System.Windows.Forms.DockStyle.Fill;
             tblExtra.Location = new System.Drawing.Point(0, 0);
@@ -555,15 +557,15 @@ namespace YAMDCC.ConfigEditor
             // 
             // lblChgLim
             // 
-            this.lblChgLim.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblChgLim.AutoSize = true;
-            this.lblChgLim.Location = new System.Drawing.Point(55, 4);
-            this.lblChgLim.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
-            this.lblChgLim.Name = "lblChgLim";
-            this.lblChgLim.Padding = new System.Windows.Forms.Padding(0, 0, 0, 3);
-            this.lblChgLim.Size = new System.Drawing.Size(75, 18);
-            this.lblChgLim.TabIndex = 2;
-            this.lblChgLim.Text = "Charge limit:";
+            lblChgLim.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblChgLim.AutoSize = true;
+            lblChgLim.Location = new System.Drawing.Point(55, 4);
+            lblChgLim.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
+            lblChgLim.Name = "lblChgLim";
+            lblChgLim.Padding = new System.Windows.Forms.Padding(0, 0, 0, 3);
+            lblChgLim.Size = new System.Drawing.Size(75, 18);
+            lblChgLim.TabIndex = 2;
+            lblChgLim.Text = "Charge limit:";
             // 
             // numChgLim
             // 
@@ -577,14 +579,14 @@ namespace YAMDCC.ConfigEditor
             // 
             // lblPerfMode
             // 
-            this.lblPerfMode.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblPerfMode.AutoSize = true;
-            this.lblPerfMode.Location = new System.Drawing.Point(18, 34);
-            this.lblPerfMode.Margin = new System.Windows.Forms.Padding(4, 3, 0, 3);
-            this.lblPerfMode.Name = "lblPerfMode";
-            this.lblPerfMode.Size = new System.Drawing.Size(112, 15);
-            this.lblPerfMode.TabIndex = 4;
-            this.lblPerfMode.Text = "Performance mode:";
+            lblPerfMode.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblPerfMode.AutoSize = true;
+            lblPerfMode.Location = new System.Drawing.Point(18, 34);
+            lblPerfMode.Margin = new System.Windows.Forms.Padding(4, 3, 0, 3);
+            lblPerfMode.Name = "lblPerfMode";
+            lblPerfMode.Size = new System.Drawing.Size(112, 15);
+            lblPerfMode.TabIndex = 4;
+            lblPerfMode.Text = "Performance mode:";
             // 
             // cboPerfMode
             // 
@@ -599,15 +601,15 @@ namespace YAMDCC.ConfigEditor
             // 
             // lblWinFnSwap
             // 
-            this.lblWinFnSwap.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblWinFnSwap.AutoSize = true;
-            this.lblWinFnSwap.Location = new System.Drawing.Point(3, 60);
-            this.lblWinFnSwap.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
-            this.lblWinFnSwap.Name = "lblWinFnSwap";
-            this.lblWinFnSwap.Padding = new System.Windows.Forms.Padding(0, 0, 0, 2);
-            this.lblWinFnSwap.Size = new System.Drawing.Size(127, 17);
-            this.lblWinFnSwap.TabIndex = 6;
-            this.lblWinFnSwap.Text = "Swap Win and Fn keys:";
+            lblWinFnSwap.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblWinFnSwap.AutoSize = true;
+            lblWinFnSwap.Location = new System.Drawing.Point(3, 60);
+            lblWinFnSwap.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
+            lblWinFnSwap.Name = "lblWinFnSwap";
+            lblWinFnSwap.Padding = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            lblWinFnSwap.Size = new System.Drawing.Size(127, 17);
+            lblWinFnSwap.TabIndex = 6;
+            lblWinFnSwap.Text = "Swap Win and Fn keys:";
             // 
             // chkWinFnSwap
             // 
@@ -623,21 +625,21 @@ namespace YAMDCC.ConfigEditor
             // 
             // lblKeyLight
             // 
-            this.lblKeyLight.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKeyLight.AutoSize = true;
-            this.lblKeyLight.Location = new System.Drawing.Point(18, 99);
-            this.lblKeyLight.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
-            this.lblKeyLight.Name = "lblKeyLight";
-            this.lblKeyLight.Size = new System.Drawing.Size(112, 15);
-            this.lblKeyLight.TabIndex = 8;
-            this.lblKeyLight.Text = "Keyboard backlight:";
+            lblKeyLight.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblKeyLight.AutoSize = true;
+            lblKeyLight.Location = new System.Drawing.Point(18, 99);
+            lblKeyLight.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
+            lblKeyLight.Name = "lblKeyLight";
+            lblKeyLight.Size = new System.Drawing.Size(112, 15);
+            lblKeyLight.TabIndex = 8;
+            lblKeyLight.Text = "Keyboard backlight:";
             // 
             // flwKeyLight
             // 
             flwKeyLight.AutoSize = true;
-            flwKeyLight.Controls.Add(lblKeyLightLow);
+            flwKeyLight.Controls.Add(this.lblKeyLightLow);
             flwKeyLight.Controls.Add(this.tbKeyLight);
-            flwKeyLight.Controls.Add(lblKeyLightHigh);
+            flwKeyLight.Controls.Add(this.lblKeyLightHigh);
             flwKeyLight.Location = new System.Drawing.Point(130, 81);
             flwKeyLight.Margin = new System.Windows.Forms.Padding(0);
             flwKeyLight.Name = "flwKeyLight";
@@ -646,14 +648,14 @@ namespace YAMDCC.ConfigEditor
             // 
             // lblKeyLightLow
             // 
-            lblKeyLightLow.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            lblKeyLightLow.AutoSize = true;
-            lblKeyLightLow.Location = new System.Drawing.Point(3, 18);
-            lblKeyLightLow.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
-            lblKeyLightLow.Name = "lblKeyLightLow";
-            lblKeyLightLow.Size = new System.Drawing.Size(24, 15);
-            lblKeyLightLow.TabIndex = 10;
-            lblKeyLightLow.Text = "Off";
+            this.lblKeyLightLow.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblKeyLightLow.AutoSize = true;
+            this.lblKeyLightLow.Location = new System.Drawing.Point(3, 18);
+            this.lblKeyLightLow.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
+            this.lblKeyLightLow.Name = "lblKeyLightLow";
+            this.lblKeyLightLow.Size = new System.Drawing.Size(24, 15);
+            this.lblKeyLightLow.TabIndex = 10;
+            this.lblKeyLightLow.Text = "Off";
             // 
             // tbKeyLight
             // 
@@ -667,14 +669,14 @@ namespace YAMDCC.ConfigEditor
             // 
             // lblKeyLightHigh
             // 
-            lblKeyLightHigh.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            lblKeyLightHigh.AutoSize = true;
-            lblKeyLightHigh.Location = new System.Drawing.Point(183, 18);
-            lblKeyLightHigh.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
-            lblKeyLightHigh.Name = "lblKeyLightHigh";
-            lblKeyLightHigh.Size = new System.Drawing.Size(39, 15);
-            lblKeyLightHigh.TabIndex = 11;
-            lblKeyLightHigh.Text = "Bright";
+            this.lblKeyLightHigh.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblKeyLightHigh.AutoSize = true;
+            this.lblKeyLightHigh.Location = new System.Drawing.Point(183, 18);
+            this.lblKeyLightHigh.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
+            this.lblKeyLightHigh.Name = "lblKeyLightHigh";
+            this.lblKeyLightHigh.Size = new System.Drawing.Size(39, 15);
+            this.lblKeyLightHigh.TabIndex = 11;
+            this.lblKeyLightHigh.Text = "Bright";
             // 
             // tblFCBottom
             // 
@@ -879,13 +881,9 @@ namespace YAMDCC.ConfigEditor
         private System.Windows.Forms.ComboBox cboProfSel;
         private System.Windows.Forms.Button btnProfAdd;
         private System.Windows.Forms.Button btnProfDel;
-        private System.Windows.Forms.Label lblChgLim;
         private System.Windows.Forms.NumericUpDown numChgLim;
-        private System.Windows.Forms.Label lblPerfMode;
         private System.Windows.Forms.ComboBox cboPerfMode;
-        private System.Windows.Forms.Label lblWinFnSwap;
         private System.Windows.Forms.CheckBox chkWinFnSwap;
-        private System.Windows.Forms.Label lblKeyLight;
         private System.Windows.Forms.TrackBar tbKeyLight;
         private System.Windows.Forms.CheckBox chkFullBlast;
         private System.Windows.Forms.Button btnApply;
@@ -895,5 +893,7 @@ namespace YAMDCC.ConfigEditor
         private System.Windows.Forms.Label lblFanRPM;
         private System.Windows.Forms.Label lblTemp;
         private System.Windows.Forms.TableLayoutPanel tblMain;
+        private System.Windows.Forms.Label lblKeyLightLow;
+        private System.Windows.Forms.Label lblKeyLightHigh;
     }
 }
