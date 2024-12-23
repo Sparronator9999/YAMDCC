@@ -106,7 +106,7 @@
         "dependencies": {
           "YAMDCC.Config": "[0.6.9.420-dev, )",
           "YAMDCC.ECAccess": "[0.6.9.420-dev, )",
-          "YAMDCC.IPC": "[2.0.1-release, )",
+          "YAMDCC.IPC": "[2.0.2-release, )",
           "YAMDCC.Logs": "[0.6.9.420-dev, )"
         }
       }

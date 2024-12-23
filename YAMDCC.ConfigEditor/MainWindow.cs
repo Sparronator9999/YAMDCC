@@ -98,7 +98,7 @@ namespace YAMDCC.ConfigEditor
                 numFanSpds[i] = new NumericUpDown()
                 {
                     Dock = DockStyle.Fill,
-                    Margin = new Padding(2),
+                    Margin = new Padding((int)(2 * scale)),
                     Tag = i,
                 };
                 ttMain.SetToolTip(numFanSpds[i], Strings.GetString("ttFanSpd"));
@@ -108,7 +108,7 @@ namespace YAMDCC.ConfigEditor
                 tbFanSpds[i] = new TrackBar()
                 {
                     Dock = DockStyle.Fill,
-                    Margin = new Padding((int)(9 * scale), 0, (int)(9 * scale), 0),
+                    Margin = new Padding((int)(10 * scale), 0, (int)(10 * scale), 0),
                     Orientation = Orientation.Vertical,
                     Tag = i,
                     TickFrequency = 5,
@@ -136,8 +136,8 @@ namespace YAMDCC.ConfigEditor
                     tblCurve.Controls.Add(new Label
                     {
                         Dock = DockStyle.Fill,
-                        Margin = new Padding(2),
-                        Padding = new Padding(0, 0, 0, 3),
+                        Margin = new Padding((int)(2 * scale)),
+                        Padding = new Padding(0, 0, 0, (int)(3 * scale)),
                         Text = "Default",
                         TextAlign = ContentAlignment.MiddleCenter,
                     },
@@ -150,7 +150,7 @@ namespace YAMDCC.ConfigEditor
                     {
                         Dock = DockStyle.Fill,
                         Height = (int)(23 * scale),
-                        Margin = new Padding(2),
+                        Margin = new Padding((int)(2 * scale)),
                         Tag = i,
                     };
                     ttMain.SetToolTip(numDownTs[i], Strings.GetString("ttDownT"));
@@ -162,8 +162,8 @@ namespace YAMDCC.ConfigEditor
                     tblCurve.Controls.Add(new Label
                     {
                         Dock = DockStyle.Fill,
-                        Margin = new Padding(2),
-                        Padding = new Padding(0, 0, 0, 3),
+                        Margin = new Padding((int)(2 * scale)),
+                        Padding = new Padding(0, 0, 0, (int)(3 * scale)),
                         Text = "Max",
                         TextAlign = ContentAlignment.MiddleCenter,
                     },

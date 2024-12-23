@@ -73,23 +73,23 @@ namespace YAMDCC.ConfigEditor.Dialogs
             tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            tblMain.Size = new System.Drawing.Size(300, 89);
+            tblMain.Size = new System.Drawing.Size(300, 88);
             tblMain.TabIndex = 0;
             // 
             // lblCaption
             // 
             this.lblCaption.AutoSize = true;
             this.lblCaption.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblCaption.Location = new System.Drawing.Point(10, 6);
-            this.lblCaption.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblCaption.Location = new System.Drawing.Point(9, 6);
+            this.lblCaption.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
             this.lblCaption.Name = "lblCaption";
-            this.lblCaption.Size = new System.Drawing.Size(280, 15);
+            this.lblCaption.Size = new System.Drawing.Size(282, 15);
             this.lblCaption.TabIndex = 1;
             // 
             // txtInput
             // 
             this.txtInput.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtInput.Location = new System.Drawing.Point(9, 24);
+            this.txtInput.Location = new System.Drawing.Point(9, 27);
             this.txtInput.Name = "txtInput";
             this.txtInput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtInput.Size = new System.Drawing.Size(282, 23);
@@ -103,15 +103,16 @@ namespace YAMDCC.ConfigEditor.Dialogs
             flwButtons.Controls.Add(this.btnOK);
             flwButtons.Dock = System.Windows.Forms.DockStyle.Fill;
             flwButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            flwButtons.Location = new System.Drawing.Point(9, 53);
+            flwButtons.Location = new System.Drawing.Point(6, 53);
+            flwButtons.Margin = new System.Windows.Forms.Padding(0);
             flwButtons.Name = "flwButtons";
-            flwButtons.Size = new System.Drawing.Size(282, 29);
+            flwButtons.Size = new System.Drawing.Size(288, 29);
             flwButtons.TabIndex = 3;
             // 
             // btnCancel
             // 
             btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            btnCancel.Location = new System.Drawing.Point(204, 3);
+            btnCancel.Location = new System.Drawing.Point(210, 3);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new System.Drawing.Size(75, 23);
             btnCancel.TabIndex = 1;
@@ -121,7 +122,7 @@ namespace YAMDCC.ConfigEditor.Dialogs
             // btnOK
             // 
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOK.Location = new System.Drawing.Point(123, 3);
+            this.btnOK.Location = new System.Drawing.Point(129, 3);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(75, 23);
             this.btnOK.TabIndex = 0;
@@ -137,7 +138,7 @@ namespace YAMDCC.ConfigEditor.Dialogs
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = btnCancel;
-            this.ClientSize = new System.Drawing.Size(300, 89);
+            this.ClientSize = new System.Drawing.Size(300, 88);
             this.Controls.Add(tblMain);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
