@@ -1,6 +1,5 @@
 using MessagePack;
 using System;
-using System.IO;
 using System.IO.Pipes;
 using System.Net;
 
@@ -45,12 +44,12 @@ namespace YAMDCC.IPC.IO
         /// <param name="obj">
         /// The object to write to the pipe.
         /// </param>
-        /// <exception cref="SerializationException"/>
+        /// <exception cref="MessagePackSerializationException"/>
         internal void WriteObject(T obj)
         {
             if (obj is not null)
             {
-                byte[] data = MessagePackSerializer.Serialize(obj);
+                byte[] data = MessagePackSerializer.Serialize(obj, Constants.SerializerOptions);
                 byte[] lenBuf = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(data.Length));
 
                 BaseStream.Write(lenBuf, 0, lenBuf.Length);
@@ -59,12 +58,7 @@ namespace YAMDCC.IPC.IO
             }
         }
 
-        /// <summary>
-        /// Waits for the other end of the pipe to read all sent bytes.
-        /// </summary>
-        /// <exception cref="ObjectDisposedException"/>
-        /// <exception cref="NotSupportedException"/>
-        /// <exception cref="IOException"/>
+        /// <inheritdoc cref="PipeStream.WaitForPipeDrain()"/>
         internal void WaitForPipeDrain()
         {
             BaseStream.WaitForPipeDrain();

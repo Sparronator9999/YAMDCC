@@ -64,6 +64,11 @@ namespace YAMDCC.IPC
         public event EventHandler<PipeMessageEventArgs<TRead, TWrite>> ServerMessage;
 
         /// <summary>
+        /// Invoked when the client connects to a server.
+        /// </summary>
+        public event EventHandler<PipeConnectionEventArgs<TRead, TWrite>> Connected;
+
+        /// <summary>
         /// Invoked when the client disconnects from the server
         /// (e.g. when the pipe is closed or broken).
         /// </summary>
@@ -246,6 +251,7 @@ namespace YAMDCC.IPC
             _connection.Open();
 
             _connected.Set();
+            Connected?.Invoke(this, new PipeConnectionEventArgs<TRead, TWrite>(_connection));
         }
 
         private void OnDisconnected(object sender, PipeConnectionEventArgs<TRead, TWrite> e)

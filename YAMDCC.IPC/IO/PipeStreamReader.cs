@@ -28,9 +28,6 @@ namespace YAMDCC.IPC.IO
         /// </summary>
         internal bool IsConnected => BaseStream.IsConnected;
 
-        private readonly MessagePackSerializerOptions _options =
-            MessagePackSerializerOptions.Standard.WithSecurity(MessagePackSecurity.UntrustedData);
-
         private const int SIZE_INT = sizeof(int);
 
         /// <summary>
@@ -86,9 +83,8 @@ namespace YAMDCC.IPC.IO
             byte[] data = new byte[len];
             int bytesRead = BaseStream.Read(data, 0, data.Length);
             return bytesRead == len
-                ? MessagePackSerializer.Deserialize<T>(data, _options)
+                ? MessagePackSerializer.Deserialize<T>(data, Constants.SerializerOptions)
                 : throw new IOException($"Expected {len} bytes, but read {bytesRead}.");
-
         }
     }
 }

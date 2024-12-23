@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO.Pipes;
 using System.Runtime.InteropServices;
-using System.Runtime.Serialization;
 using System.Threading;
 using YAMDCC.IPC.IO;
 using YAMDCC.IPC.Threading;
@@ -142,7 +141,6 @@ namespace YAMDCC.IPC
         /// <summary>
         /// Invoked on the UI thread.
         /// </summary>
-        /// <param name="exception"></param>
         private void OnError(object sender, WorkerErrorEventArgs e)
         {
             Error?.Invoke(sender, new PipeErrorEventArgs<TRead, TWrite>(this, e.Exception));
@@ -151,7 +149,6 @@ namespace YAMDCC.IPC
         /// <summary>
         /// Invoked on the background thread.
         /// </summary>
-        /// <exception cref="SerializationException"/>
         private void ReadPipe()
         {
             while (IsConnected && _streamWrapper.CanRead)
@@ -172,7 +169,6 @@ namespace YAMDCC.IPC
         /// <summary>
         /// Invoked on the background thread.
         /// </summary>
-        /// <exception cref="SerializationException"/>
         private void WritePipe()
         {
             while (IsConnected && _streamWrapper.CanWrite)
