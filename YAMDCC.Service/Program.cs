@@ -29,7 +29,11 @@ namespace YAMDCC.Service
         private static readonly Logger Log = new()
         {
             ConsoleLogLevel = LogLevel.None,
+#if DEBUG
             FileLogLevel = LogLevel.Debug,
+#else
+            FileLogLevel = LogLevel.Info,
+#endif
         };
 
         /// <summary>

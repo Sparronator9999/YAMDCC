@@ -561,8 +561,7 @@ namespace YAMDCC.ConfigEditor
             new VersionDialog().ShowDialog();
 
         private void tsiSrc_Click(object sender, EventArgs e) =>
-            // TODO: add GitHub project link
-            Process.Start("https://youtu.be/dQw4w9WgXcQ");
+            Process.Start(Paths.SourcePrefix);
         #endregion
 
         #endregion

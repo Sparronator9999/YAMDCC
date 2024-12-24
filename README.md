@@ -135,12 +135,14 @@ Below are some planned features for potential future releases:
 
 ## Download
 
+Beta builds are available from [GitHub releases](https://github.com/Sparronator9999/YAMDCC/releases).
+
 Development builds are available through [GitHub Actions](https://github.com/Sparronator9999/YAMDCC/actions).
 
-Alternatively, if you don't have a GitHub account, you can download the latest build from
+If you don't have a GitHub account, you can also download the latest development build from
 [nightly.link](https://nightly.link/Sparronator9999/YAMDCC/workflows/build/main?preview).
 
-(You probably want the `Release` build, unless you're debugging issues with the program)
+You're probably looking for the `Release` build, unless you're debugging issues with the program.
 
 Alternatively, you can [build the program yourself](#build).
 
