@@ -108,18 +108,20 @@ Below are some changes I would like to make before a 1.0 release of YAMDCC:
 - [x] Add auto-rename of computer model to EC-to-config feature.
 - [ ] Fix any remaining bugs and QoL features before the 1.0 release.
 
-Below are some planned features for potential future releases:
+The following features are currently planned for v1.1:
 
-- [ ] Keyboard shortcut support (requested by @grimy400)
+- [ ] Hotkey support (requested by @grimy400)
   - This will most likely be implemented as a separate background program that listens to keyboard shortcuts,
     since Windows services (or at least those running as Local System) can't "see" keyboard input.
-- [ ] CLI support
+- [ ] *Maybe* CLI support (otherwise this will be in v1.2)
   - Development of a CLI application for YAMDCC has started, but isn't publicly available yet
-    - It hasn't been updated for quite a while (it still has the project's original name),
-      and is missing a *lot* of features.
+    - The CLI is missing a *lot* of features, and could do with a rewrite.
+
+Below are some planned features for potential future releases:
+
 - [ ] Support for editing laptop config registers using the GUI/CLI
   - This would allow for creating configs for other laptop brands from the config UI
-  - Currently, the only way to do this is to edit the XML directly or use the config generator.
+  - Currently, the only way to do this is to edit the XML directly or use the EC-to-config feature.
 - [ ] Plugin system for additional optional features *(needs research)*
 - [ ] .NET support
   - Mandatory for Linux support
