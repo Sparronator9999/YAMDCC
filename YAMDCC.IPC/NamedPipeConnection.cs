@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.IO.Pipes;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -58,8 +58,7 @@ namespace YAMDCC.IPC
 
         private readonly PipeStreamWrapper<TRead, TWrite> _streamWrapper;
 
-        private readonly AutoResetEvent _writeSignal = new(false);
-        private readonly Queue<TWrite> _writeQueue = new();
+        private readonly BlockingCollection<TWrite> _writeQueue = new();
 
         private bool _notifiedSucceeded;
 
@@ -82,10 +81,9 @@ namespace YAMDCC.IPC
         /// <param name="message">
         /// The message to write to the named pipe.
         /// </param>
-        public void PushMessage(TWrite message)
+        public bool PushMessage(TWrite message)
         {
-            _writeQueue.Enqueue(message);
-            _writeSignal.Set();
+            return _writeQueue.TryAdd(message);
         }
 
         /// <summary>
@@ -118,7 +116,7 @@ namespace YAMDCC.IPC
         internal void Close()
         {
             _streamWrapper.Close();
-            _writeSignal.Set();
+            _writeQueue.CompleteAdding();
         }
 
         /// <summary>
@@ -154,15 +152,14 @@ namespace YAMDCC.IPC
             while (IsConnected && _streamWrapper.CanRead)
             {
                 TRead obj = _streamWrapper.ReadObject();
-                if (obj == null)
+                if (obj is null)
                 {
                     Close();
                     return;
                 }
-                PipeMessageEventArgs<TRead, TWrite> e =
-                    new(this, obj);
 
-                ReceiveMessage?.Invoke(this, e);
+                ReceiveMessage?.Invoke(this,
+                    new PipeMessageEventArgs<TRead, TWrite>(this, obj));
             }
         }
 
@@ -173,10 +170,9 @@ namespace YAMDCC.IPC
         {
             while (IsConnected && _streamWrapper.CanWrite)
             {
-                _writeSignal.WaitOne();
-                while (_writeQueue.Count > 0)
+                if (_writeQueue.TryTake(out TWrite obj))
                 {
-                    _streamWrapper.WriteObject(_writeQueue.Dequeue());
+                    _streamWrapper.WriteObject(obj);
                     _streamWrapper.WaitForPipeDrain();
                 }
             }
@@ -197,7 +193,8 @@ namespace YAMDCC.IPC
 
             if (disposing)
             {
-                _writeSignal.Dispose();
+                Close();
+                _writeQueue.Dispose();
             }
 
             _disposed = true;

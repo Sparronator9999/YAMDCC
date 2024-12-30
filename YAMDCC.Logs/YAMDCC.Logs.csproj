@@ -12,8 +12,8 @@
         <RuntimeIdentifiers>win7-x64;win7-x86;win-x64;win-x86</RuntimeIdentifiers>
         <TargetFramework>net48</TargetFramework>
         <Title>YAMDCC logging library</Title>
-        <VersionPrefix>1.0.0.0</VersionPrefix>
-        <VersionSuffix>beta.1</VersionSuffix>
+        <VersionPrefix>1.0.0</VersionPrefix>
+        <VersionSuffix>dev</VersionSuffix>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>none</DebugType>

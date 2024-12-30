@@ -104,10 +104,10 @@
       "yamdccsvc": {
         "type": "Project",
         "dependencies": {
-          "YAMDCC.Config": "[1.0.0-beta.1, )",
-          "YAMDCC.ECAccess": "[1.0.0-beta.1, )",
+          "YAMDCC.Config": "[1.0.0-dev, )",
+          "YAMDCC.ECAccess": "[1.0.0-dev, )",
           "YAMDCC.IPC": "[2.1.0-release, )",
-          "YAMDCC.Logs": "[1.0.0-beta.1, )"
+          "YAMDCC.Logs": "[1.0.0-dev, )"
         }
       }
     },
