@@ -28,6 +28,7 @@ namespace YAMDCC.Service
         /// </summary>
         private static readonly Logger Log = new()
         {
+            LogDir = Paths.Logs,
             ConsoleLogLevel = LogLevel.None,
 #if DEBUG
             FileLogLevel = LogLevel.Debug,
@@ -54,6 +55,7 @@ namespace YAMDCC.Service
                 Log.Info(
                     $"OS version: {Environment.OSVersion}\n" +
                     $"Service version: {Application.ProductVersion}");
+                Log.Debug("Log level is set to debug mode.");
                 ServiceBase.Run(new FanControlService(Log));
             }
         }

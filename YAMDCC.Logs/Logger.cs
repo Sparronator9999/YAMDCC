@@ -18,6 +18,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
+using System.Reflection;
 
 namespace YAMDCC.Logs
 {
@@ -47,13 +48,25 @@ namespace YAMDCC.Logs
             (showDate ? $"[{DateTime.Now:dd/MM/yyyy @ HH:mm:ss.fff}] " : "") + $"[{level}]".PadRight(8).ToUpper(CultureInfo.InvariantCulture) + text;
 
         /// <summary>
-        /// The path to which the log file will be written.
+        /// The directory in which log files are saved.
         /// </summary>
-        public string LogDir { get; set; } = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-            "Sparronator9999", "YAMDCC", "Logs");
+        public string LogDir { get; set; } = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
-        private string LogPath => Path.Combine(LogDir, AppDomain.CurrentDomain.FriendlyName);
+        /// <summary>
+        /// The base name of the log file.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// Log files will have the <c>.log</c> extension appended.
+        /// </para>
+        /// <para>
+        /// Archives will have a number appended before the <c>.log</c>
+        /// extension, with higher numbers indicating older logs.
+        /// </para>
+        /// </remarks>
+        public string LogName { get; set; } = Path.GetFileName(Assembly.GetEntryAssembly().Location);
+
+        private string LogPath => Path.Combine(LogDir, LogName);
 
         /// <summary>
         /// The maximum number of logs to archive.
