@@ -62,7 +62,8 @@ namespace YAMDCC.ECAccess
         /// The maximum time (in <see cref="Stopwatch"/> ticks)
         /// to wait for an EC status.
         /// </summary>
-        private static readonly long ECStatusTimeoutTicks = 1000 * Stopwatch.Frequency / 1000000L;
+        private static readonly long ECStatusTimeoutTicks =
+            Stopwatch.Frequency / 200;  // 5 ms, should be plenty for EC status waits
 
         /// <summary>
         /// Used to synchronise EC access.
@@ -103,7 +104,11 @@ namespace YAMDCC.ECAccess
             }
 
             // If opening the driver fails, uninstall (if installed) and reinstall it
-            _Driver.Uninstall();
+            if (!_Driver.Uninstall())
+            {
+                return false;
+            }
+
             if (!_Driver.Install())
             {
                 _Driver.Uninstall();
@@ -125,7 +130,7 @@ namespace YAMDCC.ECAccess
             if (GetRefCount() <= 1)
             {
                 // only uninstall the driver if we're the last program using it
-                // (Driver.Uninstall() calles Driver.Close() internally)
+                // (Driver.Uninstall() calls Driver.Close() internally)
                 _Driver.Uninstall();
             }
             else
@@ -138,7 +143,7 @@ namespace YAMDCC.ECAccess
         /// <summary>
         /// Reads a byte from the EC at the specified register.
         /// </summary>
-        /// <param name="register">
+        /// <param name="reg">
         /// The register to read from.
         /// </param>
         /// <param name="value">
@@ -147,7 +152,7 @@ namespace YAMDCC.ECAccess
         /// <returns>
         /// <c>true</c> if the operation was successful, otherwise <c>false</c>.
         /// </returns>
-        public bool ReadByte(byte register, out byte value)
+        public bool ReadByte(byte reg, out byte value)
         {
             value = 0;
 
@@ -156,7 +161,7 @@ namespace YAMDCC.ECAccess
             {
                 for (int i = 0; i < RW_MAX_RETRIES; i++)
                 {
-                    if (TryReadByte(register, out value))
+                    if (TryReadByte(reg, out value))
                     {
                         return true;
                     }
@@ -168,7 +173,7 @@ namespace YAMDCC.ECAccess
         /// <summary>
         /// Writes a byte to the EC at the specified register.
         /// </summary>
-        /// <param name="register">
+        /// <param name="reg">
         /// The register to write to.
         /// </param>
         /// <param name="value">
@@ -177,27 +182,26 @@ namespace YAMDCC.ECAccess
         /// <returns>
         /// <c>true</c> if the operation was successful, otherwise <c>false</c>.
         /// </returns>
-        public bool WriteByte(byte register, byte value)
+        public bool WriteByte(byte reg, byte value)
         {
             // only attempt to write EC if driver connection has been opened
             if (_Driver.IsOpen)
             {
                 for (int i = 0; i < RW_MAX_RETRIES; i++)
                 {
-                    if (TryWriteByte(register, value))
+                    if (TryWriteByte(reg, value))
                     {
                         return true;
                     }
                 }
             }
-
             return false;
         }
 
         /// <summary>
         /// Reads a 16-bit integer (aka "word") from the EC at the specified register.
         /// </summary>
-        /// <param name="register">
+        /// <param name="reg">
         /// The register to read from.
         /// </param>
         /// <param name="bigEndian">
@@ -210,7 +214,7 @@ namespace YAMDCC.ECAccess
         /// <returns>
         /// <c>true</c> if the operation was successful, otherwise <c>false</c>.
         /// </returns>
-        public bool ReadWord(byte register, out ushort value, bool bigEndian = false)
+        public bool ReadWord(byte reg, out ushort value, bool bigEndian = false)
         {
             value = 0;
 
@@ -219,20 +223,19 @@ namespace YAMDCC.ECAccess
             {
                 for (int i = 0; i < RW_MAX_RETRIES; i++)
                 {
-                    if (TryReadWord(register, bigEndian, out value))
+                    if (TryReadWord(reg, bigEndian, out value))
                     {
                         return true;
                     }
                 }
             }
-
             return false;
         }
 
         /// <summary>
         /// Writes a 16-bit integer (aka "word") to the EC at the specified register.
         /// </summary>
-        /// <param name="register">
+        /// <param name="reg">
         /// The register to write to.
         /// </param>
         /// <param name="value">
@@ -245,24 +248,23 @@ namespace YAMDCC.ECAccess
         /// <returns>
         /// <c>true</c> if the operation was successful, otherwise <c>false</c>.
         /// </returns>
-        public bool WriteWord(byte register, ushort value, bool bigEndian = false)
+        public bool WriteWord(byte reg, ushort value, bool bigEndian = false)
         {
             // only attempt to write EC if driver connection has been opened
             if (_Driver.IsOpen)
             {
                 for (int i = 0; i < RW_MAX_RETRIES; i++)
                 {
-                    if (TryWriteWord(register, value, bigEndian))
+                    if (TryWriteWord(reg, value, bigEndian))
                     {
                         return true;
                     }
                 }
             }
-
             return false;
         }
 
-        private bool TryReadByte(byte register, out byte value)
+        private bool TryReadByte(byte reg, out byte value)
         {
             value = 0;
             if (EcMutex.WaitOne(2000))
@@ -270,7 +272,7 @@ namespace YAMDCC.ECAccess
                 try
                 {
                     return WaitWrite() && WriteIOPort(PORT_COMMAND, (byte)ECCommand.Read)
-                        && WaitWrite() && WriteIOPort(PORT_DATA, register)
+                        && WaitWrite() && WriteIOPort(PORT_DATA, reg)
                         && WaitWrite() && WaitRead()
                         && ReadIOPort(PORT_DATA, out value);
                 }
@@ -282,14 +284,14 @@ namespace YAMDCC.ECAccess
             return false;
         }
 
-        private bool TryWriteByte(byte register, byte value)
+        private bool TryWriteByte(byte reg, byte value)
         {
             if (EcMutex.WaitOne(2000))
             {
                 try
                 {
                     return WaitWrite() && WriteIOPort(PORT_COMMAND, (byte)ECCommand.Write)
-                        && WaitWrite() && WriteIOPort(PORT_DATA, register)
+                        && WaitWrite() && WriteIOPort(PORT_DATA, reg)
                         && WaitWrite() && WriteIOPort(PORT_DATA, value);
                 }
                 finally
@@ -300,19 +302,19 @@ namespace YAMDCC.ECAccess
             return false;
         }
 
-        private bool TryReadWord(byte register, bool bigEndian, out ushort value)
+        private bool TryReadWord(byte reg, bool bigEndian, out ushort value)
         {
             value = 0;
 
             // read least-significant byte
-            if (!TryReadByte(bigEndian ? (byte)(register + 1) : register, out byte result))
+            if (!TryReadByte(bigEndian ? (byte)(reg + 1) : reg, out byte result))
             {
                 return false;
             }
             value = result;
 
             // read most-significant byte
-            if (!TryReadByte(bigEndian ? register : (byte)(register + 1), out result))
+            if (!TryReadByte(bigEndian ? reg : (byte)(reg + 1), out result))
             {
                 return false;
             }
@@ -321,7 +323,7 @@ namespace YAMDCC.ECAccess
             return true;
         }
 
-        private bool TryWriteWord(byte register, ushort value, bool bigEndian)
+        private bool TryWriteWord(byte reg, ushort value, bool bigEndian)
         {
             byte lsb, msb;
 
@@ -336,7 +338,7 @@ namespace YAMDCC.ECAccess
                 lsb = (byte)value;
             }
 
-            return TryWriteByte(register, lsb) && TryWriteByte((byte)(register + 1), msb);
+            return TryWriteByte(reg, lsb) && TryWriteByte((byte)(reg + 1), msb);
         }
 
         /// <summary>
@@ -346,8 +348,10 @@ namespace YAMDCC.ECAccess
         /// <c>true</c> if the EC is ready to have data read from it,
         /// <c>false</c> if the operation timed out.
         /// </returns>
-        private bool WaitRead() =>
-            WaitForECStatus(ECStatus.OutputBufferFull, true);
+        private bool WaitRead()
+        {
+            return WaitForECStatus(ECStatus.OutputBufferFull, true);
+        }
 
         /// <summary>
         /// Waits for the EC to process a write command.
@@ -356,8 +360,10 @@ namespace YAMDCC.ECAccess
         /// <c>true</c> if the EC is ready to accept data,
         /// <c>false</c> if the operation timed out.
         /// </returns>
-        private bool WaitWrite() =>
-            WaitForECStatus(ECStatus.InputBufferFull, false);
+        private bool WaitWrite()
+        {
+            return WaitForECStatus(ECStatus.InputBufferFull, false);
+        }
 
         /// <summary>
         /// Waits for the specified <see cref="ECStatus"/> to be set/unset.
