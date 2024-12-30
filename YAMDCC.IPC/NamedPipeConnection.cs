@@ -2,7 +2,6 @@ using System;
 using System.Collections.Concurrent;
 using System.IO.Pipes;
 using System.Runtime.InteropServices;
-using System.Threading;
 using YAMDCC.IPC.IO;
 using YAMDCC.IPC.Threading;
 
