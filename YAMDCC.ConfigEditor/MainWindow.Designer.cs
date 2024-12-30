@@ -659,6 +659,7 @@ namespace YAMDCC.ConfigEditor
             // 
             // tbKeyLight
             // 
+            this.tbKeyLight.LargeChange = 1;
             this.tbKeyLight.Location = new System.Drawing.Point(30, 3);
             this.tbKeyLight.Maximum = 3;
             this.tbKeyLight.Name = "tbKeyLight";
