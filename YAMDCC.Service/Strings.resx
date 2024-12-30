@@ -176,17 +176,11 @@ Args: {1}</value>
   <data name="svcDesc" xml:space="preserve">
     <value>This service provides functionality to apply settings from YAMDCC configs to this computer. If this service's Startup Type is set to Manual, YAMDCC configs will not be applied on system startup. If this service is disabled, the YAMDCC config editor will not run, and YAMDCC configs will not be applied.</value>
   </data>
-  <data name="svcECReading" xml:space="preserve">
-    <value>Reading EC register 0x{0:X2}...</value>
-  </data>
   <data name="svcECReadSuccess" xml:space="preserve">
     <value>Read from EC register 0x{0:X2} successfully (value: 0x{1:X2}).</value>
   </data>
   <data name="svcECWriteSuccess" xml:space="preserve">
     <value>Wrote to EC register 0x{0:X2} successfully.</value>
-  </data>
-  <data name="svcECWriting" xml:space="preserve">
-    <value>Writing value 0x{1:X2} to EC register 0x{0:X2}...</value>
   </data>
   <data name="svcException" xml:space="preserve">
     <value>Unhandled exception occurred: {0}</value>

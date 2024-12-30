@@ -362,7 +362,6 @@ namespace YAMDCC.Service
 
         private bool LogECReadByte(byte reg, out byte value)
         {
-            Log.Debug(Strings.GetString("svcECReading", reg));
             bool success = _EC.ReadByte(reg, out value);
             if (success)
             {
@@ -377,7 +376,6 @@ namespace YAMDCC.Service
 
         private bool LogECReadWord(byte reg, out ushort value, bool bigEndian)
         {
-            Log.Debug(Strings.GetString("svcECReading", reg));
             bool success = _EC.ReadWord(reg, out value, bigEndian);
             if (success)
             {
@@ -392,7 +390,6 @@ namespace YAMDCC.Service
 
         private bool LogECWriteByte(byte reg, byte value)
         {
-            Log.Debug(Strings.GetString("svcECWriting", reg, value));
             bool success = _EC.WriteByte(reg, value);
             if (success)
             {
