@@ -28,6 +28,7 @@
     </PropertyGroup>
     <ItemGroup>
       <EmbeddedResource Remove="Dialogs\CrashDialog.resx" />
+      <EmbeddedResource Remove="Dialogs\ProgressDialog.resx" />
       <EmbeddedResource Remove="Dialogs\TextInputDialog.resx" />
       <EmbeddedResource Remove="MainWindow.resx" />
       <EmbeddedResource Remove="Program.resx" />
@@ -57,6 +58,9 @@
             <ProductName>.NET Framework 3.5 SP1</ProductName>
             <Install>false</Install>
         </BootstrapperPackage>
+    </ItemGroup>
+    <ItemGroup>
+      <None Include="Dialogs\ProgressDialog.resx" />
     </ItemGroup>
     <ItemGroup>
       <None Include="Dialogs\CrashDialog.resx" />

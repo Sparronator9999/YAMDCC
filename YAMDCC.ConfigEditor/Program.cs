@@ -70,21 +70,31 @@ namespace YAMDCC.ConfigEditor
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Information) == DialogResult.Yes)
                     {
-                        if (Utils.InstallService("yamdccsvc"))
+                        ProgressDialog dlg = new(Strings.GetString("dlgSvcInstalling"), (e) =>
                         {
-                            if (Utils.StartService("yamdccsvc"))
+                            e.Result = false;
+                            if (Utils.InstallService("yamdccsvc"))
                             {
-                                // Start the program when the service finishes starting:
-                                Start();
+                                if (Utils.StartService("yamdccsvc"))
+                                {
+                                    e.Result = true;
+                                }
+                                else
+                                {
+                                    Utils.ShowError(Strings.GetString("svcErrCrash"));
+                                }
                             }
                             else
                             {
-                                Utils.ShowError(Strings.GetString("svcErrCrash"));
+                                Utils.ShowError(Strings.GetString("svcInstallFail"));
                             }
-                        }
-                        else
+                        });
+                        dlg.ShowDialog();
+
+                        if (dlg.Result is bool b && b)
                         {
-                            Utils.ShowError(Strings.GetString("svcInstallFail"));
+                            // Start the program when the service finishes starting:
+                            Start();
                         }
                     }
                     return;
@@ -110,9 +120,22 @@ namespace YAMDCC.ConfigEditor
                         "Service not running", MessageBoxButtons.YesNo,
                         MessageBoxIcon.Information) == DialogResult.Yes)
                     {
-                        if (!Utils.StartService("yamdccsvc"))
+                        ProgressDialog dlg = new(Strings.GetString("dlgSvcStarting"), (e) =>
                         {
-                            Utils.ShowError(Strings.GetString("svcErrCrash"));
+                            if (Utils.StartService("yamdccsvc"))
+                            {
+                                e.Result = false;
+                            }
+                            else
+                            {
+                                Utils.ShowError(Strings.GetString("svcErrCrash"));
+                                e.Result = true;
+                            }
+                        });
+                        dlg.ShowDialog();
+
+                        if (dlg.Result is bool b && b)
+                        {
                             return;
                         }
                     }

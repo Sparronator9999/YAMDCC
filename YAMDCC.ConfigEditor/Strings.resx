@@ -382,4 +382,16 @@ Performance mode description:
 Before reporting a bug, try again on the latest release of YAMDCC.
 If the crash still occurs, please create an issue with the following crash report:</value>
   </data>
+  <data name="dlgSvcInstalling" xml:space="preserve">
+    <value>Installing YAMDCC service. This may take some time...</value>
+  </data>
+  <data name="dlgSvcUninstalling" xml:space="preserve">
+    <value>Uninstalling YAMDCC service. This may take some time...</value>
+  </data>
+  <data name="dlgSvcStarting" xml:space="preserve">
+    <value>Starting YAMDCC service...</value>
+  </data>
+  <data name="dlgSvcStopping" xml:space="preserve">
+    <value>Stopping YAMDCC service...</value>
+  </data>
 </root>

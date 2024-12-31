@@ -507,12 +507,19 @@ namespace YAMDCC.ConfigEditor
             {
 
                 IPCClient.Stop();
-                Close();
+                Hide();
 
-                if (!Utils.StopService("yamdccsvc"))
-                {
-                    Utils.ShowError(Strings.GetString("dlgSvcStopErr"));
-                }
+                ProgressDialog dlg = new(Strings.GetString("dlgSvcStopping"),
+                    static (e) =>
+                    {
+                        if (!Utils.StopService("yamdccsvc"))
+                        {
+                            Utils.ShowError(Strings.GetString("dlgSvcStopErr"));
+                        }
+                    });
+                dlg.ShowDialog();
+
+                Close();
             }
         }
 
@@ -528,30 +535,36 @@ namespace YAMDCC.ConfigEditor
                     MessageBoxDefaultButton.Button2) == DialogResult.Yes;
 
                 IPCClient.Stop();
-                Close();
+                Hide();
 
                 // Apparently this fixes the YAMDCC service not uninstalling
                 // when YAMDCC is launched by certain means
-                if (Utils.StopService("yamdccsvc"))
+                ProgressDialog dlg = new(Strings.GetString("dlgSvcUninstalling"), (e) =>
                 {
-                    if (Utils.UninstallService("yamdccsvc"))
+                    if (Utils.StopService("yamdccsvc"))
                     {
-                        // Only delete service data if the
-                        // service uninstalled successfully
-                        if (delData)
+                        if (Utils.UninstallService("yamdccsvc"))
                         {
-                            Directory.Delete(Paths.Data, true);
+                            // Only delete service data if the
+                            // service uninstalled successfully
+                            if (delData)
+                            {
+                                Directory.Delete(Paths.Data, true);
+                            }
+                        }
+                        else
+                        {
+                            Utils.ShowError(Strings.GetString("dlgUninstallErr"));
                         }
                     }
                     else
                     {
-                        Utils.ShowError(Strings.GetString("dlgUninstallErr"));
+                        Utils.ShowError(Strings.GetString("dlgSvcStopErr"));
                     }
-                }
-                else
-                {
-                    Utils.ShowError(Strings.GetString("dlgSvcStopErr"));
-                }
+                });
+                dlg.ShowDialog();
+
+                Close();
             }
         }
         #endregion
