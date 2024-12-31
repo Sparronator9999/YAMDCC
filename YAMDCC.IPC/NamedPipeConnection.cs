@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.IO.Pipes;
 using System.Runtime.InteropServices;
+using System.Threading;
 using YAMDCC.IPC.IO;
 using YAMDCC.IPC.Threading;
 
@@ -57,6 +58,7 @@ namespace YAMDCC.IPC
 
         private readonly PipeStreamWrapper<TRead, TWrite> _streamWrapper;
 
+        private readonly AutoResetEvent _writeSignal = new(false);
         private readonly BlockingCollection<TWrite> _writeQueue = new();
 
         private bool _notifiedSucceeded;
@@ -82,7 +84,7 @@ namespace YAMDCC.IPC
         /// </param>
         public bool PushMessage(TWrite message)
         {
-            return _writeQueue.TryAdd(message);
+            return _writeQueue.TryAdd(message) && _writeSignal.Set();
         }
 
         /// <summary>
@@ -116,6 +118,7 @@ namespace YAMDCC.IPC
         {
             _streamWrapper.Close();
             _writeQueue.CompleteAdding();
+            _writeSignal.Set();
         }
 
         /// <summary>
@@ -169,7 +172,8 @@ namespace YAMDCC.IPC
         {
             while (IsConnected && _streamWrapper.CanWrite)
             {
-                if (_writeQueue.TryTake(out TWrite obj))
+                _writeSignal.WaitOne();
+                while (_writeQueue.TryTake(out TWrite obj) || _writeQueue.Count > 0)
                 {
                     _streamWrapper.WriteObject(obj);
                     _streamWrapper.WaitForPipeDrain();
@@ -193,6 +197,7 @@ namespace YAMDCC.IPC
             if (disposing)
             {
                 Close();
+                _writeSignal.Dispose();
                 _writeQueue.Dispose();
             }
 
