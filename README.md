@@ -7,8 +7,7 @@ A fast, lightweight alternative to MSI Center for MSI laptops, written in C#.
 ## Disclaimers
 
 - While this program is mostly complete, it is still **beta-quality software!**
-- While measures are taken to reduce the program crash chance, you may still encounter
-  some bugs while using this program.
+- You may still encounter some bugs while using this program, although these should be rare.
 - This program requires low-level access to some of your computer hardware to apply settings. While
   no issues should arise from this, **I (Sparronator9999) and any other contributers**
   **shall not be held responsible if this program fries your computer.**
@@ -29,16 +28,16 @@ A fast, lightweight alternative to MSI Center for MSI laptops, written in C#.
   with Windows' built-in power plans). You can change it here.
 - **Charging threshold:** This program can limit how much your laptop's battery charges to, which
   can help reduce battery degradation, especially if you leave your laptop plugged in all the time.
-- **Lightweight:** YAMDCC only takes up around a megabyte of disk space when installed, and is
+- **Lightweight:** YAMDCC takes up less than two megabytes of disk space when installed, and is
   designed to be light on your laptop's CPU.
 - **Configurable:** Almost all settings (including those not accessible through the config editor)
   can be changed with the power of XML.
 
 ## Screenshots
 
-![A screenshot of YAMDCC's fan control interface](Media/YAMDCC-FanControlTab.png)
+![Screenshot of the config editor's fan control tab](Media/YAMDCC-FanControlTab.png)
 
-![A screenshot of YAMDCC's extra options interface](Media/YAMDCC-ExtrasTab.png)
+![Screenshot of the config editor's extra options tab](Media/YAMDCC-ExtrasTab.png)
 
 ## Supported Laptops
 
@@ -66,6 +65,9 @@ The following laptops have been tested by the community and are confirmed to be 
   - Use `MSI-10th-gen-or-newer-nokeylight.xml` - this laptop does not support keyboard backlight
     adjustment via YAMDCC.
 
+To test your laptop, go to the [config tutorial](https://github.com/Sparronator9999/YAMDCC/wiki/How-to-make-a-config-for-YAMDCC)
+wiki page and follow the instructions to get a config for your laptop.
+
 ### Config disclaimer
 
 **Please avoid asking me (or other people) in the issue tracker to create a config for you.**
@@ -76,7 +78,7 @@ The following laptops have been tested by the community and are confirmed to be 
 
 | Feature                         | MSI Center | YAMDCC      |
 |---------------------------------|------------|-------------|
-| Installed size                  | ~950 MB²   | ~1.05 MB²   |
+| Installed size                  | ~950 MB²   | ~1.17 MB²   |
 | Fan control                     | ✔          | ✔           |
 | Temp. threshold control         | ❌          | ✔           |
 | Multi-fan profile support       | ❌          | ✔           |
@@ -93,7 +95,7 @@ The following laptops have been tested by the community and are confirmed to be 
 
 2: As of v2.0.38, MSI Center takes about 950 MB of storage space when counting the UWP app (749 MB)
 and the files installed on first launch to `C:\Program Files (x86)\MSI` (205 MB). YAMDCC's installed
-size is based on the Release build of [commit 1ad9a1f](https://github.com/Sparronator9999/YAMDCC/commit/1ad9a1f),
+size is based on the Release build of [v1.0 Beta 2](https://github.com/Sparronator9999/YAMDCC/releases/tag/v1.0.0-beta.2),
 and includes all unzipped program files, but excludes config XMLs.
 
 3: MSI Center only supports setting the charge threshold to 60%, 80%, or 100%, while YAMDCC can set
@@ -105,8 +107,10 @@ this to anything between 0 and 100% (with 0 meaning charge to 100% always).
 
 Below are some changes I would like to make before a 1.0 release of YAMDCC:
 
-- [x] Add auto-rename of computer model to EC-to-config feature.
 - [ ] Fix any remaining bugs and QoL features before the 1.0 release.
+  - Beta releases are currently available for v1.0. Please download them from
+    [Releases](https://github.com/Sparronator9999/YAMDCC/releases) and report any problems to
+    [the issue tracker](https://github.com/Sparronator9999/YAMDCC/issues)
 
 The following features are currently planned for v1.1:
 
