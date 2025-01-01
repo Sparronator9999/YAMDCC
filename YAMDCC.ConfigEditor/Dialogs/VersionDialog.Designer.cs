@@ -55,9 +55,9 @@ namespace YAMDCC.ConfigEditor.Dialogs
             System.Windows.Forms.Button btnFAQ;
             System.Windows.Forms.Button btnIssues;
             this.lblVersion = new System.Windows.Forms.Label();
-            this.lblCopyright = new System.Windows.Forms.Label();
-            this.lblDesc = new System.Windows.Forms.Label();
             this.lblRevision = new System.Windows.Forms.Label();
+            this.lblDesc = new System.Windows.Forms.Label();
+            this.lblCopyright = new System.Windows.Forms.Label();
             picLogo = new System.Windows.Forms.PictureBox();
             lblTitle = new System.Windows.Forms.Label();
             lblSubtitle = new System.Windows.Forms.Label();
@@ -91,7 +91,7 @@ namespace YAMDCC.ConfigEditor.Dialogs
             lblTitle.Location = new System.Drawing.Point(140, 3);
             lblTitle.Name = "lblTitle";
             lblTitle.Size = new System.Drawing.Size(114, 32);
-            lblTitle.TabIndex = 1;
+            lblTitle.TabIndex = 0;
             lblTitle.Text = "YAMDCC";
             // 
             // lblSubtitle
@@ -101,7 +101,7 @@ namespace YAMDCC.ConfigEditor.Dialogs
             lblSubtitle.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
             lblSubtitle.Name = "lblSubtitle";
             lblSubtitle.Size = new System.Drawing.Size(214, 15);
-            lblSubtitle.TabIndex = 2;
+            lblSubtitle.TabIndex = 1;
             lblSubtitle.Text = "(Yet Another MSI Dragon Center Clone)";
             // 
             // tblMain
@@ -132,7 +132,7 @@ namespace YAMDCC.ConfigEditor.Dialogs
             tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblMain.Size = new System.Drawing.Size(524, 181);
-            tblMain.TabIndex = 5;
+            tblMain.TabIndex = 0;
             // 
             // lblVersion
             // 
@@ -141,19 +141,18 @@ namespace YAMDCC.ConfigEditor.Dialogs
             this.lblVersion.Margin = new System.Windows.Forms.Padding(3);
             this.lblVersion.Name = "lblVersion";
             this.lblVersion.Size = new System.Drawing.Size(48, 15);
-            this.lblVersion.TabIndex = 3;
+            this.lblVersion.TabIndex = 2;
             this.lblVersion.Text = "Version ";
             // 
-            // lblCopyright
+            // lblRevision
             // 
-            this.lblCopyright.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.lblCopyright.AutoSize = true;
-            tblMain.SetColumnSpan(this.lblCopyright, 2);
-            this.lblCopyright.Location = new System.Drawing.Point(262, 151);
-            this.lblCopyright.Name = "lblCopyright";
-            this.lblCopyright.Size = new System.Drawing.Size(0, 15);
-            this.lblCopyright.TabIndex = 4;
-            this.lblCopyright.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.lblRevision.AutoSize = true;
+            this.lblRevision.Location = new System.Drawing.Point(140, 77);
+            this.lblRevision.Margin = new System.Windows.Forms.Padding(3);
+            this.lblRevision.Name = "lblRevision";
+            this.lblRevision.Size = new System.Drawing.Size(83, 15);
+            this.lblRevision.TabIndex = 3;
+            this.lblRevision.Text = "Revision (Git): ";
             // 
             // lblDesc
             // 
@@ -162,7 +161,7 @@ namespace YAMDCC.ConfigEditor.Dialogs
             this.lblDesc.Margin = new System.Windows.Forms.Padding(3);
             this.lblDesc.Name = "lblDesc";
             this.lblDesc.Size = new System.Drawing.Size(0, 15);
-            this.lblDesc.TabIndex = 5;
+            this.lblDesc.TabIndex = 4;
             // 
             // flwLinks
             // 
@@ -175,7 +174,7 @@ namespace YAMDCC.ConfigEditor.Dialogs
             flwLinks.Location = new System.Drawing.Point(140, 119);
             flwLinks.Name = "flwLinks";
             flwLinks.Size = new System.Drawing.Size(324, 29);
-            flwLinks.TabIndex = 6;
+            flwLinks.TabIndex = 5;
             // 
             // btnLicense
             // 
@@ -183,7 +182,7 @@ namespace YAMDCC.ConfigEditor.Dialogs
             btnLicense.Name = "btnLicense";
             btnLicense.Size = new System.Drawing.Size(75, 23);
             btnLicense.TabIndex = 0;
-            btnLicense.Text = "License";
+            btnLicense.Text = "&License";
             btnLicense.UseVisualStyleBackColor = true;
             btnLicense.Click += new System.EventHandler(this.btnLicense_Click);
             // 
@@ -193,7 +192,7 @@ namespace YAMDCC.ConfigEditor.Dialogs
             btnSource.Name = "btnSource";
             btnSource.Size = new System.Drawing.Size(75, 23);
             btnSource.TabIndex = 1;
-            btnSource.Text = "Source";
+            btnSource.Text = "&Source";
             btnSource.UseVisualStyleBackColor = true;
             btnSource.Click += new System.EventHandler(this.btnSource_Click);
             // 
@@ -203,7 +202,7 @@ namespace YAMDCC.ConfigEditor.Dialogs
             btnFAQ.Name = "btnFAQ";
             btnFAQ.Size = new System.Drawing.Size(75, 23);
             btnFAQ.TabIndex = 2;
-            btnFAQ.Text = "FAQ";
+            btnFAQ.Text = "&FAQ";
             btnFAQ.UseVisualStyleBackColor = true;
             btnFAQ.Click += new System.EventHandler(this.btnFAQ_Click);
             // 
@@ -213,19 +212,20 @@ namespace YAMDCC.ConfigEditor.Dialogs
             btnIssues.Name = "btnIssues";
             btnIssues.Size = new System.Drawing.Size(75, 23);
             btnIssues.TabIndex = 3;
-            btnIssues.Text = "Issues";
+            btnIssues.Text = "&Issues";
             btnIssues.UseVisualStyleBackColor = true;
             btnIssues.Click += new System.EventHandler(this.btnIssues_Click);
             // 
-            // lblRevision
+            // lblCopyright
             // 
-            this.lblRevision.AutoSize = true;
-            this.lblRevision.Location = new System.Drawing.Point(140, 77);
-            this.lblRevision.Margin = new System.Windows.Forms.Padding(3);
-            this.lblRevision.Name = "lblRevision";
-            this.lblRevision.Size = new System.Drawing.Size(83, 15);
-            this.lblRevision.TabIndex = 7;
-            this.lblRevision.Text = "Revision (Git): ";
+            this.lblCopyright.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.lblCopyright.AutoSize = true;
+            tblMain.SetColumnSpan(this.lblCopyright, 2);
+            this.lblCopyright.Location = new System.Drawing.Point(262, 151);
+            this.lblCopyright.Name = "lblCopyright";
+            this.lblCopyright.Size = new System.Drawing.Size(0, 15);
+            this.lblCopyright.TabIndex = 6;
+            this.lblCopyright.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // VersionDialog
             // 

@@ -84,7 +84,7 @@ namespace YAMDCC.ConfigEditor.Dialogs
             this.lblCaption.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
             this.lblCaption.Name = "lblCaption";
             this.lblCaption.Size = new System.Drawing.Size(282, 15);
-            this.lblCaption.TabIndex = 1;
+            this.lblCaption.TabIndex = 0;
             // 
             // txtInput
             // 
@@ -93,7 +93,7 @@ namespace YAMDCC.ConfigEditor.Dialogs
             this.txtInput.Name = "txtInput";
             this.txtInput.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtInput.Size = new System.Drawing.Size(282, 23);
-            this.txtInput.TabIndex = 2;
+            this.txtInput.TabIndex = 1;
             this.txtInput.TextChanged += new System.EventHandler(this.txtInput_TextChanged);
             // 
             // flwButtons
@@ -107,7 +107,7 @@ namespace YAMDCC.ConfigEditor.Dialogs
             flwButtons.Margin = new System.Windows.Forms.Padding(0);
             flwButtons.Name = "flwButtons";
             flwButtons.Size = new System.Drawing.Size(288, 29);
-            flwButtons.TabIndex = 3;
+            flwButtons.TabIndex = 2;
             // 
             // btnCancel
             // 

@@ -52,6 +52,8 @@ namespace YAMDCC.ConfigEditor
         private readonly ToolTip ttMain = new();
 
         private readonly Timer tmrPoll, tmrStatusReset, tmrSvcTimeout;
+
+        private int Debug;
         #endregion
 
         public MainWindow()
@@ -633,6 +635,40 @@ namespace YAMDCC.ConfigEditor
         private void btnProfAdd_Click(object sender, EventArgs e)
         {
             AddFanProfile();
+        }
+
+        private void btnProfAdd_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // hidden crash test
+            switch (e.KeyChar)
+            {
+                case 'd':
+                    Debug = Debug == 0 ? 1 : 0;
+                    break;
+                case 'e':
+                    Debug = Debug == 1 ? 2 : 0;
+                    break;
+                case 'b':
+                    Debug = Debug == 2 ? 3 : 0;
+                    break;
+                case 'u':
+                    Debug = Debug == 3 ? 4 : 0;
+                    break;
+                case 'g':
+                    if (Debug == 4)
+                    {
+                        Debug = 0;
+
+                        // should throw a NullReferenceException
+                        // which should get caught by CrashDialog
+                        YAMDCC_Config cfg = new();
+                        lblFanSpd.Text = cfg.FanConfs[0].Name;
+                    }
+                    break;
+                default:
+                    Debug = 0;
+                    break;
+            }
         }
 
         private void btnProfDel_Click(object sender, EventArgs e)

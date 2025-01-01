@@ -88,8 +88,8 @@ namespace YAMDCC.ConfigEditor.Dialogs
             btnCopy.Location = new System.Drawing.Point(287, 291);
             btnCopy.Name = "btnCopy";
             btnCopy.Size = new System.Drawing.Size(109, 25);
-            btnCopy.TabIndex = 1;
-            btnCopy.Text = "Copy crash report";
+            btnCopy.TabIndex = 0;
+            btnCopy.Text = "&Copy crash report";
             btnCopy.UseVisualStyleBackColor = true;
             btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
             // 
@@ -98,8 +98,8 @@ namespace YAMDCC.ConfigEditor.Dialogs
             btnExit.Location = new System.Drawing.Point(402, 291);
             btnExit.Name = "btnExit";
             btnExit.Size = new System.Drawing.Size(75, 25);
-            btnExit.TabIndex = 0;
-            btnExit.Text = "Exit";
+            btnExit.TabIndex = 1;
+            btnExit.Text = "E&xit";
             btnExit.UseVisualStyleBackColor = true;
             btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
@@ -113,15 +113,15 @@ namespace YAMDCC.ConfigEditor.Dialogs
             this.lblError.Name = "lblError";
             this.lblError.Padding = new System.Windows.Forms.Padding(3);
             this.lblError.Size = new System.Drawing.Size(474, 21);
-            this.lblError.TabIndex = 0;
+            this.lblError.TabIndex = 2;
             // 
             // btnIssues
             // 
             btnIssues.Location = new System.Drawing.Point(3, 291);
             btnIssues.Name = "btnIssues";
             btnIssues.Size = new System.Drawing.Size(100, 26);
-            btnIssues.TabIndex = 1;
-            btnIssues.Text = "GitHub Issues";
+            btnIssues.TabIndex = 4;
+            btnIssues.Text = "GitHub &Issues";
             btnIssues.UseVisualStyleBackColor = true;
             btnIssues.Click += new System.EventHandler(this.btnReportIssue_Click);
             // 

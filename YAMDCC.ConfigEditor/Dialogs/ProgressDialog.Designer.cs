@@ -72,7 +72,7 @@ namespace YAMDCC.ConfigEditor.Dialogs
             tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblMain.Size = new System.Drawing.Size(300, 92);
-            tblMain.TabIndex = 1;
+            tblMain.TabIndex = 0;
             // 
             // flwButtons
             // 
@@ -85,7 +85,7 @@ namespace YAMDCC.ConfigEditor.Dialogs
             flwButtons.Margin = new System.Windows.Forms.Padding(0);
             flwButtons.Name = "flwButtons";
             flwButtons.Size = new System.Drawing.Size(288, 29);
-            flwButtons.TabIndex = 4;
+            flwButtons.TabIndex = 0;
             // 
             // btnCancel
             // 
@@ -93,7 +93,7 @@ namespace YAMDCC.ConfigEditor.Dialogs
             this.btnCancel.Location = new System.Drawing.Point(210, 3);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 1;
+            this.btnCancel.TabIndex = 0;
             this.btnCancel.Text = "&Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -113,7 +113,7 @@ namespace YAMDCC.ConfigEditor.Dialogs
             this.lblCaption.Location = new System.Drawing.Point(9, 6);
             this.lblCaption.Name = "lblCaption";
             this.lblCaption.Size = new System.Drawing.Size(49, 15);
-            this.lblCaption.TabIndex = 5;
+            this.lblCaption.TabIndex = 1;
             this.lblCaption.Text = "Caption";
             // 
             // ProgressDialog
