@@ -44,6 +44,7 @@ A fast, lightweight alternative to MSI Center for MSI laptops, written in C#.
 Currently, there are configs for the following laptops:
 
   - MSI GF63 Thin 11SC
+  - MSI Modern 15 A5M
 
 There are also generic configs that should work with most MSI laptops, but with an incorrect default
 config. You can use the EC-to-config feature to get the proper fan curves for your laptop, then
