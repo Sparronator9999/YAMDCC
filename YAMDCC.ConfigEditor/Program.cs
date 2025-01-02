@@ -49,23 +49,23 @@ namespace YAMDCC.ConfigEditor
             };
             #endregion
 
-            // Make sure the application data directory structure is set up
-            // because apparently windows services don't know how to create
-            // directories:
-            Directory.CreateDirectory(Paths.Logs);
-
             if (!IsAdmin())
             {
                 Utils.ShowError(Strings.GetString("dlgNoAdmin"));
                 return;
             }
 
+            // Make sure the application data directory structure is set up
+            // because apparently windows services don't know how to create
+            // directories:
+            Directory.CreateDirectory(Paths.Logs);
+
             if (!Utils.ServiceExists("yamdccsvc"))
             {
                 if (File.Exists("yamdccsvc.exe"))
                 {
                     if (MessageBox.Show(
-                        Strings.GetString("svcNotInstalled"),
+                        Strings.GetString("dlgSvcNotInstalled"),
                         "Service not installed",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Information) == DialogResult.Yes)
@@ -81,12 +81,12 @@ namespace YAMDCC.ConfigEditor
                                 }
                                 else
                                 {
-                                    Utils.ShowError(Strings.GetString("svcErrCrash"));
+                                    Utils.ShowError(Strings.GetString("dlgSvcStartCrash"));
                                 }
                             }
                             else
                             {
-                                Utils.ShowError(Strings.GetString("svcInstallFail"));
+                                Utils.ShowError(Strings.GetString("dlgSvcInstallFail"));
                             }
                         });
                         dlg.ShowDialog();
@@ -101,7 +101,7 @@ namespace YAMDCC.ConfigEditor
                 }
                 else
                 {
-                    Utils.ShowError(Strings.GetString("svcNotFound"));
+                    Utils.ShowError(Strings.GetString("dlgSvcNotFound"));
                     return;
                 }
             }
@@ -111,12 +111,10 @@ namespace YAMDCC.ConfigEditor
             try
             {
                 ServiceControllerStatus status = yamdccSvc.Status;
-                yamdccSvc.Close();
-
                 if (status == ServiceControllerStatus.Stopped)
                 {
                     if (MessageBox.Show(
-                        Strings.GetString("svcNotRunning"),
+                        Strings.GetString("dlgSvcStopped"),
                         "Service not running", MessageBoxButtons.YesNo,
                         MessageBoxIcon.Information) == DialogResult.Yes)
                     {
@@ -128,7 +126,7 @@ namespace YAMDCC.ConfigEditor
                             }
                             else
                             {
-                                Utils.ShowError(Strings.GetString("svcErrCrash"));
+                                Utils.ShowError(Strings.GetString("dlgSvcStartCrash"));
                                 e.Result = true;
                             }
                         });
@@ -144,11 +142,6 @@ namespace YAMDCC.ConfigEditor
                         return;
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                Utils.ShowError(Strings.GetString("svcErrStart", ex));
-                return;
             }
             finally
             {

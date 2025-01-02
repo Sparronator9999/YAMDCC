@@ -197,20 +197,14 @@ namespace YAMDCC.ConfigEditor
         #region Events
         private void MainWindow_Load(object sender, EventArgs e)
         {
-            try
+            IPCClient.ServerMessage += IPC_MessageReceived;
+            IPCClient.Error += IPCClient_Error;
+            IPCClient.Start();
+            if (!IPCClient.WaitForConnection(5000))
             {
-                IPCClient.ServerMessage += IPC_MessageReceived;
-                IPCClient.Error += IPCClient_Error;
-                IPCClient.Start();
-                IPCClient.WaitForConnection();
-                AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
+                throw new TimeoutException("exSvcTimeout");
             }
-            catch (Exception ex)
-            {
-                Utils.ShowError(Strings.GetString("svcErrConnect", ex));
-                Application.Exit();
-                return;
-            }
+            AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
 
             LoadConf(Paths.CurrentConfig);
 
