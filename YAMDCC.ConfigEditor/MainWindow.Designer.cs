@@ -83,9 +83,6 @@ namespace YAMDCC.ConfigEditor
             this.tsiSource = new System.Windows.Forms.ToolStripMenuItem();
             this.tblFanControl = new System.Windows.Forms.TableLayoutPanel();
             this.tblCurve = new System.Windows.Forms.TableLayoutPanel();
-            this.lblSpeed = new System.Windows.Forms.Label();
-            this.lblUpT = new System.Windows.Forms.Label();
-            this.lblDownT = new System.Windows.Forms.Label();
             this.lblFanSel = new System.Windows.Forms.Label();
             this.cboFanSel = new System.Windows.Forms.ComboBox();
             this.lblProfSel = new System.Windows.Forms.Label();
@@ -128,7 +125,6 @@ namespace YAMDCC.ConfigEditor
             tcMain.SuspendLayout();
             tabFanControl.SuspendLayout();
             this.tblFanControl.SuspendLayout();
-            this.tblCurve.SuspendLayout();
             flwFanSelect.SuspendLayout();
             tabExtra.SuspendLayout();
             tblExtra.SuspendLayout();
@@ -256,27 +252,27 @@ namespace YAMDCC.ConfigEditor
             // tsiProfRename
             // 
             this.tsiProfRename.Name = "tsiProfRename";
-            this.tsiProfRename.Size = new System.Drawing.Size(180, 22);
+            this.tsiProfRename.Size = new System.Drawing.Size(178, 22);
             this.tsiProfRename.Text = "Change Name";
             this.tsiProfRename.Click += new System.EventHandler(this.tsiProfRename_Click);
             // 
             // tsiProfChangeDesc
             // 
             this.tsiProfChangeDesc.Name = "tsiProfChangeDesc";
-            this.tsiProfChangeDesc.Size = new System.Drawing.Size(180, 22);
+            this.tsiProfChangeDesc.Size = new System.Drawing.Size(178, 22);
             this.tsiProfChangeDesc.Text = "Change Description";
             this.tsiProfChangeDesc.Click += new System.EventHandler(this.tsiProfChangeDesc_Click);
             // 
             // sep3
             // 
             sep3.Name = "sep3";
-            sep3.Size = new System.Drawing.Size(177, 6);
+            sep3.Size = new System.Drawing.Size(175, 6);
             // 
             // tsiProfDel
             // 
             this.tsiProfDel.Name = "tsiProfDel";
             this.tsiProfDel.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-            this.tsiProfDel.Size = new System.Drawing.Size(180, 22);
+            this.tsiProfDel.Size = new System.Drawing.Size(178, 22);
             this.tsiProfDel.Text = "Delete";
             this.tsiProfDel.Click += new System.EventHandler(this.tsiProfDel_Click);
             // 
@@ -334,14 +330,14 @@ namespace YAMDCC.ConfigEditor
             // tsiAbout
             // 
             this.tsiAbout.Name = "tsiAbout";
-            this.tsiAbout.Size = new System.Drawing.Size(180, 22);
+            this.tsiAbout.Size = new System.Drawing.Size(141, 22);
             this.tsiAbout.Text = "&About";
             this.tsiAbout.Click += new System.EventHandler(this.tsiAbout_Click);
             // 
             // tsiSource
             // 
             this.tsiSource.Name = "tsiSource";
-            this.tsiSource.Size = new System.Drawing.Size(180, 22);
+            this.tsiSource.Size = new System.Drawing.Size(141, 22);
             this.tsiSource.Text = "Source &Code";
             this.tsiSource.Click += new System.EventHandler(this.tsiSrc_Click);
             // 
@@ -377,29 +373,18 @@ namespace YAMDCC.ConfigEditor
             this.tblFanControl.Location = new System.Drawing.Point(0, 0);
             this.tblFanControl.Margin = new System.Windows.Forms.Padding(0);
             this.tblFanControl.Name = "tblFanControl";
-            this.tblFanControl.RowCount = 3;
+            this.tblFanControl.RowCount = 2;
             this.tblFanControl.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblFanControl.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblFanControl.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblFanControl.Size = new System.Drawing.Size(526, 336);
             this.tblFanControl.TabIndex = 0;
             // 
             // tblCurve
             // 
             this.tblCurve.AutoSize = true;
-            this.tblCurve.ColumnCount = 2;
+            this.tblCurve.ColumnCount = 1;
             this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblCurve.Controls.Add(this.lblSpeed, 0, 0);
-            this.tblCurve.Controls.Add(this.lblUpT, 0, 2);
-            this.tblCurve.Controls.Add(this.lblDownT, 0, 3);
             this.tblCurve.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblCurve.Location = new System.Drawing.Point(0, 29);
             this.tblCurve.Margin = new System.Windows.Forms.Padding(0);
@@ -411,42 +396,6 @@ namespace YAMDCC.ConfigEditor
             this.tblCurve.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblCurve.Size = new System.Drawing.Size(526, 307);
             this.tblCurve.TabIndex = 2;
-            // 
-            // lblSpeed
-            // 
-            this.lblSpeed.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSpeed.AutoSize = true;
-            this.lblSpeed.Location = new System.Drawing.Point(4, 2);
-            this.lblSpeed.Margin = new System.Windows.Forms.Padding(2, 2, 0, 2);
-            this.lblSpeed.Name = "lblSpeed";
-            this.lblSpeed.Padding = new System.Windows.Forms.Padding(0, 0, 0, 3);
-            this.lblSpeed.Size = new System.Drawing.Size(60, 18);
-            this.lblSpeed.TabIndex = 0;
-            this.lblSpeed.Text = "Speed (%)";
-            // 
-            // lblUpT
-            // 
-            this.lblUpT.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblUpT.AutoSize = true;
-            this.lblUpT.Location = new System.Drawing.Point(18, 265);
-            this.lblUpT.Margin = new System.Windows.Forms.Padding(2, 2, 0, 2);
-            this.lblUpT.Name = "lblUpT";
-            this.lblUpT.Padding = new System.Windows.Forms.Padding(0, 0, 0, 3);
-            this.lblUpT.Size = new System.Drawing.Size(46, 18);
-            this.lblUpT.TabIndex = 1;
-            this.lblUpT.Text = "Up (°C)";
-            // 
-            // lblDownT
-            // 
-            this.lblDownT.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblDownT.AutoSize = true;
-            this.lblDownT.Location = new System.Drawing.Point(2, 287);
-            this.lblDownT.Margin = new System.Windows.Forms.Padding(2, 2, 0, 2);
-            this.lblDownT.Name = "lblDownT";
-            this.lblDownT.Padding = new System.Windows.Forms.Padding(0, 0, 0, 3);
-            this.lblDownT.Size = new System.Drawing.Size(62, 18);
-            this.lblDownT.TabIndex = 2;
-            this.lblDownT.Text = "Down (°C)";
             // 
             // flwFanSelect
             // 
@@ -839,8 +788,6 @@ namespace YAMDCC.ConfigEditor
             tabFanControl.ResumeLayout(false);
             this.tblFanControl.ResumeLayout(false);
             this.tblFanControl.PerformLayout();
-            this.tblCurve.ResumeLayout(false);
-            this.tblCurve.PerformLayout();
             flwFanSelect.ResumeLayout(false);
             flwFanSelect.PerformLayout();
             tabExtra.ResumeLayout(false);
@@ -884,9 +831,6 @@ namespace YAMDCC.ConfigEditor
         private System.Windows.Forms.ToolStripMenuItem tsiSource;
         private System.Windows.Forms.TableLayoutPanel tblFanControl;
         private System.Windows.Forms.TableLayoutPanel tblCurve;
-        private System.Windows.Forms.Label lblSpeed;
-        private System.Windows.Forms.Label lblUpT;
-        private System.Windows.Forms.Label lblDownT;
         private System.Windows.Forms.Label lblFanSel;
         private System.Windows.Forms.ComboBox cboFanSel;
         private System.Windows.Forms.Label lblProfSel;
