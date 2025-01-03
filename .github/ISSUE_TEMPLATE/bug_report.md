@@ -8,8 +8,8 @@ assignees: Sparronator9999
 ---
 
 ### Prerequisites
-- [ ] I am using the correct [issue template](https://github.com/Sparronator9999/MSIFanControl/issues/new/choose), i.e. I am reporting a bug or crash in YAMDCC. Feature requests and questions should be opened using their respective templates.
-- [ ] I have searched the [issue tracker](https://github.com/Sparronator9999/MSIFanControl/issues?q=label:"type:+bug") for duplicate or similar bug reports. Your issue will be closed if it is a duplicate of another issue.
+- [ ] I am using the correct [issue template](https://github.com/Sparronator9999/YAMDCC/issues/new/choose), i.e. I am reporting a bug or crash in YAMDCC. Feature requests and questions should be opened using their respective templates.
+- [ ] I have searched the [issue tracker](https://github.com/Sparronator9999/YAMDCC/issues?q=label:"type:+bug") for duplicate or similar bug reports. Your issue will be closed if it is a duplicate of another issue.
 - [ ] I have not answered truthfully to the above questions.
 
 ### Describe the bug

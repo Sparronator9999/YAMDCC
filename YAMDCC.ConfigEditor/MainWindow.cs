@@ -44,10 +44,8 @@ namespace YAMDCC.ConfigEditor
         private readonly NamedPipeClient<ServiceResponse, ServiceCommand> IPCClient =
             new("YAMDCC-Server");
 
-        private readonly NumericUpDown[] numUpTs = new NumericUpDown[6];
-        private readonly NumericUpDown[] numDownTs = new NumericUpDown[6];
-        private readonly NumericUpDown[] numFanSpds = new NumericUpDown[7];
-        private readonly TrackBar[] tbFanSpds = new TrackBar[7];
+        private NumericUpDown[] numUpTs, numDownTs, numFanSpds;
+        private TrackBar[] tbFanSpds;
 
         private readonly ToolTip ttMain = new();
 
@@ -88,91 +86,6 @@ namespace YAMDCC.ConfigEditor
             ttMain.SetToolTip(btnApply, Strings.GetString("ttApply"));
             ttMain.SetToolTip(btnRevert, Strings.GetString("ttRevert"));
 
-            float scale = CurrentAutoScaleDimensions.Height / 72;
-
-            tblCurve.ColumnStyles.Clear();
-            tblCurve.ColumnCount = numFanSpds.Length + 2;
-            tblCurve.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
-
-            for (int i = 0; i < numFanSpds.Length; i++)
-            {
-                tblCurve.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F / numFanSpds.Length));
-                numFanSpds[i] = new NumericUpDown()
-                {
-                    Dock = DockStyle.Fill,
-                    Margin = new Padding((int)(2 * scale)),
-                    Tag = i,
-                };
-                ttMain.SetToolTip(numFanSpds[i], Strings.GetString("ttFanSpd"));
-                numFanSpds[i].ValueChanged += numFanSpd_Changed;
-                tblCurve.Controls.Add(numFanSpds[i], i + 1, 0);
-
-                tbFanSpds[i] = new TrackBar()
-                {
-                    Dock = DockStyle.Fill,
-                    Margin = new Padding((int)(10 * scale), 0, (int)(10 * scale), 0),
-                    Orientation = Orientation.Vertical,
-                    Tag = i,
-                    TickFrequency = 5,
-                    TickStyle = TickStyle.Both,
-                };
-                ttMain.SetToolTip(tbFanSpds[i], Strings.GetString("ttFanSpd"));
-                tbFanSpds[i].ValueChanged += tbFanSpd_Scroll;
-                tblCurve.Controls.Add(tbFanSpds[i], i + 1, 1);
-
-                if (i != 0)
-                {
-                    numUpTs[i - 1] = new NumericUpDown()
-                    {
-                        Dock = DockStyle.Fill,
-                        Height = (int)(23 * scale),
-                        Margin = new Padding(2),
-                        Tag = i - 1,
-                    };
-                    ttMain.SetToolTip(numUpTs[i - 1], Strings.GetString("ttUpT"));
-                    numUpTs[i - 1].ValueChanged += numUpT_Changed;
-                    tblCurve.Controls.Add(numUpTs[i - 1], i + 1, 2);
-                }
-                else
-                {
-                    tblCurve.Controls.Add(new Label
-                    {
-                        Dock = DockStyle.Fill,
-                        Margin = new Padding((int)(2 * scale)),
-                        Padding = new Padding(0, 0, 0, (int)(3 * scale)),
-                        Text = "Default",
-                        TextAlign = ContentAlignment.MiddleCenter,
-                    },
-                    i + 1, 2);
-                }
-
-                if (i != numFanSpds.Length - 1)
-                {
-                    numDownTs[i] = new NumericUpDown()
-                    {
-                        Dock = DockStyle.Fill,
-                        Height = (int)(23 * scale),
-                        Margin = new Padding((int)(2 * scale)),
-                        Tag = i,
-                    };
-                    ttMain.SetToolTip(numDownTs[i], Strings.GetString("ttDownT"));
-                    numDownTs[i].ValueChanged += numDownT_Changed;
-                    tblCurve.Controls.Add(numDownTs[i], i + 1, 3);
-                }
-                else
-                {
-                    tblCurve.Controls.Add(new Label
-                    {
-                        Dock = DockStyle.Fill,
-                        Margin = new Padding((int)(2 * scale)),
-                        Padding = new Padding(0, 0, 0, (int)(3 * scale)),
-                        Text = "Max",
-                        TextAlign = ContentAlignment.MiddleCenter,
-                    },
-                    i + 1, 3);
-                }
-            }
-
             tmrPoll = new()
             {
                 Interval = 1000,
@@ -197,20 +110,14 @@ namespace YAMDCC.ConfigEditor
         #region Events
         private void MainWindow_Load(object sender, EventArgs e)
         {
-            try
+            IPCClient.ServerMessage += IPC_MessageReceived;
+            IPCClient.Error += IPCClient_Error;
+            IPCClient.Start();
+            if (!IPCClient.WaitForConnection(5000))
             {
-                IPCClient.ServerMessage += IPC_MessageReceived;
-                IPCClient.Error += IPCClient_Error;
-                IPCClient.Start();
-                IPCClient.WaitForConnection();
-                AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
+                throw new TimeoutException("exSvcTimeout");
             }
-            catch (Exception ex)
-            {
-                Utils.ShowError(Strings.GetString("svcErrConnect", ex));
-                Application.Exit();
-                return;
-            }
+            AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
 
             LoadConf(Paths.CurrentConfig);
 
@@ -796,7 +703,7 @@ namespace YAMDCC.ConfigEditor
             tmrSvcTimeout.Stop();
         }
 
-        #endregion
+        #endregion  // Events
 
         #region Private methods
         private void UpdateFanMon(int value, int i)
@@ -1063,6 +970,76 @@ namespace YAMDCC.ConfigEditor
                 cboProfSel.Items.Add(curve.Name);
             }
 
+            if (numUpTs is null || numDownTs is null || numFanSpds is null || tbFanSpds is null ||
+                numUpTs.Length != config.UpThresholdRegs.Length ||
+                numDownTs.Length != config.DownThresholdRegs.Length ||
+                numFanSpds.Length != config.FanCurveRegs.Length ||
+                tbFanSpds.Length != config.FanCurveRegs.Length)
+            {
+                float scale = CurrentAutoScaleDimensions.Height / 72;
+
+                tblCurve.Controls.Clear();
+                numUpTs = new NumericUpDown[config.UpThresholdRegs.Length];
+                numDownTs = new NumericUpDown[config.DownThresholdRegs.Length];
+                numFanSpds = new NumericUpDown[config.FanCurveRegs.Length];
+                tbFanSpds = new TrackBar[config.FanCurveRegs.Length];
+
+                tblCurve.ColumnStyles.Clear();
+                tblCurve.ColumnCount = numFanSpds.Length + 2;
+
+                // labels on left side
+                tblCurve.ColumnStyles.Add(new ColumnStyle());
+                tblCurve.Controls.Add(FanCurveLabel("Speed (%)", scale, ContentAlignment.MiddleRight), 0, 0);
+                tblCurve.Controls.Add(FanCurveLabel("Up (°C)", scale, ContentAlignment.MiddleRight), 0, 2);
+                tblCurve.Controls.Add(FanCurveLabel("Down (°C)", scale, ContentAlignment.MiddleRight), 0, 3);
+
+                for (int i = 0; i < numFanSpds.Length; i++)
+                {
+                    tblCurve.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F / numFanSpds.Length));
+                    numFanSpds[i] = FanCurveNUD(i, scale);
+                    ttMain.SetToolTip(numFanSpds[i], Strings.GetString("ttFanSpd"));
+                    numFanSpds[i].ValueChanged += numFanSpd_Changed;
+                    tblCurve.Controls.Add(numFanSpds[i], i + 1, 0);
+
+                    tbFanSpds[i] = new TrackBar()
+                    {
+                        Dock = DockStyle.Fill,
+                        Margin = new Padding((int)(10 * scale), 0, (int)(10 * scale), 0),
+                        Orientation = Orientation.Vertical,
+                        Tag = i,
+                        TickFrequency = 5,
+                        TickStyle = TickStyle.Both,
+                    };
+                    ttMain.SetToolTip(tbFanSpds[i], Strings.GetString("ttFanSpd"));
+                    tbFanSpds[i].ValueChanged += tbFanSpd_Scroll;
+                    tblCurve.Controls.Add(tbFanSpds[i], i + 1, 1);
+
+                    if (i != 0)
+                    {
+                        numUpTs[i - 1] = FanCurveNUD(i - 1, scale);
+                        ttMain.SetToolTip(numUpTs[i - 1], Strings.GetString("ttUpT"));
+                        numUpTs[i - 1].ValueChanged += numUpT_Changed;
+                        tblCurve.Controls.Add(numUpTs[i - 1], i + 1, 2);
+                    }
+                    else
+                    {
+                        tblCurve.Controls.Add(FanCurveLabel("Default", scale), i + 1, 2);
+                    }
+
+                    if (i != numFanSpds.Length - 1)
+                    {
+                        numDownTs[i] = FanCurveNUD(i, scale);
+                        ttMain.SetToolTip(numDownTs[i], Strings.GetString("ttDownT"));
+                        numDownTs[i].ValueChanged += numDownT_Changed;
+                        tblCurve.Controls.Add(numDownTs[i], i + 1, 3);
+                    }
+                    else
+                    {
+                        tblCurve.Controls.Add(FanCurveLabel("Max", scale), i + 1, 3);
+                    }
+                }
+            }
+
             for (int i = 0; i < numFanSpds.Length; i++)
             {
                 if (config.FanCurveRegs.Length >= i)
@@ -1086,7 +1063,30 @@ namespace YAMDCC.ConfigEditor
                 tmrPoll.Start();
             }
         }
-        #endregion
+
+        private static Label FanCurveLabel(string text, float scale, ContentAlignment textAlign = ContentAlignment.MiddleCenter)
+        {
+            return new Label
+            {
+                AutoSize = true,
+                Dock = DockStyle.Fill,
+                Margin = new Padding((int)(2 * scale)),
+                Padding = new Padding(0, 0, 0, (int)(3 * scale)),
+                Text = text,
+                TextAlign = textAlign,
+            };
+        }
+
+        private static NumericUpDown FanCurveNUD(int tag, float scale)
+        {
+            return new NumericUpDown()
+            {
+                Dock = DockStyle.Fill,
+                Height = (int)(23 * scale),
+                Margin = new Padding((int)(2 * scale)),
+                Tag = tag,
+            };
+        }
 
         private void DisableAll()
         {
@@ -1113,14 +1113,17 @@ namespace YAMDCC.ConfigEditor
             tsiECtoConf.Enabled = false;
             tsiECMon.Enabled = false;
 
-            for (int i = 0; i < tbFanSpds.Length; i++)
+            if (tbFanSpds is not null)
             {
-                tbFanSpds[i].Enabled = false;
-                numFanSpds[i].Enabled = false;
-                if (i != 0)
+                for (int i = 0; i < tbFanSpds.Length; i++)
                 {
-                    numUpTs[i - 1].Enabled = false;
-                    numDownTs[i - 1].Enabled = false;
+                    tbFanSpds[i].Enabled = false;
+                    numFanSpds[i].Enabled = false;
+                    if (i != 0)
+                    {
+                        numUpTs[i - 1].Enabled = false;
+                        numDownTs[i - 1].Enabled = false;
+                    }
                 }
             }
         }
@@ -1191,5 +1194,6 @@ namespace YAMDCC.ConfigEditor
             IPCClient.PushMessage(command);
             tmrSvcTimeout.Start();
         }
+        #endregion  // Private methods
     }
 }

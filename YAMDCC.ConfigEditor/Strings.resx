@@ -138,61 +138,46 @@ Are you sure you want to delete this profile?</value>
     <value>Also delete the YAMDCC data directory
 (located at {0})?
 
-This directory includes program logs and the current YAMDCC fan settings.
+Click "Yes" only if you don't intend to re-install YAMDCC.
 
 WARNING:
 Make sure you save your config using the "Save config" button before clicking "Yes" here!</value>
   </data>
   <data name="dlgSvcStop" xml:space="preserve">
-    <value>This will stop the YAMDCC service, and YAMDCC will close.
+    <value>Are you sure you want to stop the YAMDCC service?
 
-Proceed?</value>
+YAMDCC will close once the service is stopped.</value>
   </data>
   <data name="dlgUninstall" xml:space="preserve">
-    <value>This will uninstall the YAMDCC service from your computer.
+    <value>Are you sure you want to uninstall the YAMDCC service?
 
-Only proceed if you would like to delete YAMDCC from your computer (or move its program files to another folder).
+Only proceed if you would like to delete YAMDCC from your computer or move its program files to another folder.
 
-YAMDCC will close once the uninstall is complete.
-
-Proceed?</value>
+YAMDCC will close once the uninstall is complete.</value>
   </data>
-  <data name="svcErrConnect" xml:space="preserve">
-    <value>Failed to connect to the YAMDCC service.
-Make sure the service is running, then try again.
-
-Details (provide this when reporting bugs):
-{0}</value>
+  <data name="exSvcTimeout" xml:space="preserve">
+    <value>Failed to connect to the YAMDCC service (connection timed out).</value>
   </data>
-  <data name="svcErrCrash" xml:space="preserve">
+  <data name="dlgSvcStartCrash" xml:space="preserve">
     <value>The YAMDCC service crashed while starting.
 Check the Event viewer and service log for crash details.</value>
   </data>
-  <data name="svcErrStart" xml:space="preserve">
-    <value>The YAMDCC service failed to start.
-
-If the service continues to fail to start, the service may not be installed or is crashing on start (due to a programming bug).
-
-Details (provide this when reporting bugs):
-{0}</value>
-  </data>
-  <data name="svcInstallFail" xml:space="preserve">
+  <data name="dlgSvcInstallFail" xml:space="preserve">
     <value>The service failed to install.
 
 Try running the YAMDCC config editor again, and if the service installation fails again, open a bug report with this error.</value>
   </data>
-  <data name="svcNotFound" xml:space="preserve">
-    <value>The YAMDCC Service is not installed.
+  <data name="dlgSvcNotFound" xml:space="preserve">
+    <value>The YAMDCC service is not installed on this computer, and the executable (yamdccsvc.exe) was not found in the same folder as this program.
 
-Additionally, the executable for the YAMDCC Service (yamdccsvc.exe) was not found in the same folder as this program.
-
-Try re-installing/re-downloading YAMDCC to fix this.</value>
+Re-download/re-install YAMDCC to fix this.</value>
   </data>
-  <data name="svcNotInstalled" xml:space="preserve">
+  <data name="dlgSvcNotInstalled" xml:space="preserve">
     <value>The YAMDCC service is not installed yet.
-Would you like to install it now?</value>
+Would you like to install it now?
+(Clicking "No" will quit the program.)</value>
   </data>
-  <data name="svcNotRunning" xml:space="preserve">
+  <data name="dlgSvcStopped" xml:space="preserve">
     <value>The YAMDCC service is currently not running.
 Would you like to start it now?
 (Clicking "No" will quit the program.)</value>
@@ -292,7 +277,7 @@ Please re-run this program as Administrator
     <value>Are you sure you want to revert to the last loaded/saved config?</value>
   </data>
   <data name="statSvcErr" xml:space="preserve">
-    <value>ERROR: A {0} service command failed to run.</value>
+    <value>ERROR: Service command {0} failed to run.</value>
   </data>
   <data name="statResponseEmpty" xml:space="preserve">
     <value>WARN: Received an empty response from service.</value>
@@ -313,9 +298,9 @@ Please re-run this program as Administrator
     <value>WARN: Service has not responded for a while. Try restarting YAMDCC.</value>
   </data>
   <data name="dlgECtoConfStart" xml:space="preserve">
-    <value>Would you like to copy your laptop's default fan curve to this config?
+    <value>Would you like to copy your laptop's default fan profiles to this config?
 
-You will need to reboot your computer so that the fan settings are reset to their defaults.</value>
+You will need to reboot your computer to reset the fan profiles to their defaults.</value>
   </data>
   <data name="dlgECtoConfErr" xml:space="preserve">
     <value>An error occurred while fetching your laptop's default fan curves.
@@ -329,9 +314,9 @@ This is probably a bug; please report this to YAMDCC's issue tracker, including 
 Make sure to save your config (using the "Save config" button)!</value>
   </data>
   <data name="dlgECtoConfReboot" xml:space="preserve">
-    <value>Your laptop hasn't been rebooted yet following a request to copy the default fan profile of your laptop to the loaded config.
+    <value>Your laptop hasn't rebooted yet following a request to copy the default fan profiles of your laptop to the loaded config.
 
-Cancel and continue loading YAMDCC?</value>
+Cancel copying the default fan profiles and continue loading YAMDCC?</value>
   </data>
   <data name="abtCopyright" xml:space="preserve">
     <value>Copyright © Sparronator9999 (and contributors), 2023-2024.
@@ -379,7 +364,7 @@ Performance mode description:
   <data name="Crash" xml:space="preserve">
     <value>YAMDCC has crashed!
 
-Before reporting a bug, try again on the latest release of YAMDCC.
+Before reporting a bug, try again on the latest release of YAMDCC (if available).
 If the crash still occurs, please create an issue with the following crash report:</value>
   </data>
   <data name="dlgSvcInstalling" xml:space="preserve">
