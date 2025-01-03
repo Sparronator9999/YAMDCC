@@ -1,5 +1,5 @@
 // This file is part of YAMDCC (Yet Another MSI Dragon Center Clone).
-// Copyright © Sparronator9999 2023-2024.
+// Copyright © Sparronator9999 and Contributors 2023-2025.
 //
 // YAMDCC is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free

@@ -3,7 +3,7 @@
         <AnalysisLevel>latest-recommended</AnalysisLevel>
         <AssemblyTitle>YAMDCC config library</AssemblyTitle>
         <Authors>Sparronator9999</Authors>
-        <Copyright>Copyright © 2023-2024 Sparronator9999</Copyright>
+        <Copyright>Copyright © 2023-2025 Sparronator9999 (and Contributors)</Copyright>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
         <LangVersion>13.0</LangVersion>
         <OutputType>Library</OutputType>
@@ -13,7 +13,7 @@
         <TargetFramework>net48</TargetFramework>
         <Title>YAMDCC config library</Title>
         <VersionPrefix>1.0.0</VersionPrefix>
-        <VersionSuffix>beta.3</VersionSuffix>
+        <VersionSuffix>dev</VersionSuffix>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>none</DebugType>
