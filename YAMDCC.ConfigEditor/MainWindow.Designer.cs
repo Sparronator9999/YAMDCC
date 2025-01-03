@@ -60,6 +60,7 @@ namespace YAMDCC.ConfigEditor
             System.Windows.Forms.Label lblWinFnSwap;
             System.Windows.Forms.Label lblKeyLight;
             System.Windows.Forms.FlowLayoutPanel flwKeyLight;
+            System.Windows.Forms.FlowLayoutPanel flwChgLim;
             System.Windows.Forms.TableLayoutPanel tblApply;
             System.Windows.Forms.FlowLayoutPanel flwStats;
             this.tsiFile = new System.Windows.Forms.ToolStripMenuItem();
@@ -89,12 +90,13 @@ namespace YAMDCC.ConfigEditor
             this.cboProfSel = new System.Windows.Forms.ComboBox();
             this.btnProfAdd = new System.Windows.Forms.Button();
             this.btnProfDel = new System.Windows.Forms.Button();
-            this.numChgLim = new System.Windows.Forms.NumericUpDown();
             this.cboPerfMode = new System.Windows.Forms.ComboBox();
             this.chkWinFnSwap = new System.Windows.Forms.CheckBox();
             this.lblKeyLightLow = new System.Windows.Forms.Label();
             this.tbKeyLight = new System.Windows.Forms.TrackBar();
             this.lblKeyLightHigh = new System.Windows.Forms.Label();
+            this.chkChgLim = new System.Windows.Forms.CheckBox();
+            this.numChgLim = new System.Windows.Forms.NumericUpDown();
             this.chkFullBlast = new System.Windows.Forms.CheckBox();
             this.btnRevert = new System.Windows.Forms.Button();
             this.btnApply = new System.Windows.Forms.Button();
@@ -119,6 +121,7 @@ namespace YAMDCC.ConfigEditor
             lblWinFnSwap = new System.Windows.Forms.Label();
             lblKeyLight = new System.Windows.Forms.Label();
             flwKeyLight = new System.Windows.Forms.FlowLayoutPanel();
+            flwChgLim = new System.Windows.Forms.FlowLayoutPanel();
             tblApply = new System.Windows.Forms.TableLayoutPanel();
             flwStats = new System.Windows.Forms.FlowLayoutPanel();
             menuStrip.SuspendLayout();
@@ -128,9 +131,10 @@ namespace YAMDCC.ConfigEditor
             flwFanSelect.SuspendLayout();
             tabExtra.SuspendLayout();
             tblExtra.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numChgLim)).BeginInit();
             flwKeyLight.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbKeyLight)).BeginInit();
+            flwChgLim.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numChgLim)).BeginInit();
             tblApply.SuspendLayout();
             flwStats.SuspendLayout();
             this.tblMain.SuspendLayout();
@@ -496,13 +500,13 @@ namespace YAMDCC.ConfigEditor
             tblExtra.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             tblExtra.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             tblExtra.Controls.Add(lblChgLim, 0, 0);
-            tblExtra.Controls.Add(this.numChgLim, 1, 0);
             tblExtra.Controls.Add(lblPerfMode, 0, 1);
             tblExtra.Controls.Add(this.cboPerfMode, 1, 1);
             tblExtra.Controls.Add(lblWinFnSwap, 0, 2);
             tblExtra.Controls.Add(this.chkWinFnSwap, 1, 2);
             tblExtra.Controls.Add(lblKeyLight, 0, 3);
             tblExtra.Controls.Add(flwKeyLight, 1, 3);
+            tblExtra.Controls.Add(flwChgLim, 1, 0);
             tblExtra.Dock = System.Windows.Forms.DockStyle.Fill;
             tblExtra.Location = new System.Drawing.Point(0, 0);
             tblExtra.Margin = new System.Windows.Forms.Padding(0);
@@ -520,7 +524,7 @@ namespace YAMDCC.ConfigEditor
             // 
             lblChgLim.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblChgLim.AutoSize = true;
-            lblChgLim.Location = new System.Drawing.Point(55, 4);
+            lblChgLim.Location = new System.Drawing.Point(55, 5);
             lblChgLim.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
             lblChgLim.Name = "lblChgLim";
             lblChgLim.Padding = new System.Windows.Forms.Padding(0, 0, 0, 3);
@@ -528,21 +532,11 @@ namespace YAMDCC.ConfigEditor
             lblChgLim.TabIndex = 0;
             lblChgLim.Text = "Charge limit:";
             // 
-            // numChgLim
-            // 
-            this.numChgLim.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.numChgLim.Location = new System.Drawing.Point(132, 2);
-            this.numChgLim.Margin = new System.Windows.Forms.Padding(2);
-            this.numChgLim.Name = "numChgLim";
-            this.numChgLim.Size = new System.Drawing.Size(50, 23);
-            this.numChgLim.TabIndex = 1;
-            this.numChgLim.ValueChanged += new System.EventHandler(this.numChargeLim_Changed);
-            // 
             // lblPerfMode
             // 
             lblPerfMode.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblPerfMode.AutoSize = true;
-            lblPerfMode.Location = new System.Drawing.Point(18, 34);
+            lblPerfMode.Location = new System.Drawing.Point(18, 35);
             lblPerfMode.Margin = new System.Windows.Forms.Padding(4, 3, 0, 3);
             lblPerfMode.Name = "lblPerfMode";
             lblPerfMode.Size = new System.Drawing.Size(112, 15);
@@ -554,7 +548,7 @@ namespace YAMDCC.ConfigEditor
             this.cboPerfMode.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cboPerfMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPerfMode.FormattingEnabled = true;
-            this.cboPerfMode.Location = new System.Drawing.Point(133, 30);
+            this.cboPerfMode.Location = new System.Drawing.Point(133, 32);
             this.cboPerfMode.Name = "cboPerfMode";
             this.cboPerfMode.Size = new System.Drawing.Size(150, 23);
             this.cboPerfMode.TabIndex = 3;
@@ -638,6 +632,38 @@ namespace YAMDCC.ConfigEditor
             this.lblKeyLightHigh.Size = new System.Drawing.Size(39, 15);
             this.lblKeyLightHigh.TabIndex = 2;
             this.lblKeyLightHigh.Text = "Bright";
+            // 
+            // flwChgLim
+            // 
+            flwChgLim.AutoSize = true;
+            flwChgLim.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            flwChgLim.Controls.Add(this.chkChgLim);
+            flwChgLim.Controls.Add(this.numChgLim);
+            flwChgLim.Location = new System.Drawing.Point(130, 0);
+            flwChgLim.Margin = new System.Windows.Forms.Padding(0);
+            flwChgLim.Name = "flwChgLim";
+            flwChgLim.Size = new System.Drawing.Size(130, 29);
+            flwChgLim.TabIndex = 1;
+            // 
+            // chkChgLim
+            // 
+            this.chkChgLim.AutoSize = true;
+            this.chkChgLim.Location = new System.Drawing.Point(3, 3);
+            this.chkChgLim.Name = "chkChgLim";
+            this.chkChgLim.Size = new System.Drawing.Size(68, 19);
+            this.chkChgLim.TabIndex = 0;
+            this.chkChgLim.Text = "Enabled";
+            this.chkChgLim.UseVisualStyleBackColor = true;
+            this.chkChgLim.CheckedChanged += new System.EventHandler(this.chkChgLim_CheckedChanged);
+            // 
+            // numChgLim
+            // 
+            this.numChgLim.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.numChgLim.Location = new System.Drawing.Point(77, 3);
+            this.numChgLim.Name = "numChgLim";
+            this.numChgLim.Size = new System.Drawing.Size(50, 23);
+            this.numChgLim.TabIndex = 1;
+            this.numChgLim.ValueChanged += new System.EventHandler(this.numChgLim_Changed);
             // 
             // tblApply
             // 
@@ -793,10 +819,12 @@ namespace YAMDCC.ConfigEditor
             tabExtra.ResumeLayout(false);
             tblExtra.ResumeLayout(false);
             tblExtra.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numChgLim)).EndInit();
             flwKeyLight.ResumeLayout(false);
             flwKeyLight.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbKeyLight)).EndInit();
+            flwChgLim.ResumeLayout(false);
+            flwChgLim.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numChgLim)).EndInit();
             tblApply.ResumeLayout(false);
             tblApply.PerformLayout();
             flwStats.ResumeLayout(false);
@@ -851,5 +879,6 @@ namespace YAMDCC.ConfigEditor
         private System.Windows.Forms.TableLayoutPanel tblMain;
         private System.Windows.Forms.Label lblKeyLightLow;
         private System.Windows.Forms.Label lblKeyLightHigh;
+        private System.Windows.Forms.CheckBox chkChgLim;
     }
 }

@@ -643,7 +643,12 @@ namespace YAMDCC.ConfigEditor
             SendServiceMessage(new ServiceCommand(Command.FullBlast, chkFullBlast.Checked ? "1" : "0"));
         }
 
-        private void numChargeLim_Changed(object sender, EventArgs e)
+        private void chkChgLim_CheckedChanged(object sender, EventArgs e)
+        {
+            numChgLim.Enabled = chkChgLim.Checked;
+        }
+
+        private void numChgLim_Changed(object sender, EventArgs e)
         {
             if (Config is not null)
             {
@@ -780,9 +785,18 @@ namespace YAMDCC.ConfigEditor
             {
                 ttMain.SetToolTip(numChgLim, Strings.GetString("ttChgLim"));
                 ChargeLimitConf cfg = config.ChargeLimitConf;
-                numChgLim.Enabled = true;
-                numChgLim.Value = cfg.CurVal;
+                chkChgLim.Enabled = numChgLim.Enabled = true;
                 numChgLim.Maximum = Math.Abs(cfg.MaxVal - cfg.MinVal);
+                if (cfg.CurVal == 0)
+                {
+                    chkChgLim.Checked = false;
+                    numChgLim.Value = 80;
+                }
+                else
+                {
+                    chkChgLim.Checked = true;
+                    numChgLim.Value = cfg.CurVal;
+                }
             }
 
             cboPerfMode.Items.Clear();
@@ -1099,6 +1113,7 @@ namespace YAMDCC.ConfigEditor
             cboPerfMode.Enabled = false;
             chkFullBlast.Enabled = false;
             chkWinFnSwap.Enabled = false;
+            chkChgLim.Enabled = false;
             numChgLim.Enabled = false;
             lblKeyLightLow.Enabled = false;
             lblKeyLightHigh.Enabled = false;
