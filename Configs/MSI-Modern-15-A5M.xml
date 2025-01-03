@@ -5,7 +5,7 @@
 	<Author>tedomi2705</Author>
 	<FanConfs>
 		<FanConf>
-			<Name>CPU Fan</Name>
+			<Name>CPU Fans</Name>
 			<MinSpeed>0</MinSpeed>
 			<MaxSpeed>150</MaxSpeed>
 			<CurveSel>0</CurveSel>
@@ -98,7 +98,7 @@
 		<Reg>239</Reg>
 		<MinVal>128</MinVal>
 		<MaxVal>228</MaxVal>
-		<CurVal>100</CurVal>
+		<CurVal>0</CurVal>
 	</ChargeLimitConf>
 	<PerfModeConf>
 		<Reg>242</Reg>
