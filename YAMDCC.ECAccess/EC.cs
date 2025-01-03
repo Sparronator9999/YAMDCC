@@ -63,7 +63,7 @@ namespace YAMDCC.ECAccess
         /// to wait for an EC status.
         /// </summary>
         private static readonly long ECStatusTimeoutTicks =
-            Stopwatch.Frequency / 200;  // 5 ms, should be plenty for EC status waits
+            Stopwatch.Frequency / 100;  // 10 ms, should be plenty for EC status waits
 
         /// <summary>
         /// Used to synchronise EC access.
