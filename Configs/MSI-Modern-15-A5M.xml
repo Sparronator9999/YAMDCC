@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <YAMDCC_Config xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Ver="1">
 	<Manufacturer>Micro-Star International Co., Ltd.</Manufacturer>
 	<Model>Modern 15 A5M</Model>
@@ -102,7 +102,7 @@
 	</ChargeLimitConf>
 	<PerfModeConf>
 		<Reg>242</Reg>
-		<ModeSel>0</ModeSel>
+		<ModeSel>2</ModeSel>
 		<PerfModes>
 			<PerfMode>
 				<Name>Maximum battery life</Name>
