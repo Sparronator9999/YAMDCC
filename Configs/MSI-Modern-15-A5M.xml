@@ -7,7 +7,7 @@
 		<FanConf>
 			<Name>CPU Fan</Name>
 			<MinSpeed>0</MinSpeed>
-			<MaxSpeed>100</MaxSpeed>
+			<MaxSpeed>150</MaxSpeed>
 			<CurveSel>0</CurveSel>
 			<SpeedReadReg>113</SpeedReadReg>
 			<TempReadReg>104</TempReadReg>
@@ -92,7 +92,7 @@
 		<FanConf>
 			<Name>GPU Fan</Name>
 			<MinSpeed>0</MinSpeed>
-			<MaxSpeed>100</MaxSpeed>
+			<MaxSpeed>150</MaxSpeed>
 			<CurveSel>0</CurveSel>
 			<SpeedReadReg>113</SpeedReadReg>
 			<TempReadReg>104</TempReadReg>
