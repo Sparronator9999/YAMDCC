@@ -5,14 +5,14 @@
 	<Author>tedomi2705</Author>
 	<FanConfs>
 		<FanConf>
-			<Name>CPU Fan</Name>
+			<Name>CPU Fan (Left)</Name>
 			<MinSpeed>0</MinSpeed>
 			<MaxSpeed>150</MaxSpeed>
 			<CurveSel>0</CurveSel>
 			<SpeedReadReg>113</SpeedReadReg>
 			<TempReadReg>104</TempReadReg>
 			<RPMConf>
-				<ReadReg>200</ReadReg>
+				<ReadReg>204</ReadReg>
 				<Is16Bit>true</Is16Bit>
 				<IsBigEndian>true</IsBigEndian>
 				<RPMMult>478000</RPMMult>
@@ -90,14 +90,14 @@
 			</FanCurveConfs>
 		</FanConf>
 		<FanConf>
-			<Name>GPU Fan</Name>
+			<Name>CPU Fan (Right)</Name>
 			<MinSpeed>0</MinSpeed>
 			<MaxSpeed>150</MaxSpeed>
 			<CurveSel>0</CurveSel>
 			<SpeedReadReg>113</SpeedReadReg>
 			<TempReadReg>104</TempReadReg>
 			<RPMConf>
-				<ReadReg>200</ReadReg>
+				<ReadReg>202</ReadReg>
 				<Is16Bit>true</Is16Bit>
 				<IsBigEndian>true</IsBigEndian>
 				<RPMMult>478000</RPMMult>
