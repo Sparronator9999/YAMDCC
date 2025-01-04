@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <YAMDCC_Config xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Ver="1">
 	<Manufacturer>Micro-Star International Co., Ltd.</Manufacturer>
-	<Model>~Generic: 10th-gen Intel (or newer) - no keyboard backlight support</Model>
+	<Model>~Generic: 10th-gen Intel (or newer) - Dual-fan models</Model>
 	<Author>Sparronator9999</Author>
 	<FanConfs>
 		<FanConf>
 			<Name>CPU Fan</Name>
 			<MinSpeed>0</MinSpeed>
-			<MaxSpeed>100</MaxSpeed>
+			<MaxSpeed>150</MaxSpeed>
 			<CurveSel>0</CurveSel>
 			<SpeedReadReg>113</SpeedReadReg>
 			<TempReadReg>104</TempReadReg>
@@ -91,12 +91,12 @@
 		<FanConf>
 			<Name>GPU Fan</Name>
 			<MinSpeed>0</MinSpeed>
-			<MaxSpeed>100</MaxSpeed>
+			<MaxSpeed>150</MaxSpeed>
 			<CurveSel>0</CurveSel>
 			<SpeedReadReg>137</SpeedReadReg>
 			<TempReadReg>128</TempReadReg>
 			<RPMConf>
-				<ReadReg>200</ReadReg>
+				<ReadReg>202</ReadReg>
 				<Is16Bit>true</Is16Bit>
 				<IsBigEndian>true</IsBigEndian>
 				<RPMMult>478000</RPMMult>
@@ -181,7 +181,7 @@
 		<Reg>215</Reg>
 		<MinVal>128</MinVal>
 		<MaxVal>228</MaxVal>
-		<CurVal>60</CurVal>
+		<CurVal>0</CurVal>
 	</ChargeLimitConf>
 	<PerfModeConf>
 		<Reg>210</Reg>
@@ -206,8 +206,7 @@ If set to default fan curve, uses an alternative fan curve.</Desc>
 			</PerfMode>
 			<PerfMode>
 				<Name>High performance</Name>
-				<Desc>Optimises your laptop for maximum performance.
-Old (pre-alpha) versions of MSI Fan Control/YAMDCC set this setting.</Desc>
+				<Desc>Optimises your laptop for maximum performance.</Desc>
 				<Value>196</Value>
 			</PerfMode>
 		</PerfModes>
@@ -218,11 +217,16 @@ Old (pre-alpha) versions of MSI Fan Control/YAMDCC set this setting.</Desc>
 		<OnVal>16</OnVal>
 		<OffVal>0</OffVal>
 	</KeySwapConf>
+	<KeyLightConf>
+		<Reg>211</Reg>
+		<MinVal>128</MinVal>
+		<MaxVal>131</MaxVal>
+	</KeyLightConf>
 	<RegConfs>
 		<RegConf>
 			<Enabled>true</Enabled>
 			<Name>YAMDCC compatibility fix</Name>
-			<Desc>Set fan mode to Advanced. Fixes fans not working at all with certain fan settings.
+			<Desc>Sets fan mode to Advanced. Fixes fans not working at all with certain fan settings.
 It is recommended you leave this enabled.</Desc>
 			<Reg>212</Reg>
 			<Value>77</Value>

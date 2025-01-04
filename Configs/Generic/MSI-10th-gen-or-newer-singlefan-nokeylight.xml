@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <YAMDCC_Config xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Ver="1">
 	<Manufacturer>Micro-Star International Co., Ltd.</Manufacturer>
-	<Model>GF63 Thin 11SC</Model>
+	<Model>~Generic: 10th-gen Intel (or newer) - Single-fan models (no keyboard backlight support)</Model>
 	<Author>Sparronator9999</Author>
 	<FanConfs>
 		<FanConf>
 			<Name>CPU Fan</Name>
 			<MinSpeed>0</MinSpeed>
-			<MaxSpeed>100</MaxSpeed>
+			<MaxSpeed>150</MaxSpeed>
 			<CurveSel>0</CurveSel>
 			<SpeedReadReg>113</SpeedReadReg>
 			<TempReadReg>104</TempReadReg>
@@ -47,48 +47,7 @@
 			<FanCurveConfs>
 				<FanCurveConf>
 					<Name>Default</Name>
-					<Desc>The manufacturer default CPU fan curve.</Desc>
-					<TempThresholds>
-						<TempThreshold>
-							<UpThreshold>0</UpThreshold>
-							<DownThreshold>0</DownThreshold>
-							<FanSpeed>38</FanSpeed>
-						</TempThreshold>
-						<TempThreshold>
-							<UpThreshold>55</UpThreshold>
-							<DownThreshold>47</DownThreshold>
-							<FanSpeed>43</FanSpeed>
-						</TempThreshold>
-						<TempThreshold>
-							<UpThreshold>64</UpThreshold>
-							<DownThreshold>61</DownThreshold>
-							<FanSpeed>48</FanSpeed>
-						</TempThreshold>
-						<TempThreshold>
-							<UpThreshold>73</UpThreshold>
-							<DownThreshold>70</DownThreshold>
-							<FanSpeed>54</FanSpeed>
-						</TempThreshold>
-						<TempThreshold>
-							<UpThreshold>76</UpThreshold>
-							<DownThreshold>73</DownThreshold>
-							<FanSpeed>60</FanSpeed>
-						</TempThreshold>
-						<TempThreshold>
-							<UpThreshold>82</UpThreshold>
-							<DownThreshold>79</DownThreshold>
-							<FanSpeed>70</FanSpeed>
-						</TempThreshold>
-						<TempThreshold>
-							<UpThreshold>88</UpThreshold>
-							<DownThreshold>85</DownThreshold>
-							<FanSpeed>85</FanSpeed>
-						</TempThreshold>
-					</TempThresholds>
-				</FanCurveConf>
-				<FanCurveConf>
-					<Name>Custom</Name>
-					<Desc>The custom CPU fan curve that Sparronator9999 uses on his computer.</Desc>
+					<Desc>Generic CPU fan curve for MSI laptops.</Desc>
 					<TempThresholds>
 						<TempThreshold>
 							<UpThreshold>0</UpThreshold>
@@ -96,34 +55,34 @@
 							<FanSpeed>0</FanSpeed>
 						</TempThreshold>
 						<TempThreshold>
-							<UpThreshold>46</UpThreshold>
-							<DownThreshold>43</DownThreshold>
-							<FanSpeed>32</FanSpeed>
+							<UpThreshold>50</UpThreshold>
+							<DownThreshold>47</DownThreshold>
+							<FanSpeed>40</FanSpeed>
 						</TempThreshold>
 						<TempThreshold>
-							<UpThreshold>52</UpThreshold>
-							<DownThreshold>49</DownThreshold>
-							<FanSpeed>42</FanSpeed>
-						</TempThreshold>
-						<TempThreshold>
-							<UpThreshold>58</UpThreshold>
-							<DownThreshold>55</DownThreshold>
-							<FanSpeed>54</FanSpeed>
+							<UpThreshold>57</UpThreshold>
+							<DownThreshold>54</DownThreshold>
+							<FanSpeed>48</FanSpeed>
 						</TempThreshold>
 						<TempThreshold>
 							<UpThreshold>64</UpThreshold>
 							<DownThreshold>61</DownThreshold>
-							<FanSpeed>67</FanSpeed>
+							<FanSpeed>56</FanSpeed>
 						</TempThreshold>
 						<TempThreshold>
-							<UpThreshold>70</UpThreshold>
-							<DownThreshold>67</DownThreshold>
-							<FanSpeed>82</FanSpeed>
+							<UpThreshold>71</UpThreshold>
+							<DownThreshold>68</DownThreshold>
+							<FanSpeed>64</FanSpeed>
 						</TempThreshold>
 						<TempThreshold>
-							<UpThreshold>76</UpThreshold>
-							<DownThreshold>73</DownThreshold>
-							<FanSpeed>100</FanSpeed>
+							<UpThreshold>78</UpThreshold>
+							<DownThreshold>75</DownThreshold>
+							<FanSpeed>72</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>85</UpThreshold>
+							<DownThreshold>82</DownThreshold>
+							<FanSpeed>80</FanSpeed>
 						</TempThreshold>
 					</TempThresholds>
 				</FanCurveConf>
@@ -132,7 +91,7 @@
 		<FanConf>
 			<Name>GPU Fan</Name>
 			<MinSpeed>0</MinSpeed>
-			<MaxSpeed>100</MaxSpeed>
+			<MaxSpeed>150</MaxSpeed>
 			<CurveSel>0</CurveSel>
 			<SpeedReadReg>137</SpeedReadReg>
 			<TempReadReg>128</TempReadReg>
@@ -172,48 +131,7 @@
 			<FanCurveConfs>
 				<FanCurveConf>
 					<Name>Default</Name>
-					<Desc>The manufacturer default GPU fan curve.</Desc>
-					<TempThresholds>
-						<TempThreshold>
-							<UpThreshold>0</UpThreshold>
-							<DownThreshold>0</DownThreshold>
-							<FanSpeed>38</FanSpeed>
-						</TempThreshold>
-						<TempThreshold>
-							<UpThreshold>55</UpThreshold>
-							<DownThreshold>47</DownThreshold>
-							<FanSpeed>43</FanSpeed>
-						</TempThreshold>
-						<TempThreshold>
-							<UpThreshold>61</UpThreshold>
-							<DownThreshold>58</DownThreshold>
-							<FanSpeed>48</FanSpeed>
-						</TempThreshold>
-						<TempThreshold>
-							<UpThreshold>67</UpThreshold>
-							<DownThreshold>64</DownThreshold>
-							<FanSpeed>54</FanSpeed>
-						</TempThreshold>
-						<TempThreshold>
-							<UpThreshold>73</UpThreshold>
-							<DownThreshold>70</DownThreshold>
-							<FanSpeed>60</FanSpeed>
-						</TempThreshold>
-						<TempThreshold>
-							<UpThreshold>79</UpThreshold>
-							<DownThreshold>76</DownThreshold>
-							<FanSpeed>70</FanSpeed>
-						</TempThreshold>
-						<TempThreshold>
-							<UpThreshold>85</UpThreshold>
-							<DownThreshold>82</DownThreshold>
-							<FanSpeed>85</FanSpeed>
-						</TempThreshold>
-					</TempThresholds>
-				</FanCurveConf>
-				<FanCurveConf>
-					<Name>Custom</Name>
-					<Desc>The custom GPU fan curve that Sparronator9999 uses on his computer.</Desc>
+					<Desc>Generic GPU fan curve for MSI laptops.</Desc>
 					<TempThresholds>
 						<TempThreshold>
 							<UpThreshold>0</UpThreshold>
@@ -221,34 +139,34 @@
 							<FanSpeed>0</FanSpeed>
 						</TempThreshold>
 						<TempThreshold>
-							<UpThreshold>46</UpThreshold>
-							<DownThreshold>43</DownThreshold>
-							<FanSpeed>32</FanSpeed>
-						</TempThreshold>
-						<TempThreshold>
 							<UpThreshold>50</UpThreshold>
 							<DownThreshold>47</DownThreshold>
-							<FanSpeed>42</FanSpeed>
+							<FanSpeed>40</FanSpeed>
 						</TempThreshold>
 						<TempThreshold>
-							<UpThreshold>55</UpThreshold>
-							<DownThreshold>52</DownThreshold>
-							<FanSpeed>54</FanSpeed>
+							<UpThreshold>57</UpThreshold>
+							<DownThreshold>54</DownThreshold>
+							<FanSpeed>48</FanSpeed>
 						</TempThreshold>
 						<TempThreshold>
-							<UpThreshold>60</UpThreshold>
-							<DownThreshold>57</DownThreshold>
-							<FanSpeed>67</FanSpeed>
+							<UpThreshold>64</UpThreshold>
+							<DownThreshold>61</DownThreshold>
+							<FanSpeed>56</FanSpeed>
 						</TempThreshold>
 						<TempThreshold>
-							<UpThreshold>65</UpThreshold>
-							<DownThreshold>62</DownThreshold>
-							<FanSpeed>82</FanSpeed>
+							<UpThreshold>71</UpThreshold>
+							<DownThreshold>68</DownThreshold>
+							<FanSpeed>64</FanSpeed>
 						</TempThreshold>
 						<TempThreshold>
-							<UpThreshold>70</UpThreshold>
-							<DownThreshold>67</DownThreshold>
-							<FanSpeed>100</FanSpeed>
+							<UpThreshold>78</UpThreshold>
+							<DownThreshold>75</DownThreshold>
+							<FanSpeed>72</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>85</UpThreshold>
+							<DownThreshold>82</DownThreshold>
+							<FanSpeed>80</FanSpeed>
 						</TempThreshold>
 					</TempThresholds>
 				</FanCurveConf>
@@ -299,11 +217,6 @@ If set to default fan curve, uses an alternative fan curve.</Desc>
 		<OnVal>16</OnVal>
 		<OffVal>0</OffVal>
 	</KeySwapConf>
-	<KeyLightConf>
-		<Reg>211</Reg>
-		<MinVal>128</MinVal>
-		<MaxVal>131</MaxVal>
-	</KeyLightConf>
 	<RegConfs>
 		<RegConf>
 			<Enabled>true</Enabled>
