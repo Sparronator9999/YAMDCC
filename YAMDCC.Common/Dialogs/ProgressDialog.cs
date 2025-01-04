@@ -19,9 +19,9 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Forms;
 
-namespace YAMDCC.ConfigEditor.Dialogs
+namespace YAMDCC.Common.Dialogs
 {
-    internal sealed partial class ProgressDialog : Form
+    public sealed partial class ProgressDialog : Form
     {
         #region Disable close button
         private const int CP_NOCLOSE_BUTTON = 0x200;
@@ -37,8 +37,8 @@ namespace YAMDCC.ConfigEditor.Dialogs
         }
         #endregion
 
-        public bool Cancelled;
-        public object Result;
+        public bool Cancelled { get; set; }
+        public object Result { get; set; }
 
         private readonly object Argument;
         private readonly string Caption;

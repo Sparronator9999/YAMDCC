@@ -17,6 +17,7 @@
 using System;
 using System.ServiceProcess;
 using System.Windows.Forms;
+using YAMDCC.Common;
 using YAMDCC.Logs;
 
 namespace YAMDCC.Service
@@ -30,11 +31,7 @@ namespace YAMDCC.Service
         {
             LogDir = Paths.Logs,
             ConsoleLogLevel = LogLevel.None,
-#if DEBUG
             FileLogLevel = LogLevel.Debug,
-#else
-            FileLogLevel = LogLevel.Info,
-#endif
         };
 
         /// <summary>
@@ -52,9 +49,16 @@ namespace YAMDCC.Service
             }
             else
             {
+                CommonConfig cfg = CommonConfig.Load();
                 Log.Info(
                     $"OS version: {Environment.OSVersion}\n" +
                     $"Service version: {Application.ProductVersion}");
+
+                if (cfg.App == "YAMDCC")
+                {
+                    Log.FileLogLevel = cfg.LogLevel;
+                }
+
                 Log.Debug("Log level is set to debug mode.");
                 ServiceBase.Run(new FanControlService(Log));
             }

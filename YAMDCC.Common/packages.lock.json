@@ -2,12 +2,6 @@
   "version": 1,
   "dependencies": {
     ".NETFramework,Version=v4.8": {
-      "yamdcc.common": {
-        "type": "Project",
-        "dependencies": {
-          "YAMDCC.Logs": "[1.0.0-dev, )"
-        }
-      },
       "yamdcc.logs": {
         "type": "Project"
       }

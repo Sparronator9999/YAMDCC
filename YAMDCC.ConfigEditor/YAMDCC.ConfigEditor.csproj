@@ -27,9 +27,6 @@
         <DebugType>none</DebugType>
     </PropertyGroup>
     <ItemGroup>
-      <EmbeddedResource Remove="Dialogs\CrashDialog.resx" />
-      <EmbeddedResource Remove="Dialogs\ProgressDialog.resx" />
-      <EmbeddedResource Remove="Dialogs\TextInputDialog.resx" />
       <EmbeddedResource Remove="MainWindow.resx" />
       <EmbeddedResource Remove="Program.resx" />
     </ItemGroup>
@@ -40,6 +37,7 @@
         <Content Include="fan.ico" />
     </ItemGroup>
     <ItemGroup>
+        <ProjectReference Include="..\YAMDCC.Common\YAMDCC.Common.csproj" />
         <ProjectReference Include="..\YAMDCC.Config\YAMDCC.Config.csproj" />
         <ProjectReference Include="..\YAMDCC.Service\YAMDCC.Service.csproj" />
         <ProjectReference Include="..\YAMDCC.IPC\YAMDCC.IPC.csproj" />
@@ -60,11 +58,6 @@
         </BootstrapperPackage>
     </ItemGroup>
     <ItemGroup>
-      <None Include="Dialogs\ProgressDialog.resx" />
-    </ItemGroup>
-    <ItemGroup>
-      <None Include="Dialogs\CrashDialog.resx" />
-      <None Include="Dialogs\TextInputDialog.resx" />
       <None Include="MainWindow.resx" />
       <None Include="Program.resx" />
     </ItemGroup>

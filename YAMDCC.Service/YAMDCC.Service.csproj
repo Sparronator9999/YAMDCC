@@ -40,6 +40,7 @@
         </EmbeddedResource>
     </ItemGroup>
     <ItemGroup>
+        <ProjectReference Include="..\YAMDCC.Common\YAMDCC.Common.csproj" />
         <ProjectReference Include="..\YAMDCC.Config\YAMDCC.Config.csproj" />
         <ProjectReference Include="..\YAMDCC.ECAccess\YAMDCC.ECAccess.csproj" />
         <ProjectReference Include="..\YAMDCC.IPC\YAMDCC.IPC.csproj" />

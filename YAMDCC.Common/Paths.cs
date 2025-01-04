@@ -17,10 +17,15 @@
 using System;
 using System.IO;
 
-namespace YAMDCC.Service
+namespace YAMDCC.Common
 {
-    internal static class Paths
+    public static class Paths
     {
+        /// <summary>
+        /// The URL to this project's GitHub page.
+        /// </summary>
+        public static readonly string SourcePrefix = "https://github.com/Sparronator9999/YAMDCC";
+
         /// <summary>
         /// The path where program data is stored.
         /// </summary>
@@ -39,6 +44,9 @@ namespace YAMDCC.Service
         /// </remarks>
         public static readonly string Logs = Path.Combine(Data, "Logs");
 
+        public static readonly string GlobalConf = Path.Combine(Data, "GlobalConfig.xml");
+
+
         /// <summary>
         /// The path where the currently applied YAMDCC config is saved.
         /// </summary>
@@ -47,8 +55,16 @@ namespace YAMDCC.Service
         /// </remarks>
         public static readonly string CurrentConfig = Path.Combine(Data, "CurrentConfig.xml");
 
+        /// <summary>
+        /// The path where the path to the last saved YAMDCC config is saved.
+        /// </summary>
+        /// <remarks>
+        /// (C:\ProgramData\Sparronator9999\YAMDCC\CurrentConfig.xml on Windows)
+        /// </remarks>
+        public static readonly string LastConfig = Path.Combine(Data, "LastConfig");
+
         public static readonly string ECToConfSuccess = Path.Combine(Data, "ECToConfSuccess");
         public static readonly string ECToConfFail = Path.Combine(Data, "ECToConfFail");
-        public static readonly string ECtoConfPending = Path.Combine(Data, "ECToConfPending");
+        public static readonly string ECToConfPending = Path.Combine(Data, "ECToConfPending");
     }
 }

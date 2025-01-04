@@ -18,4 +18,7 @@
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>none</DebugType>
     </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\YAMDCC.Common\YAMDCC.Common.csproj" />
+    </ItemGroup>
 </Project>

@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
-namespace YAMDCC.ConfigEditor.Dialogs
+namespace YAMDCC.Common.Dialogs
 {
     partial class CrashDialog
     {

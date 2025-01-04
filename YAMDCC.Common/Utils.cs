@@ -21,12 +21,12 @@ using System.Runtime.InteropServices;
 using System.ServiceProcess;
 using System.Windows.Forms;
 
-namespace YAMDCC.ConfigEditor
+namespace YAMDCC.Common
 {
     /// <summary>
     /// A collection of miscellaneous useful utilities
     /// </summary>
-    internal static class Utils
+    public static class Utils
     {
         /// <summary>
         /// Shows an error dialog.

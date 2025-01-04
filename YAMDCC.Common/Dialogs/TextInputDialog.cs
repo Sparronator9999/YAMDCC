@@ -17,14 +17,14 @@
 using System;
 using System.Windows.Forms;
 
-namespace YAMDCC.ConfigEditor.Dialogs
+namespace YAMDCC.Common.Dialogs
 {
-    internal sealed partial class TextInputDialog : Form
+    public sealed partial class TextInputDialog : Form
     {
         /// <summary>
         /// The text that the user entered in this dialog.
         /// </summary>
-        public string Result;
+        public string Result { get; set; }
 
         public TextInputDialog(string caption, string title, string text, bool multiline = false)
         {

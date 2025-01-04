@@ -20,7 +20,8 @@ using System.IO;
 using System.Security.Principal;
 using System.ServiceProcess;
 using System.Windows.Forms;
-using YAMDCC.ConfigEditor.Dialogs;
+using YAMDCC.Common;
+using YAMDCC.Common.Dialogs;
 
 namespace YAMDCC.ConfigEditor
 {

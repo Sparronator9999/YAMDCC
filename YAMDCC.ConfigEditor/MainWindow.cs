@@ -22,9 +22,11 @@ using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
+using YAMDCC.Common;
+using YAMDCC.Common.Dialogs;
 using YAMDCC.Config;
-using YAMDCC.ConfigEditor.Dialogs;
 using YAMDCC.IPC;
+using YAMDCC.Logs;
 
 namespace YAMDCC.ConfigEditor
 {
@@ -32,6 +34,8 @@ namespace YAMDCC.ConfigEditor
     {
         #region Fields
         private readonly Status AppStatus = new();
+
+        private readonly CommonConfig GlobalConfig;
 
         /// <summary>
         /// The YAMDCC config that is currently open for editing.
@@ -104,6 +108,36 @@ namespace YAMDCC.ConfigEditor
             };
             tmrSvcTimeout.Tick += tmrSvcTimeout_Tick;
 
+            GlobalConfig = CommonConfig.Load();
+            if (GlobalConfig.App == "YAMDCC")
+            {
+                switch (GlobalConfig.LogLevel)
+                {
+                    case LogLevel.None:
+                        tsiLogNone.Checked = true;
+                        break;
+                    case LogLevel.Fatal:
+                        tsiLogFatal.Checked = true;
+                        break;
+                    case LogLevel.Error:
+                        tsiLogError.Checked = true;
+                        break;
+                    case LogLevel.Warn:
+                        tsiLogWarn.Checked = true;
+                        break;
+                    case LogLevel.Info:
+                        tsiLogInfo.Checked = true;
+                        break;
+                    case LogLevel.Debug:
+                        tsiLogDebug.Checked = true;
+                        break;
+                }
+            }
+            else
+            {
+                tsiLogDebug.Checked = true;
+            }
+
             DisableAll();
         }
 
@@ -157,6 +191,8 @@ namespace YAMDCC.ConfigEditor
             {
                 SendServiceMessage(new ServiceCommand(Command.FullBlast, "0"));
             }
+            GlobalConfig.App = "YAMDCC";
+            GlobalConfig.Save();
         }
 
         private void OnProcessExit(object sender, EventArgs e)
@@ -1089,6 +1125,66 @@ namespace YAMDCC.ConfigEditor
                 Text = text,
                 TextAlign = textAlign,
             };
+        }
+
+        private void tsiLogNone_Click(object sender, EventArgs e)
+        {
+            tsiLogNone.Checked = true;
+            tsiLogDebug.Checked = false;
+            tsiLogInfo.Checked = false;
+            tsiLogWarn.Checked = false;
+            tsiLogError.Checked = false;
+            tsiLogFatal.Checked = false;
+        }
+
+        private void tsiLogDebug_Click(object sender, EventArgs e)
+        {
+            tsiLogNone.Checked = false;
+            tsiLogDebug.Checked = true;
+            tsiLogInfo.Checked = false;
+            tsiLogWarn.Checked = false;
+            tsiLogError.Checked = false;
+            tsiLogFatal.Checked = false;
+        }
+
+        private void tsiLogInfo_Click(object sender, EventArgs e)
+        {
+            tsiLogNone.Checked = false;
+            tsiLogDebug.Checked = false;
+            tsiLogInfo.Checked = true;
+            tsiLogWarn.Checked = false;
+            tsiLogError.Checked = false;
+            tsiLogFatal.Checked = false;
+        }
+
+        private void tsiLogWarn_Click(object sender, EventArgs e)
+        {
+            tsiLogNone.Checked = false;
+            tsiLogDebug.Checked = false;
+            tsiLogInfo.Checked = false;
+            tsiLogWarn.Checked = true;
+            tsiLogError.Checked = false;
+            tsiLogFatal.Checked = false;
+        }
+
+        private void tsiLogError_Click(object sender, EventArgs e)
+        {
+            tsiLogNone.Checked = false;
+            tsiLogDebug.Checked = false;
+            tsiLogInfo.Checked = false;
+            tsiLogWarn.Checked = false;
+            tsiLogError.Checked = true;
+            tsiLogFatal.Checked = false;
+        }
+
+        private void tsiLogFatal_Click(object sender, EventArgs e)
+        {
+            tsiLogNone.Checked = false;
+            tsiLogDebug.Checked = false;
+            tsiLogInfo.Checked = false;
+            tsiLogWarn.Checked = false;
+            tsiLogError.Checked = false;
+            tsiLogFatal.Checked = true;
         }
 
         private static NumericUpDown FanCurveNUD(int tag, float scale)

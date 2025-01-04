@@ -50,6 +50,7 @@ namespace YAMDCC.ConfigEditor
             System.Windows.Forms.ToolStripSeparator sep3;
             System.Windows.Forms.ToolStripSeparator sep4;
             System.Windows.Forms.ToolStripSeparator sep5;
+            System.Windows.Forms.ToolStripMenuItem tsiLogLevel;
             System.Windows.Forms.TabControl tcMain;
             System.Windows.Forms.TabPage tabFanControl;
             System.Windows.Forms.FlowLayoutPanel flwFanSelect;
@@ -77,6 +78,12 @@ namespace YAMDCC.ConfigEditor
             this.tsiProfDel = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiECtoConf = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiECMon = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsiLogNone = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsiLogDebug = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsiLogInfo = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsiLogWarn = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsiLogError = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsiLogFatal = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiStopSvc = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiUninstall = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiHelp = new System.Windows.Forms.ToolStripMenuItem();
@@ -111,6 +118,7 @@ namespace YAMDCC.ConfigEditor
             sep3 = new System.Windows.Forms.ToolStripSeparator();
             sep4 = new System.Windows.Forms.ToolStripSeparator();
             sep5 = new System.Windows.Forms.ToolStripSeparator();
+            tsiLogLevel = new System.Windows.Forms.ToolStripMenuItem();
             tcMain = new System.Windows.Forms.TabControl();
             tabFanControl = new System.Windows.Forms.TabPage();
             flwFanSelect = new System.Windows.Forms.FlowLayoutPanel();
@@ -228,6 +236,7 @@ namespace YAMDCC.ConfigEditor
             sep4,
             this.tsiECMon,
             sep5,
+            tsiLogLevel,
             this.tsiStopSvc,
             this.tsiUninstall});
             this.tsiOptions.Name = "tsiOptions";
@@ -305,6 +314,61 @@ namespace YAMDCC.ConfigEditor
             // 
             sep5.Name = "sep5";
             sep5.Size = new System.Drawing.Size(254, 6);
+            // 
+            // tsiLogLevel
+            // 
+            tsiLogLevel.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsiLogDebug,
+            this.tsiLogInfo,
+            this.tsiLogWarn,
+            this.tsiLogError,
+            this.tsiLogFatal,
+            this.tsiLogNone});
+            tsiLogLevel.Name = "tsiLogLevel";
+            tsiLogLevel.Size = new System.Drawing.Size(257, 22);
+            tsiLogLevel.Text = "Service log level";
+            // 
+            // tsiLogNone
+            // 
+            this.tsiLogNone.Name = "tsiLogNone";
+            this.tsiLogNone.Size = new System.Drawing.Size(180, 22);
+            this.tsiLogNone.Text = "Disabled";
+            this.tsiLogNone.Click += new System.EventHandler(this.tsiLogNone_Click);
+            // 
+            // tsiLogDebug
+            // 
+            this.tsiLogDebug.Name = "tsiLogDebug";
+            this.tsiLogDebug.Size = new System.Drawing.Size(180, 22);
+            this.tsiLogDebug.Text = "Debug";
+            this.tsiLogDebug.Click += new System.EventHandler(this.tsiLogDebug_Click);
+            // 
+            // tsiLogInfo
+            // 
+            this.tsiLogInfo.Name = "tsiLogInfo";
+            this.tsiLogInfo.Size = new System.Drawing.Size(180, 22);
+            this.tsiLogInfo.Text = "Info";
+            this.tsiLogInfo.Click += new System.EventHandler(this.tsiLogInfo_Click);
+            // 
+            // tsiLogWarn
+            // 
+            this.tsiLogWarn.Name = "tsiLogWarn";
+            this.tsiLogWarn.Size = new System.Drawing.Size(180, 22);
+            this.tsiLogWarn.Text = "Warning";
+            this.tsiLogWarn.Click += new System.EventHandler(this.tsiLogWarn_Click);
+            // 
+            // tsiLogError
+            // 
+            this.tsiLogError.Name = "tsiLogError";
+            this.tsiLogError.Size = new System.Drawing.Size(180, 22);
+            this.tsiLogError.Text = "Error";
+            this.tsiLogError.Click += new System.EventHandler(this.tsiLogError_Click);
+            // 
+            // tsiLogFatal
+            // 
+            this.tsiLogFatal.Name = "tsiLogFatal";
+            this.tsiLogFatal.Size = new System.Drawing.Size(180, 22);
+            this.tsiLogFatal.Text = "Fatal";
+            this.tsiLogFatal.Click += new System.EventHandler(this.tsiLogFatal_Click);
             // 
             // tsiStopSvc
             // 
@@ -536,7 +600,7 @@ namespace YAMDCC.ConfigEditor
             // 
             lblPerfMode.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblPerfMode.AutoSize = true;
-            lblPerfMode.Location = new System.Drawing.Point(18, 35);
+            lblPerfMode.Location = new System.Drawing.Point(18, 36);
             lblPerfMode.Margin = new System.Windows.Forms.Padding(4, 3, 0, 3);
             lblPerfMode.Name = "lblPerfMode";
             lblPerfMode.Size = new System.Drawing.Size(112, 15);
@@ -558,7 +622,7 @@ namespace YAMDCC.ConfigEditor
             // 
             lblWinFnSwap.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblWinFnSwap.AutoSize = true;
-            lblWinFnSwap.Location = new System.Drawing.Point(3, 60);
+            lblWinFnSwap.Location = new System.Drawing.Point(3, 62);
             lblWinFnSwap.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
             lblWinFnSwap.Name = "lblWinFnSwap";
             lblWinFnSwap.Padding = new System.Windows.Forms.Padding(0, 0, 0, 2);
@@ -570,7 +634,7 @@ namespace YAMDCC.ConfigEditor
             // 
             this.chkWinFnSwap.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkWinFnSwap.AutoSize = true;
-            this.chkWinFnSwap.Location = new System.Drawing.Point(133, 59);
+            this.chkWinFnSwap.Location = new System.Drawing.Point(133, 61);
             this.chkWinFnSwap.Name = "chkWinFnSwap";
             this.chkWinFnSwap.Size = new System.Drawing.Size(68, 19);
             this.chkWinFnSwap.TabIndex = 5;
@@ -582,7 +646,7 @@ namespace YAMDCC.ConfigEditor
             // 
             lblKeyLight.Anchor = System.Windows.Forms.AnchorStyles.Right;
             lblKeyLight.AutoSize = true;
-            lblKeyLight.Location = new System.Drawing.Point(18, 99);
+            lblKeyLight.Location = new System.Drawing.Point(18, 101);
             lblKeyLight.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
             lblKeyLight.Name = "lblKeyLight";
             lblKeyLight.Size = new System.Drawing.Size(112, 15);
@@ -595,7 +659,7 @@ namespace YAMDCC.ConfigEditor
             flwKeyLight.Controls.Add(this.lblKeyLightLow);
             flwKeyLight.Controls.Add(this.tbKeyLight);
             flwKeyLight.Controls.Add(this.lblKeyLightHigh);
-            flwKeyLight.Location = new System.Drawing.Point(130, 81);
+            flwKeyLight.Location = new System.Drawing.Point(130, 83);
             flwKeyLight.Margin = new System.Windows.Forms.Padding(0);
             flwKeyLight.Name = "flwKeyLight";
             flwKeyLight.Size = new System.Drawing.Size(225, 51);
@@ -880,5 +944,11 @@ namespace YAMDCC.ConfigEditor
         private System.Windows.Forms.Label lblKeyLightLow;
         private System.Windows.Forms.Label lblKeyLightHigh;
         private System.Windows.Forms.CheckBox chkChgLim;
+        private System.Windows.Forms.ToolStripMenuItem tsiLogNone;
+        private System.Windows.Forms.ToolStripMenuItem tsiLogDebug;
+        private System.Windows.Forms.ToolStripMenuItem tsiLogInfo;
+        private System.Windows.Forms.ToolStripMenuItem tsiLogWarn;
+        private System.Windows.Forms.ToolStripMenuItem tsiLogError;
+        private System.Windows.Forms.ToolStripMenuItem tsiLogFatal;
     }
 }

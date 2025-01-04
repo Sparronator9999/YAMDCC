@@ -16,7 +16,7 @@
 
 using System;
 
-namespace YAMDCC.Config
+namespace YAMDCC.Common
 {
     /// <summary>
     /// The exception thrown when an invalid <see cref="YAMDCC_Config"/> is loaded.
@@ -27,6 +27,6 @@ namespace YAMDCC.Config
         /// Initializes a new instance of the <see cref="InvalidConfigException" /> class.
         /// </summary>
         public InvalidConfigException()
-            : base("The YAMDCC config was not in the expected format.") { }
+            : base("The config was not in the expected format.") { }
     }
 }

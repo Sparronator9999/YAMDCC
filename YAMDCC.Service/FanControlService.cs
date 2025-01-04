@@ -22,6 +22,7 @@ using System.IO;
 using System.IO.Pipes;
 using System.ServiceProcess;
 using System.Timers;
+using YAMDCC.Common;
 using YAMDCC.Config;
 using YAMDCC.ECAccess;
 using YAMDCC.IPC;
@@ -121,7 +122,7 @@ namespace YAMDCC.Service
             int rebootFlag = -1;
             try
             {
-                StreamReader sr = new(Paths.ECtoConfPending);
+                StreamReader sr = new(Paths.ECToConfPending);
                 if (int.TryParse(sr.ReadToEnd(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int value))
                 {
                     rebootFlag = value;
@@ -131,7 +132,7 @@ namespace YAMDCC.Service
                 if (rebootFlag == 0)
                 {
                     ECToConf();
-                    File.Delete(Paths.ECtoConfPending);
+                    File.Delete(Paths.ECToConfPending);
                 }
             }
             catch (FileNotFoundException) { }
@@ -160,7 +161,7 @@ namespace YAMDCC.Service
             int rebootFlag = -1;
             try
             {
-                StreamReader sr = new(Paths.ECtoConfPending);
+                StreamReader sr = new(Paths.ECToConfPending);
                 try
                 {
                     if (int.TryParse(sr.ReadToEnd(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int value))
@@ -175,7 +176,7 @@ namespace YAMDCC.Service
 
                 if (rebootFlag == 1)
                 {
-                    StreamWriter sw = new(Paths.ECtoConfPending);
+                    StreamWriter sw = new(Paths.ECToConfPending);
                     try
                     {
                         sw.Write(0);

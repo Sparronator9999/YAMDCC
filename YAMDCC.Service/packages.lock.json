@@ -86,8 +86,17 @@
           "System.Runtime.CompilerServices.Unsafe": "4.5.3"
         }
       },
+      "yamdcc.common": {
+        "type": "Project",
+        "dependencies": {
+          "YAMDCC.Logs": "[1.0.0-dev, )"
+        }
+      },
       "yamdcc.config": {
-        "type": "Project"
+        "type": "Project",
+        "dependencies": {
+          "YAMDCC.Common": "[1.0.0-dev, )"
+        }
       },
       "yamdcc.ecaccess": {
         "type": "Project"
