@@ -44,7 +44,7 @@ A fast, lightweight alternative to MSI Center for MSI laptops, written in C#.
 Currently, there are configs for the following laptops:
 
   - MSI GF63 Thin 11SC
-  - MSI Modern 15 A5M
+  - MSI Modern 15 A5M (thanks @tedomi2705)
 
 There are also generic configs that should work with most MSI laptops, but with an incorrect default
 config. You can use the EC-to-config feature to get the proper fan curves for your laptop, then
@@ -57,7 +57,7 @@ instead.
 
 ### Community tested laptops
 
-The following laptops have been tested by the community and are confirmed to be working:
+The following laptops have been tested by the community and are confirmed to be working, but don't have their own public YAMDCC configs:
 
 - MSI Katana GF66 12UG (thanks @porkmanager)
 - MSI Vector GP78 HX 13V (thanks @Twisted6)
