@@ -51,20 +51,19 @@ config. You can use the EC-to-config feature to get the proper fan curves for yo
 [create a pull request](https://github.com/Sparronator9999/YAMDCC/pulls) to get your laptop's
 config added to the project.
 
-Other laptop brands are not officially supported. You can still try and make your own config, but
-chances are you're looking for [NoteBook FanControl](https://github.com/UraniumDonut/nbfc-revive)
-instead.
+Other laptop brands are not officially supported. You can still try and
+[make your own config](https://github.com/Sparronator9999/YAMDCC/wiki/How-to-make-a-config-for-YAMDCC#manually-from-scratch),
+but chances are you're looking for [NoteBook FanControl](https://github.com/UraniumDonut/nbfc-revive) instead.
 
 ### Community tested laptops
 
-The following laptops have been tested by the community and are confirmed to be working, but don't have their own public YAMDCC configs:
+The following laptops have been tested by the community and are confirmed to be working, but don't
+have their own public YAMDCC configs. A suggested generic config is provided below:
 
-- MSI Katana GF66 12UG (thanks @porkmanager)
-- MSI Vector GP78 HX 13V (thanks @Twisted6)
-- MSI Raider GE66 12UGS (thanks @grimy400)
-- MSI Vector 17 HX A14VHG (thanks @injitools)
-  - Use `MSI-10th-gen-or-newer-nokeylight.xml` - this laptop does not support keyboard backlight
-    adjustment via YAMDCC.
+- MSI Katana GF66 12UG (thanks @porkmanager): `MSI-10th-gen-or-newer-dualfan.xml`
+- MSI Vector GP78 HX 13V (thanks @Twisted6): `MSI-10th-gen-or-newer-dualfan.xml`
+- MSI Raider GE66 12UGS (thanks @grimy400): `MSI-10th-gen-or-newer-dualfan.xml`
+- MSI Vector 17 HX A14VHG (thanks @injitools): `MSI-10th-gen-or-newer-dualfan-nokeylight.xml`
 
 To test your laptop, go to the [config tutorial](https://github.com/Sparronator9999/YAMDCC/wiki/How-to-make-a-config-for-YAMDCC)
 wiki page and follow the instructions to get a config for your laptop.
