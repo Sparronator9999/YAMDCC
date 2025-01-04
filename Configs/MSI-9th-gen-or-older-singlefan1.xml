@@ -96,7 +96,7 @@
 			<SpeedReadReg>137</SpeedReadReg>
 			<TempReadReg>128</TempReadReg>
 			<RPMConf>
-				<ReadReg>202</ReadReg>
+				<ReadReg>204</ReadReg>
 				<Is16Bit>true</Is16Bit>
 				<IsBigEndian>true</IsBigEndian>
 				<RPMMult>478000</RPMMult>
