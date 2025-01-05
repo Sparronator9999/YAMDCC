@@ -197,7 +197,13 @@ namespace YAMDCC.ConfigEditor
                 SendServiceMessage(new ServiceCommand(Command.FullBlast, "0"));
             }
             GlobalConfig.App = "YAMDCC";
-            GlobalConfig.Save();
+            try
+            {
+                GlobalConfig.Save();
+            }
+            // ignore DirectoryNotFoundException, since we probably closed the
+            // window due to uninstalling with data directory delete enabled
+            catch (DirectoryNotFoundException) { }
         }
 
         private void OnProcessExit(object sender, EventArgs e)
