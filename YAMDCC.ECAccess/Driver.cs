@@ -17,6 +17,7 @@
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Security.AccessControl;
 using YAMDCC.ECAccess.Win32;
 
@@ -297,12 +298,33 @@ namespace YAMDCC.ECAccess
         public unsafe bool IOControl<T>(uint ctlCode, ref T inBuffer)
             where T : unmanaged
         {
-            fixed (T* pBuffer = &inBuffer)
+            if (typeof(T).IsValueType)
             {
-                return IOControl(ctlCode,
-                    pBuffer, (uint)sizeof(T),
-                    null, 0,
-                    out _);
+                fixed (T* pInBuffer = &inBuffer)
+                {
+                    return IOControl(ctlCode,
+                        pInBuffer, (uint)Marshal.SizeOf(inBuffer),
+                        null, 0,
+                        out _);
+                }
+            }
+            else
+            {
+                IntPtr ptr = Marshal.AllocHGlobal(Marshal.SizeOf(inBuffer));
+                try
+                {
+                    Marshal.StructureToPtr(inBuffer, ptr, false);
+
+                    return IOControl(ctlCode,
+                        ptr.ToPointer(), (uint)Marshal.SizeOf(inBuffer),
+                        null, 0,
+                        out _);
+                }
+                finally
+                {
+                    Marshal.DestroyStructure<T>(ptr);
+                    Marshal.FreeHGlobal(ptr);
+                }
             }
         }
 
@@ -310,15 +332,49 @@ namespace YAMDCC.ECAccess
             where TIn : unmanaged
             where TOut : unmanaged
         {
-            int inSize = sizeof(TIn);
-
             fixed (TIn* pInBuffer = &inBuffer)
             fixed (TOut* pOutBuffer = &outBuffer)
             {
-                return IOControl(ctlCode,
-                    pInBuffer, (uint)inSize,
-                    pOutBuffer, (uint)sizeof(TOut),
-                    out _);
+                IntPtr inPtr = typeof(TIn).IsValueType
+                    ? (IntPtr)pInBuffer
+                    : Marshal.AllocHGlobal(Marshal.SizeOf(inBuffer));
+                IntPtr outPtr = typeof(TOut).IsValueType
+                    ? (IntPtr)pOutBuffer
+                    : Marshal.AllocHGlobal(Marshal.SizeOf(outBuffer));
+
+                try
+                {
+                    if (!typeof(TIn).IsValueType)
+                    {
+                        Marshal.StructureToPtr(inBuffer, inPtr, false);
+                    }
+
+                    if (IOControl(ctlCode,
+                        inPtr.ToPointer(), (uint)Marshal.SizeOf(inBuffer),
+                        outPtr.ToPointer(), (uint)Marshal.SizeOf(outBuffer),
+                        out _))
+                    {
+                        if (!typeof(TOut).IsValueType)
+                        {
+                            Marshal.PtrToStructure(outPtr, outBuffer);
+                        }
+                        return true;
+                    }
+                    return false;
+                }
+                finally
+                {
+                    if (!typeof(TIn).IsValueType)
+                    {
+                        Marshal.DestroyStructure<TIn>(inPtr);
+                        Marshal.FreeHGlobal(inPtr);
+                    }
+                    if (!typeof(TOut).IsValueType)
+                    {
+                        Marshal.DestroyStructure<TOut>(outPtr);
+                        Marshal.FreeHGlobal(outPtr);
+                    }
+                }
             }
         }
 
