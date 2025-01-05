@@ -265,6 +265,10 @@ namespace YAMDCC.Service
                     case Command.Nothing:
                         Log.Warn("Empty command received!");
                         return;
+                    case Command.GetVersion:
+                        IPCServer.PushMessage(new ServiceResponse(
+                            Response.Version, Utils.GetRevision()), e.Connection.ID);
+                        return;
                     case Command.ReadECByte:
                         if (args.Length == 1)
                         {

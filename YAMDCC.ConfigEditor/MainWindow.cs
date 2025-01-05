@@ -149,7 +149,7 @@ namespace YAMDCC.ConfigEditor
             IPCClient.Start();
             if (!IPCClient.WaitForConnection(5000))
             {
-                throw new TimeoutException("exSvcTimeout");
+                throw new TimeoutException(Strings.GetString("exSvcTimeout"));
             }
             AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
 

@@ -13,7 +13,7 @@ namespace YAMDCC.IPC
         /// </summary>
         Nothing = 0,
         /// <summary>
-        /// Get the YAMDCC Service version.
+        /// Get the YAMDCC Service version, as a Git revision hash.
         /// </summary>
         /// <remarks>
         /// <para>
