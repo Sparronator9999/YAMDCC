@@ -130,7 +130,8 @@ namespace YAMDCC.Common.Dialogs
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "ProgressDialog";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Load += new System.EventHandler(this.ProgressDialog_Load);
             tblMain.ResumeLayout(false);
             tblMain.PerformLayout();

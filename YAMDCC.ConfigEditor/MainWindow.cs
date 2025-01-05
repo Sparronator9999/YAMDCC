@@ -147,7 +147,12 @@ namespace YAMDCC.ConfigEditor
             IPCClient.ServerMessage += IPC_MessageReceived;
             IPCClient.Error += IPCClient_Error;
             IPCClient.Start();
-            if (!IPCClient.WaitForConnection(5000))
+
+            ProgressDialog dlg = new("Connecting to YAMDCC service...",
+                (e) => e.Result = !IPCClient.WaitForConnection(5000));
+            dlg.ShowDialog();
+
+            if (dlg.Result is bool b && b)
             {
                 throw new TimeoutException(Strings.GetString("exSvcTimeout"));
             }
