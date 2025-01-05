@@ -86,6 +86,13 @@
           "System.Runtime.CompilerServices.Unsafe": "4.5.3"
         }
       },
+      "ec-inspect": {
+        "type": "Project",
+        "dependencies": {
+          "YAMDCC.Common": "[1.0.0-dev, )",
+          "YAMDCC.IPC": "[2.1.2-release, )"
+        }
+      },
       "yamdcc.common": {
         "type": "Project",
         "dependencies": {
