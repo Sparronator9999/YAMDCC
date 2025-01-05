@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <AnalysisLevel>latest-recommended</AnalysisLevel>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <AssemblyName>ec-inspect</AssemblyName>
+        <AssemblyTitle>YAMDCC EC inspector</AssemblyTitle>
+        <Authors>Sparronator9999</Authors>
+        <BootstrapperEnabled>true</BootstrapperEnabled>
+        <Copyright>Copyright © 2025 Sparronator9999 (and Contributors)</Copyright>
+        <EnableNETAnalyzers>True</EnableNETAnalyzers>
+        <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+        <LangVersion>13.0</LangVersion>
+        <OutputType>Exe</OutputType>
+        <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <RuntimeIdentifiers>win7-x64;win7-x86;win-x64;win-x86</RuntimeIdentifiers>
+        <TargetFramework>net48</TargetFramework>
+        <Title>YAMDCC EC inspector</Title>
+        <UseWindowsForms>true</UseWindowsForms>
+        <VersionPrefix>1.0.0</VersionPrefix>
+        <VersionSuffix>dev</VersionSuffix>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Release'">
+        <DebugType>none</DebugType>
+    </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\YAMDCC.Common\YAMDCC.Common.csproj" />
+      <ProjectReference Include="..\YAMDCC.IPC\YAMDCC.IPC.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <Reference Include="System.ServiceProcess" />
+    </ItemGroup>
+</Project>

@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Principal;
 using System.ServiceProcess;
 using System.Windows.Forms;
 
@@ -103,6 +104,24 @@ namespace YAMDCC.Common
             return prodVer.Contains("+")
                 ? prodVer.Remove(0, prodVer.IndexOf('+') + 1)
                 : string.Empty;
+        }
+
+        public static bool IsAdmin()
+        {
+            WindowsIdentity identity = WindowsIdentity.GetCurrent();
+            try
+            {
+                WindowsPrincipal principal = new(identity);
+                return principal.IsInRole(WindowsBuiltInRole.Administrator);
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                identity.Dispose();
+            }
         }
 
         /// <summary>

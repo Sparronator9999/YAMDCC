@@ -17,7 +17,6 @@
 using System;
 using System.Globalization;
 using System.IO;
-using System.Security.Principal;
 using System.ServiceProcess;
 using System.Windows.Forms;
 using YAMDCC.Common;
@@ -50,7 +49,7 @@ namespace YAMDCC.ConfigEditor
             };
             #endregion
 
-            if (!IsAdmin())
+            if (!Utils.IsAdmin())
             {
                 Utils.ShowError(Strings.GetString("dlgNoAdmin"));
                 return;
@@ -187,24 +186,6 @@ namespace YAMDCC.ConfigEditor
             }
 
             Application.Run(new MainWindow());
-        }
-
-        private static bool IsAdmin()
-        {
-            WindowsIdentity identity = WindowsIdentity.GetCurrent();
-            try
-            {
-                WindowsPrincipal principal = new(identity);
-                return principal.IsInRole(WindowsBuiltInRole.Administrator);
-            }
-            catch
-            {
-                return false;
-            }
-            finally
-            {
-                identity.Dispose();
-            }
         }
     }
 }
