@@ -351,6 +351,8 @@ namespace YAMDCC.ConfigEditor
 
             if (sfd.ShowDialog() == DialogResult.OK)
             {
+                Config.ChargeLimitConf.CurVal = (byte)(chkChgLim.Checked
+                    ? numChgLim.Value : 0);
                 Config.Save(sfd.FileName);
                 SetLastConfPath(sfd.FileName);
                 btnRevert.Enabled = tsiRevert.Enabled = false;
@@ -699,7 +701,6 @@ namespace YAMDCC.ConfigEditor
         {
             if (Config is not null)
             {
-                Config.ChargeLimitConf.CurVal = (byte)numChgLim.Value;
                 btnRevert.Enabled = tsiRevert.Enabled = true;
             }
         }
@@ -895,6 +896,8 @@ namespace YAMDCC.ConfigEditor
         private void ApplyConf()
         {
             // Save the updated config
+            Config.ChargeLimitConf.CurVal = (byte)(chkChgLim.Checked
+                ? numChgLim.Value : 0);
             Config.Save(Paths.CurrentConfig);
 
             // Tell the service to reload and apply the updated config
