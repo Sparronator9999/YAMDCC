@@ -1,8 +1,42 @@
 # YAMDCC - Yet Another MSI (Dragon) Center Clone
 
-A fast, lightweight alternative to MSI Center for MSI laptops, written in C#.
+A fast, lightweight MSI Center alternative and fan control utility for MSI laptops.
 
 **Please read the whole README (or at least the [Supported Laptops](#supported-laptops) and [FAQ](#faq) sections) before downloading.**
+
+<details><summary>Table of contents <i>(click to expand</i>)</summary>
+
+- [Disclaimers](#disclaimers)
+- [Features](#features)
+- [Screenshots](#screenshots)
+- [Supported laptops](#supported-laptops)
+  - [Community-tested laptops](#community-tested-laptops)
+- [Comparison](#comparison)
+- [Roadmap](#roadmap)
+- [Download](#download)
+- [Compile](#compile)
+- [Issues](#issues)
+- [Contributing](#contributing)
+- [FAQ](#faq)
+  <details><summary>Questions <i>(click to expand)</i></summary>
+  - [What versions of Windows do you support?](#what-versions-of-windows-do-you-support)
+  - [Can you please make a Linux version?](#can-you-please-make-a-linux-version)
+  - [How does this program work?](#how-does-this-program-work)
+  - [Why do I need administrator privileges to run this program?](#why-do-i-need-administrator-privileges-to-run-this-program)
+  - [Why does this program need a kernel driver?](#why-does-this-program-need-a-kernel-driver)
+  - [Doesn't WinRing0 have security issues?](#doesnt-winring0-have-security-issues)
+  - [Help! My fan profiles aren't being applied!](#help-my-fan-profiles-arent-being-applied)
+  - [My laptop isn't supported! What do I do?](#my-laptop-isnt-supported-what-do-i-do)
+  - [Can you write a config for my laptop?](#can-you-write-a-config-for-my-laptop)
+  - [Help! My laptop stopped booting/is doing weird stuff!](#help-my-laptop-stopped-bootingis-doing-weird-stuff)
+  - [Dark mode?](#dark-mode)
+  - [Why are you still using WinForms in 2024?](#why-are-you-still-using-winforms-in-2024)
+  - [.NET (Core) 5/6/8/<insert latest .NET version>!](#net-core-568insert-latest-net-version)
+  </details>
+
+- [License and copyright](#license-and-copyright)
+- [Third-party libraries](#third-party-libraries)
+</details>
 
 ## Disclaimers
 
@@ -45,6 +79,7 @@ Currently, there are configs for the following laptops:
 
   - MSI GF63 Thin 11SC
   - MSI Modern 15 A5M (thanks @tedomi2705)
+  - MSI Katana GF66 12UG (thanks @porkmanager)
 
 There are also generic configs that should work with most MSI laptops, but with an incorrect default
 config. You can use the EC-to-config feature to get the proper fan curves for your laptop, then
@@ -55,24 +90,17 @@ Other laptop brands are not officially supported. You can still try and
 [make your own config](https://github.com/Sparronator9999/YAMDCC/wiki/How-to-make-a-config-for-YAMDCC#manually-from-scratch),
 but chances are you're looking for [NoteBook FanControl](https://github.com/UraniumDonut/nbfc-revive) instead.
 
-### Community tested laptops
+### Community-tested laptops
 
 The following laptops have been tested by the community and are confirmed to be working, but don't
 have their own public YAMDCC configs. A suggested generic config is provided below:
 
-- MSI Katana GF66 12UG (thanks @porkmanager): `MSI-10th-gen-or-newer-dualfan.xml`
 - MSI Vector GP78 HX 13V (thanks @Twisted6): `MSI-10th-gen-or-newer-dualfan.xml`
 - MSI Raider GE66 12UGS (thanks @grimy400): `MSI-10th-gen-or-newer-dualfan.xml`
 - MSI Vector 17 HX A14VHG (thanks @injitools): `MSI-10th-gen-or-newer-dualfan-nokeylight.xml`
 
 To test your laptop, go to the [config tutorial](https://github.com/Sparronator9999/YAMDCC/wiki/How-to-make-a-config-for-YAMDCC)
 wiki page and follow the instructions to get a config for your laptop.
-
-### Config disclaimer
-
-**Please avoid asking me (or other people) in the issue tracker to create a config for you.**
-**Unless we have your specific laptop model (which we probably don't), we will not be able to**
-**help you outside of the general instructions.**
 
 ## Comparison
 
@@ -148,9 +176,9 @@ If you don't have a GitHub account, you can also download the latest development
 
 You're probably looking for the `Release` build, unless you're debugging issues with the program.
 
-Alternatively, you can [build the program yourself](#build).
+Alternatively, you can [build the program yourself](#compile).
 
-## Build
+## Compile
 
 See also the [wiki page](https://github.com/Sparronator9999/YAMDCC/wiki/Building).
 
@@ -189,14 +217,14 @@ feel free to open an issue. Please make sure to use the correct issue template f
 
 ## Contributing
 
-See the [build instructions](#build) to build this project.
+See the [compile instructions](#compile) to build this project.
 
 If you would like to contribute to the project with bug fixes, new features,
 or new configs, feel free to open a pull request. Please include the following:
 
-- **Bug Fixes/Improvements:** Describe the changes you made and why they
+- **Bug fixes/improvements/new feature:** Describe the changes you made and why they
   are important or useful.
-- **New Config:** Add a config with your laptop's default fan profile so that
+- **New config:** Add a config with your laptop's default fan profile so that
   other people don't have to run the EC-to-config tool.
 
 ## FAQ
@@ -274,11 +302,16 @@ if a similar issue doesn't already exist (see the [Issues section](#issues) of t
 
 ### Can you write a config for my laptop?
 
-Again, [see above](#supported-laptops).
+If it's an MSI laptop, maybe. All MSI laptops (or at least those I've come across in bug reports)
+share the same (or very similar) EC register layout, and are documented to varying degrees in
+similar open-source projects. I may be able to assist you if the generic configs aren't working as
+expected.
+
+For other laptop brands, you're on your own.
 
 ### Help! My laptop stopped booting/is doing weird stuff!
 
-Reset your EC (MSI laptops only):
+MSI laptop users: reset your EC:
 
 Shut down the laptop if it's on (force shut down if needed), then find the EC reset button
 (on the GF63 Thin 11SC, it's a small hole located on the bottom of the laptop next to the charge port)
@@ -289,7 +322,7 @@ If the issue persists, try disconnecting all power sources, including the laptop
 battery and "main" battery (requires disassembly of laptop). Leave disconnected for a few seconds,
 then re-connect everything, re-assemble and attempt a reboot. This will reset your BIOS settings.
 
-Users of other laptop brands will need to look up instructions for their laptop.
+Users of other laptop brands will need to look up instructions for their laptop to reset BIOS settings.
 
 ### Dark mode?
 
@@ -315,7 +348,7 @@ If Linux support ever comes, it will be using .NET (since .NET Framework isn't s
 
 ## License and Copyright
 
-Copyright © 2023-2024 Sparronator9999.
+Copyright © 2023-2025 Sparronator9999.
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
