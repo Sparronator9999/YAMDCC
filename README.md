@@ -18,7 +18,6 @@ A fast, lightweight MSI Center alternative and fan control utility for MSI lapto
 - [Issues](#issues)
 - [Contributing](#contributing)
 - [FAQ](#faq)
-  <details><summary>Questions <i>(click to expand)</i></summary>
   - [What versions of Windows do you support?](#what-versions-of-windows-do-you-support)
   - [Can you please make a Linux version?](#can-you-please-make-a-linux-version)
   - [How does this program work?](#how-does-this-program-work)
@@ -32,8 +31,6 @@ A fast, lightweight MSI Center alternative and fan control utility for MSI lapto
   - [Dark mode?](#dark-mode)
   - [Why are you still using WinForms in 2024?](#why-are-you-still-using-winforms-in-2024)
   - [.NET (Core) 5/6/8/<insert latest .NET version>!](#net-core-568insert-latest-net-version)
-  </details>
-
 - [License and copyright](#license-and-copyright)
 - [Third-party libraries](#third-party-libraries)
 </details>
