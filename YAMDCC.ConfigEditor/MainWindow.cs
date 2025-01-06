@@ -211,6 +211,7 @@ namespace YAMDCC.ConfigEditor
         {
             // Close the connection to the YAMDCC
             // Service before exiting the program:
+            tmrPoll.Stop();
             IPCClient.Stop();
         }
 
@@ -464,7 +465,7 @@ namespace YAMDCC.ConfigEditor
                 Strings.GetString("dlgSvcStop"), "Stop Service",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
-
+                tmrPoll.Stop();
                 IPCClient.Stop();
                 Hide();
 
@@ -493,6 +494,7 @@ namespace YAMDCC.ConfigEditor
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
                     MessageBoxDefaultButton.Button2) == DialogResult.Yes;
 
+                tmrPoll.Stop();
                 IPCClient.Stop();
                 Hide();
 

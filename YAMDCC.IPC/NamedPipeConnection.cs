@@ -84,7 +84,16 @@ namespace YAMDCC.IPC
         /// </param>
         public bool PushMessage(TWrite message)
         {
-            return _writeQueue.TryAdd(message) && _writeSignal.Set();
+            try
+            {
+                return _writeQueue.TryAdd(message) && _writeSignal.Set();
+            }
+            // catch the exception that occurs when trying to add an item to
+            // the write queue when the named pipe connection has been stopped
+            catch (InvalidOperationException)
+            {
+                return false;
+            }
         }
 
         /// <summary>

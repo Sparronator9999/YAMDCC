@@ -15,7 +15,7 @@
         <TargetFramework>net48</TargetFramework>
         <Title>YAMDCC helper service</Title>
         <VersionPrefix>1.0.0</VersionPrefix>
-        <VersionSuffix>beta.4-hotfix.1</VersionSuffix>
+        <VersionSuffix>dev</VersionSuffix>
         <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
