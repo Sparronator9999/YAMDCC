@@ -180,19 +180,20 @@ Would you like to start it now?
 (Clicking "No" will quit the program.)</value>
   </data>
   <data name="ttAbout" xml:space="preserve">
-    <value>Show information about this program, including
+    <value>Click to show information about this program, including
 version, copyright and licensing information.</value>
   </data>
   <data name="ttApply" xml:space="preserve">
-    <value>Applies the currently loaded config to the system.</value>
+    <value>Click to apply the currently loaded config to the system.</value>
   </data>
   <data name="ttChgLim" xml:space="preserve">
-    <value>Set to anything other than "0" (i.e. 1-100) to limit the charge
+    <value>Set to between 10 and 100 to limit the charge
 level of your laptop's battery to the specified percentage.
-Set to "0" to disable this feature.</value>
+Set to 0 (or uncheck the "Enabled"check box) to disable this feature.</value>
   </data>
   <data name="ttECMon" xml:space="preserve">
-    <value>When enabled, information about the fan speed and RPM, and the temperature
+    <value>Click to toggle the EC monitor.
+When enabled, information about the fan speed and RPM, and the temperature
 of the component being cooled by the fan (e.g. CPU) to the status bar.</value>
   </data>
   <data name="ttExit" xml:space="preserve">
@@ -200,7 +201,7 @@ of the component being cooled by the fan (e.g. CPU) to the status bar.</value>
 The YAMDCC service will continue to run in the background.</value>
   </data>
   <data name="ttFanSel" xml:space="preserve">
-    <value>The fan to adjust a fan profile for.
+    <value>Click or scroll to change the fan to adjust a fan profile for.
 Depending on your laptop, there may be multiple "virtual" fans
 listed here, even if your laptop only has one physical fan.</value>
   </data>
@@ -229,7 +230,7 @@ listed here, even if your laptop only has one physical fan.</value>
     <value>Click to change the currently selected fan profile's name.</value>
   </data>
   <data name="ttProfSel" xml:space="preserve">
-    <value>The fan profile to apply to the currently selected fan.
+    <value>Click or scroll to change the fan profile to apply to the currently selected fan.
 
 Profile description:
 {0}</value>
@@ -347,7 +348,7 @@ increasing to (or close to) 100% for the highest setting.</value>
 brightness, or drag left to decrease it (or turn it off).</value>
   </data>
   <data name="ttPerfMode" xml:space="preserve">
-    <value>Select the performance mode of your laptop here.
+    <value>Click or scroll to select the performance mode of your laptop.
 Note that this is different from Windows' power plans.
 
 Performance mode description:
@@ -366,15 +367,19 @@ Performance mode description:
     <value>Stopping YAMDCC service...</value>
   </data>
   <data name="ttSwitchAll" xml:space="preserve">
-    <value>When switching fan profiles for one fan, also switches other fan profiles to that profile as well if enabled.
+    <value>Click to toggle switching fan profiles for other fans' profiles when switching any fan's profile.
 
-Before enabling, make sure:
-- You have the same number of fan profiles for all your fans (you won't be able to enable this until you fix this)
-- All fan profiles are in the same order for every fan (otherwise the switching behaviour will be wrong)
+Before enabling:
+- make sure you have the same number of fan profiles for all your fans, otherwise you won't be able to enable this option
+- check that all fan profiles are in the same order for every fan, and named appropriately
 
 While enabled:
-- When adding a fan profile, the name you choose will apply to all fans.
+- When creating a new fan profile, the name you choose will apply to all fans' new profiles.
 - When deleting a fan profile for one fan, you will be asked for confirmation to delete each fan's equivalent fan profile.
-  - If you decline deleting any fan profile, this option will be disabled.</value>
+  - If you decline deleting any fan profile, this option will be disabled if other fan profiles were deleted.</value>
+  </data>
+  <data name="ttECtoConf" xml:space="preserve">
+    <value>Click to copy your laptop's default fan profiles to the currently loaded YAMDCC config.
+Once you click this, you must reboot your laptop to reset the fan profiles to default.</value>
   </data>
 </root>

@@ -79,6 +79,7 @@ namespace YAMDCC.ConfigEditor
             tsiProfRename.ToolTipText = Strings.GetString("ttProfRen");
             tsiProfChangeDesc.ToolTipText = Strings.GetString("ttProfChangeDesc");
             tsiSwitchAll.ToolTipText = Strings.GetString("ttSwitchAll");
+            tsiECtoConf.ToolTipText = Strings.GetString("ttECtoConf");
             tsiProfDel.ToolTipText = Strings.GetString("ttProfDel");
             tsiECMon.ToolTipText = Strings.GetString("ttECMon");
             tsiStopSvc.ToolTipText = Strings.GetString("ttSvcStop");
@@ -1135,6 +1136,7 @@ namespace YAMDCC.ConfigEditor
                     tbFanSpds[i] = new TrackBar()
                     {
                         Dock = DockStyle.Fill,
+                        LargeChange = 10,
                         Margin = new Padding((int)(10 * scale), 0, (int)(10 * scale), 0),
                         Orientation = Orientation.Vertical,
                         Tag = i,
