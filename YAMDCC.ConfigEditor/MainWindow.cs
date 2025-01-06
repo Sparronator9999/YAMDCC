@@ -78,6 +78,7 @@ namespace YAMDCC.ConfigEditor
             tsiProfAdd.ToolTipText = Strings.GetString("ttProfAdd");
             tsiProfRename.ToolTipText = Strings.GetString("ttProfRen");
             tsiProfChangeDesc.ToolTipText = Strings.GetString("ttProfChangeDesc");
+            tsiSwitchAll.ToolTipText = Strings.GetString("ttSwitchAll");
             tsiProfDel.ToolTipText = Strings.GetString("ttProfDel");
             tsiECMon.ToolTipText = Strings.GetString("ttECMon");
             tsiStopSvc.ToolTipText = Strings.GetString("ttSvcStop");
@@ -550,7 +551,26 @@ namespace YAMDCC.ConfigEditor
             FanConf config = Config.FanConfs[cboFanSel.SelectedIndex];
             FanCurveConf curveConfig = config.FanCurveConfs[cboProfSel.SelectedIndex];
 
-            config.CurveSel = cboProfSel.SelectedIndex;
+            if (tsiSwitchAll.Checked)
+            {
+                // sanity check - should return true at this point
+                if (FansHaveSameProfileCount())
+                {
+                    for (int i = 0; i < Config.FanConfs.Length; i++)
+                    {
+                        Config.FanConfs[i].CurveSel = cboProfSel.SelectedIndex;
+                    }
+                }
+                else
+                {
+                    tsiSwitchAll.Checked = false;
+                }
+            }
+            else
+            {
+                config.CurveSel = cboProfSel.SelectedIndex;
+            }
+
             ttMain.SetToolTip(cboProfSel, Strings.GetString(
                 "ttProfSel", config.FanCurveConfs[config.CurveSel].Desc));
 
@@ -812,6 +832,7 @@ namespace YAMDCC.ConfigEditor
         private void LoadConf(YAMDCC_Config config)
         {
             DisableAll();
+            tsiSwitchAll.Checked = FansHaveSameProfileCount();
 
             tsiSaveConf.Enabled = true;
 
@@ -947,53 +968,97 @@ namespace YAMDCC.ConfigEditor
 
         private void AddFanProfile()
         {
-            FanConf fanConfig = Config.FanConfs[cboFanSel.SelectedIndex];
-            FanCurveConf oldCurveCfg = fanConfig.FanCurveConfs[cboProfSel.SelectedIndex];
+            if (tsiSwitchAll.Checked)
+            {
+                AddFanProfileInternal(0, cboFanSel.Items.Count);
+            }
+            else
+            {
+                AddFanProfileInternal(cboFanSel.SelectedIndex, cboFanSel.SelectedIndex + 1);
+            }
+
+            if (!FansHaveSameProfileCount())
+            {
+                tsiSwitchAll.Checked = false;
+            }
+
+            cboProfSel.SelectedIndex = cboProfSel.Items.Count - 1;
+            btnRevert.Enabled = tsiRevert.Enabled = true;
+        }
+
+        private void AddFanProfileInternal(int start, int end)
+        {
+            FanConf fanCfg = Config.FanConfs[cboFanSel.SelectedIndex];
+            string oldProfName = fanCfg.FanCurveConfs[cboProfSel.SelectedIndex].Name;
 
             TextInputDialog dlg = new(
                 Strings.GetString("dlgProfAdd"),
-                "New Profile", $"Copy of {oldCurveCfg.Name}");
+                "New Profile", $"Copy of {oldProfName}");
+
             if (dlg.ShowDialog() == DialogResult.OK)
             {
-                // Create a copy of the currently selected fan profile:
-                FanCurveConf newCurveCfg = oldCurveCfg.Copy();
+                for (int i = start; i < end; i++)
+                {
+                    fanCfg = Config.FanConfs[i];
+                    FanCurveConf oldCurveCfg = fanCfg.FanCurveConfs[cboProfSel.SelectedIndex];
 
-                // Name it according to what the user specified
-                newCurveCfg.Name = dlg.Result;
-                newCurveCfg.Desc = $"Copy of {oldCurveCfg.Name}";
+                    // Create a copy of the currently selected fan profile:
+                    FanCurveConf newCurveCfg = oldCurveCfg.Copy();
 
-                // Add the new fan profile to the config's list
-                List<FanCurveConf> curveCfgList = [.. fanConfig.FanCurveConfs, newCurveCfg];
-                fanConfig.FanCurveConfs = [.. curveCfgList];
+                    // Name it according to what the user specified
+                    newCurveCfg.Name = dlg.Result;
+                    newCurveCfg.Desc = $"(Copy of {oldCurveCfg.Name})\n{oldCurveCfg.Desc}";
 
-                // Add the new fan profile to the UI's profile list and select it:
-                cboProfSel.Items.Add(dlg.Result);
-                cboProfSel.SelectedIndex = cboProfSel.Items.Count - 1;
+                    // Add the new fan profile to the config's list
+                    fanCfg.FanCurveConfs = [.. fanCfg.FanCurveConfs, newCurveCfg];
 
-                btnRevert.Enabled = tsiRevert.Enabled = true;
+                    // Add the new fan profile to the UI's profile list and select it:
+                    cboProfSel.Items.Add(dlg.Result);
+                }
             }
         }
 
         private void DelFanProfile()
         {
-            if (cboProfSel.Text != "Default" && MessageBox.Show(
-                Strings.GetString("dlgProfDel", cboProfSel.Text),
-                "Delete fan profile?", MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning) == DialogResult.Yes)
+            if (tsiSwitchAll.Checked)
             {
-                FanConf fanConfig = Config.FanConfs[cboFanSel.SelectedIndex];
+                DelFanProfileInternal(0, cboFanSel.Items.Count);
+            }
+            else
+            {
+                DelFanProfileInternal(cboFanSel.SelectedIndex, cboFanSel.SelectedIndex + 1);
+            }
 
-                // Remove the fan profile from the config's list
-                List<FanCurveConf> curveCfgList = [.. fanConfig.FanCurveConfs];
-                curveCfgList.RemoveAt(cboProfSel.SelectedIndex);
-                fanConfig.FanCurveConfs = [.. curveCfgList];
+            if (!FansHaveSameProfileCount())
+            {
+                tsiSwitchAll.Checked = false;
+            }
 
-                // Remove from the list client-side, and select a different fan profile
-                int oldIndex = cboProfSel.SelectedIndex;
-                cboProfSel.Items.RemoveAt(cboProfSel.SelectedIndex);
-                cboProfSel.SelectedIndex = oldIndex == 1 ? 1 : oldIndex - 1;
+            btnRevert.Enabled = tsiRevert.Enabled = true;
+        }
 
-                btnRevert.Enabled = tsiRevert.Enabled = true;
+        private void DelFanProfileInternal(int start, int end)
+        {
+            for (int i = start; i < end; i++)
+            {
+                FanConf fanCfg = Config.FanConfs[i];
+                FanCurveConf curveCfg = fanCfg.FanCurveConfs[cboProfSel.SelectedIndex];
+
+                if (curveCfg.Name != "Default" && MessageBox.Show(
+                    Strings.GetString("dlgProfDel", curveCfg.Name),
+                    $"Delete fan profile? ({fanCfg.Name})", MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning) == DialogResult.Yes)
+                {
+                    // Remove the fan profile from the config's list
+                    List<FanCurveConf> curveCfgList = [.. fanCfg.FanCurveConfs];
+                    curveCfgList.RemoveAt(cboProfSel.SelectedIndex);
+                    fanCfg.FanCurveConfs = [.. curveCfgList];
+
+                    // Remove from the list client-side, and select a different fan profile
+                    int oldIndex = cboProfSel.SelectedIndex;
+                    cboProfSel.Items.RemoveAt(cboProfSel.SelectedIndex);
+                    cboProfSel.SelectedIndex = oldIndex == 1 ? 1 : oldIndex - 1;
+                }
             }
         }
 
@@ -1201,6 +1266,26 @@ namespace YAMDCC.ConfigEditor
             tsiLogFatal.Checked = true;
         }
 
+        private void tsiSwitchAll_Click(object sender, EventArgs e)
+        {
+            if (!tsiSwitchAll.Checked)
+            {
+                if (FansHaveSameProfileCount())
+                {
+                    tsiSwitchAll.Checked = true;
+                }
+                else
+                {
+                    Utils.ShowError("All fans must have the same number of fan profiles.");
+                }
+            }
+            else
+            {
+                tsiSwitchAll.Checked = false;
+            }
+
+        }
+
         private static NumericUpDown FanCurveNUD(int tag, float scale)
         {
             return new NumericUpDown()
@@ -1251,6 +1336,20 @@ namespace YAMDCC.ConfigEditor
                     }
                 }
             }
+        }
+
+        private bool FansHaveSameProfileCount()
+        {
+            for (int i = 0; i < Config.FanConfs.Length - 1; i++)
+            {
+                FanConf[] fanConfs = Config.FanConfs;
+
+                if (fanConfs[i].FanCurveConfs.Length != fanConfs[i + 1].FanCurveConfs.Length)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         private void UpdateStatus(StatusCode status, int data = 0)

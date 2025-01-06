@@ -365,4 +365,16 @@ Performance mode description:
   <data name="dlgSvcStopping" xml:space="preserve">
     <value>Stopping YAMDCC service...</value>
   </data>
+  <data name="ttSwitchAll" xml:space="preserve">
+    <value>When switching fan profiles for one fan, also switches other fan profiles to that profile as well if enabled.
+
+Before enabling, make sure:
+- You have the same number of fan profiles for all your fans (you won't be able to enable this until you fix this)
+- All fan profiles are in the same order for every fan (otherwise the switching behaviour will be wrong)
+
+While enabled:
+- When adding a fan profile, the name you choose will apply to all fans.
+- When deleting a fan profile for one fan, you will be asked for confirmation to delete each fan's equivalent fan profile.
+  - If you decline deleting any fan profile, this option will be disabled.</value>
+  </data>
 </root>

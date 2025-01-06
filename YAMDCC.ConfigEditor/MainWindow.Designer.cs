@@ -78,12 +78,12 @@ namespace YAMDCC.ConfigEditor
             this.tsiProfDel = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiECtoConf = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiECMon = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsiLogNone = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiLogDebug = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiLogInfo = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiLogWarn = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiLogError = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiLogFatal = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsiLogNone = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiStopSvc = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiUninstall = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiHelp = new System.Windows.Forms.ToolStripMenuItem();
@@ -112,6 +112,7 @@ namespace YAMDCC.ConfigEditor
             this.lblFanRPM = new System.Windows.Forms.Label();
             this.lblTemp = new System.Windows.Forms.Label();
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tsiSwitchAll = new System.Windows.Forms.ToolStripMenuItem();
             menuStrip = new System.Windows.Forms.MenuStrip();
             sep1 = new System.Windows.Forms.ToolStripSeparator();
             sep2 = new System.Windows.Forms.ToolStripSeparator();
@@ -232,6 +233,7 @@ namespace YAMDCC.ConfigEditor
             this.tsiOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsiProfAdd,
             this.tsiProfEdit,
+            this.tsiSwitchAll,
             this.tsiECtoConf,
             sep4,
             this.tsiECMon,
@@ -328,47 +330,47 @@ namespace YAMDCC.ConfigEditor
             tsiLogLevel.Size = new System.Drawing.Size(257, 22);
             tsiLogLevel.Text = "Service log level";
             // 
-            // tsiLogNone
-            // 
-            this.tsiLogNone.Name = "tsiLogNone";
-            this.tsiLogNone.Size = new System.Drawing.Size(180, 22);
-            this.tsiLogNone.Text = "Disabled";
-            this.tsiLogNone.Click += new System.EventHandler(this.tsiLogNone_Click);
-            // 
             // tsiLogDebug
             // 
             this.tsiLogDebug.Name = "tsiLogDebug";
-            this.tsiLogDebug.Size = new System.Drawing.Size(180, 22);
+            this.tsiLogDebug.Size = new System.Drawing.Size(119, 22);
             this.tsiLogDebug.Text = "Debug";
             this.tsiLogDebug.Click += new System.EventHandler(this.tsiLogDebug_Click);
             // 
             // tsiLogInfo
             // 
             this.tsiLogInfo.Name = "tsiLogInfo";
-            this.tsiLogInfo.Size = new System.Drawing.Size(180, 22);
+            this.tsiLogInfo.Size = new System.Drawing.Size(119, 22);
             this.tsiLogInfo.Text = "Info";
             this.tsiLogInfo.Click += new System.EventHandler(this.tsiLogInfo_Click);
             // 
             // tsiLogWarn
             // 
             this.tsiLogWarn.Name = "tsiLogWarn";
-            this.tsiLogWarn.Size = new System.Drawing.Size(180, 22);
+            this.tsiLogWarn.Size = new System.Drawing.Size(119, 22);
             this.tsiLogWarn.Text = "Warning";
             this.tsiLogWarn.Click += new System.EventHandler(this.tsiLogWarn_Click);
             // 
             // tsiLogError
             // 
             this.tsiLogError.Name = "tsiLogError";
-            this.tsiLogError.Size = new System.Drawing.Size(180, 22);
+            this.tsiLogError.Size = new System.Drawing.Size(119, 22);
             this.tsiLogError.Text = "Error";
             this.tsiLogError.Click += new System.EventHandler(this.tsiLogError_Click);
             // 
             // tsiLogFatal
             // 
             this.tsiLogFatal.Name = "tsiLogFatal";
-            this.tsiLogFatal.Size = new System.Drawing.Size(180, 22);
+            this.tsiLogFatal.Size = new System.Drawing.Size(119, 22);
             this.tsiLogFatal.Text = "Fatal";
             this.tsiLogFatal.Click += new System.EventHandler(this.tsiLogFatal_Click);
+            // 
+            // tsiLogNone
+            // 
+            this.tsiLogNone.Name = "tsiLogNone";
+            this.tsiLogNone.Size = new System.Drawing.Size(119, 22);
+            this.tsiLogNone.Text = "Disabled";
+            this.tsiLogNone.Click += new System.EventHandler(this.tsiLogNone_Click);
             // 
             // tsiStopSvc
             // 
@@ -855,6 +857,13 @@ namespace YAMDCC.ConfigEditor
             this.tblMain.Size = new System.Drawing.Size(540, 416);
             this.tblMain.TabIndex = 1;
             // 
+            // tsiSwitchAll
+            // 
+            this.tsiSwitchAll.Name = "tsiSwitchAll";
+            this.tsiSwitchAll.Size = new System.Drawing.Size(257, 22);
+            this.tsiSwitchAll.Text = "Switch all fan profiles";
+            this.tsiSwitchAll.Click += new System.EventHandler(this.tsiSwitchAll_Click);
+            // 
             // MainWindow
             // 
             this.AcceptButton = this.btnApply;
@@ -950,5 +959,6 @@ namespace YAMDCC.ConfigEditor
         private System.Windows.Forms.ToolStripMenuItem tsiLogWarn;
         private System.Windows.Forms.ToolStripMenuItem tsiLogError;
         private System.Windows.Forms.ToolStripMenuItem tsiLogFatal;
+        private System.Windows.Forms.ToolStripMenuItem tsiSwitchAll;
     }
 }
