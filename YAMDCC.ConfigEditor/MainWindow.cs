@@ -551,33 +551,25 @@ namespace YAMDCC.ConfigEditor
 
         private void cboProfSel_IndexChanged(object sender, EventArgs e)
         {
-            FanConf config = Config.FanConfs[cboFanSel.SelectedIndex];
-            FanCurveConf curveConfig = config.FanCurveConfs[cboProfSel.SelectedIndex];
+            FanConf cfg = Config.FanConfs[cboFanSel.SelectedIndex];
+            FanCurveConf curveCfg = cfg.FanCurveConfs[cboProfSel.SelectedIndex];
 
             if (tsiSwitchAll.Checked)
             {
-                // sanity check - should return true at this point
-                if (FansHaveSameProfileCount())
+                for (int i = 0; i < Config.FanConfs.Length; i++)
                 {
-                    for (int i = 0; i < Config.FanConfs.Length; i++)
-                    {
-                        Config.FanConfs[i].CurveSel = cboProfSel.SelectedIndex;
-                    }
-                }
-                else
-                {
-                    tsiSwitchAll.Checked = false;
+                    Config.FanConfs[i].CurveSel = cboProfSel.SelectedIndex;
                 }
             }
             else
             {
-                config.CurveSel = cboProfSel.SelectedIndex;
+                cfg.CurveSel = cboProfSel.SelectedIndex;
             }
 
             ttMain.SetToolTip(cboProfSel, Strings.GetString(
-                "ttProfSel", config.FanCurveConfs[config.CurveSel].Desc));
+                "ttProfSel", cfg.FanCurveConfs[cfg.CurveSel].Desc));
 
-            int numTempThresholds = config.UpThresholdRegs.Length;
+            int numTempThresholds = cfg.UpThresholdRegs.Length;
 
             // Fan curve
             for (int i = 0; i < numFanSpds.Length; i++)
@@ -585,9 +577,9 @@ namespace YAMDCC.ConfigEditor
                 if (i <= numTempThresholds)
                 {
                     numFanSpds[i].Value = tbFanSpds[i].Value
-                        = curveConfig.TempThresholds[i].FanSpeed;
+                        = curveCfg.TempThresholds[i].FanSpeed;
 
-                    numFanSpds[i].Enabled = tbFanSpds[i].Enabled = curveConfig.Name != "Default";
+                    numFanSpds[i].Enabled = tbFanSpds[i].Enabled = cfg.CurveSel != 0;
                 }
             }
 
@@ -596,11 +588,11 @@ namespace YAMDCC.ConfigEditor
             {
                 if (i <= numTempThresholds)
                 {
-                    TempThreshold t = curveConfig.TempThresholds[i + 1];
+                    TempThreshold t = curveCfg.TempThresholds[i + 1];
                     numUpTs[i].Value = t.UpThreshold;
                     numDownTs[i].Value = t.DownThreshold;
 
-                    numUpTs[i].Enabled = numDownTs[i].Enabled = curveConfig.Name != "Default";
+                    numUpTs[i].Enabled = numDownTs[i].Enabled = cfg.CurveSel != 0;
                 }
                 else
                 {
@@ -608,7 +600,7 @@ namespace YAMDCC.ConfigEditor
                 }
             }
             btnApply.Enabled = tsiApply.Enabled = true;
-            btnProfDel.Enabled = tsiProfDel.Enabled = curveConfig.Name != "Default";
+            btnProfDel.Enabled = tsiProfDel.Enabled = cfg.CurveSel != 0;
         }
 
         private void btnProfAdd_Click(object sender, EventArgs e)
@@ -832,14 +824,14 @@ namespace YAMDCC.ConfigEditor
             }
         }
 
-        private void LoadConf(YAMDCC_Config config)
+        private void LoadConf(YAMDCC_Config cfg)
         {
             DisableAll();
             tsiSwitchAll.Checked = FansHaveSameProfileCount();
 
             tsiSaveConf.Enabled = true;
 
-            if (config.FullBlastConf is null)
+            if (cfg.FullBlastConf is null)
             {
                 ttMain.SetToolTip(chkFullBlast, Strings.GetString("ttNotSupported"));
             }
@@ -849,17 +841,17 @@ namespace YAMDCC.ConfigEditor
                 chkFullBlast.Enabled = true;
             }
 
-            if (config.ChargeLimitConf is null)
+            if (cfg.ChargeLimitConf is null)
             {
                 ttMain.SetToolTip(chkFullBlast, Strings.GetString("ttNotSupported"));
             }
             else
             {
                 ttMain.SetToolTip(numChgLim, Strings.GetString("ttChgLim"));
-                ChargeLimitConf cfg = config.ChargeLimitConf;
+                ChargeLimitConf chgLimConf = cfg.ChargeLimitConf;
                 chkChgLim.Enabled = numChgLim.Enabled = true;
-                numChgLim.Maximum = Math.Abs(cfg.MaxVal - cfg.MinVal);
-                if (cfg.CurVal == 0)
+                numChgLim.Maximum = Math.Abs(chgLimConf.MaxVal - chgLimConf.MinVal);
+                if (chgLimConf.CurVal == 0)
                 {
                     chkChgLim.Checked = false;
                     numChgLim.Value = 80;
@@ -867,44 +859,44 @@ namespace YAMDCC.ConfigEditor
                 else
                 {
                     chkChgLim.Checked = true;
-                    numChgLim.Value = cfg.CurVal;
+                    numChgLim.Value = chgLimConf.CurVal;
                 }
             }
 
             cboPerfMode.Items.Clear();
-            if (config.PerfModeConf is null)
+            if (cfg.PerfModeConf is null)
             {
                 ttMain.SetToolTip(cboPerfMode, Strings.GetString("ttNotSupported"));
             }
             else
             {
-                PerfModeConf cfg = config.PerfModeConf;
-                for (int i = 0; i < cfg.PerfModes.Length; i++)
+                PerfModeConf perfModeConf = cfg.PerfModeConf;
+                for (int i = 0; i < perfModeConf.PerfModes.Length; i++)
                 {
-                    cboPerfMode.Items.Add(cfg.PerfModes[i].Name);
+                    cboPerfMode.Items.Add(perfModeConf.PerfModes[i].Name);
                 }
 
-                cboPerfMode.SelectedIndex = cfg.ModeSel;
+                cboPerfMode.SelectedIndex = perfModeConf.ModeSel;
                 ttMain.SetToolTip(cboPerfMode, Strings.GetString(
-                    "ttPerfMode", cfg.PerfModes[cfg.ModeSel].Desc));
+                    "ttPerfMode", perfModeConf.PerfModes[perfModeConf.ModeSel].Desc));
                 cboPerfMode.Enabled = true;
             }
 
-            if (config.KeySwapConf is null)
+            if (cfg.KeySwapConf is null)
             {
                 ttMain.SetToolTip(chkWinFnSwap, Strings.GetString("ttNotSupported"));
             }
             else
             {
-                chkWinFnSwap.Checked = config.KeySwapConf.Enabled;
+                chkWinFnSwap.Checked = cfg.KeySwapConf.Enabled;
                 ttMain.SetToolTip(chkWinFnSwap, Strings.GetString("ttKeySwap"));
                 chkWinFnSwap.Enabled = true;
             }
 
             cboFanSel.Items.Clear();
-            for (int i = 0; i < config.FanConfs.Length; i++)
+            for (int i = 0; i < cfg.FanConfs.Length; i++)
             {
-                cboFanSel.Items.Add(config.FanConfs[i].Name);
+                cboFanSel.Items.Add(cfg.FanConfs[i].Name);
             }
 
             btnProfAdd.Enabled = true;
@@ -973,11 +965,14 @@ namespace YAMDCC.ConfigEditor
         {
             if (tsiSwitchAll.Checked)
             {
-                AddFanProfileInternal(0, cboFanSel.Items.Count);
+                bool switchAll = tsiSwitchAll.Checked;
+                tsiSwitchAll.Checked = false;
+                AddFanProfImpl(0, cboFanSel.Items.Count);
+                tsiSwitchAll.Checked = switchAll;
             }
             else
             {
-                AddFanProfileInternal(cboFanSel.SelectedIndex, cboFanSel.SelectedIndex + 1);
+                AddFanProfImpl(cboFanSel.SelectedIndex, cboFanSel.SelectedIndex + 1);
             }
 
             if (!FansHaveSameProfileCount())
@@ -985,14 +980,13 @@ namespace YAMDCC.ConfigEditor
                 tsiSwitchAll.Checked = false;
             }
 
-            cboProfSel.SelectedIndex = cboProfSel.Items.Count - 1;
             btnRevert.Enabled = tsiRevert.Enabled = true;
         }
 
-        private void AddFanProfileInternal(int start, int end)
+        private void AddFanProfImpl(int start, int end)
         {
-            FanConf fanCfg = Config.FanConfs[cboFanSel.SelectedIndex];
-            string oldProfName = fanCfg.FanCurveConfs[cboProfSel.SelectedIndex].Name;
+            FanConf cfg = Config.FanConfs[cboFanSel.SelectedIndex];
+            string oldProfName = cfg.FanCurveConfs[cboProfSel.SelectedIndex].Name;
 
             TextInputDialog dlg = new(
                 Strings.GetString("dlgProfAdd"),
@@ -1002,8 +996,8 @@ namespace YAMDCC.ConfigEditor
             {
                 for (int i = start; i < end; i++)
                 {
-                    fanCfg = Config.FanConfs[i];
-                    FanCurveConf oldCurveCfg = fanCfg.FanCurveConfs[cboProfSel.SelectedIndex];
+                    cfg = Config.FanConfs[i];
+                    FanCurveConf oldCurveCfg = cfg.FanCurveConfs[cfg.CurveSel];
 
                     // Create a copy of the currently selected fan profile:
                     FanCurveConf newCurveCfg = oldCurveCfg.Copy();
@@ -1013,10 +1007,15 @@ namespace YAMDCC.ConfigEditor
                     newCurveCfg.Desc = $"(Copy of {oldCurveCfg.Name})\n{oldCurveCfg.Desc}";
 
                     // Add the new fan profile to the config's list
-                    fanCfg.FanCurveConfs = [.. fanCfg.FanCurveConfs, newCurveCfg];
+                    cfg.FanCurveConfs = [.. cfg.FanCurveConfs, newCurveCfg];
+                    cfg.CurveSel = cfg.FanCurveConfs.Length - 1;
 
                     // Add the new fan profile to the UI's profile list and select it:
-                    cboProfSel.Items.Add(dlg.Result);
+                    if (i == cboFanSel.SelectedIndex)
+                    {
+                        cboProfSel.Items.Add(dlg.Result);
+                        cboProfSel.SelectedIndex = cfg.CurveSel;
+                    }
                 }
             }
         }
@@ -1025,11 +1024,11 @@ namespace YAMDCC.ConfigEditor
         {
             if (tsiSwitchAll.Checked)
             {
-                DelFanProfileInternal(0, cboFanSel.Items.Count);
+                DelFanProfImpl(0, cboFanSel.Items.Count);
             }
             else
             {
-                DelFanProfileInternal(cboFanSel.SelectedIndex, cboFanSel.SelectedIndex + 1);
+                DelFanProfImpl(cboFanSel.SelectedIndex, cboFanSel.SelectedIndex + 1);
             }
 
             if (!FansHaveSameProfileCount())
@@ -1040,27 +1039,30 @@ namespace YAMDCC.ConfigEditor
             btnRevert.Enabled = tsiRevert.Enabled = true;
         }
 
-        private void DelFanProfileInternal(int start, int end)
+        private void DelFanProfImpl(int start, int end)
         {
             for (int i = start; i < end; i++)
             {
-                FanConf fanCfg = Config.FanConfs[i];
-                FanCurveConf curveCfg = fanCfg.FanCurveConfs[cboProfSel.SelectedIndex];
+                FanConf cfg = Config.FanConfs[i];
+                FanCurveConf curveCfg = cfg.FanCurveConfs[cfg.CurveSel];
 
-                if (curveCfg.Name != "Default" && MessageBox.Show(
+                if (cfg.CurveSel != 0 && MessageBox.Show(
                     Strings.GetString("dlgProfDel", curveCfg.Name),
-                    $"Delete fan profile? ({fanCfg.Name})", MessageBoxButtons.YesNo,
+                    $"Delete fan profile? ({cfg.Name})", MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning) == DialogResult.Yes)
                 {
                     // Remove the fan profile from the config's list
-                    List<FanCurveConf> curveCfgList = [.. fanCfg.FanCurveConfs];
-                    curveCfgList.RemoveAt(cboProfSel.SelectedIndex);
-                    fanCfg.FanCurveConfs = [.. curveCfgList];
+                    List<FanCurveConf> curveCfgList = [.. cfg.FanCurveConfs];
+                    curveCfgList.RemoveAt(cfg.CurveSel);
+                    cfg.FanCurveConfs = [.. curveCfgList];
+                    cfg.CurveSel -= 1;
 
                     // Remove from the list client-side, and select a different fan profile
-                    int oldIndex = cboProfSel.SelectedIndex;
-                    cboProfSel.Items.RemoveAt(cboProfSel.SelectedIndex);
-                    cboProfSel.SelectedIndex = oldIndex == 1 ? 1 : oldIndex - 1;
+                    if (i == cboFanSel.SelectedIndex)
+                    {
+                        cboProfSel.Items.RemoveAt(cboProfSel.SelectedIndex);
+                        cboProfSel.SelectedIndex = cfg.CurveSel;
+                    }
                 }
             }
         }
@@ -1094,27 +1096,27 @@ namespace YAMDCC.ConfigEditor
 
         private void UpdateFanCurveDisplay()
         {
-            FanConf config = Config.FanConfs[cboFanSel.SelectedIndex];
+            FanConf cfg = Config.FanConfs[cboFanSel.SelectedIndex];
 
             cboProfSel.Items.Clear();
-            foreach (FanCurveConf curve in config.FanCurveConfs)
+            foreach (FanCurveConf curve in cfg.FanCurveConfs)
             {
                 cboProfSel.Items.Add(curve.Name);
             }
 
             if (numUpTs is null || numDownTs is null || numFanSpds is null || tbFanSpds is null ||
-                numUpTs.Length != config.UpThresholdRegs.Length ||
-                numDownTs.Length != config.DownThresholdRegs.Length ||
-                numFanSpds.Length != config.FanCurveRegs.Length ||
-                tbFanSpds.Length != config.FanCurveRegs.Length)
+                numUpTs.Length != cfg.UpThresholdRegs.Length ||
+                numDownTs.Length != cfg.DownThresholdRegs.Length ||
+                numFanSpds.Length != cfg.FanCurveRegs.Length ||
+                tbFanSpds.Length != cfg.FanCurveRegs.Length)
             {
                 float scale = CurrentAutoScaleDimensions.Height / 72;
 
                 tblCurve.Controls.Clear();
-                numUpTs = new NumericUpDown[config.UpThresholdRegs.Length];
-                numDownTs = new NumericUpDown[config.DownThresholdRegs.Length];
-                numFanSpds = new NumericUpDown[config.FanCurveRegs.Length];
-                tbFanSpds = new TrackBar[config.FanCurveRegs.Length];
+                numUpTs = new NumericUpDown[cfg.UpThresholdRegs.Length];
+                numDownTs = new NumericUpDown[cfg.DownThresholdRegs.Length];
+                numFanSpds = new NumericUpDown[cfg.FanCurveRegs.Length];
+                tbFanSpds = new TrackBar[cfg.FanCurveRegs.Length];
 
                 tblCurve.ColumnStyles.Clear();
                 tblCurve.ColumnCount = numFanSpds.Length + 2;
@@ -1175,10 +1177,10 @@ namespace YAMDCC.ConfigEditor
 
             for (int i = 0; i < numFanSpds.Length; i++)
             {
-                if (config.FanCurveRegs.Length >= i)
+                if (cfg.FanCurveRegs.Length >= i)
                 {
                     numFanSpds[i].Maximum = tbFanSpds[i].Maximum
-                        = Math.Abs(config.MaxSpeed - config.MinSpeed);
+                        = Math.Abs(cfg.MaxSpeed - cfg.MinSpeed);
                 }
                 else
                 {
@@ -1187,7 +1189,7 @@ namespace YAMDCC.ConfigEditor
             }
 
             cboProfSel.Enabled = true;
-            cboProfSel.SelectedIndex = config.CurveSel;
+            cboProfSel.SelectedIndex = cfg.CurveSel;
 
             if (tsiECMon.Checked)
             {
@@ -1346,9 +1348,9 @@ namespace YAMDCC.ConfigEditor
         {
             for (int i = 0; i < Config.FanConfs.Length - 1; i++)
             {
-                FanConf[] fanConfs = Config.FanConfs;
+                FanConf[] fanCfgs = Config.FanConfs;
 
-                if (fanConfs[i].FanCurveConfs.Length != fanConfs[i + 1].FanCurveConfs.Length)
+                if (fanCfgs[i].FanCurveConfs.Length != fanCfgs[i + 1].FanCurveConfs.Length)
                 {
                     return false;
                 }
