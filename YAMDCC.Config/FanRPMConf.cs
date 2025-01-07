@@ -16,52 +16,51 @@
 
 using System.Xml.Serialization;
 
-namespace YAMDCC.Config
+namespace YAMDCC.Config;
+
+/// <summary>
+/// Represents a configuration describing how
+/// a fan RPM is obtained and displayed.
+/// </summary>
+public sealed class FanRPMConf
 {
     /// <summary>
-    /// Represents a configuration describing how
-    /// a fan RPM is obtained and displayed.
+    /// The register to read to get the fan RPM.
     /// </summary>
-    public sealed class FanRPMConf
-    {
-        /// <summary>
-        /// The register to read to get the fan RPM.
-        /// </summary>
-        [XmlElement]
-        public byte ReadReg { get; set; }
+    [XmlElement]
+    public byte ReadReg { get; set; }
 
-        /// <summary>
-        /// Is the RPM value stored as a word (16-bit) or byte (8-bit)?
-        /// </summary>
-        [XmlElement]
-        public bool Is16Bit { get; set; }
+    /// <summary>
+    /// Is the RPM value stored as a word (16-bit) or byte (8-bit)?
+    /// </summary>
+    [XmlElement]
+    public bool Is16Bit { get; set; }
 
-        /// <summary>
-        /// Is the RPM value big-endian? This will only have an
-        /// effect if <see cref="Is16Bit"/> is set to <c>true</c>.
-        /// </summary>
-        [XmlElement]
-        public bool IsBigEndian { get; set; }
+    /// <summary>
+    /// Is the RPM value big-endian? This will only have an
+    /// effect if <see cref="Is16Bit"/> is set to <c>true</c>.
+    /// </summary>
+    [XmlElement]
+    public bool IsBigEndian { get; set; }
 
-        /// <summary>
-        /// The value to multiply (or divide, if <see cref="DivideByMult"/>
-        /// is <c>true</c>) the read RPM value by.
-        /// </summary>
-        [XmlElement]
-        public int RPMMult { get; set; } = 1;
+    /// <summary>
+    /// The value to multiply (or divide, if <see cref="DivideByMult"/>
+    /// is <c>true</c>) the read RPM value by.
+    /// </summary>
+    [XmlElement]
+    public int RPMMult { get; set; } = 1;
 
-        /// <summary>
-        /// If <c>true</c>, divides the read RPM value by
-        /// <see cref="RPMMult"/> instead of multiplying.
-        /// </summary>
-        [XmlElement]
-        public bool DivideByMult { get; set; }
+    /// <summary>
+    /// If <c>true</c>, divides the read RPM value by
+    /// <see cref="RPMMult"/> instead of multiplying.
+    /// </summary>
+    [XmlElement]
+    public bool DivideByMult { get; set; }
 
-        /// <summary>
-        /// Set to true if the read RPM value starts high
-        /// and decreases as the fan speed increases.
-        /// </summary>
-        [XmlElement]
-        public bool Invert { get; set; }
-    }
+    /// <summary>
+    /// Set to true if the read RPM value starts high
+    /// and decreases as the fan speed increases.
+    /// </summary>
+    [XmlElement]
+    public bool Invert { get; set; }
 }

@@ -16,28 +16,27 @@
 
 using System.Xml.Serialization;
 
-namespace YAMDCC.Config
+namespace YAMDCC.Config;
+
+/// <summary>
+/// Represents a Full Blast configuration.
+/// </summary>
+public sealed class FullBlastConf
 {
     /// <summary>
-    /// Represents a Full Blast configuration.
+    /// The register that controls the Full Blast function.
     /// </summary>
-    public sealed class FullBlastConf
-    {
-        /// <summary>
-        /// The register that controls the Full Blast function.
-        /// </summary>
-        [XmlElement]
-        public byte Reg { get; set; }
+    [XmlElement]
+    public byte Reg { get; set; }
 
-        /// <summary>
-        /// A bitmask that controls which EC register
-        /// bits to toggle when toggling Full Blast.
-        /// </summary>
-        /// <remarks>
-        /// For example, 128 (0x80, or 10000000b) would
-        /// toggle the MSB of the Full Blast register.
-        /// </remarks>
-        [XmlElement]
-        public byte Mask { get; set; }
-    }
+    /// <summary>
+    /// A bitmask that controls which EC register
+    /// bits to toggle when toggling Full Blast.
+    /// </summary>
+    /// <remarks>
+    /// For example, 128 (0x80, or 10000000b) would
+    /// toggle the MSB of the Full Blast register.
+    /// </remarks>
+    [XmlElement]
+    public byte Mask { get; set; }
 }

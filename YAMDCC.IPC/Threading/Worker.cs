@@ -2,59 +2,58 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace YAMDCC.IPC.Threading
+namespace YAMDCC.IPC.Threading;
+
+internal sealed class Worker
 {
-    internal sealed class Worker
+    private readonly TaskScheduler _callbackThread;
+
+    private static TaskScheduler CurrentTaskScheduler =>
+        SynchronizationContext.Current != null
+            ? TaskScheduler.FromCurrentSynchronizationContext()
+            : TaskScheduler.Default;
+
+    internal event EventHandler Succeeded;
+    internal event EventHandler<WorkerErrorEventArgs> Error;
+
+    internal Worker() : this(CurrentTaskScheduler) { }
+
+    internal Worker(TaskScheduler callbackThread)
     {
-        private readonly TaskScheduler _callbackThread;
+        _callbackThread = callbackThread;
+    }
 
-        private static TaskScheduler CurrentTaskScheduler =>
-            SynchronizationContext.Current != null
-                ? TaskScheduler.FromCurrentSynchronizationContext()
-                : TaskScheduler.Default;
+    internal void DoWork(Action action)
+    {
+        new Task(DoWorkImpl, action, CancellationToken.None, TaskCreationOptions.LongRunning).Start();
+    }
 
-        internal event EventHandler Succeeded;
-        internal event EventHandler<WorkerErrorEventArgs> Error;
-
-        internal Worker() : this(CurrentTaskScheduler) { }
-
-        internal Worker(TaskScheduler callbackThread)
+    internal void DoWorkImpl(object oAction)
+    {
+        Action action = (Action)oAction;
+        try
         {
-            _callbackThread = callbackThread;
+            action();
+            Callback(Succeed);
         }
-
-        internal void DoWork(Action action)
+        catch (Exception e)
         {
-            new Task(DoWorkImpl, action, CancellationToken.None, TaskCreationOptions.LongRunning).Start();
+            Callback(() => Fail(e));
         }
+    }
 
-        internal void DoWorkImpl(object oAction)
-        {
-            Action action = (Action)oAction;
-            try
-            {
-                action();
-                Callback(Succeed);
-            }
-            catch (Exception e)
-            {
-                Callback(() => Fail(e));
-            }
-        }
+    private void Succeed()
+    {
+        Succeeded?.Invoke(this, EventArgs.Empty);
+    }
 
-        private void Succeed()
-        {
-            Succeeded?.Invoke(this, EventArgs.Empty);
-        }
+    private void Fail(Exception exception)
+    {
+        Error?.Invoke(this, new WorkerErrorEventArgs(exception));
+    }
 
-        private void Fail(Exception exception)
-        {
-            Error?.Invoke(this, new WorkerErrorEventArgs(exception));
-        }
-
-        private void Callback(Action action)
-        {
-            Task.Factory.StartNew(action, CancellationToken.None, TaskCreationOptions.None, _callbackThread);
-        }
+    private void Callback(Action action)
+    {
+        Task.Factory.StartNew(action, CancellationToken.None, TaskCreationOptions.None, _callbackThread);
     }
 }

@@ -16,31 +16,30 @@
 
 using System.Xml.Serialization;
 
-namespace YAMDCC.Config
+namespace YAMDCC.Config;
+
+/// <summary>
+/// Represents a configuration for an
+/// individual performance mode of a laptop.
+/// </summary>
+public sealed class PerfMode
 {
     /// <summary>
-    /// Represents a configuration for an
-    /// individual performance mode of a laptop.
+    /// The name of the performance mode.
     /// </summary>
-    public sealed class PerfMode
-    {
-        /// <summary>
-        /// The name of the performance mode.
-        /// </summary>
-        [XmlElement]
-        public string Name { get; set; }
+    [XmlElement]
+    public string Name { get; set; }
 
-        /// <summary>
-        /// The description of the performance mode.
-        /// </summary>
-        [XmlElement]
-        public string Desc { get; set; }
+    /// <summary>
+    /// The description of the performance mode.
+    /// </summary>
+    [XmlElement]
+    public string Desc { get; set; }
 
-        /// <summary>
-        /// The value to write to the EC register
-        /// when this performance mode is selected.
-        /// </summary>
-        [XmlElement]
-        public byte Value { get; set; }
-    }
+    /// <summary>
+    /// The value to write to the EC register
+    /// when this performance mode is selected.
+    /// </summary>
+    [XmlElement]
+    public byte Value { get; set; }
 }

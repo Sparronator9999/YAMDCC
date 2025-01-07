@@ -14,29 +14,28 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
-namespace YAMDCC.ConfigEditor
+namespace YAMDCC.ConfigEditor;
+
+internal sealed class Status
 {
-    internal sealed class Status
-    {
-        internal StatusCode Code;
-        internal int RepeatCount;
+    internal StatusCode Code;
+    internal int RepeatCount;
 
-        internal Status()
-        {
-            Code = StatusCode.None;
-            RepeatCount = 0;
-        }
-    }
-
-    internal enum StatusCode
+    internal Status()
     {
-        None = 0,
-        ServiceCommandFail,
-        ServiceResponseEmpty,
-        ServiceTimeout,
-        ConfLoading,
-        NoConfig,
-        ConfApplySuccess,
-        FullBlastToggleSuccess,
+        Code = StatusCode.None;
+        RepeatCount = 0;
     }
+}
+
+internal enum StatusCode
+{
+    None = 0,
+    ServiceCommandFail,
+    ServiceResponseEmpty,
+    ServiceTimeout,
+    ConfLoading,
+    NoConfig,
+    ConfApplySuccess,
+    FullBlastToggleSuccess,
 }

@@ -16,31 +16,30 @@
 
 using System.Xml.Serialization;
 
-namespace YAMDCC.Config
+namespace YAMDCC.Config;
+
+/// <summary>
+/// Represents a configuration for the performance modes of a laptop
+/// (separate from the Windows power plans).
+/// </summary>
+public sealed class PerfModeConf
 {
     /// <summary>
-    /// Represents a configuration for the performance modes of a laptop
-    /// (separate from the Windows power plans).
+    /// The register that controls the performance mode.
     /// </summary>
-    public sealed class PerfModeConf
-    {
-        /// <summary>
-        /// The register that controls the performance mode.
-        /// </summary>
-        [XmlElement]
-        public byte Reg { get; set; }
+    [XmlElement]
+    public byte Reg { get; set; }
 
-        /// <summary>
-        /// The currently selected performance mode, as
-        /// an index of the available performance modes.
-        /// </summary>
-        [XmlElement]
-        public int ModeSel { get; set; }
+    /// <summary>
+    /// The currently selected performance mode, as
+    /// an index of the available performance modes.
+    /// </summary>
+    [XmlElement]
+    public int ModeSel { get; set; }
 
-        /// <summary>
-        /// An array of possible performance modes for the laptop.
-        /// </summary>
-        [XmlArray]
-        public PerfMode[] PerfModes { get; set; }
-    }
+    /// <summary>
+    /// An array of possible performance modes for the laptop.
+    /// </summary>
+    [XmlArray]
+    public PerfMode[] PerfModes { get; set; }
 }

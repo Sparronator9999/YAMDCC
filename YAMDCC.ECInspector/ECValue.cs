@@ -14,18 +14,17 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
-namespace YAMDCC.ECInspector
-{
-    internal struct ECValue
-    {
-        /// <summary>
-        /// The EC value itself.
-        /// </summary>
-        public int Value;
+namespace YAMDCC.ECInspector;
 
-        /// <summary>
-        /// How many EC polls it's been since <see cref="Value"/> was last updated.
-        /// </summary>
-        public int Age;
-    }
+internal struct ECValue
+{
+    /// <summary>
+    /// The EC value itself.
+    /// </summary>
+    public int Value;
+
+    /// <summary>
+    /// How many EC polls it's been since <see cref="Value"/> was last updated.
+    /// </summary>
+    public int Age;
 }

@@ -16,17 +16,16 @@
 
 using System;
 
-namespace YAMDCC.Common
+namespace YAMDCC.Common;
+
+/// <summary>
+/// The exception thrown when an invalid <see cref="YAMDCC_Config"/> is loaded.
+/// </summary>
+public sealed class InvalidConfigException : Exception
 {
     /// <summary>
-    /// The exception thrown when an invalid <see cref="YAMDCC_Config"/> is loaded.
+    /// Initializes a new instance of the <see cref="InvalidConfigException" /> class.
     /// </summary>
-    public sealed class InvalidConfigException : Exception
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="InvalidConfigException" /> class.
-        /// </summary>
-        public InvalidConfigException()
-            : base("The config was not in the expected format.") { }
-    }
+    public InvalidConfigException()
+        : base("The config was not in the expected format.") { }
 }

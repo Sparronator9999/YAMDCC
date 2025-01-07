@@ -1,10 +1,9 @@
 using MessagePack;
 
-namespace YAMDCC.IPC
+namespace YAMDCC.IPC;
+
+internal static class Constants
 {
-    internal static class Constants
-    {
-        public static readonly MessagePackSerializerOptions SerializerOptions =
-            MessagePackSerializerOptions.Standard.WithSecurity(MessagePackSecurity.TrustedData);
-    }
+    public static readonly MessagePackSerializerOptions SerializerOptions =
+        MessagePackSerializerOptions.Standard.WithSecurity(MessagePackSecurity.TrustedData);
 }

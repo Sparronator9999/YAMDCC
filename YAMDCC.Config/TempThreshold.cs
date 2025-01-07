@@ -16,49 +16,48 @@
 
 using System.Xml.Serialization;
 
-namespace YAMDCC.Config
+namespace YAMDCC.Config;
+
+/// <summary>
+/// Represents a fan speed/temperature threshold setting for a fan curve.
+/// </summary>
+public sealed class TempThreshold
 {
     /// <summary>
-    /// Represents a fan speed/temperature threshold setting for a fan curve.
+    /// The temperature threshold before the fan speeds up to this fan speed.
     /// </summary>
-    public sealed class TempThreshold
+    /// <remarks>
+    /// Ignored if this is the last temperature threshold in the list
+    /// (i.e. this is the highest fan speed that can be set).
+    /// </remarks>
+    [XmlElement]
+    public byte UpThreshold { get; set; }
+
+    /// <summary>
+    /// The temperature threshold before the fan
+    /// slows down to the previous fan speed.
+    /// </summary>
+    /// <remarks>
+    /// Ignored if this is the first temperature threshold in the list
+    /// (i.e. this is the default fan speed).
+    /// </remarks>
+    [XmlElement]
+    public byte DownThreshold { get; set; }
+
+    /// <summary>
+    /// The target fan speed to set when reaching the up threshold.
+    /// </summary>
+    [XmlElement]
+    public byte FanSpeed { get; set; }
+
+    /// <summary>
+    /// Creates a copy of this <seealso cref="TempThreshold"/>.
+    /// </summary>
+    /// <returns>
+    /// The copy of this <seealso cref="TempThreshold"/>
+    /// </returns>
+    public TempThreshold Copy()
     {
-        /// <summary>
-        /// The temperature threshold before the fan speeds up to this fan speed.
-        /// </summary>
-        /// <remarks>
-        /// Ignored if this is the last temperature threshold in the list
-        /// (i.e. this is the highest fan speed that can be set).
-        /// </remarks>
-        [XmlElement]
-        public byte UpThreshold { get; set; }
-
-        /// <summary>
-        /// The temperature threshold before the fan
-        /// slows down to the previous fan speed.
-        /// </summary>
-        /// <remarks>
-        /// Ignored if this is the first temperature threshold in the list
-        /// (i.e. this is the default fan speed).
-        /// </remarks>
-        [XmlElement]
-        public byte DownThreshold { get; set; }
-
-        /// <summary>
-        /// The target fan speed to set when reaching the up threshold.
-        /// </summary>
-        [XmlElement]
-        public byte FanSpeed { get; set; }
-
-        /// <summary>
-        /// Creates a copy of this <seealso cref="TempThreshold"/>.
-        /// </summary>
-        /// <returns>
-        /// The copy of this <seealso cref="TempThreshold"/>
-        /// </returns>
-        public TempThreshold Copy()
-        {
-            return (TempThreshold)MemberwiseClone();
-        }
+        return (TempThreshold)MemberwiseClone();
     }
 }

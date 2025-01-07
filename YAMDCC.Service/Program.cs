@@ -20,48 +20,47 @@ using System.Windows.Forms;
 using YAMDCC.Common;
 using YAMDCC.Logs;
 
-namespace YAMDCC.Service
+namespace YAMDCC.Service;
+
+internal static class Program
 {
-    internal static class Program
+    /// <summary>
+    /// The <see cref="Logger"/> instance to write logs to.
+    /// </summary>
+    private static readonly Logger Log = new()
     {
-        /// <summary>
-        /// The <see cref="Logger"/> instance to write logs to.
-        /// </summary>
-        private static readonly Logger Log = new()
+        LogDir = Paths.Logs,
+        ConsoleLogLevel = LogLevel.None,
+        FileLogLevel = LogLevel.Debug,
+    };
+
+    /// <summary>
+    /// The main entry point for the application.
+    /// </summary>
+    private static void Main()
+    {
+        AppDomain.CurrentDomain.UnhandledException += static (sender, e) =>
+            Log.Fatal(Strings.GetString("svcException"), e.ExceptionObject);
+
+        if (Environment.UserInteractive)
         {
-            LogDir = Paths.Logs,
-            ConsoleLogLevel = LogLevel.None,
-            FileLogLevel = LogLevel.Debug,
-        };
-
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        private static void Main()
+            MessageBox.Show(Strings.GetString("errDirectRun"),
+                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+        else
         {
-            AppDomain.CurrentDomain.UnhandledException += static (sender, e) =>
-                Log.Fatal(Strings.GetString("svcException"), e.ExceptionObject);
+            CommonConfig cfg = CommonConfig.Load();
+            Log.Info(
+                $"OS version: {Environment.OSVersion}\n" +
+                $"Service version: {Application.ProductVersion}");
 
-            if (Environment.UserInteractive)
+            if (cfg.App == "YAMDCC")
             {
-                MessageBox.Show(Strings.GetString("errDirectRun"),
-                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log.FileLogLevel = cfg.LogLevel;
             }
-            else
-            {
-                CommonConfig cfg = CommonConfig.Load();
-                Log.Info(
-                    $"OS version: {Environment.OSVersion}\n" +
-                    $"Service version: {Application.ProductVersion}");
 
-                if (cfg.App == "YAMDCC")
-                {
-                    Log.FileLogLevel = cfg.LogLevel;
-                }
-
-                Log.Debug("Log level is set to debug mode.");
-                ServiceBase.Run(new FanControlService(Log));
-            }
+            Log.Debug("Log level is set to debug mode.");
+            ServiceBase.Run(new FanControlService(Log));
         }
     }
 }

@@ -20,85 +20,83 @@ using System.Xml;
 using System.Xml.Serialization;
 using YAMDCC.Logs;
 
-namespace YAMDCC.Common
+namespace YAMDCC.Common;
+
+public class CommonConfig
 {
-    public class CommonConfig
+    /// <summary>
+    /// The config version expected when loading a config.
+    /// </summary>
+    [XmlIgnore]
+    public const int ExpectedVer = 1;
+
+    /// <summary>
+    /// The config version. Should be the same as <see cref="ExpectedVer"/>
+    /// unless the config is newer or invalid.
+    /// </summary>
+    [XmlAttribute]
+    public int Ver { get; set; }
+
+    /// <summary>
+    /// The product this <see cref="CommonConfig"/> was made for.
+    /// </summary>
+    [XmlAttribute]
+    public string App { get; set; }
+
+    /// <summary>
+    /// How verbose logs should be.
+    /// </summary>
+    [XmlElement]
+    public LogLevel LogLevel { get; set; } = LogLevel.Debug;
+
+    /// <summary>
+    /// Loads the global app config XML and returns a
+    /// <see cref="CommonConfig"/> object.
+    /// </summary>
+    public static CommonConfig Load()
     {
-        /// <summary>
-        /// The config version expected when loading a config.
-        /// </summary>
-        [XmlIgnore]
-        public const int ExpectedVer = 1;
-
-        /// <summary>
-        /// The config version. Should be the same as <see cref="ExpectedVer"/>
-        /// unless the config is newer or invalid.
-        /// </summary>
-        [XmlAttribute]
-        public int Ver { get; set; }
-
-        /// <summary>
-        /// The product this <see cref="CommonConfig"/> was made for.
-        /// </summary>
-        [XmlAttribute]
-        public string App { get; set; }
-
-        /// <summary>
-        /// How verbose logs should be.
-        /// </summary>
-        [XmlElement]
-        public LogLevel LogLevel { get; set; } = LogLevel.Debug;
-
-        /// <summary>
-        /// Loads the global app config XML and returns a
-        /// <see cref="CommonConfig"/> object.
-        /// </summary>
-        public static CommonConfig Load()
+        XmlSerializer serialiser = new(typeof(CommonConfig));
+        try
         {
-            XmlSerializer serialiser = new(typeof(CommonConfig));
-            try
+            using (XmlReader reader = XmlReader.Create(Paths.GlobalConf))
             {
-                using (XmlReader reader = XmlReader.Create(Paths.GlobalConf))
-                {
-                    CommonConfig cfg = (CommonConfig)serialiser.Deserialize(reader);
-                    return cfg.Ver == ExpectedVer
-                        ? cfg
-                        : throw new InvalidConfigException();
-                }
-            }
-            catch (Exception ex)
-            {
-                if (ex is FileNotFoundException
-                    or InvalidOperationException
-                    or InvalidConfigException)
-                {
-                    return new CommonConfig();
-                }
-                else
-                {
-                    throw;
-                }
+                CommonConfig cfg = (CommonConfig)serialiser.Deserialize(reader);
+                return cfg.Ver == ExpectedVer
+                    ? cfg
+                    : throw new InvalidConfigException();
             }
         }
-
-        /// <summary>
-        /// Saves the global app config XML.
-        /// </summary>
-        /// <exception cref="InvalidOperationException"/>
-        public void Save()
+        catch (Exception ex)
         {
-            XmlSerializer serializer = new(typeof(CommonConfig));
-            XmlWriterSettings settings = new()
+            if (ex is FileNotFoundException
+                or InvalidOperationException
+                or InvalidConfigException)
             {
-                Indent = true,
-                IndentChars = "\t",
-            };
-
-            using (XmlWriter writer = XmlWriter.Create(Paths.GlobalConf, settings))
+                return new CommonConfig();
+            }
+            else
             {
-                serializer.Serialize(writer, this);
+                throw;
             }
         }
+    }
 
+    /// <summary>
+    /// Saves the global app config XML.
+    /// </summary>
+    /// <exception cref="InvalidOperationException"/>
+    public void Save()
+    {
+        XmlSerializer serializer = new(typeof(CommonConfig));
+        XmlWriterSettings settings = new()
+        {
+            Indent = true,
+            IndentChars = "\t",
+        };
+
+        using (XmlWriter writer = XmlWriter.Create(Paths.GlobalConf, settings))
+        {
+            serializer.Serialize(writer, this);
+        }
     }
 }

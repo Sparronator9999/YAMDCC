@@ -18,47 +18,46 @@ using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 
-namespace YAMDCC.Common.Dialogs
+namespace YAMDCC.Common.Dialogs;
+
+public sealed partial class VersionDialog : Form
 {
-    public sealed partial class VersionDialog : Form
+    public VersionDialog()
     {
-        public VersionDialog()
+        InitializeComponent();
+        lblDesc.Text = Strings.GetString("abtDesc");
+        lblCopyright.Text = Strings.GetString("abtCopyright");
+        lblVersion.Text += Utils.GetVerString();
+
+        string revision = Utils.GetRevision();
+
+        if (string.IsNullOrEmpty(revision))
         {
-            InitializeComponent();
-            lblDesc.Text = Strings.GetString("abtDesc");
-            lblCopyright.Text = Strings.GetString("abtCopyright");
-            lblVersion.Text += Utils.GetVerString();
-
-            string revision = Utils.GetRevision();
-
-            if (string.IsNullOrEmpty(revision))
-            {
-                lblRevision.Hide();
-            }
-            else
-            {
-                lblRevision.Text += revision;
-            }
+            lblRevision.Hide();
         }
-
-        private void btnLicense_Click(object sender, EventArgs e)
+        else
         {
-            Process.Start("https://www.gnu.org/licenses/gpl-3.0.html#license-text");
+            lblRevision.Text += revision;
         }
+    }
 
-        private void btnSource_Click(object sender, EventArgs e)
-        {
-            Process.Start(Paths.GitHubPage);
-        }
+    private void btnLicense_Click(object sender, EventArgs e)
+    {
+        Process.Start("https://www.gnu.org/licenses/gpl-3.0.html#license-text");
+    }
 
-        private void btnFAQ_Click(object sender, EventArgs e)
-        {
-            Process.Start($"{Paths.GitHubPage}#faq");
-        }
+    private void btnSource_Click(object sender, EventArgs e)
+    {
+        Process.Start(Paths.GitHubPage);
+    }
 
-        private void btnIssues_Click(object sender, EventArgs e)
-        {
-            Process.Start($"{Paths.GitHubPage}/issues");
-        }
+    private void btnFAQ_Click(object sender, EventArgs e)
+    {
+        Process.Start($"{Paths.GitHubPage}#faq");
+    }
+
+    private void btnIssues_Click(object sender, EventArgs e)
+    {
+        Process.Start($"{Paths.GitHubPage}/issues");
     }
 }

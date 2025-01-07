@@ -17,35 +17,34 @@
 using System;
 using System.Windows.Forms;
 
-namespace YAMDCC.Common.Dialogs
+namespace YAMDCC.Common.Dialogs;
+
+public sealed partial class TextInputDialog : Form
 {
-    public sealed partial class TextInputDialog : Form
+    /// <summary>
+    /// The text that the user entered in this dialog.
+    /// </summary>
+    public string Result { get; set; }
+
+    public TextInputDialog(string caption, string title, string text, bool multiline = false)
     {
-        /// <summary>
-        /// The text that the user entered in this dialog.
-        /// </summary>
-        public string Result { get; set; }
+        InitializeComponent();
+        lblCaption.Text = caption;
+        txtInput.Text = text;
+        txtInput.Multiline = multiline;
+        txtInput.Height = (int)(AutoScaleDimensions.Height / 96 * 69);
+        Text = title;
+    }
 
-        public TextInputDialog(string caption, string title, string text, bool multiline = false)
-        {
-            InitializeComponent();
-            lblCaption.Text = caption;
-            txtInput.Text = text;
-            txtInput.Multiline = multiline;
-            txtInput.Height = (int)(AutoScaleDimensions.Height / 96 * 69);
-            Text = title;
-        }
+    private void btnOK_Click(object sender, EventArgs e)
+    {
+        Result = txtInput.Text;
+    }
 
-        private void btnOK_Click(object sender, EventArgs e)
-        {
-            Result = txtInput.Text;
-        }
-
-        private void txtInput_TextChanged(object sender, EventArgs e)
-        {
-            // make sure text input isn't empty
-            // before allowing user to click "OK":
-            btnOK.Enabled = !string.IsNullOrEmpty(txtInput.Text);
-        }
+    private void txtInput_TextChanged(object sender, EventArgs e)
+    {
+        // make sure text input isn't empty
+        // before allowing user to click "OK":
+        btnOK.Enabled = !string.IsNullOrEmpty(txtInput.Text);
     }
 }

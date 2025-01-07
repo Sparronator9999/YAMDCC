@@ -16,51 +16,50 @@
 
 using System.Xml.Serialization;
 
-namespace YAMDCC.Config
+namespace YAMDCC.Config;
+
+/// <summary>
+/// Represents a fan profile (a.k.a. fan curve) config.
+/// </summary>
+public sealed class FanCurveConf
 {
     /// <summary>
-    /// Represents a fan profile (a.k.a. fan curve) config.
+    /// The name of the fan profile.
     /// </summary>
-    public sealed class FanCurveConf
+    [XmlElement]
+    public string Name { get; set; }
+
+    /// <summary>
+    /// The description of the fan profile.
+    /// </summary>
+    [XmlElement]
+    public string Desc { get; set; }
+
+    /// <summary>
+    /// The fan speeds and associated up and down thresholds.
+    /// </summary>
+    [XmlArray]
+    public TempThreshold[] TempThresholds { get; set; }
+
+    /// <summary>
+    /// Creates a deep copy of this <see cref="FanCurveConf"/>.
+    /// </summary>
+    /// <returns>
+    /// A copy of this <see cref="FanCurveConf"/>.
+    /// </returns>
+    public FanCurveConf Copy()
     {
-        /// <summary>
-        /// The name of the fan profile.
-        /// </summary>
-        [XmlElement]
-        public string Name { get; set; }
+        // create a shallow copy of this FanCurveConfig
+        FanCurveConf newCfg = (FanCurveConf)MemberwiseClone();
 
-        /// <summary>
-        /// The description of the fan profile.
-        /// </summary>
-        [XmlElement]
-        public string Desc { get; set; }
-
-        /// <summary>
-        /// The fan speeds and associated up and down thresholds.
-        /// </summary>
-        [XmlArray]
-        public TempThreshold[] TempThresholds { get; set; }
-
-        /// <summary>
-        /// Creates a deep copy of this <see cref="FanCurveConf"/>.
-        /// </summary>
-        /// <returns>
-        /// A copy of this <see cref="FanCurveConf"/>.
-        /// </returns>
-        public FanCurveConf Copy()
+        // create a copy of everything that didn't get copied by the above
+        newCfg.Name = string.Copy(Name);
+        newCfg.Desc = string.Copy(Desc);
+        newCfg.TempThresholds = new TempThreshold[TempThresholds.Length];
+        for (int i = 0; i < newCfg.TempThresholds.Length; i++)
         {
-            // create a shallow copy of this FanCurveConfig
-            FanCurveConf newCfg = (FanCurveConf)MemberwiseClone();
-
-            // create a copy of everything that didn't get copied by the above
-            newCfg.Name = string.Copy(Name);
-            newCfg.Desc = string.Copy(Desc);
-            newCfg.TempThresholds = new TempThreshold[TempThresholds.Length];
-            for (int i = 0; i < newCfg.TempThresholds.Length; i++)
-            {
-                newCfg.TempThresholds[i] = TempThresholds[i].Copy();
-            }
-            return newCfg;
+            newCfg.TempThresholds[i] = TempThresholds[i].Copy();
         }
+        return newCfg;
     }
 }

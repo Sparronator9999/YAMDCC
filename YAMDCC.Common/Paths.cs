@@ -17,64 +17,63 @@
 using System;
 using System.IO;
 
-namespace YAMDCC.Common
+namespace YAMDCC.Common;
+
+public static class Paths
 {
-    public static class Paths
-    {
-        /// <summary>
-        /// The GitHub home page.
-        /// </summary>
-        public const string GitHubHome = "https://github.com";
+    /// <summary>
+    /// The GitHub home page.
+    /// </summary>
+    public const string GitHubHome = "https://github.com";
 
-        /// <summary>
-        /// The project repository.
-        /// </summary>
-        public const string ProjectRepo = "Sparronator9999/YAMDCC";
+    /// <summary>
+    /// The project repository.
+    /// </summary>
+    public const string ProjectRepo = "Sparronator9999/YAMDCC";
 
-        /// <summary>
-        /// The URL to this project's GitHub page.
-        /// </summary>
-        public static readonly string GitHubPage = $"{GitHubHome}/{ProjectRepo}";
+    /// <summary>
+    /// The URL to this project's GitHub page.
+    /// </summary>
+    public static readonly string GitHubPage = $"{GitHubHome}/{ProjectRepo}";
 
-        /// <summary>
-        /// The path where program data is stored.
-        /// </summary>
-        /// <remarks>
-        /// (C:\ProgramData\Sparronator9999\YAMDCC on Windows)
-        /// </remarks>
-        public static readonly string Data = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-            ProjectRepo.Split('/')[0], ProjectRepo.Split('/')[1]);
+    /// <summary>
+    /// The path where program data is stored.
+    /// </summary>
+    /// <remarks>
+    /// (C:\ProgramData\Sparronator9999\YAMDCC on Windows)
+    /// </remarks>
+    public static readonly string Data = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+        ProjectRepo.Split('/')[0], ProjectRepo.Split('/')[1]);
 
-        /// <summary>
-        /// The path where YAMDCC service logs are saved.
-        /// </summary>
-        /// <remarks>
-        /// (C:\ProgramData\Sparronator9999\YAMDCC\Logs on Windows)
-        /// </remarks>
-        public static readonly string Logs = Path.Combine(Data, "Logs");
+    /// <summary>
+    /// The path where YAMDCC service logs are saved.
+    /// </summary>
+    /// <remarks>
+    /// (C:\ProgramData\Sparronator9999\YAMDCC\Logs on Windows)
+    /// </remarks>
+    public static readonly string Logs = Path.Combine(Data, "Logs");
 
-        public static readonly string GlobalConf = Path.Combine(Data, "GlobalConfig.xml");
+    public static readonly string GlobalConf = Path.Combine(Data, "GlobalConfig.xml");
 
 
-        /// <summary>
-        /// The path where the currently applied YAMDCC config is saved.
-        /// </summary>
-        /// <remarks>
-        /// (C:\ProgramData\Sparronator9999\YAMDCC\CurrentConfig.xml on Windows)
-        /// </remarks>
-        public static readonly string CurrentConfig = Path.Combine(Data, "CurrentConfig.xml");
+    /// <summary>
+    /// The path where the currently applied YAMDCC config is saved.
+    /// </summary>
+    /// <remarks>
+    /// (C:\ProgramData\Sparronator9999\YAMDCC\CurrentConfig.xml on Windows)
+    /// </remarks>
+    public static readonly string CurrentConfig = Path.Combine(Data, "CurrentConfig.xml");
 
-        /// <summary>
-        /// The path where the path to the last saved YAMDCC config is saved.
-        /// </summary>
-        /// <remarks>
-        /// (C:\ProgramData\Sparronator9999\YAMDCC\CurrentConfig.xml on Windows)
-        /// </remarks>
-        public static readonly string LastConfig = Path.Combine(Data, "LastConfig");
+    /// <summary>
+    /// The path where the path to the last saved YAMDCC config is saved.
+    /// </summary>
+    /// <remarks>
+    /// (C:\ProgramData\Sparronator9999\YAMDCC\CurrentConfig.xml on Windows)
+    /// </remarks>
+    public static readonly string LastConfig = Path.Combine(Data, "LastConfig");
 
-        public static readonly string ECToConfSuccess = Path.Combine(Data, "ECToConfSuccess");
-        public static readonly string ECToConfFail = Path.Combine(Data, "ECToConfFail");
-        public static readonly string ECToConfPending = Path.Combine(Data, "ECToConfPending");
-    }
+    public static readonly string ECToConfSuccess = Path.Combine(Data, "ECToConfSuccess");
+    public static readonly string ECToConfFail = Path.Combine(Data, "ECToConfFail");
+    public static readonly string ECToConfPending = Path.Combine(Data, "ECToConfPending");
 }

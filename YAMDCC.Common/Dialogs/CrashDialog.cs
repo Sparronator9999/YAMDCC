@@ -18,38 +18,37 @@ using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 
-namespace YAMDCC.Common.Dialogs
+namespace YAMDCC.Common.Dialogs;
+
+public sealed partial class CrashDialog : Form
 {
-    public sealed partial class CrashDialog : Form
+    public CrashDialog(Exception ex)
     {
-        public CrashDialog(Exception ex)
-        {
-            InitializeComponent();
-            lblError.Text = Strings.GetString("Crash");
-            txtReport.Text = $"{ex.GetType()}: {ex.Message}\r\n{ex.StackTrace}";
-        }
+        InitializeComponent();
+        lblError.Text = Strings.GetString("Crash");
+        txtReport.Text = $"{ex.GetType()}: {ex.Message}\r\n{ex.StackTrace}";
+    }
 
-        private void btnReportIssue_Click(object sender, EventArgs e)
-        {
-            Process.Start($"{Paths.GitHubPage}/issues");
-        }
+    private void btnReportIssue_Click(object sender, EventArgs e)
+    {
+        Process.Start($"{Paths.GitHubPage}/issues");
+    }
 
-        private void btnCopy_Click(object sender, EventArgs e)
-        {
-            Clipboard.SetText(txtReport.Text);
+    private void btnCopy_Click(object sender, EventArgs e)
+    {
+        Clipboard.SetText(txtReport.Text);
 
-            // should never fail, but better safe than sorry
-            // (this is the crash handling dialog after all)
-            if (sender is Button b)
-            {
-                // give confirmation that the crash report has been copied
-                b.Text = "Copied!";
-            }
-        }
-
-        private void btnExit_Click(object sender, EventArgs e)
+        // should never fail, but better safe than sorry
+        // (this is the crash handling dialog after all)
+        if (sender is Button b)
         {
-            Environment.Exit(0);
+            // give confirmation that the crash report has been copied
+            b.Text = "Copied!";
         }
+    }
+
+    private void btnExit_Click(object sender, EventArgs e)
+    {
+        Environment.Exit(0);
     }
 }

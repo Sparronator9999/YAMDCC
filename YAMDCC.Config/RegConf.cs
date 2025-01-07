@@ -16,45 +16,44 @@
 
 using System.Xml.Serialization;
 
-namespace YAMDCC.Config
+namespace YAMDCC.Config;
+
+/// <summary>
+/// Represents miscellaneous EC register configurations for the target
+/// computer. May be required to enable fan control via YAMDCC.
+/// </summary>
+/// <remarks>
+/// All RegConfs defined here will be applied on service start (unless disabled).
+/// </remarks>
+public sealed class RegConf
 {
     /// <summary>
-    /// Represents miscellaneous EC register configurations for the target
-    /// computer. May be required to enable fan control via YAMDCC.
+    /// Should this <see cref="RegConf"/> be applied?
     /// </summary>
-    /// <remarks>
-    /// All RegConfs defined here will be applied on service start (unless disabled).
-    /// </remarks>
-    public sealed class RegConf
-    {
-        /// <summary>
-        /// Should this <see cref="RegConf"/> be applied?
-        /// </summary>
-        [XmlElement]
-        public bool Enabled { get; set; } = true;
+    [XmlElement]
+    public bool Enabled { get; set; } = true;
 
-        /// <summary>
-        /// A short name for this EC register config.
-        /// </summary>
-        [XmlElement]
-        public string Name { get; set; }
+    /// <summary>
+    /// A short name for this EC register config.
+    /// </summary>
+    [XmlElement]
+    public string Name { get; set; }
 
-        /// <summary>
-        /// A longer description of what this config does.
-        /// </summary>
-        [XmlElement]
-        public string Desc { get; set; }
+    /// <summary>
+    /// A longer description of what this config does.
+    /// </summary>
+    [XmlElement]
+    public string Desc { get; set; }
 
-        /// <summary>
-        /// The register to write to.
-        /// </summary>
-        [XmlElement]
-        public byte Reg { get; set; }
+    /// <summary>
+    /// The register to write to.
+    /// </summary>
+    [XmlElement]
+    public byte Reg { get; set; }
 
-        /// <summary>
-        /// The value to write to the register.
-        /// </summary>
-        [XmlElement]
-        public byte Value { get; set; }
-    }
+    /// <summary>
+    /// The value to write to the register.
+    /// </summary>
+    [XmlElement]
+    public byte Value { get; set; }
 }
