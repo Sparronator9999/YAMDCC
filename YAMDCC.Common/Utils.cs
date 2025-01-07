@@ -234,7 +234,7 @@ namespace YAMDCC.Common
                 StartInfo = new ProcessStartInfo(exe)
                 {
                     CreateNoWindow = true,
-                    UseShellExecute = false,
+                    UseShellExecute = true,
                     Verb = "runas",
                     Arguments = args,
                 },

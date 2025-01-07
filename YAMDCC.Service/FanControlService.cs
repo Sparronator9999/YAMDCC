@@ -16,6 +16,7 @@
 
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -738,7 +739,28 @@ namespace YAMDCC.Service
                     Log.Info(Strings.GetString("svcReadingCurves", i + 1, Config.FanConfs.Length));
 
                     FanConf cfg = Config.FanConfs[i];
-                    FanCurveConf curveCfg = cfg.FanCurveConfs[0];
+
+                    FanCurveConf curveCfg = null;
+                    for (int j = 0; j < cfg.FanCurveConfs.Length; j++)
+                    {
+                        if (cfg.FanCurveConfs[j].Name == "Default")
+                        {
+                            curveCfg = cfg.FanCurveConfs[j];
+                        }
+                    }
+
+                    // there isn't already a Default fan profile in this config,
+                    // make one and insert it at the start
+                    if (curveCfg is null)
+                    {
+                        curveCfg = new()
+                        {
+                            TempThresholds = new TempThreshold[cfg.FanCurveRegs.Length]
+                        };
+                        List<FanCurveConf> curveCfgList = [.. cfg.FanCurveConfs];
+                        curveCfgList.Insert(0, curveCfg);
+                        cfg.FanCurveConfs = [.. curveCfgList];
+                    }
 
                     // reset first fan curve config name and description
                     curveCfg.Name = "Default";

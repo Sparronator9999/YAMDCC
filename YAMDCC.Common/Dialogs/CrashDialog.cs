@@ -31,7 +31,7 @@ namespace YAMDCC.Common.Dialogs
 
         private void btnReportIssue_Click(object sender, EventArgs e)
         {
-            Process.Start($"{Paths.SourcePrefix}/issues");
+            Process.Start($"{Paths.GitHubPage}/issues");
         }
 
         private void btnCopy_Click(object sender, EventArgs e)

@@ -24,7 +24,7 @@ using YAMDCC.IPC;
 
 namespace YAMDCC.ECInspector
 {
-    internal class Program
+    internal sealed class Program
     {
         private static readonly string ExeName =
             Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly().Location);

@@ -48,17 +48,17 @@ namespace YAMDCC.Common.Dialogs
 
         private void btnSource_Click(object sender, EventArgs e)
         {
-            Process.Start(Paths.SourcePrefix);
+            Process.Start(Paths.GitHubPage);
         }
 
         private void btnFAQ_Click(object sender, EventArgs e)
         {
-            Process.Start($"{Paths.SourcePrefix}#faq");
+            Process.Start($"{Paths.GitHubPage}#faq");
         }
 
         private void btnIssues_Click(object sender, EventArgs e)
         {
-            Process.Start($"{Paths.SourcePrefix}/issues");
+            Process.Start($"{Paths.GitHubPage}/issues");
         }
     }
 }

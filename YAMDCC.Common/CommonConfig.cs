@@ -43,6 +43,9 @@ namespace YAMDCC.Common
         [XmlAttribute]
         public string App { get; set; }
 
+        /// <summary>
+        /// How verbose logs should be.
+        /// </summary>
         [XmlElement]
         public LogLevel LogLevel { get; set; } = LogLevel.Debug;
 

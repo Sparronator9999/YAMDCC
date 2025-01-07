@@ -532,11 +532,15 @@ namespace YAMDCC.ConfigEditor
         #endregion
 
         #region Help
-        private void tsiAbout_Click(object sender, EventArgs e) =>
+        private void tsiAbout_Click(object sender, EventArgs e)
+        {
             new VersionDialog().ShowDialog();
+        }
 
-        private void tsiSrc_Click(object sender, EventArgs e) =>
-            Process.Start(Paths.SourcePrefix);
+        private void tsiSrc_Click(object sender, EventArgs e)
+        {
+            Process.Start(Paths.GitHubPage);
+        }
         #endregion
 
         #endregion
@@ -579,7 +583,7 @@ namespace YAMDCC.ConfigEditor
                     numFanSpds[i].Value = tbFanSpds[i].Value
                         = curveCfg.TempThresholds[i].FanSpeed;
 
-                    numFanSpds[i].Enabled = tbFanSpds[i].Enabled = cfg.CurveSel != 0;
+                    numFanSpds[i].Enabled = tbFanSpds[i].Enabled = cfg.Name != "Default";
                 }
             }
 
@@ -592,7 +596,7 @@ namespace YAMDCC.ConfigEditor
                     numUpTs[i].Value = t.UpThreshold;
                     numDownTs[i].Value = t.DownThreshold;
 
-                    numUpTs[i].Enabled = numDownTs[i].Enabled = cfg.CurveSel != 0;
+                    numUpTs[i].Enabled = numDownTs[i].Enabled = cfg.Name != "Default";
                 }
                 else
                 {
@@ -600,7 +604,7 @@ namespace YAMDCC.ConfigEditor
                 }
             }
             btnApply.Enabled = tsiApply.Enabled = true;
-            btnProfDel.Enabled = tsiProfDel.Enabled = cfg.CurveSel != 0;
+            btnProfDel.Enabled = tsiProfDel.Enabled = cfg.Name != "Default";
         }
 
         private void btnProfAdd_Click(object sender, EventArgs e)
@@ -1046,7 +1050,7 @@ namespace YAMDCC.ConfigEditor
                 FanConf cfg = Config.FanConfs[i];
                 FanCurveConf curveCfg = cfg.FanCurveConfs[cfg.CurveSel];
 
-                if (cfg.CurveSel != 0 && MessageBox.Show(
+                if (cfg.Name != "Default" && MessageBox.Show(
                     Strings.GetString("dlgProfDel", curveCfg.Name),
                     $"Delete fan profile? ({cfg.Name})", MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning) == DialogResult.Yes)

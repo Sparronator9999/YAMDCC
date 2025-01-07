@@ -22,9 +22,19 @@ namespace YAMDCC.Common
     public static class Paths
     {
         /// <summary>
+        /// The GitHub home page.
+        /// </summary>
+        public const string GitHubHome = "https://github.com";
+
+        /// <summary>
+        /// The project repository.
+        /// </summary>
+        public const string ProjectRepo = "Sparronator9999/YAMDCC";
+
+        /// <summary>
         /// The URL to this project's GitHub page.
         /// </summary>
-        public static readonly string SourcePrefix = "https://github.com/Sparronator9999/YAMDCC";
+        public static readonly string GitHubPage = $"{GitHubHome}/{ProjectRepo}";
 
         /// <summary>
         /// The path where program data is stored.
@@ -34,7 +44,7 @@ namespace YAMDCC.Common
         /// </remarks>
         public static readonly string Data = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-            "Sparronator9999", "YAMDCC");
+            ProjectRepo.Split('/')[0], ProjectRepo.Split('/')[1]);
 
         /// <summary>
         /// The path where YAMDCC service logs are saved.
