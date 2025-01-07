@@ -227,15 +227,23 @@ namespace YAMDCC.Common
             }
         }
 
-        private static int RunCmd(string exe, string args)
+        public static int RunCmd(string exe, string args, bool admin = true)
         {
+            bool shellExecute = false;
+            if (admin && !IsAdmin())
+            {
+                // if running unprivileged, we can't create an admin process
+                // directly, so use shell execute (creating new cmd window) instead
+                shellExecute = true;
+            }
+
             Process p = new()
             {
                 StartInfo = new ProcessStartInfo(exe)
                 {
                     CreateNoWindow = true,
-                    UseShellExecute = true,
-                    Verb = "runas",
+                    UseShellExecute = shellExecute,
+                    Verb = admin ? "runas" : string.Empty,
                     Arguments = args,
                 },
             };
