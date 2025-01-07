@@ -583,7 +583,7 @@ namespace YAMDCC.ConfigEditor
                     numFanSpds[i].Value = tbFanSpds[i].Value
                         = curveCfg.TempThresholds[i].FanSpeed;
 
-                    numFanSpds[i].Enabled = tbFanSpds[i].Enabled = cfg.Name != "Default";
+                    numFanSpds[i].Enabled = tbFanSpds[i].Enabled = curveCfg.Name != "Default";
                 }
             }
 
@@ -596,7 +596,7 @@ namespace YAMDCC.ConfigEditor
                     numUpTs[i].Value = t.UpThreshold;
                     numDownTs[i].Value = t.DownThreshold;
 
-                    numUpTs[i].Enabled = numDownTs[i].Enabled = cfg.Name != "Default";
+                    numUpTs[i].Enabled = numDownTs[i].Enabled = curveCfg.Name != "Default";
                 }
                 else
                 {
@@ -604,7 +604,7 @@ namespace YAMDCC.ConfigEditor
                 }
             }
             btnApply.Enabled = tsiApply.Enabled = true;
-            btnProfDel.Enabled = tsiProfDel.Enabled = cfg.Name != "Default";
+            btnProfDel.Enabled = tsiProfDel.Enabled = curveCfg.Name != "Default";
         }
 
         private void btnProfAdd_Click(object sender, EventArgs e)
@@ -1050,7 +1050,7 @@ namespace YAMDCC.ConfigEditor
                 FanConf cfg = Config.FanConfs[i];
                 FanCurveConf curveCfg = cfg.FanCurveConfs[cfg.CurveSel];
 
-                if (cfg.Name != "Default" && MessageBox.Show(
+                if (curveCfg.Name != "Default" && MessageBox.Show(
                     Strings.GetString("dlgProfDel", curveCfg.Name),
                     $"Delete fan profile? ({cfg.Name})", MessageBoxButtons.YesNo,
                     MessageBoxIcon.Warning) == DialogResult.Yes)
