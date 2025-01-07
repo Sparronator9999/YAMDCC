@@ -760,6 +760,7 @@ namespace YAMDCC.Service
                         List<FanCurveConf> curveCfgList = [.. cfg.FanCurveConfs];
                         curveCfgList.Insert(0, curveCfg);
                         cfg.FanCurveConfs = [.. curveCfgList];
+                        cfg.CurveSel++;
                     }
 
                     // reset first fan curve config name and description
