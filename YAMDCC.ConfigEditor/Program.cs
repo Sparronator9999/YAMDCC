@@ -15,9 +15,12 @@
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.ServiceProcess;
+using System.Threading;
 using System.Windows.Forms;
 using YAMDCC.Common;
 using YAMDCC.Common.Dialogs;
@@ -26,6 +29,8 @@ namespace YAMDCC.ConfigEditor
 {
     internal static class Program
     {
+        private const int SW_RESTORE = 9;
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -55,101 +60,130 @@ namespace YAMDCC.ConfigEditor
                 return;
             }
 
-            // Make sure the application data directory structure is set up
-            // because apparently windows services don't know how to create
-            // directories:
-            Directory.CreateDirectory(Paths.Logs);
-
-            if (!Utils.ServiceExists("yamdccsvc"))
+            // multi-instance detection
+            // NOTE: GUID is used to prevent conflicts with potential
+            // identically named but different program
+            // based on: https://stackoverflow.com/a/184143
+            using (Mutex mutex = new(true, "{10572c4f-894e-4837-b31c-356d70c44e19}", out bool createdNew))
             {
-                if (File.Exists("yamdccsvc.exe"))
+                // this instance is the first to open; proceed as normal:
+                if (createdNew)
                 {
-                    if (MessageBox.Show(
-                        Strings.GetString("dlgSvcNotInstalled"),
-                        "Service not installed",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Information) == DialogResult.Yes)
-                    {
-                        ProgressDialog dlg = new(Strings.GetString("dlgSvcInstalling"), (e) =>
-                        {
-                            e.Result = false;
-                            if (Utils.InstallService("yamdccsvc"))
-                            {
-                                if (Utils.StartService("yamdccsvc"))
-                                {
-                                    e.Result = true;
-                                }
-                                else
-                                {
-                                    Utils.ShowError(Strings.GetString("dlgSvcStartCrash"));
-                                }
-                            }
-                            else
-                            {
-                                Utils.ShowError(Strings.GetString("dlgSvcInstallFail"));
-                            }
-                        });
-                        dlg.ShowDialog();
+                    // Make sure the application data directory structure is set up
+                    // because apparently windows services don't know how to create
+                    // directories:
+                    Directory.CreateDirectory(Paths.Logs);
 
-                        if (dlg.Result is bool b && b)
+                    if (!Utils.ServiceExists("yamdccsvc"))
+                    {
+                        if (File.Exists("yamdccsvc.exe"))
                         {
-                            // Start the program when the service finishes starting:
-                            Start();
+                            if (MessageBox.Show(
+                                Strings.GetString("dlgSvcNotInstalled"),
+                                "Service not installed",
+                                MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Information) == DialogResult.Yes)
+                            {
+                                ProgressDialog dlg = new(Strings.GetString("dlgSvcInstalling"), (e) =>
+                                {
+                                    e.Result = false;
+                                    if (Utils.InstallService("yamdccsvc"))
+                                    {
+                                        if (Utils.StartService("yamdccsvc"))
+                                        {
+                                            e.Result = true;
+                                        }
+                                        else
+                                        {
+                                            Utils.ShowError(Strings.GetString("dlgSvcStartCrash"));
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Utils.ShowError(Strings.GetString("dlgSvcInstallFail"));
+                                    }
+                                });
+                                dlg.ShowDialog();
+
+                                if (dlg.Result is bool b && b)
+                                {
+                                    // Start the program when the service finishes starting:
+                                    Start();
+                                }
+                            }
+                            return;
                         }
-                    }
-                    return;
-                }
-                else
-                {
-                    Utils.ShowError(Strings.GetString("dlgSvcNotFound"));
-                    return;
-                }
-            }
-
-            // Check if the service is stopped:
-            ServiceController yamdccSvc = new("yamdccsvc");
-            try
-            {
-                ServiceControllerStatus status = yamdccSvc.Status;
-                if (status == ServiceControllerStatus.Stopped)
-                {
-                    if (MessageBox.Show(
-                        Strings.GetString("dlgSvcStopped"),
-                        "Service not running", MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Information) == DialogResult.Yes)
-                    {
-                        ProgressDialog dlg = new(Strings.GetString("dlgSvcStarting"), (e) =>
+                        else
                         {
-                            if (Utils.StartService("yamdccsvc"))
-                            {
-                                e.Result = false;
-                            }
-                            else
-                            {
-                                Utils.ShowError(Strings.GetString("dlgSvcStartCrash"));
-                                e.Result = true;
-                            }
-                        });
-                        dlg.ShowDialog();
-
-                        if (dlg.Result is bool b && b)
-                        {
+                            Utils.ShowError(Strings.GetString("dlgSvcNotFound"));
                             return;
                         }
                     }
-                    else
+
+                    // Check if the service is stopped:
+                    ServiceController yamdccSvc = new("yamdccsvc");
+                    try
                     {
-                        return;
+                        ServiceControllerStatus status = yamdccSvc.Status;
+                        if (status == ServiceControllerStatus.Stopped)
+                        {
+                            if (MessageBox.Show(
+                                Strings.GetString("dlgSvcStopped"),
+                                "Service not running", MessageBoxButtons.YesNo,
+                                MessageBoxIcon.Information) == DialogResult.Yes)
+                            {
+                                ProgressDialog dlg = new(Strings.GetString("dlgSvcStarting"), (e) =>
+                                {
+                                    if (Utils.StartService("yamdccsvc"))
+                                    {
+                                        e.Result = false;
+                                    }
+                                    else
+                                    {
+                                        Utils.ShowError(Strings.GetString("dlgSvcStartCrash"));
+                                        e.Result = true;
+                                    }
+                                });
+                                dlg.ShowDialog();
+
+                                if (dlg.Result is bool b && b)
+                                {
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                return;
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        yamdccSvc?.Close();
+                    }
+
+                    // Start the program when the service finishes starting:
+                    Start();
+                }
+                else
+                {
+                    // YAMDCC is already running, focus
+                    // (and restore, if minimised) its window:
+                    Process current = Process.GetCurrentProcess();
+                    foreach (Process process in Process.GetProcessesByName(current.ProcessName))
+                    {
+                        if (process.Id != current.Id)
+                        {
+                            if (process.MainWindowHandle != IntPtr.Zero)
+                            {
+                                ShowWindow(process.MainWindowHandle, SW_RESTORE);
+                                SetForegroundWindow(process.MainWindowHandle);
+                            }
+                            break;
+                        }
                     }
                 }
             }
-            finally
-            {
-                yamdccSvc?.Close();
-            }
-
-            // Start the program when the service finishes starting:
-            Start();
         }
 
         private static void Start()
@@ -187,5 +221,11 @@ namespace YAMDCC.ConfigEditor
 
             Application.Run(new MainWindow());
         }
+
+        [DllImport("user32.dll")]
+        private static extern bool SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
     }
 }
