@@ -15,8 +15,10 @@
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.ServiceProcess;
@@ -30,6 +32,51 @@ namespace YAMDCC.Common;
 public static class Utils
 {
     /// <summary>
+    /// Shows an information dialog.
+    /// </summary>
+    /// <param name="message">
+    /// The message to show in the info dialog.
+    /// </param>
+    /// <param name="title">
+    /// The text to show in the title bar of the dialog.
+    /// </param>
+    /// <param name="buttons">
+    /// One of the <see cref="MessageBoxButtons"/> values
+    /// that specifies which buttons to display in the dialog.
+    /// </param>
+    /// <returns>
+    /// One of the <see cref="DialogResult"/> values.
+    /// </returns>
+    public static DialogResult ShowInfo(string message, string title,
+        MessageBoxButtons buttons = MessageBoxButtons.OK)
+    {
+        return MessageBox.Show(message, title, buttons, MessageBoxIcon.Asterisk);
+    }
+
+    /// <summary>
+    /// Shows a warning dialog.
+    /// </summary>
+    /// <param name="message">
+    /// The message to show in the warning dialog.
+    /// </param>
+    /// <param name="title">
+    /// The text to show in the title bar of the dialog.
+    /// </param>
+    /// <param name="button">
+    /// One of the <see cref="MessageBoxDefaultButton"/> values
+    /// that specifies the default button for the dialog.
+    /// </param>
+    /// <returns>
+    /// One of the <see cref="DialogResult"/> values.
+    /// </returns>
+    public static DialogResult ShowWarning(string message, string title,
+        MessageBoxDefaultButton button = MessageBoxDefaultButton.Button1)
+    {
+        return MessageBox.Show(message, title, MessageBoxButtons.YesNo,
+            MessageBoxIcon.Warning, button);
+    }
+
+    /// <summary>
     /// Shows an error dialog.
     /// </summary>
     /// <param name="message">
@@ -41,10 +88,10 @@ public static class Utils
     public static DialogResult ShowError(string message)
     {
         return MessageBox.Show(message, "Error",
-            MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBoxButtons.OK, MessageBoxIcon.Stop);
     }
 
-    public static string GetVerString()
+    public static string GetVerSuffix()
     {
         // format: X.Y.Z-SUFFIX[.W]+REVISION,
         // where W is a beta/release candidate version if applicable
@@ -67,13 +114,21 @@ public static class Utils
             // suffix probably doesn't exist...
             suffix = string.Empty;
         }
+        return suffix.ToLowerInvariant();
+    }
 
-        return suffix.ToLowerInvariant() switch
+    public static string GetVerString()
+    {
+        // format: X.Y.Z-SUFFIX[.W]+REVISION,
+        // where W is a beta/release candidate version if applicable
+        string prodVer = Application.ProductVersion;
+
+        return GetVerSuffix() switch
         {
             // only show the version number (e.g. X.Y.Z):
             "release" => prodVer.Remove(prodVer.IndexOf('-')),
             "dev" => prodVer.Contains("+")
-                // probably a snapshot release (e.g. X.Y.Z-SNAPSHOT+REVISION);
+                // probably a development release (e.g. X.Y.Z-dev+REVISION);
                 // show shortened Git commit hash if it exists:
                 ? prodVer.Remove(prodVer.IndexOf('+') + 8)
                 // Return the product version if not in expected format
@@ -83,7 +138,7 @@ public static class Utils
                 // Beta releases should be in format X.Y.Z-beta.W+REVISION.
                 // Remove the revision (i.e. only show X.Y.Z-beta.W):
                 ? prodVer.Remove(prodVer.IndexOf('+'))
-                // Return the product version if not in expected format
+                // Just return the product version if not in expected format
                 : prodVer,
         };
     }
@@ -104,21 +159,31 @@ public static class Utils
             : string.Empty;
     }
 
+    public static Icon GetEntryAssemblyIcon()
+    {
+        return Icon.ExtractAssociatedIcon(Assembly.GetEntryAssembly().Location);
+    }
+
+    /// <summary>
+    /// Gets whether the application is running with administrator privileges.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true"/> if the application is running as
+    /// an administrator, otherwise <see langword="false"/>.
+    /// </returns>
     public static bool IsAdmin()
     {
-        WindowsIdentity identity = WindowsIdentity.GetCurrent();
         try
         {
-            WindowsPrincipal principal = new(identity);
-            return principal.IsInRole(WindowsBuiltInRole.Administrator);
+            using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
+            {
+                WindowsPrincipal principal = new(identity);
+                return principal.IsInRole(WindowsBuiltInRole.Administrator);
+            }
         }
         catch
         {
             return false;
-        }
-        finally
-        {
-            identity.Dispose();
         }
     }
 
@@ -134,13 +199,13 @@ public static class Utils
     /// The path to the service executable.
     /// </param>
     /// <returns>
-    /// <c>true</c> if the service installation
-    /// was successful, otherwise <c>false</c>.
+    /// <see langword="true"/> if the service installation
+    /// was successful, otherwise <see langword="false"/>.
     /// </returns>
     public static bool InstallService(string svcExe)
     {
         string runtimePath = RuntimeEnvironment.GetRuntimeDirectory();
-        int exitCode = RunCmd($"{runtimePath}\\installutil.exe", $"{svcExe}.exe");
+        int exitCode = RunCmd($"{runtimePath}\\installutil.exe", $"\"{svcExe}.exe\"");
         DeleteInstallUtilLogs();
         return exitCode == 0;
     }
@@ -153,13 +218,13 @@ public static class Utils
     /// The path to the service executable.
     /// </param>
     /// <returns>
-    /// <c>true</c> if the service uninstallation
-    /// was successful, otherwise <c>false</c>.
+    /// <see langword="true"/> if the service uninstallation
+    /// was successful, otherwise <see langword="false"/>.
     /// </returns>
     public static bool UninstallService(string svcExe)
     {
         string runtimePath = RuntimeEnvironment.GetRuntimeDirectory();
-        int exitCode = RunCmd($"{runtimePath}\\installutil.exe", $"/u {svcExe}.exe");
+        int exitCode = RunCmd($"{runtimePath}\\installutil.exe", $"/u \"{svcExe}.exe\"");
         DeleteInstallUtilLogs();
         return exitCode == 0;
     }
@@ -172,12 +237,12 @@ public static class Utils
     /// (NOT to be confused with its display name).
     /// </param>
     /// <returns>
-    /// <c>true</c> if the service started
-    /// successfully, otherwise <c>false</c>.
+    /// <see langword="true"/> if the service started successfully
+    /// (or is already running), otherwise <see langword="false"/>.
     /// </returns>
     public static bool StartService(string svcName)
     {
-        return RunCmd("net.exe", $"start {svcName}") == 0;
+        return RunCmd("sc.exe", $"start {svcName}") is 0 or 1056;
     }
 
     /// <summary>
@@ -188,12 +253,12 @@ public static class Utils
     /// (NOT to be confused with its display name).
     /// </param>
     /// <returns>
-    /// <c>true</c> if the service was stopped
-    /// successfully, otherwise <c>false</c>.
+    /// <see langword="true"/> if the service was stopped successfully
+    /// (or is already stopped), otherwise <see langword="false"/>.
     /// </returns>
     public static bool StopService(string svcName)
     {
-        return RunCmd("net.exe", $"stop {svcName}") == 0;
+        return RunCmd("sc.exe", $"stop {svcName}") is 0 or 1062;
     }
 
     /// <summary>
@@ -205,8 +270,8 @@ public static class Utils
     /// (NOT to be confused with its display name).
     /// </param>
     /// <returns>
-    /// <c>true</c> if the service was
-    /// found, otherwise <c>false</c>.
+    /// <see langword="true"/> if the service was
+    /// found, otherwise <see langword="false"/>
     /// </returns>
     public static bool ServiceExists(string svcName)
     {
@@ -225,10 +290,10 @@ public static class Utils
         }
     }
 
-    public static int RunCmd(string exe, string args, bool admin = true)
+    public static int RunCmd(string exe, string args, bool waitExit = true)
     {
         bool shellExecute = false;
-        if (admin && !IsAdmin())
+        if (!IsAdmin())
         {
             // if running unprivileged, we can't create an admin process
             // directly, so use shell execute (creating new cmd window) instead
@@ -241,14 +306,18 @@ public static class Utils
             {
                 CreateNoWindow = true,
                 UseShellExecute = shellExecute,
-                Verb = admin ? "runas" : string.Empty,
+                Verb = "runas",
                 Arguments = args,
             },
         };
 
         p.Start();
-        p.WaitForExit();
+        if (waitExit)
+        {
+            p.WaitForExit();
+            return p.ExitCode;
+        }
 
-        return p.ExitCode;
+        return 0;
     }
 }

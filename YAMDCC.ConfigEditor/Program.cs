@@ -78,11 +78,9 @@ internal static class Program
                 {
                     if (File.Exists("yamdccsvc.exe"))
                     {
-                        if (MessageBox.Show(
-                            Strings.GetString("dlgSvcNotInstalled"),
-                            "Service not installed",
-                            MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Information) == DialogResult.Yes)
+                        if (Utils.ShowInfo(
+                            Strings.GetString("dlgSvcNotInstalled"), "Service not installed",
+                            MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
                             ProgressDialog dlg = new(Strings.GetString("dlgSvcInstalling"), (e) =>
                             {
@@ -127,10 +125,9 @@ internal static class Program
                     ServiceControllerStatus status = yamdccSvc.Status;
                     if (status == ServiceControllerStatus.Stopped)
                     {
-                        if (MessageBox.Show(
-                            Strings.GetString("dlgSvcStopped"),
-                            "Service not running", MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Information) == DialogResult.Yes)
+                        if (Utils.ShowInfo(
+                            Strings.GetString("dlgSvcStopped"), "Service not running",
+                            MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
                             ProgressDialog dlg = new(Strings.GetString("dlgSvcStarting"), (e) =>
                             {
@@ -203,9 +200,8 @@ internal static class Program
 
         if (rebootFlag == 1)
         {
-            if (MessageBox.Show(Strings.GetString("dlgECtoConfReboot"),
-                "Reboot pending", MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
-                MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+            if (Utils.ShowWarning(Strings.GetString("dlgECtoConfReboot"),
+                "Reboot pending", MessageBoxDefaultButton.Button2) == DialogResult.Yes)
             {
                 try
                 {

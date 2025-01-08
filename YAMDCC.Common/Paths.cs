@@ -24,12 +24,12 @@ public static class Paths
     /// <summary>
     /// The GitHub home page.
     /// </summary>
-    public const string GitHubHome = "https://github.com";
+    public static readonly string GitHubHome = "https://github.com";
 
     /// <summary>
     /// The project repository.
     /// </summary>
-    public const string ProjectRepo = "Sparronator9999/YAMDCC";
+    public static readonly string ProjectRepo = "Sparronator9999/YAMDCC";
 
     /// <summary>
     /// The URL to this project's GitHub page.

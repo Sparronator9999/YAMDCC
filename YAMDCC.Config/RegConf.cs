@@ -52,8 +52,16 @@ public sealed class RegConf
     public byte Reg { get; set; }
 
     /// <summary>
-    /// The value to write to the register.
+    /// The value to write to the register when
+    /// this <see cref="RegConf"/> is enabled.
     /// </summary>
     [XmlElement]
-    public byte Value { get; set; }
+    public byte OnVal { get; set; }
+
+    /// <summary>
+    /// The value to write to the register when
+    /// this <see cref="RegConf"/> is disabled.
+    /// </summary>
+    [XmlElement]
+    public byte OffVal { get; set; }
 }

@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using YAMDCC.Common;
@@ -64,7 +63,7 @@ internal sealed partial class MainWindow : Form
 
         // Set the window icon using the application icon.
         // Saves about 8-9 KB from not having to embed the same icon twice.
-        Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
+        Icon = Utils.GetEntryAssemblyIcon();
 
         // set title text to include program version
         Text = $"YAMDCC config editor - v{Utils.GetVerString()}";
@@ -111,33 +110,26 @@ internal sealed partial class MainWindow : Form
         tmrSvcTimeout.Tick += tmrSvcTimeout_Tick;
 
         GlobalConfig = CommonConfig.Load();
-        if (GlobalConfig.App == "YAMDCC")
+        switch (GlobalConfig.LogLevel)
         {
-            switch (GlobalConfig.LogLevel)
-            {
-                case LogLevel.None:
-                    tsiLogNone.Checked = true;
-                    break;
-                case LogLevel.Fatal:
-                    tsiLogFatal.Checked = true;
-                    break;
-                case LogLevel.Error:
-                    tsiLogError.Checked = true;
-                    break;
-                case LogLevel.Warn:
-                    tsiLogWarn.Checked = true;
-                    break;
-                case LogLevel.Info:
-                    tsiLogInfo.Checked = true;
-                    break;
-                case LogLevel.Debug:
-                    tsiLogDebug.Checked = true;
-                    break;
-            }
-        }
-        else
-        {
-            tsiLogDebug.Checked = true;
+            case LogLevel.None:
+                tsiLogNone.Checked = true;
+                break;
+            case LogLevel.Fatal:
+                tsiLogFatal.Checked = true;
+                break;
+            case LogLevel.Error:
+                tsiLogError.Checked = true;
+                break;
+            case LogLevel.Warn:
+                tsiLogWarn.Checked = true;
+                break;
+            case LogLevel.Info:
+                tsiLogInfo.Checked = true;
+                break;
+            case LogLevel.Debug:
+                tsiLogDebug.Checked = true;
+                break;
         }
 
         DisableAll();
@@ -180,8 +172,7 @@ internal sealed partial class MainWindow : Form
         }
         else if (File.Exists(Paths.ECToConfSuccess))
         {
-            MessageBox.Show(Strings.GetString("dlgECtoConfSuccess"),
-                "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Utils.ShowInfo(Strings.GetString("dlgECtoConfSuccess"), "Success");
         }
         try
         {
@@ -198,7 +189,7 @@ internal sealed partial class MainWindow : Form
         {
             SendServiceMessage(new ServiceCommand(Command.FullBlast, "0"));
         }
-        GlobalConfig.App = "YAMDCC";
+
         try
         {
             GlobalConfig.Save();
@@ -423,9 +414,8 @@ internal sealed partial class MainWindow : Form
 
     private void tsiECtoConf_Click(object sender, EventArgs e)
     {
-        if (MessageBox.Show(Strings.GetString("dlgECtoConfStart"),
-            "Default fan profile from EC?", MessageBoxButtons.YesNo,
-            MessageBoxIcon.Information) == DialogResult.Yes)
+        if (Utils.ShowInfo(Strings.GetString("dlgECtoConfStart"),
+            "Default fan profile from EC?", MessageBoxButtons.YesNo) == DialogResult.Yes)
         {
             StreamWriter sw = new(Paths.ECToConfPending, false);
             try
@@ -462,9 +452,8 @@ internal sealed partial class MainWindow : Form
 
     private void tsiStopSvc_Click(object sender, EventArgs e)
     {
-        if (MessageBox.Show(
-            Strings.GetString("dlgSvcStop"), "Stop Service",
-            MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+        if (Utils.ShowWarning(Strings.GetString("dlgSvcStop"),
+            "Stop Service") == DialogResult.Yes)
         {
             tmrPoll.Stop();
             IPCClient.Stop();
@@ -486,13 +475,12 @@ internal sealed partial class MainWindow : Form
 
     private void tsiUninstall_Click(object sender, EventArgs e)
     {
-        if (MessageBox.Show(Strings.GetString("dlgUninstall"), "Uninstall Service",
-            MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
+        if (Utils.ShowWarning(Strings.GetString("dlgUninstall"),
+            "Uninstall service?") == DialogResult.Yes)
         {
-            bool delData = MessageBox.Show(
+            bool delData = Utils.ShowWarning(
                 Strings.GetString("dlgSvcDelData", Paths.Data),
                 "Delete configuration data?",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Warning,
                 MessageBoxDefaultButton.Button2) == DialogResult.Yes;
 
             tmrPoll.Stop();
@@ -926,10 +914,8 @@ internal sealed partial class MainWindow : Form
 
     private void RevertConf()
     {
-        if (MessageBox.Show(
-            Strings.GetString("dlgRevert"),
-            "Revert?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning)
-            == DialogResult.Yes)
+        if (Utils.ShowWarning(Strings.GetString("dlgRevert"),
+            "Revert?") == DialogResult.Yes)
         {
             try
             {
@@ -1050,10 +1036,9 @@ internal sealed partial class MainWindow : Form
             FanConf cfg = Config.FanConfs[i];
             FanCurveConf curveCfg = cfg.FanCurveConfs[cfg.CurveSel];
 
-            if (curveCfg.Name != "Default" && MessageBox.Show(
+            if (curveCfg.Name != "Default" && Utils.ShowWarning(
                 Strings.GetString("dlgProfDel", curveCfg.Name),
-                $"Delete fan profile? ({cfg.Name})", MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning) == DialogResult.Yes)
+                $"Delete fan profile? ({cfg.Name})") == DialogResult.Yes)
             {
                 // Remove the fan profile from the config's list
                 List<FanCurveConf> curveCfgList = [.. cfg.FanCurveConfs];
@@ -1218,6 +1203,7 @@ internal sealed partial class MainWindow : Form
 
     private void tsiLogNone_Click(object sender, EventArgs e)
     {
+        GlobalConfig.LogLevel = LogLevel.None;
         tsiLogNone.Checked = true;
         tsiLogDebug.Checked = false;
         tsiLogInfo.Checked = false;
@@ -1228,6 +1214,7 @@ internal sealed partial class MainWindow : Form
 
     private void tsiLogDebug_Click(object sender, EventArgs e)
     {
+        GlobalConfig.LogLevel = LogLevel.Debug;
         tsiLogNone.Checked = false;
         tsiLogDebug.Checked = true;
         tsiLogInfo.Checked = false;
@@ -1238,6 +1225,7 @@ internal sealed partial class MainWindow : Form
 
     private void tsiLogInfo_Click(object sender, EventArgs e)
     {
+        GlobalConfig.LogLevel = LogLevel.Info;
         tsiLogNone.Checked = false;
         tsiLogDebug.Checked = false;
         tsiLogInfo.Checked = true;
@@ -1248,6 +1236,7 @@ internal sealed partial class MainWindow : Form
 
     private void tsiLogWarn_Click(object sender, EventArgs e)
     {
+        GlobalConfig.LogLevel = LogLevel.Warn;
         tsiLogNone.Checked = false;
         tsiLogDebug.Checked = false;
         tsiLogInfo.Checked = false;
@@ -1258,6 +1247,7 @@ internal sealed partial class MainWindow : Form
 
     private void tsiLogError_Click(object sender, EventArgs e)
     {
+        GlobalConfig.LogLevel = LogLevel.Error;
         tsiLogNone.Checked = false;
         tsiLogDebug.Checked = false;
         tsiLogInfo.Checked = false;
@@ -1268,6 +1258,7 @@ internal sealed partial class MainWindow : Form
 
     private void tsiLogFatal_Click(object sender, EventArgs e)
     {
+        GlobalConfig.LogLevel = LogLevel.Fatal;
         tsiLogNone.Checked = false;
         tsiLogDebug.Checked = false;
         tsiLogInfo.Checked = false;

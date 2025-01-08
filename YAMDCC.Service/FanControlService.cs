@@ -455,7 +455,7 @@ internal sealed class FanControlService : ServiceBase
             {
                 RegConf cfg = Config.RegConfs[i];
                 Log.Info(Strings.GetString("svcWritingCustomRegs", i + 1, Config.RegConfs.Length));
-                if (!LogECWriteByte(cfg.Reg, cfg.Value))
+                if (!LogECWriteByte(cfg.Reg, cfg.Enabled ? cfg.OnVal : cfg.OffVal))
                 {
                     success = false;
                 }

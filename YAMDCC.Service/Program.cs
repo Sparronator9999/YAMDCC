@@ -44,8 +44,7 @@ internal static class Program
 
         if (Environment.UserInteractive)
         {
-            MessageBox.Show(Strings.GetString("errDirectRun"),
-                "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            Utils.ShowError(Strings.GetString("errDirectRun"));
         }
         else
         {
@@ -54,11 +53,7 @@ internal static class Program
                 $"OS version: {Environment.OSVersion}\n" +
                 $"Service version: {Application.ProductVersion}");
 
-            if (cfg.App == "YAMDCC")
-            {
-                Log.FileLogLevel = cfg.LogLevel;
-            }
-
+            Log.FileLogLevel = cfg.LogLevel;
             Log.Debug("Log level is set to debug mode.");
             ServiceBase.Run(new FanControlService(Log));
         }

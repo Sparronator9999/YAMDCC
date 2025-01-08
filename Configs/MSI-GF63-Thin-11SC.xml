@@ -311,7 +311,8 @@ If set to default fan curve, uses an alternative fan curve.</Desc>
 			<Desc>Sets fan mode to Advanced. Fixes fans not working at all with certain fan settings.
 It is recommended you leave this enabled.</Desc>
 			<Reg>212</Reg>
-			<Value>77</Value>
+			<OnVal>77</OnVal>
+			<OffVal>13</OffVal>
 		</RegConf>
 	</RegConfs>
 </YAMDCC_Config>

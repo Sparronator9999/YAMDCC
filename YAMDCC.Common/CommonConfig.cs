@@ -35,13 +35,7 @@ public class CommonConfig
     /// unless the config is newer or invalid.
     /// </summary>
     [XmlAttribute]
-    public int Ver { get; set; }
-
-    /// <summary>
-    /// The product this <see cref="CommonConfig"/> was made for.
-    /// </summary>
-    [XmlAttribute]
-    public string App { get; set; }
+    public int Ver { get; set; } = 1;
 
     /// <summary>
     /// How verbose logs should be.
