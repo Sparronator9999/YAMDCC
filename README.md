@@ -362,7 +362,10 @@ details.
 
 This project makes use of the following third-party libraries:
 
+- [Markdig](https://github.com/xoofx/markdig) to parse release changelogs.
 - [My fork of Named Pipe Wrapper](https://github.com/Sparronator9999/NamedPipeWrapper) for
   communication between the service and UI program (called `YAMDCC.IPC` in the source files).
+- [Octokit](https://github.com/octokit/octokit.net) to obtain the latest release assets and changelog.
+- [Task Scheduler Managed Wrapper](https://github.com/dahall/taskscheduler) to schedule automatic update checks.
 - [WinRing0](https://github.com/QCute/WinRing0) for low-level hardware access required to
   read/write the EC.
