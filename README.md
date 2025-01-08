@@ -142,12 +142,13 @@ The following features are currently planned for v1.1:
 - [ ] Hotkey support (requested by @grimy400)
   - This will most likely be implemented as a separate background program that listens to keyboard shortcuts,
     since Windows services (or at least those running as Local System) can't "see" keyboard input.
-- [ ] *Maybe* CLI support (otherwise this will be in v1.2)
-  - Development of a CLI application for YAMDCC has started, but isn't publicly available yet
-    - The CLI is missing a *lot* of features, and could do with a rewrite.
+- [ ] Switch fan profiles on performance mode setting adjustment ((#37)[https://github.com/Sparronator9999/YAMDCC/issues/37])
 
 Below are some planned features for potential future releases:
 
+- [ ] CLI support
+  - Development of a CLI application for YAMDCC has started, but isn't publicly available yet
+    - The CLI is missing a *lot* of features, and could do with a rewrite.
 - [ ] Support for editing laptop config registers using the GUI/CLI
   - This would allow for creating configs for other laptop brands from the config UI
   - Currently, the only way to do this is to edit the XML directly or use the EC-to-config feature.
