@@ -2,6 +2,14 @@
   "version": 1,
   "dependencies": {
     ".NETFramework,Version=v4.8": {
+      "Markdig": {
+        "type": "Transitive",
+        "resolved": "0.39.1",
+        "contentHash": "QrH/Aq9A5P7fIdy4tEBQGqVvrJoEew9+jL0k2WlrmgD0yxXP0UUtdkhJWgpVgwT18R0ubpt9cyF+LQXbTUSOrg==",
+        "dependencies": {
+          "System.Memory": "4.5.5"
+        }
+      },
       "MessagePack": {
         "type": "Transitive",
         "resolved": "3.1.1",
@@ -43,6 +51,11 @@
           "System.Memory": "4.5.5",
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
+      },
+      "Octokit": {
+        "type": "Transitive",
+        "resolved": "13.0.1",
+        "contentHash": "tjXTa2FXzbd3n17VWpi8UXe05EIJqHcWJW8C2kukftIve00duWiZL8x4i1vlZQ0zQ4RbRANbRc7J5K7Co/1spQ=="
       },
       "System.Buffers": {
         "type": "Transitive",
@@ -86,11 +99,25 @@
           "System.Runtime.CompilerServices.Unsafe": "4.5.3"
         }
       },
+      "TaskScheduler": {
+        "type": "Transitive",
+        "resolved": "2.11.0",
+        "contentHash": "p9wH58XSNIyUtO7PIFAEldaKUzpYmlj+YWAfnUqBKnGxIZRY51I9BrsBGJijUVwlxrgmLLPUigRIv2ZTD4uPJA=="
+      },
       "ec-inspect": {
         "type": "Project",
         "dependencies": {
           "YAMDCC.Common": "[1.0.0-dev, )",
-          "YAMDCC.IPC": "[2.1.2-release, )"
+          "YAMDCC.IPC": "[2.1.3-release, )"
+        }
+      },
+      "Updater": {
+        "type": "Project",
+        "dependencies": {
+          "Markdig": "[0.39.1, )",
+          "Octokit": "[13.0.1, )",
+          "TaskScheduler": "[2.11.0, )",
+          "YAMDCC.Common": "[1.0.0-dev, )"
         }
       },
       "yamdcc.common": {
@@ -123,7 +150,7 @@
           "YAMDCC.Common": "[1.0.0-dev, )",
           "YAMDCC.Config": "[1.0.0-dev, )",
           "YAMDCC.ECAccess": "[1.0.0-dev, )",
-          "YAMDCC.IPC": "[2.1.2-release, )",
+          "YAMDCC.IPC": "[2.1.3-release, )",
           "YAMDCC.Logs": "[1.0.0-dev, )"
         }
       }

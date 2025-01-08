@@ -64,6 +64,7 @@ namespace YAMDCC.ConfigEditor
             System.Windows.Forms.FlowLayoutPanel flwChgLim;
             System.Windows.Forms.TableLayoutPanel tblApply;
             System.Windows.Forms.FlowLayoutPanel flwStats;
+            System.Windows.Forms.ToolStripMenuItem tsiCheckUpdate;
             this.tsiFile = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiLoadConf = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiSaveConf = new System.Windows.Forms.ToolStripMenuItem();
@@ -76,6 +77,7 @@ namespace YAMDCC.ConfigEditor
             this.tsiProfRename = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiProfChangeDesc = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiProfDel = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsiSwitchAll = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiECtoConf = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiECMon = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiLogDebug = new System.Windows.Forms.ToolStripMenuItem();
@@ -112,7 +114,6 @@ namespace YAMDCC.ConfigEditor
             this.lblFanRPM = new System.Windows.Forms.Label();
             this.lblTemp = new System.Windows.Forms.Label();
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
-            this.tsiSwitchAll = new System.Windows.Forms.ToolStripMenuItem();
             menuStrip = new System.Windows.Forms.MenuStrip();
             sep1 = new System.Windows.Forms.ToolStripSeparator();
             sep2 = new System.Windows.Forms.ToolStripSeparator();
@@ -133,6 +134,7 @@ namespace YAMDCC.ConfigEditor
             flwChgLim = new System.Windows.Forms.FlowLayoutPanel();
             tblApply = new System.Windows.Forms.TableLayoutPanel();
             flwStats = new System.Windows.Forms.FlowLayoutPanel();
+            tsiCheckUpdate = new System.Windows.Forms.ToolStripMenuItem();
             menuStrip.SuspendLayout();
             tcMain.SuspendLayout();
             tabFanControl.SuspendLayout();
@@ -291,6 +293,13 @@ namespace YAMDCC.ConfigEditor
             this.tsiProfDel.Text = "Delete";
             this.tsiProfDel.Click += new System.EventHandler(this.tsiProfDel_Click);
             // 
+            // tsiSwitchAll
+            // 
+            this.tsiSwitchAll.Name = "tsiSwitchAll";
+            this.tsiSwitchAll.Size = new System.Drawing.Size(257, 22);
+            this.tsiSwitchAll.Text = "Switch all fan profiles";
+            this.tsiSwitchAll.Click += new System.EventHandler(this.tsiSwitchAll_Click);
+            // 
             // tsiECtoConf
             // 
             this.tsiECtoConf.Name = "tsiECtoConf";
@@ -392,7 +401,8 @@ namespace YAMDCC.ConfigEditor
             // 
             this.tsiHelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsiAbout,
-            this.tsiSource});
+            this.tsiSource,
+            tsiCheckUpdate});
             this.tsiHelp.Name = "tsiHelp";
             this.tsiHelp.Size = new System.Drawing.Size(44, 20);
             this.tsiHelp.Text = "&Help";
@@ -400,15 +410,15 @@ namespace YAMDCC.ConfigEditor
             // tsiAbout
             // 
             this.tsiAbout.Name = "tsiAbout";
-            this.tsiAbout.Size = new System.Drawing.Size(141, 22);
+            this.tsiAbout.Size = new System.Drawing.Size(180, 22);
             this.tsiAbout.Text = "&About";
             this.tsiAbout.Click += new System.EventHandler(this.tsiAbout_Click);
             // 
             // tsiSource
             // 
             this.tsiSource.Name = "tsiSource";
-            this.tsiSource.Size = new System.Drawing.Size(141, 22);
-            this.tsiSource.Text = "Source &Code";
+            this.tsiSource.Size = new System.Drawing.Size(180, 22);
+            this.tsiSource.Text = "Source &code";
             this.tsiSource.Click += new System.EventHandler(this.tsiSrc_Click);
             // 
             // tcMain
@@ -857,12 +867,12 @@ namespace YAMDCC.ConfigEditor
             this.tblMain.Size = new System.Drawing.Size(540, 416);
             this.tblMain.TabIndex = 1;
             // 
-            // tsiSwitchAll
+            // tsiCheckUpdate
             // 
-            this.tsiSwitchAll.Name = "tsiSwitchAll";
-            this.tsiSwitchAll.Size = new System.Drawing.Size(257, 22);
-            this.tsiSwitchAll.Text = "Switch all fan profiles";
-            this.tsiSwitchAll.Click += new System.EventHandler(this.tsiSwitchAll_Click);
+            tsiCheckUpdate.Name = "tsiCheckUpdate";
+            tsiCheckUpdate.Size = new System.Drawing.Size(180, 22);
+            tsiCheckUpdate.Text = "Check for updates...";
+            tsiCheckUpdate.Click += new System.EventHandler(this.tsiCheckUpdate_Click);
             // 
             // MainWindow
             // 

@@ -132,6 +132,26 @@ internal sealed partial class MainWindow : Form
                 break;
         }
 
+        if (!GlobalConfig.AutoUpdateAsked)
+        {
+            if (Utils.ShowInfo(
+                "Would you like YAMDCC to check for updates automatically?\n\n" +
+                "You may change this setting by launching `Updater.exe` and " +
+                "clicking `Update options` > `Check for updates automatically`.",
+                "Check for updates?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                try
+                {
+                    Process.Start("Updater", "--setautoupdate true");
+                }
+                catch (FileNotFoundException)
+                {
+                    Utils.ShowError("Updater.exe not found!");
+                }
+            }
+            GlobalConfig.AutoUpdateAsked = true;
+        }
+
         DisableAll();
     }
 
@@ -1296,6 +1316,18 @@ internal sealed partial class MainWindow : Form
             Margin = new Padding((int)(2 * scale)),
             Tag = tag,
         };
+    }
+
+    private void tsiCheckUpdate_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            Process.Start("Updater", "--checkupdate");
+        }
+        catch (FileNotFoundException)
+        {
+            Utils.ShowError("Updater.exe not found!");
+        }
     }
 
     private void DisableAll()

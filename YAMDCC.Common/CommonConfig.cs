@@ -44,6 +44,13 @@ public class CommonConfig
     public LogLevel LogLevel { get; set; } = LogLevel.Debug;
 
     /// <summary>
+    /// <c>true</c> if we've already asked to enable auto-updating,
+    /// otherwise <c>false</c>.
+    /// </summary>
+    [XmlElement]
+    public bool AutoUpdateAsked { get; set; }
+
+    /// <summary>
     /// Loads the global app config XML and returns a
     /// <see cref="CommonConfig"/> object.
     /// </summary>

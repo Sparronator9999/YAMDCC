@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <AnalysisLevel>latest-recommended</AnalysisLevel>
+        <ApplicationIcon>fan-update.ico</ApplicationIcon>
+        <AssemblyName>Updater</AssemblyName>
+        <AssemblyTitle>YAMDCC component updater</AssemblyTitle>
+        <Authors>Sparronator9999</Authors>
+        <Copyright>Copyright © 2025 Sparronator9999 (and Contributors)</Copyright>
+        <EnableNETAnalyzers>True</EnableNETAnalyzers>
+        <LangVersion>13.0</LangVersion>
+        <OutputType>WinExe</OutputType>
+        <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <RuntimeIdentifiers>win7-x64;win7-x86;win-x64;win-x86</RuntimeIdentifiers>
+        <TargetFramework>net48</TargetFramework>
+        <Title>YAMDCC configuration utility</Title>
+        <UseWindowsForms>true</UseWindowsForms>
+        <VersionPrefix>1.0.0</VersionPrefix>
+        <VersionSuffix>dev</VersionSuffix>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Release'">
+        <DebugType>none</DebugType>
+    </PropertyGroup>
+    <ItemGroup>
+      <AdditionalFiles Remove="app.manifest" />
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Remove="MainForm.resx" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Include="UpdateForm.resx" />
+    </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="Markdig" Version="0.39.1" />
+      <PackageReference Include="Octokit" Version="13.0.1" />
+      <PackageReference Include="TaskScheduler" Version="2.11.0" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\YAMDCC.Common\YAMDCC.Common.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <Reference Include="System.Net.Http" />
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Update="Resources.resx">
+        <Generator></Generator>
+      </EmbeddedResource>
+    </ItemGroup>
+</Project>

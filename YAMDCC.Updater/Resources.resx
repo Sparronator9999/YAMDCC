@@ -117,70 +117,54 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="menuStrip.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <metadata name="menuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
-  <metadata name="sep1.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <metadata name="sep2.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <metadata name="sep3.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <metadata name="sep4.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <metadata name="sep5.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <metadata name="tsiLogLevel.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <metadata name="tsiCheckUpdate.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <metadata name="tcMain.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <metadata name="tabFanControl.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <metadata name="flwFanSelect.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <metadata name="tabExtra.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <metadata name="tblExtra.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <metadata name="lblChgLim.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <metadata name="lblPerfMode.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <metadata name="lblWinFnSwap.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <metadata name="lblKeyLight.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <metadata name="flwKeyLight.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <metadata name="flwChgLim.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <metadata name="tblApply.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
-  <metadata name="flwStats.GenerateMember" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
-  </metadata>
+  <data name="SRCSU_Name" xml:space="preserve">
+    <value>System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="SRCSU_Dll" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>System.Runtime.CompilerServices.Unsafe.dll.gz;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="warnDev" xml:space="preserve">
+    <value>You appear to be running a development version of YAMDCC.
+This updater cannot handle dev versions, and will likely
+try to downgrade YAMDCC to the latest release.
+
+Continue?</value>
+  </data>
+  <data name="PreReleaseOn" xml:space="preserve">
+    <value>
+
+&lt;span style="color:red"&gt;**Pre-release updates are enabled.**&lt;/span&gt;</value>
+  </data>
+  <data name="UpdatePrompt" xml:space="preserve">
+    <value>Click "Check for updates" to get the latest updates and changelog.</value>
+  </data>
+  <data name="errNoRelease" xml:space="preserve">
+    <value>**ERROR: failed to get latest release info!**
+
+This could possibly mean one of the following:
+
+- If you have pre-release versions disabled, there are no full releases of YAMDCC yet. Enable pre-releases and try checking for updates again.
+- You have reached GitHub's API rate limit. Try again in an hour.
+- There is a programming bug causing this message to appear.</value>
+  </data>
+  <data name="errCheckUpdate" xml:space="preserve">
+    <value>**An error occurred during the update check:**
+
+```
+{0}
+```</value>
+  </data>
+  <data name="errNoReleaseS" xml:space="preserve">
+    <value>ERROR: failed to get latest release info! See above for more info.</value>
+  </data>
+  <data name="HtmlTemplate" xml:space="preserve">
+    <value>&lt;html&gt;&lt;head&gt;&lt;style&gt;body{{font-family:"Segoe UI",sans-serif;font-size:11pt}}pre{{line-height:1.5;background-color:#ddd;padding:.5em}}code{{font-family:Consolas,monospace;font-size:10pt;background-color:#ddd;margin:0;padding:.1em .3em}}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;{0}&lt;/body&gt;&lt;/html&gt;</value>
+  </data>
+  <data name="Changelog" xml:space="preserve">
+    <value>&lt;div&gt;&lt;h2 style="display:inline"&gt;{0}&lt;/h2&gt;{1}&lt;/div&gt;&lt;p style="color:#444"&gt;&lt;i&gt;Published on {2} by {3}&lt;/i&gt;&lt;/p&gt;{4}</value>
+  </data>
+  <data name="PreReleaseTag" xml:space="preserve">
+    <value>&lt;span style=\"margin:1em;color:red\"&gt;&lt;b&gt;Pre-release&lt;/b&gt;&lt;/span&gt;</value>
+  </data>
 </root>

@@ -42,6 +42,7 @@
         <ProjectReference Include="..\YAMDCC.ECInspector\YAMDCC.ECInspector.csproj" />
         <ProjectReference Include="..\YAMDCC.Service\YAMDCC.Service.csproj" />
         <ProjectReference Include="..\YAMDCC.IPC\YAMDCC.IPC.csproj" />
+        <ProjectReference Include="..\YAMDCC.Updater\YAMDCC.Updater.csproj" />
     </ItemGroup>
     <ItemGroup>
         <WCFMetadata Include="Connected Services\" />
