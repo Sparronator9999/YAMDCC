@@ -125,7 +125,7 @@ internal static class Program
         try
         {
             Release latest = Updater.GetLatestReleaseAsync(Utils.GetVerSuffix() != "release").GetAwaiter().GetResult();
-            if (latest is not null && latest.TagName != $"v{Utils.GetRevision()}")
+            if (latest is not null && latest.TagName != $"v{Utils.GetVerString()}")
             {
                 Application.Run(new UpdateForm(latest, autoUpdate));
             }
