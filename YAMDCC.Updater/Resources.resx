@@ -165,6 +165,6 @@ This could possibly mean one of the following:
     <value>&lt;div&gt;&lt;h2 style="display:inline"&gt;{0}&lt;/h2&gt;{1}&lt;/div&gt;&lt;p style="color:#444"&gt;&lt;i&gt;Published on {2} by {3}&lt;/i&gt;&lt;/p&gt;{4}</value>
   </data>
   <data name="PreReleaseTag" xml:space="preserve">
-    <value>&lt;span style=\"margin:1em;color:red\"&gt;&lt;b&gt;Pre-release&lt;/b&gt;&lt;/span&gt;</value>
+    <value>&lt;span style="margin:1em;color:red"&gt;&lt;b&gt;Pre-release&lt;/b&gt;&lt;/span&gt;</value>
   </data>
 </root>
