@@ -125,10 +125,11 @@ internal static class Program
     {
         try
         {
-            Release latest = Updater.GetLatestReleaseAsync(Utils.GetVerSuffix() != "release").GetAwaiter().GetResult();
-            if (latest is not null && latest.TagName != $"v{Utils.GetVerString()}")
+            Release[] releases = Updater.GetReleasesAsync(Utils.GetCurrentVerSuffix() != "release").GetAwaiter().GetResult();
+
+            if (Utils.GetCurrentVersion() < Utils.GetVersion(releases[0].TagName.Remove(0, 1)))
             {
-                Application.Run(new UpdateForm(latest, autoUpdate));
+                Application.Run(new UpdateForm(releases, autoUpdate));
             }
             else if (!autoUpdate)
             {

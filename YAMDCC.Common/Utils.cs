@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
+using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -91,21 +93,84 @@ public static class Utils
             MessageBoxButtons.OK, MessageBoxIcon.Stop);
     }
 
-    public static string GetVerSuffix()
+    /// <summary>
+    /// Gets a <see cref="Version"/> that can be used to compare
+    /// application versions.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="Version"/> object corresponding to the entry application's
+    /// version if parsing was successful, otherwise <see langword="null"/>.
+    /// </returns>
+    public static Version GetCurrentVersion()
+    {
+        return GetVersion(Application.ProductVersion);
+    }
+
+    public static Version GetVersion(string verString)
+    {
+        string suffix = GetVerSuffix(verString, true);
+        // expected version format: X.Y.Z-SUFFIX[.W]+REVISION,
+        switch (suffix)
+        {
+            // releases: X.Y.Z
+            case "release":
+                verString = verString.Remove(verString.IndexOf('-'));
+                break;
+            // dev versions: X.Y.Z.255
+            // (ensures that dev versions don't get updated)
+            case "dev":
+                verString = $"{verString.Remove(verString.IndexOf('-'))}.255";
+                break;
+            // betas/hotfixes/RCs: X.Y.Z.W (where W is suffix version number),
+            // e.g. 1.0.0-beta.4 becomes 1.0.0.4
+            // NOTE: apps with multiple suffixes aren't handled
+            // (e.g. v1.0.0-beta.4-hotfix.1 will also become 1.0.0.4 with this parser)
+            case "beta":
+            case "hotfix":
+            case "rc":
+                char[] numbers = "0123456789".ToCharArray();
+                // X.Y.Z-SUFFIX.W
+                if (verString.Contains("+"))
+                {
+                    verString = verString.Remove(verString.IndexOf('+'));
+                }
+                // X.Y.Z.W
+                string[] verParts = verString.Split('-');
+                verString = $"{verParts[0]}.{verParts[1].Remove(0, verParts[1].IndexOfAny(numbers))}";
+                break;
+            // version number is in unrecognised format,
+            // just try to parse the version number as is
+            default:
+                break;
+        };
+
+        return Version.TryParse(verString, out Version ver)
+            ? ver
+            : null;
+    }
+
+    public static string GetCurrentVerSuffix()
+    {
+        return GetVerSuffix(Application.ProductVersion);
+    }
+
+    public static string GetVerSuffix(string verString, bool noNum = false)
     {
         // format: X.Y.Z-SUFFIX[.W]+REVISION,
         // where W is a beta/release candidate version if applicable
-        string prodVer = Application.ProductVersion;
-
         string suffix;
-        if (prodVer.Contains("-"))
+        if (verString.Contains("-"))
         {
             // remove the version number (SUFFIX[.W]+REVISION at this point):
-            suffix = prodVer.Remove(0, prodVer.IndexOf('-') + 1);
+            suffix = verString.Remove(0, verString.IndexOf('-') + 1);
 
-            // remove Git hash, if it exists (for "dev" detection)
-            if (suffix.Contains("+"))
+            if (noNum && suffix.Contains("."))
             {
+                suffix = suffix.Remove(suffix.IndexOf('.'));
+            }
+            else if (suffix.Contains("+"))
+            {
+                // remove Git hash, if it exists (for "dev" detection)
                 suffix = suffix.Remove(suffix.IndexOf('+'));
             }
         }
@@ -123,7 +188,7 @@ public static class Utils
         // where W is a beta/release candidate version if applicable
         string prodVer = Application.ProductVersion;
 
-        return GetVerSuffix() switch
+        return GetCurrentVerSuffix() switch
         {
             // only show the version number (e.g. X.Y.Z):
             "release" => prodVer.Remove(prodVer.IndexOf('-')),
@@ -290,6 +355,32 @@ public static class Utils
         }
     }
 
+    /// <summary>
+    /// Runs the specified executable as admin,
+    /// with the specified arguments.
+    /// </summary>
+    /// <remarks>
+    /// The process will be started with <see cref="ProcessStartInfo.UseShellExecute"/>
+    /// set to <see langword="false"/>, except if the calling application is not
+    /// running as an administrator, in which case
+    /// <see cref="ProcessStartInfo.UseShellExecute"/> is set to
+    /// <see langword="true"/> instead.
+    /// </remarks>
+    /// <param name="exe">
+    /// The path to the executable to run.
+    /// </param>
+    /// <param name="args">
+    /// The arguments to pass to the executable.
+    /// </param>
+    /// <param name="waitExit">
+    /// <see langword="true"/> to wait for the executable to exit
+    /// before returning, otherwise <see langword="false"/>.
+    /// </param>
+    /// <returns>
+    /// The exit code returned by the executable (unless <paramref name="waitExit"/>
+    /// is <see langword="true"/>, in which case 0 will always be returned).
+    /// </returns>
+    /// <exception cref="Win32Exception"/>
     public static int RunCmd(string exe, string args, bool waitExit = true)
     {
         bool shellExecute = false;
@@ -300,24 +391,23 @@ public static class Utils
             shellExecute = true;
         }
 
-        Process p = new()
+        using (Process p = new()
         {
-            StartInfo = new ProcessStartInfo(exe)
+            StartInfo = new ProcessStartInfo(exe, args)
             {
                 CreateNoWindow = true,
                 UseShellExecute = shellExecute,
                 Verb = "runas",
-                Arguments = args,
             },
-        };
-
-        p.Start();
-        if (waitExit)
+        })
         {
-            p.WaitForExit();
-            return p.ExitCode;
+            p.Start();
+            if (waitExit)
+            {
+                p.WaitForExit();
+                return p.ExitCode;
+            }
         }
-
         return 0;
     }
 }

@@ -17,7 +17,7 @@ internal partial class UpdateForm : Form
 {
     private readonly bool AutoUpdate;
 
-    private Release LatestRelease;
+    private Release[] Releases;
 
     private readonly BackgroundWorker ExtractWorker = new();
 
@@ -29,17 +29,17 @@ internal partial class UpdateForm : Form
 
     private static readonly string[] ExtractArgs = [DownloadPath, UpdatePath];
 
-    public UpdateForm(Release release = null, bool autoUpdate = false)
+    public UpdateForm(Release[] releases = null, bool autoUpdate = false)
     {
         InitializeComponent();
         Icon = Utils.GetEntryAssemblyIcon();
         AutoUpdate = autoUpdate;
 
         SetTitleText(string.Empty);
-        tsiPreRelease.Checked = Utils.GetVerSuffix() != "release";
+        tsiPreRelease.Checked = Utils.GetCurrentVerSuffix() != "release";
         tsiAutoUpdate.Checked = Updater.GetAutoUpdateEnabled();
 
-        if (release is null)
+        if (releases is null)
         {
             wbChangelog.DocumentText = GetHtml(
                 Resources.GetString("UpdatePrompt") +
@@ -47,7 +47,7 @@ internal partial class UpdateForm : Form
         }
         else
         {
-            LatestRelease = release;
+            Releases = releases;
             UpdateAvailable();
         }
     }
@@ -55,6 +55,17 @@ internal partial class UpdateForm : Form
     private void wbChangelog_Navigating(object sender, WebBrowserNavigatingEventArgs e)
     {
         string url = e.Url.ToString();
+
+        if (url.StartsWith("yamdcc:", StringComparison.OrdinalIgnoreCase))
+        {
+            switch (url.Remove(0, url.IndexOf(':') + 1))
+            {
+                case "reinstall":
+                    UpdateAvailable();
+                    e.Cancel = true;
+                    break;
+            }
+        }
 
         // open external links in user's web browser
         if (url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
@@ -67,34 +78,32 @@ internal partial class UpdateForm : Form
 
     private void btnUpdate_Click(object sender, EventArgs e)
     {
-        if (LatestRelease is null)
+        if ("update".Equals(btnUpdate.Tag) &&
+            Releases is not null && Releases.Length > 0)
         {
-            if (Utils.GetVerSuffix() != "dev" ||
-                Utils.ShowWarning(Resources.GetString("warnDev"),
-                "Dev version detected!") == DialogResult.Yes)
+            // disable buttons while updating
+            btnUpdate.Enabled = false;
+            btnOptions.Enabled = false;
+            btnDisable.Enabled = false;
+            btnLater.Enabled = false;
+
+            SetProgress(-1, "Downloading update...");
+            try
             {
-                CheckUpdate();
+                // delete old update ZIP if it's still there
+                // (from cancelled/failed previous update)
+                File.Delete(DownloadPath);
             }
+            catch (FileNotFoundException) { }
+
+            Updater.DownloadUpdateAsync(Releases[0], DownloadPath,
+                DownloadProgress, DownloadComplete);
             return;
         }
-
-        // disable buttons while updating
-        btnUpdate.Enabled = false;
-        btnOptions.Enabled = false;
-        btnDisable.Enabled = false;
-        btnLater.Enabled = false;
-
-        SetProgress(-1, "Downloading update...");
-        try
+        else
         {
-            // delete old update ZIP if it's still there
-            // (from cancelled/failed previous update)
-            File.Delete(DownloadPath);
+            CheckUpdate();
         }
-        catch (FileNotFoundException) { }
-
-        Updater.DownloadUpdateAsync(LatestRelease, DownloadPath,
-            DownloadProgress, DownloadComplete);
     }
 
     private void btnRemindLater_Click(object sender, EventArgs e)
@@ -107,14 +116,7 @@ internal partial class UpdateForm : Form
     private void btnDisableUpdates_Click(object sender, EventArgs e)
     {
         // disable auto-updates
-        if (!Utils.IsAdmin())
-        {
-            Utils.RunCmd(Assembly.GetExecutingAssembly().Location, $"--setautoupdate {false}");
-        }
-        else
-        {
-            Updater.SetAutoUpdateEnabled(false);
-        }
+        SetAutoUpdate(false);
         Close();
     }
 
@@ -125,24 +127,15 @@ internal partial class UpdateForm : Form
 
     private void tsiAutoUpdate_Click(object sender, EventArgs e)
     {
-        if (!Utils.IsAdmin())
-        {
-            if (Utils.RunCmd(Assembly.GetExecutingAssembly().Location, $"--setautoupdate {!tsiAutoUpdate.Checked}") == 0)
-            {
-                tsiAutoUpdate.Checked = !tsiAutoUpdate.Checked;
-            }
-            return;
-        }
-        else
+        if (SetAutoUpdate(tsiAutoUpdate.Checked))
         {
             tsiAutoUpdate.Checked = !tsiAutoUpdate.Checked;
-            Updater.SetAutoUpdateEnabled(tsiAutoUpdate.Checked);
         }
     }
 
     private void tsiPreRelease_Click(object sender, EventArgs e)
     {
-        if (LatestRelease is null)
+        if (!"update".Equals(btnUpdate.Tag))
         {
             wbChangelog.DocumentText = GetHtml(
                 Resources.GetString("UpdatePrompt") +
@@ -160,7 +153,7 @@ internal partial class UpdateForm : Form
 
         try
         {
-            LatestRelease = await Updater.GetLatestReleaseAsync(tsiPreRelease.Checked);
+            Releases = await Updater.GetReleasesAsync(tsiPreRelease.Checked);
         }
         catch (Exception ex)
         {
@@ -179,23 +172,36 @@ internal partial class UpdateForm : Form
             }
         }
 
-        if (LatestRelease is null)
+        if (Releases is null || Releases.Length == 0)
         {
             SetProgress(0, Resources.GetString("errNoReleaseS"));
             wbChangelog.DocumentText = GetHtml(Resources.GetString(
                 "errNoRelease"));
-
-        }
-        else if ($"v{Utils.GetVerString()}" == LatestRelease.TagName)
-        {
-            LatestRelease = null;
-            SetProgress(100, "YAMDCC is up-to-date.");
-            SetTitleText("Up to date");
-            wbChangelog.DocumentText = GetHtml("YAMDCC is up-to-date.");
         }
         else
         {
-            UpdateAvailable();
+            Version current = Utils.GetCurrentVersion(),
+                latest = Utils.GetVersion(Releases[0].TagName.Remove(0, 1));
+
+            if (current == latest)
+            {
+                SetProgress(100, "YAMDCC is up-to-date.");
+                SetTitleText("Up to date");
+                wbChangelog.DocumentText = GetHtml("YAMDCC is up-to-date.\n\n" +
+                    "[Force-reinstall latest release?](yamdcc:reinstall)");
+            }
+            else if (current > latest)
+            {
+                SetProgress(100, "Current YAMDCC version > Latest YAMDCC version???");
+                SetTitleText("Dev version detected");
+                wbChangelog.DocumentText = GetHtml(
+                    "You appear to be running a unreleased/development version of YAMDCC.\n\n" +
+                    "[Update/downgrade to latest public release anyway?](yamdcc:reinstall)");
+            }
+            else
+            {
+                UpdateAvailable();
+            }
         }
         btnUpdate.Enabled = true;
         btnOptions.Enabled = true;
@@ -203,20 +209,23 @@ internal partial class UpdateForm : Form
 
     private void UpdateAvailable()
     {
-        SetProgress(0, $"Update available! (v{Utils.GetVerString()} -> {LatestRelease.TagName})");
+        Release latest = Releases[0];
+        SetProgress(0, $"Update available! (v{Utils.GetVerString()} -> {latest.TagName})");
         SetTitleText("Update available!");
 
-        // show the changelog of the latest release from GitHub
-        string authorLink = string.IsNullOrEmpty(LatestRelease.Author.HtmlUrl)
-            ? LatestRelease.Author.Login
-            : $"<a href=\"{LatestRelease.Author.HtmlUrl}\">{LatestRelease.Author.Login}</a>";
-        wbChangelog.DocumentText = GetHtml(Resources.GetString("Changelog",
-            LatestRelease.Name,
-            LatestRelease.Prerelease ? Resources.GetString("PreReleaseTag") : string.Empty,
-            $"{LatestRelease.PublishedAt.Value.ToLocalTime():g}",
-            authorLink, LatestRelease.HtmlUrl, Markdown.ToHtml(LatestRelease.Body)), true);
+        string authorLink = string.IsNullOrEmpty(Releases[0].Author.HtmlUrl)
+            ? latest.Author.Login
+            : $"<a href=\"{latest.Author.HtmlUrl}\">{latest.Author.Login}</a>";
 
-        btnUpdate.Text = $"&Update to {LatestRelease.TagName}";
+        // show the changelog of the latest release from GitHub
+        wbChangelog.DocumentText = GetHtml(Resources.GetString("Changelog",
+            latest.Name,
+            latest.Prerelease ? Resources.GetString("PreReleaseTag") : string.Empty,
+            $"{latest.PublishedAt.Value.ToLocalTime():g}",
+            authorLink, latest.HtmlUrl, Markdown.ToHtml(latest.Body)), true);
+
+        btnUpdate.Text = $"&Update to {latest.TagName}";
+        btnUpdate.Tag = "update";
         if (AutoUpdate)
         {
             btnLater.Enabled = btnLater.Visible = true;
@@ -226,7 +235,7 @@ internal partial class UpdateForm : Form
 
     private void DownloadProgress(object sender, DownloadProgressChangedEventArgs e)
     {
-        SetProgress(e.ProgressPercentage, $"Downloading update ({FormatByteCount(e.TotalBytesToReceive - e.BytesReceived)} bytes remaining)...");
+        SetProgress(e.ProgressPercentage, $"Downloading update ({FormatByteCount(e.TotalBytesToReceive - e.BytesReceived)} remaining)...");
     }
 
     private void DownloadComplete(object sender, AsyncCompletedEventArgs e)
@@ -361,7 +370,6 @@ internal partial class UpdateForm : Form
         }
     }
 
-    // TODO: test
     private static string FormatByteCount(long bytes)
     {
         int mult = 1024;
@@ -369,12 +377,40 @@ internal partial class UpdateForm : Form
 
         for (int i = 2; i >= 0; i--)
         {
-            int unit = (int)Math.Pow(mult, i + 1);
+            double unit = Math.Pow(mult, i + 1);
             if (bytes > unit)
             {
-                return $"{bytes / unit} {chars[i]}B";
+                return $"{Math.Round(bytes / unit, 2)} {chars[i]}B";
             }
         }
         return $"{bytes} bytes";
+    }
+
+    private static bool SetAutoUpdate(bool enabled)
+    {
+        if (!Utils.IsAdmin())
+        {
+            try
+            {
+                return Utils.RunCmd(Assembly.GetExecutingAssembly().Location, $"--setautoupdate {enabled}") == 0;
+            }
+            catch (Win32Exception ex)
+            {
+                if (ex.ErrorCode == -2147467259) // 0x80004005 - operation cancelled by user
+                {
+                    Utils.ShowError("Admin is required to change auto-update setting.");
+                    return false;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+        else
+        {
+            Updater.SetAutoUpdateEnabled(false);
+            return true;
+        }
     }
 }

@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using YAMDCC.Common;
@@ -19,38 +18,33 @@ public static class Updater
     private static readonly string BuildConfig = Assembly.GetCallingAssembly()
         .GetCustomAttribute<AssemblyConfigurationAttribute>().Configuration;
 
-    private static readonly GitHubClient GHClient = new(
-        new ProductHeaderValue("YAMDCC.Updater"));
+    private static readonly ProductHeaderValue ProductHeader =
+        new("YAMDCC.Updater", Utils.GetVerString());
+
+    private static readonly GitHubClient GHClient = new(ProductHeader);
 
     /// <summary>
-    /// Gets the latest YAMDCC GitHub release.
+    /// Gets a set of the most recent YAMDCC releases.
     /// </summary>
     /// <param name="preRelease">
-    /// Set to <c>true</c> to include pre-release updates.
+    /// Set to <see langword="true"/> to include pre-release updates.
+    /// </param>
+    /// <param name="numReleases">
+    /// The number of releases to return. Defaults to the 20 most recent releases.
     /// </param>
     /// <returns>
-    /// The latest YAMDCC release (or pre-release if
-    /// <paramref name="preRelease"/> was <c>true</c>),
-    /// or <c>null</c> if no release was found.
+    /// A <see cref="Release"/> array with up to <paramref name="numReleases"/>
+    /// most recent releases.
     /// </returns>
-    /// <exception cref="HttpRequestException"/>
-    /// <exception cref="ApiException"/>
-    public static async Task<Release> GetLatestReleaseAsync(bool preRelease)
+    public static async Task<Release[]> GetReleasesAsync(bool preRelease, int numReleases = 20)
     {
         IReadOnlyList<Release> releases = await GHClient.Repository.Release.GetAll(
             Paths.ProjectRepo.Split('/')[0], Paths.ProjectRepo.Split('/')[1],
-            new ApiOptions { PageSize = 20, PageCount = 1 });
+            new ApiOptions { PageSize = numReleases, PageCount = 1 });
 
-        for (int i = 0; i < releases.Count; i++)
-        {
-            if (releases[i].Prerelease && !preRelease)
-            {
-                continue;
-            }
-            return releases[i];
-        }
-
-        return null;
+        return preRelease
+            ? [.. releases]
+            : releases.Where((rel) => !rel.Prerelease).ToArray();
     }
 
     /// <summary>
@@ -101,10 +95,16 @@ public static class Updater
         // download the first YAMDCC version that
         // matches the current build configuration
         string url = release.Assets.First((asset) =>
-            asset.Name.Contains(BuildConfig)).BrowserDownloadUrl;
+            asset.Name.Contains(BuildConfig)).Url;
 
         using (WebClient client = new())
         {
+            client.Headers.Add(HttpRequestHeader.UserAgent, ProductHeader.ToString());
+            client.Headers.Add(HttpRequestHeader.Accept, "application/octet-stream");
+            if (GHClient.Credentials.AuthenticationType != AuthenticationType.Anonymous)
+            {
+                client.Headers.Add(HttpRequestHeader.Authorization, $"token {GHClient.Credentials.Password}");
+            }
             client.DownloadProgressChanged += progress.Invoke;
             client.DownloadFileCompleted += complete.Invoke;
             client.DownloadFileAsync(new Uri(url), path);
