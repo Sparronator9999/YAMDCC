@@ -15,6 +15,8 @@ namespace YAMDCC.Updater;
 
 internal partial class UpdateForm : Form
 {
+    private readonly bool AutoUpdate;
+
     private Release LatestRelease;
 
     private readonly BackgroundWorker ExtractWorker = new();
@@ -31,6 +33,7 @@ internal partial class UpdateForm : Form
     {
         InitializeComponent();
         Icon = Utils.GetEntryAssemblyIcon();
+        AutoUpdate = autoUpdate;
 
         SetTitleText(string.Empty);
         tsiPreRelease.Checked = Utils.GetVerSuffix() != "release";
@@ -45,7 +48,7 @@ internal partial class UpdateForm : Form
         else
         {
             LatestRelease = release;
-            UpdateAvailable(autoUpdate);
+            UpdateAvailable();
         }
     }
 
@@ -75,8 +78,23 @@ internal partial class UpdateForm : Form
             return;
         }
 
+        // disable buttons while updating
+        btnUpdate.Enabled = false;
+        btnOptions.Enabled = false;
+        btnDisable.Enabled = false;
+        btnLater.Enabled = false;
+
         SetProgress(-1, "Downloading update...");
-        Updater.DownloadUpdateAsync(LatestRelease, DownloadPath, DownloadProgress, DownloadComplete);
+        try
+        {
+            // delete old update ZIP if it's still there
+            // (from cancelled/failed previous update)
+            File.Delete(DownloadPath);
+        }
+        catch (FileNotFoundException) { }
+
+        Updater.DownloadUpdateAsync(LatestRelease, DownloadPath,
+            DownloadProgress, DownloadComplete);
     }
 
     private void btnRemindLater_Click(object sender, EventArgs e)
@@ -177,13 +195,13 @@ internal partial class UpdateForm : Form
         }
         else
         {
-            UpdateAvailable(false);
+            UpdateAvailable();
         }
         btnUpdate.Enabled = true;
         btnOptions.Enabled = true;
     }
 
-    private void UpdateAvailable(bool autoUpdate)
+    private void UpdateAvailable()
     {
         SetProgress(0, $"Update available! (v{Utils.GetVerString()} -> {LatestRelease.TagName})");
         SetTitleText("Update available!");
@@ -196,12 +214,12 @@ internal partial class UpdateForm : Form
             LatestRelease.Name,
             LatestRelease.Prerelease ? Resources.GetString("PreReleaseTag") : string.Empty,
             $"{LatestRelease.PublishedAt.Value.ToLocalTime():g}",
-            authorLink, Markdown.ToHtml(LatestRelease.Body)), true);
+            authorLink, LatestRelease.HtmlUrl, Markdown.ToHtml(LatestRelease.Body)), true);
 
         btnUpdate.Text = $"&Update to {LatestRelease.TagName}";
-        btnLater.Enabled = btnLater.Visible = true;
-        if (autoUpdate)
+        if (AutoUpdate)
         {
+            btnLater.Enabled = btnLater.Visible = true;
             btnDisable.Enabled = btnDisable.Visible = true;
         }
     }
@@ -222,6 +240,9 @@ internal partial class UpdateForm : Form
         }
         else
         {
+            // re-enable update button to allow retry
+            btnUpdate.Enabled = true;
+            btnUpdate.Text = "Retry update";
             SetProgress(0, $"ERROR: Failed to download YAMDCC: {e.Error.Message}");
         }
     }
@@ -247,11 +268,7 @@ internal partial class UpdateForm : Form
 
     private void ExtractComplete(object sender, RunWorkerCompletedEventArgs e)
     {
-        if (e.Error is not null)
-        {
-            SetProgress(0, $"ERROR: Failed to extract update: {e.Error.Message}");
-        }
-        else
+        if (e.Error is null)
         {
             // install the update
             SetProgress(-1, "Preparing to install update...");
@@ -269,6 +286,13 @@ internal partial class UpdateForm : Form
             Utils.RunCmd(Path.Combine(OldPath, ExeName),
                 $"--install {OldPath} {UpdatePath} {TargetPath}", false);
             Close();
+        }
+        else
+        {
+            // re-enable update button to allow retry
+            btnUpdate.Enabled = true;
+            btnUpdate.Text = "Retry update";
+            SetProgress(0, $"ERROR: Failed to extract update: {e.Error.Message}");
         }
     }
 

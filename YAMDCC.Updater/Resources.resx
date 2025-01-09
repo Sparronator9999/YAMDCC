@@ -145,11 +145,16 @@ Continue?</value>
 This could possibly mean one of the following:
 
 - If you have pre-release versions disabled, there are no full releases of YAMDCC yet. Enable pre-releases and try checking for updates again.
-- You have reached GitHub's API rate limit. Try again in an hour.
 - There is a programming bug causing this message to appear.</value>
   </data>
   <data name="errCheckUpdate" xml:space="preserve">
-    <value>**An error occurred during the update check:**
+    <value>**An error occurred during the update check.**
+
+First, make sure you're connected to the internet and that your firewall allows connections from this program to `github.com`.
+
+If the below error message mentions an API rate limit was exceeded, try again later.
+
+Error details:
 
 ```
 {0}
@@ -162,7 +167,7 @@ This could possibly mean one of the following:
     <value>&lt;html&gt;&lt;head&gt;&lt;style&gt;body{{font-family:"Segoe UI",sans-serif;font-size:11pt}}pre{{line-height:1.5;background-color:#ddd;padding:.5em}}code{{font-family:Consolas,monospace;font-size:10pt;background-color:#ddd;margin:0;padding:.1em .3em}}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;{0}&lt;/body&gt;&lt;/html&gt;</value>
   </data>
   <data name="Changelog" xml:space="preserve">
-    <value>&lt;div&gt;&lt;h2 style="display:inline"&gt;{0}&lt;/h2&gt;{1}&lt;/div&gt;&lt;p style="color:#444"&gt;&lt;i&gt;Published on {2} by {3}&lt;/i&gt;&lt;/p&gt;{4}</value>
+    <value>&lt;div&gt;&lt;h2 style="display:inline"&gt;{0}&lt;/h2&gt;{1}&lt;/div&gt;&lt;p style="color:#444"&gt;&lt;a href="{4}"&gt;View on GitHub&lt;/a&gt; - &lt;i&gt;Published on {2} by {3}&lt;/i&gt;&lt;/p&gt;{5}</value>
   </data>
   <data name="PreReleaseTag" xml:space="preserve">
     <value>&lt;span style="margin:1em;color:red"&gt;&lt;b&gt;Pre-release&lt;/b&gt;&lt;/span&gt;</value>

@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Net.Http;
 using System.Reflection;
 using System.Windows.Forms;
 using YAMDCC.Common;
@@ -137,11 +138,16 @@ internal static class Program
         }
         catch (Exception ex)
         {
-            if (!autoUpdate)
+            if (ex is HttpRequestException or ApiException)
             {
-                Utils.ShowError($"Error occurred while checking for updates:\n{GetExceptionMsgs(ex)}");
+                Utils.ShowError("Failed to check for YAMDCC update!\n" +
+                    $"Details:\n{GetExceptionMsgs(ex)}");
+                return false;
             }
-            return false;
+            else
+            {
+                throw;
+            }
         }
     }
 
