@@ -127,7 +127,7 @@ internal partial class UpdateForm : Form
 
     private void tsiAutoUpdate_Click(object sender, EventArgs e)
     {
-        if (SetAutoUpdate(tsiAutoUpdate.Checked))
+        if (SetAutoUpdate(!tsiAutoUpdate.Checked))
         {
             tsiAutoUpdate.Checked = !tsiAutoUpdate.Checked;
         }

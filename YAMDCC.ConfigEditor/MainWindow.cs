@@ -534,6 +534,8 @@ internal sealed partial class MainWindow : Form
             });
             dlg.ShowDialog();
 
+            Utils.RunCmd("updater", "--setautoupdate false");
+
             Close();
         }
     }
