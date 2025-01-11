@@ -245,4 +245,7 @@ Please run 'YAMDCC.exe' instead.</value>
   <data name="svcWake" xml:space="preserve">
     <value>Resume from sleep detected, re-applying fan curve...</value>
   </data>
+  <data name="svcWritingFanMode" xml:space="preserve">
+    <value>Writing fan mode setting...</value>
+  </data>
 </root>

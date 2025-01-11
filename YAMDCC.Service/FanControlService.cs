@@ -142,7 +142,7 @@ internal sealed class FanControlService : ServiceBase
         // Apply the fan curve and charging threshold:
         if (confLoaded)
         {
-            ApplySettings();
+            ApplyConf();
         }
     }
 
@@ -227,7 +227,7 @@ internal sealed class FanControlService : ServiceBase
                 {
                     // Re-apply the fan curve after waking up from sleep:
                     Log.Info(Strings.GetString("svcWake"));
-                    ApplySettings();
+                    ApplyConf();
                     Cooldown = true;
                     CooldownTimer.Start();
                 }
@@ -316,7 +316,7 @@ internal sealed class FanControlService : ServiceBase
                     break;
                 case Command.ApplyConfig:
                     parseSuccess = true;
-                    cmdSuccess = LoadConf() && ApplySettings();
+                    cmdSuccess = LoadConf() && ApplyConf();
                     break;
                 case Command.FullBlast:
                     if (args.Length == 1)
@@ -438,7 +438,7 @@ internal sealed class FanControlService : ServiceBase
         return true;
     }
 
-    private bool ApplySettings()
+    private bool ApplyConf()
     {
         if (Config is null)
         {
@@ -507,6 +507,17 @@ internal sealed class FanControlService : ServiceBase
             Log.Info(Strings.GetString("svcWritingPerfMode"));
             byte value = Config.PerfModeConf.PerfModes[Config.PerfModeConf.ModeSel].Value;
             if (!LogECWriteByte(Config.PerfModeConf.Reg, value))
+            {
+                success = false;
+            }
+        }
+
+        // Write the fan mode
+        if (Config.FanModeConf is not null)
+        {
+            Log.Info(Strings.GetString("svcWritingFanMode"));
+            byte value = Config.FanModeConf.FanModes[Config.FanModeConf.ModeSel].Value;
+            if (!LogECWriteByte(Config.FanModeConf.Reg, value))
             {
                 success = false;
             }

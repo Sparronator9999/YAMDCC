@@ -51,11 +51,13 @@ namespace YAMDCC.ConfigEditor
             System.Windows.Forms.ToolStripSeparator sep4;
             System.Windows.Forms.ToolStripSeparator sep5;
             System.Windows.Forms.ToolStripMenuItem tsiLogLevel;
+            System.Windows.Forms.ToolStripMenuItem tsiCheckUpdate;
             System.Windows.Forms.TabControl tcMain;
             System.Windows.Forms.TabPage tabFanControl;
             System.Windows.Forms.FlowLayoutPanel flwFanSelect;
             System.Windows.Forms.TabPage tabExtra;
             System.Windows.Forms.TableLayoutPanel tblExtra;
+            System.Windows.Forms.Label lblFanMode;
             System.Windows.Forms.Label lblChgLim;
             System.Windows.Forms.Label lblPerfMode;
             System.Windows.Forms.Label lblWinFnSwap;
@@ -64,7 +66,6 @@ namespace YAMDCC.ConfigEditor
             System.Windows.Forms.FlowLayoutPanel flwChgLim;
             System.Windows.Forms.TableLayoutPanel tblApply;
             System.Windows.Forms.FlowLayoutPanel flwStats;
-            System.Windows.Forms.ToolStripMenuItem tsiCheckUpdate;
             this.tsiFile = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiLoadConf = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiSaveConf = new System.Windows.Forms.ToolStripMenuItem();
@@ -80,6 +81,7 @@ namespace YAMDCC.ConfigEditor
             this.tsiSwitchAll = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiECtoConf = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiECMon = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsiAdvanced = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiLogDebug = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiLogInfo = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiLogWarn = new System.Windows.Forms.ToolStripMenuItem();
@@ -99,6 +101,7 @@ namespace YAMDCC.ConfigEditor
             this.cboProfSel = new System.Windows.Forms.ComboBox();
             this.btnProfAdd = new System.Windows.Forms.Button();
             this.btnProfDel = new System.Windows.Forms.Button();
+            this.cboFanMode = new System.Windows.Forms.ComboBox();
             this.cboPerfMode = new System.Windows.Forms.ComboBox();
             this.chkWinFnSwap = new System.Windows.Forms.CheckBox();
             this.lblKeyLightLow = new System.Windows.Forms.Label();
@@ -121,11 +124,13 @@ namespace YAMDCC.ConfigEditor
             sep4 = new System.Windows.Forms.ToolStripSeparator();
             sep5 = new System.Windows.Forms.ToolStripSeparator();
             tsiLogLevel = new System.Windows.Forms.ToolStripMenuItem();
+            tsiCheckUpdate = new System.Windows.Forms.ToolStripMenuItem();
             tcMain = new System.Windows.Forms.TabControl();
             tabFanControl = new System.Windows.Forms.TabPage();
             flwFanSelect = new System.Windows.Forms.FlowLayoutPanel();
             tabExtra = new System.Windows.Forms.TabPage();
             tblExtra = new System.Windows.Forms.TableLayoutPanel();
+            lblFanMode = new System.Windows.Forms.Label();
             lblChgLim = new System.Windows.Forms.Label();
             lblPerfMode = new System.Windows.Forms.Label();
             lblWinFnSwap = new System.Windows.Forms.Label();
@@ -134,7 +139,6 @@ namespace YAMDCC.ConfigEditor
             flwChgLim = new System.Windows.Forms.FlowLayoutPanel();
             tblApply = new System.Windows.Forms.TableLayoutPanel();
             flwStats = new System.Windows.Forms.FlowLayoutPanel();
-            tsiCheckUpdate = new System.Windows.Forms.ToolStripMenuItem();
             menuStrip.SuspendLayout();
             tcMain.SuspendLayout();
             tabFanControl.SuspendLayout();
@@ -239,6 +243,7 @@ namespace YAMDCC.ConfigEditor
             this.tsiECtoConf,
             sep4,
             this.tsiECMon,
+            this.tsiAdvanced,
             sep5,
             tsiLogLevel,
             this.tsiStopSvc,
@@ -320,6 +325,13 @@ namespace YAMDCC.ConfigEditor
             this.tsiECMon.Size = new System.Drawing.Size(257, 22);
             this.tsiECMon.Text = "Enable EC &monitoring";
             this.tsiECMon.Click += new System.EventHandler(this.tsiECMon_Click);
+            // 
+            // tsiAdvanced
+            // 
+            this.tsiAdvanced.Name = "tsiAdvanced";
+            this.tsiAdvanced.Size = new System.Drawing.Size(257, 22);
+            this.tsiAdvanced.Text = "Show advanced settings";
+            this.tsiAdvanced.Click += new System.EventHandler(this.tsiAdvanced_Click);
             // 
             // sep5
             // 
@@ -410,16 +422,23 @@ namespace YAMDCC.ConfigEditor
             // tsiAbout
             // 
             this.tsiAbout.Name = "tsiAbout";
-            this.tsiAbout.Size = new System.Drawing.Size(180, 22);
+            this.tsiAbout.Size = new System.Drawing.Size(179, 22);
             this.tsiAbout.Text = "&About";
             this.tsiAbout.Click += new System.EventHandler(this.tsiAbout_Click);
             // 
             // tsiSource
             // 
             this.tsiSource.Name = "tsiSource";
-            this.tsiSource.Size = new System.Drawing.Size(180, 22);
+            this.tsiSource.Size = new System.Drawing.Size(179, 22);
             this.tsiSource.Text = "Source &code";
             this.tsiSource.Click += new System.EventHandler(this.tsiSrc_Click);
+            // 
+            // tsiCheckUpdate
+            // 
+            tsiCheckUpdate.Name = "tsiCheckUpdate";
+            tsiCheckUpdate.Size = new System.Drawing.Size(179, 22);
+            tsiCheckUpdate.Text = "Check for updates...";
+            tsiCheckUpdate.Click += new System.EventHandler(this.tsiCheckUpdate_Click);
             // 
             // tcMain
             // 
@@ -575,6 +594,8 @@ namespace YAMDCC.ConfigEditor
             tblExtra.ColumnCount = 2;
             tblExtra.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             tblExtra.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tblExtra.Controls.Add(this.cboFanMode, 1, 4);
+            tblExtra.Controls.Add(lblFanMode, 0, 4);
             tblExtra.Controls.Add(lblChgLim, 0, 0);
             tblExtra.Controls.Add(lblPerfMode, 0, 1);
             tblExtra.Controls.Add(this.cboPerfMode, 1, 1);
@@ -587,7 +608,8 @@ namespace YAMDCC.ConfigEditor
             tblExtra.Location = new System.Drawing.Point(0, 0);
             tblExtra.Margin = new System.Windows.Forms.Padding(0);
             tblExtra.Name = "tblExtra";
-            tblExtra.RowCount = 5;
+            tblExtra.RowCount = 6;
+            tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -595,6 +617,28 @@ namespace YAMDCC.ConfigEditor
             tblExtra.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             tblExtra.Size = new System.Drawing.Size(526, 336);
             tblExtra.TabIndex = 0;
+            // 
+            // cboFanMode
+            // 
+            this.cboFanMode.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cboFanMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboFanMode.FormattingEnabled = true;
+            this.cboFanMode.Location = new System.Drawing.Point(133, 137);
+            this.cboFanMode.Name = "cboFanMode";
+            this.cboFanMode.Size = new System.Drawing.Size(150, 23);
+            this.cboFanMode.TabIndex = 9;
+            this.cboFanMode.SelectedIndexChanged += new System.EventHandler(this.cboFanMode_IndexChanged);
+            // 
+            // lblFanMode
+            // 
+            lblFanMode.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblFanMode.AutoSize = true;
+            lblFanMode.Location = new System.Drawing.Point(5, 141);
+            lblFanMode.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
+            lblFanMode.Name = "lblFanMode";
+            lblFanMode.Size = new System.Drawing.Size(125, 15);
+            lblFanMode.TabIndex = 8;
+            lblFanMode.Text = "Fan mode (advanced):";
             // 
             // lblChgLim
             // 
@@ -867,13 +911,6 @@ namespace YAMDCC.ConfigEditor
             this.tblMain.Size = new System.Drawing.Size(540, 416);
             this.tblMain.TabIndex = 1;
             // 
-            // tsiCheckUpdate
-            // 
-            tsiCheckUpdate.Name = "tsiCheckUpdate";
-            tsiCheckUpdate.Size = new System.Drawing.Size(180, 22);
-            tsiCheckUpdate.Text = "Check for updates...";
-            tsiCheckUpdate.Click += new System.EventHandler(this.tsiCheckUpdate_Click);
-            // 
             // MainWindow
             // 
             this.AcceptButton = this.btnApply;
@@ -970,5 +1007,7 @@ namespace YAMDCC.ConfigEditor
         private System.Windows.Forms.ToolStripMenuItem tsiLogError;
         private System.Windows.Forms.ToolStripMenuItem tsiLogFatal;
         private System.Windows.Forms.ToolStripMenuItem tsiSwitchAll;
+        private System.Windows.Forms.ToolStripMenuItem tsiAdvanced;
+        private System.Windows.Forms.ComboBox cboFanMode;
     }
 }

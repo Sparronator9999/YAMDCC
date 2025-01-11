@@ -746,6 +746,18 @@ internal sealed partial class MainWindow : Form
         }
     }
 
+    private void cboFanMode_IndexChanged(object sender, EventArgs e)
+    {
+        if (Config is not null)
+        {
+            int idx = cboFanMode.SelectedIndex;
+            Config.FanModeConf.ModeSel = idx;
+            ttMain.SetToolTip(cboFanMode,
+                Strings.GetString("ttFanMode", Config.FanModeConf.FanModes[idx].Desc));
+            btnRevert.Enabled = tsiRevert.Enabled = true;
+        }
+    }
+
     private void chkWinFnSwap_Toggled(object sender, EventArgs e)
     {
         Config.KeySwapConf.Enabled = chkWinFnSwap.Checked;
@@ -894,6 +906,25 @@ internal sealed partial class MainWindow : Form
             ttMain.SetToolTip(cboPerfMode, Strings.GetString(
                 "ttPerfMode", perfModeConf.PerfModes[perfModeConf.ModeSel].Desc));
             cboPerfMode.Enabled = true;
+        }
+
+        cboFanMode.Items.Clear();
+        if (cfg.FanModeConf is null)
+        {
+            ttMain.SetToolTip(cboFanMode, Strings.GetString("ttNotSupported"));
+        }
+        else
+        {
+            FanModeConf fanModeConf = cfg.FanModeConf;
+            for (int i = 0; i < fanModeConf.FanModes.Length; i++)
+            {
+                cboFanMode.Items.Add(fanModeConf.FanModes[i].Name);
+            }
+
+            cboFanMode.SelectedIndex = fanModeConf.ModeSel;
+            ttMain.SetToolTip(cboFanMode, Strings.GetString(
+                "ttFanMode", fanModeConf.FanModes[fanModeConf.ModeSel].Desc));
+            cboFanMode.Enabled = tsiAdvanced.Checked;
         }
 
         if (cfg.KeySwapConf is null)
@@ -1332,6 +1363,25 @@ internal sealed partial class MainWindow : Form
         }
     }
 
+    private void tsiAdvanced_Click(object sender, EventArgs e)
+    {
+        if (!tsiAdvanced.Checked && Utils.ShowWarning(
+            "WARNING:\n\n" +
+            "You are about to enable adjustment of advanced settings\n" +
+            "that probably should be left on the default value.\n\n" +
+            "Enable advanced settings anyway?",
+            "Show advanced settings?", MessageBoxDefaultButton.Button2) != DialogResult.Yes)
+        {
+            return;
+        }
+        tsiAdvanced.Checked = !tsiAdvanced.Checked;
+
+        if (Config.FanModeConf is not null)
+        {
+            cboFanMode.Enabled = tsiAdvanced.Checked;
+        }
+    }
+
     private void DisableAll()
     {
         btnProfAdd.Enabled = false;
@@ -1341,6 +1391,7 @@ internal sealed partial class MainWindow : Form
         cboFanSel.Enabled = false;
         cboProfSel.Enabled = false;
         cboPerfMode.Enabled = false;
+        cboFanMode.Enabled = false;
         chkFullBlast.Enabled = false;
         chkWinFnSwap.Enabled = false;
         chkChgLim.Enabled = false;

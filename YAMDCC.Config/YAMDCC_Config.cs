@@ -92,6 +92,15 @@ public sealed class YAMDCC_Config
     public PerfModeConf PerfModeConf { get; set; }
 
     /// <summary>
+    /// The laptop's fan mode config.
+    /// </summary>
+    /// <remarks>
+    /// May be <c>null</c> if not supported on the laptop.
+    /// </remarks>
+    [XmlElement]
+    public FanModeConf FanModeConf { get; set; }
+
+    /// <summary>
     /// The laptop's Win/Fn keyboard swap config.
     /// </summary>
     /// <remarks>
@@ -316,6 +325,32 @@ public sealed class YAMDCC_Config
 
                 if (string.IsNullOrEmpty(perfMode.Name) ||
                     string.IsNullOrEmpty(perfMode.Desc))
+                {
+                    return false;
+                }
+            }
+        }
+
+        if (FanModeConf is not null)
+        {
+            if (FanModeConf.FanModes?.Length < 1)
+            {
+                return false;
+            }
+
+            // you know the drill by now
+            if (FanModeConf.ModeSel >= FanModeConf.FanModes.Length ||
+                FanModeConf.ModeSel < 0)
+            {
+                FanModeConf.ModeSel = 0;
+            }
+
+            for (int i = 0; i < FanModeConf.FanModes.Length; i++)
+            {
+                FanMode fanMode = FanModeConf.FanModes[i];
+
+                if (string.IsNullOrEmpty(fanMode.Name) ||
+                    string.IsNullOrEmpty(fanMode.Desc))
                 {
                     return false;
                 }

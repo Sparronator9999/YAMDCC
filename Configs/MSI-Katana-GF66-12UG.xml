@@ -211,6 +211,33 @@ If set to default fan curve, uses an alternative fan curve.</Desc>
 			</PerfMode>
 		</PerfModes>
 	</PerfModeConf>
+	<FanModeConf>
+		<Reg>212</Reg>
+		<ModeSel>3</ModeSel>
+		<FanModes>
+			<FanMode>
+				<Name>Automatic</Name>
+				<Desc>Uses the default laptop fan curve.</Desc>
+				<Value>13</Value>
+			</FanMode>
+			<FanMode>
+				<Name>Silent</Name>
+				<Desc>Reduces the maximum fan speed from Automatic.</Desc>
+				<Value>29</Value>
+			</FanMode>
+			<FanMode>
+				<Name>Basic</Name>
+				<Desc>The fan profiles can be manually edited using a single offset from the default (automatic) fan profile.</Desc>
+				<Value>77</Value>
+			</FanMode>
+			<FanMode>
+				<Name>Advanced (default)</Name>
+				<Desc>The fan profiles can be manually edited using a series of fan/temperature points.
+**If unsure, use this setting.**</Desc>
+				<Value>141</Value>
+			</FanMode>
+		</FanModes>
+	</FanModeConf>
 	<KeySwapConf>
 		<Reg>232</Reg>
 		<Enabled>false</Enabled>
@@ -222,15 +249,4 @@ If set to default fan curve, uses an alternative fan curve.</Desc>
 		<MinVal>128</MinVal>
 		<MaxVal>131</MaxVal>
 	</KeyLightConf>
-	<RegConfs>
-		<RegConf>
-			<Enabled>true</Enabled>
-			<Name>YAMDCC compatibility fix</Name>
-			<Desc>Set fan mode to Advanced. Fixes fans not working at all with certain fan settings.
-It is recommended you leave this enabled.</Desc>
-			<Reg>212</Reg>
-			<OnVal>77</OnVal>
-			<OffVal>13</OffVal>
-		</RegConf>
-	</RegConfs>
 </YAMDCC_Config>

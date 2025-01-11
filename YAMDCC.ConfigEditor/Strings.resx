@@ -382,4 +382,14 @@ While enabled:
     <value>Click to copy your laptop's default fan profiles to the currently loaded YAMDCC config.
 Once you click this, you must reboot your laptop to reset the fan profiles to default.</value>
   </data>
+  <data name="ttFanMode" xml:space="preserve">
+    <value>WARNING:
+Every fan mode here except for "Advanced" has undefined behaviour while being used with YAMDCC.
+If unsure, keep this setting on "Advanced" and edit the fan profile directly.
+
+Click or scroll to select your MSI laptop's fan mode.
+
+Fan mode description:
+{0}</value>
+  </data>
 </root>
