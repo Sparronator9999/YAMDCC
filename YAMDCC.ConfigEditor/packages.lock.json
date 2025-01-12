@@ -107,7 +107,7 @@
       "ec-inspect": {
         "type": "Project",
         "dependencies": {
-          "YAMDCC.Common": "[1.0.0-dev, )",
+          "YAMDCC.Common": "[1.0.0-beta.6, )",
           "YAMDCC.IPC": "[2.1.3-release, )"
         }
       },
@@ -117,19 +117,19 @@
           "Markdig": "[0.39.1, )",
           "Octokit": "[13.0.1, )",
           "TaskScheduler": "[2.11.0, )",
-          "YAMDCC.Common": "[1.0.0-dev, )"
+          "YAMDCC.Common": "[1.0.0-beta.6, )"
         }
       },
       "yamdcc.common": {
         "type": "Project",
         "dependencies": {
-          "YAMDCC.Logs": "[1.0.0-dev, )"
+          "YAMDCC.Logs": "[1.0.0-beta.6, )"
         }
       },
       "yamdcc.config": {
         "type": "Project",
         "dependencies": {
-          "YAMDCC.Common": "[1.0.0-dev, )"
+          "YAMDCC.Common": "[1.0.0-beta.6, )"
         }
       },
       "yamdcc.ecaccess": {
@@ -147,11 +147,11 @@
       "yamdccsvc": {
         "type": "Project",
         "dependencies": {
-          "YAMDCC.Common": "[1.0.0-dev, )",
-          "YAMDCC.Config": "[1.0.0-dev, )",
-          "YAMDCC.ECAccess": "[1.0.0-dev, )",
+          "YAMDCC.Common": "[1.0.0-beta.6, )",
+          "YAMDCC.Config": "[1.0.0-beta.6, )",
+          "YAMDCC.ECAccess": "[1.0.0-beta.6, )",
           "YAMDCC.IPC": "[2.1.3-release, )",
-          "YAMDCC.Logs": "[1.0.0-dev, )"
+          "YAMDCC.Logs": "[1.0.0-beta.6, )"
         }
       }
     },

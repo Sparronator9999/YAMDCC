@@ -89,7 +89,7 @@
       "yamdcc.common": {
         "type": "Project",
         "dependencies": {
-          "YAMDCC.Logs": "[1.0.0-dev, )"
+          "YAMDCC.Logs": "[1.0.0-beta.6, )"
         }
       },
       "yamdcc.ipc": {
