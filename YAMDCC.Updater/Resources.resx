@@ -172,4 +172,7 @@ Error details:
   <data name="PreReleaseTag" xml:space="preserve">
     <value>&lt;span style="margin:1em;color:red"&gt;&lt;b&gt;Pre-release&lt;/b&gt;&lt;/span&gt;</value>
   </data>
+  <data name="InstallPrompt" xml:space="preserve">
+    <value>Click "Install update", then click "Yes" at the UAC prompt to install the YAMDCC update.</value>
+  </data>
 </root>

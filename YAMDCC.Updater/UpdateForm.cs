@@ -100,6 +100,10 @@ internal partial class UpdateForm : Form
                 DownloadProgress, DownloadComplete);
             return;
         }
+        else if ("install".Equals(btnUpdate.Tag))
+        {
+            InstallUpdate();
+        }
         else
         {
             CheckUpdate();
@@ -135,7 +139,7 @@ internal partial class UpdateForm : Form
 
     private void tsiPreRelease_Click(object sender, EventArgs e)
     {
-        if (!"update".Equals(btnUpdate.Tag))
+        if (btnUpdate.Tag is null)
         {
             wbChangelog.DocumentText = GetHtml(
                 Resources.GetString("UpdatePrompt") +
@@ -290,11 +294,7 @@ internal partial class UpdateForm : Form
             catch (DirectoryNotFoundException) { }
             CopyDirectory(TargetPath, OldPath);
 
-            // run the installer from a different location so we can
-            // clean the old directory
-            Utils.RunCmd(Path.Combine(OldPath, ExeName),
-                $"--install {OldPath} {UpdatePath} {TargetPath}", false);
-            Close();
+            InstallUpdate();
         }
         else
         {
@@ -302,6 +302,31 @@ internal partial class UpdateForm : Form
             btnUpdate.Enabled = true;
             btnUpdate.Text = "Retry update";
             SetProgress(0, $"ERROR: Failed to extract update: {e.Error.Message}");
+        }
+    }
+
+    private void InstallUpdate()
+    {
+        try
+        {
+            // run the installer from a different location so we can
+            // clean the old directory
+            Utils.RunCmd(Path.Combine(OldPath, ExeName),
+                $"--install {OldPath} {UpdatePath} {TargetPath}", false);
+            Close();
+        }
+        catch (Win32Exception ex)
+        {
+            if (ex.ErrorCode == -2147467259) // 0x80004005 - operation cancelled by user
+            {
+                Utils.ShowError("Admin is required to finish update install.");
+                SetProgress(100, Resources.GetString("InstallPrompt"));
+                btnUpdate.Tag = "install";
+                btnUpdate.Text = "Install update";
+                btnUpdate.Enabled = true;
+                return;
+            }
+            throw;
         }
     }
 
@@ -401,10 +426,7 @@ internal partial class UpdateForm : Form
                     Utils.ShowError("Admin is required to change auto-update setting.");
                     return false;
                 }
-                else
-                {
-                    throw;
-                }
+                throw;
             }
         }
         else
