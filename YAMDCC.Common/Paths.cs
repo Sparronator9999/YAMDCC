@@ -24,7 +24,12 @@ public static class Paths
     /// <summary>
     /// The GitHub home page.
     /// </summary>
-    public static readonly string GitHubHome = "https://github.com";
+    public static readonly string GitHubUrl = "https://github.com";
+
+    /// <summary>
+    /// The GitHub API URL.
+    /// </summary>
+    public static readonly string GitHubApiUrl = "https://api.github.com";
 
     /// <summary>
     /// The project repository.
@@ -34,7 +39,7 @@ public static class Paths
     /// <summary>
     /// The URL to this project's GitHub page.
     /// </summary>
-    public static readonly string GitHubPage = $"{GitHubHome}/{ProjectRepo}";
+    public static readonly string GitHubPage = $"{GitHubUrl}/{ProjectRepo}";
 
     /// <summary>
     /// The path where program data is stored.
@@ -63,7 +68,7 @@ public static class Paths
     /// <remarks>
     /// (C:\ProgramData\Sparronator9999\YAMDCC\CurrentConfig.xml on Windows)
     /// </remarks>
-    public static readonly string CurrentConfig = Path.Combine(Data, "CurrentConfig.xml");
+    public static readonly string CurrentConf = Path.Combine(Data, "CurrentConfig.xml");
 
     /// <summary>
     /// The path where the path to the last saved YAMDCC config is saved.
@@ -71,7 +76,7 @@ public static class Paths
     /// <remarks>
     /// (C:\ProgramData\Sparronator9999\YAMDCC\CurrentConfig.xml on Windows)
     /// </remarks>
-    public static readonly string LastConfig = Path.Combine(Data, "LastConfig");
+    public static readonly string LastConf = Path.Combine(Data, "LastConfig");
 
     public static readonly string ECToConfSuccess = Path.Combine(Data, "ECToConfSuccess");
     public static readonly string ECToConfFail = Path.Combine(Data, "ECToConfFail");

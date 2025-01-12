@@ -172,7 +172,7 @@ internal sealed partial class MainWindow : Form
         }
         AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
 
-        LoadConf(Paths.CurrentConfig);
+        LoadConf(Paths.CurrentConf);
 
         if (Config is not null)
         {
@@ -959,7 +959,7 @@ internal sealed partial class MainWindow : Form
         // Save the updated config
         Config.ChargeLimitConf.CurVal = (byte)(chkChgLim.Checked
             ? numChgLim.Value : 0);
-        Config.Save(Paths.CurrentConfig);
+        Config.Save(Paths.CurrentConf);
 
         // Tell the service to reload and apply the updated config
         SendServiceMessage(new ServiceCommand(Command.ApplyConfig, null));
@@ -1111,7 +1111,7 @@ internal sealed partial class MainWindow : Form
 
     private static string GetLastConfPath()
     {
-        StreamReader sr = new(Paths.LastConfig, Encoding.UTF8);
+        StreamReader sr = new(Paths.LastConf, Encoding.UTF8);
         try
         {
             string path = sr.ReadLine();
@@ -1125,7 +1125,7 @@ internal sealed partial class MainWindow : Form
 
     private static void SetLastConfPath(string path)
     {
-        StreamWriter sw = new(Paths.LastConfig, false, Encoding.UTF8);
+        StreamWriter sw = new(Paths.LastConf, false, Encoding.UTF8);
         try
         {
             sw.WriteLine(path);

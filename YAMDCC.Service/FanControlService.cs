@@ -328,13 +328,13 @@ internal sealed class FanControlService : ServiceBase
                 case Command.GetKeyLightBright:
                     parseSuccess = true;
                     sendSuccessMsg = false;
-                    cmdSuccess = GetKeyLightBright(e.Connection.ID);
+                    cmdSuccess = GetKeyLight(e.Connection.ID);
                     break;
                 case Command.SetKeyLightBright:
                     if (args.Length == 1)
                     {
                         parseSuccess = true;
-                        cmdSuccess = SetKeyLightBright((byte)args[0]);
+                        cmdSuccess = SetKeyLight((byte)args[0]);
                     }
                     break;
                 default:    // Unknown command
@@ -371,7 +371,7 @@ internal sealed class FanControlService : ServiceBase
         bool success = _EC.ReadByte(reg, out value);
         if (success)
         {
-            Log.Debug(Strings.GetString("svcECReadSuccess"), reg, value);
+            Log.Debug(Strings.GetString("svcECRead"), reg, value);
         }
         else
         {
@@ -385,7 +385,7 @@ internal sealed class FanControlService : ServiceBase
         bool success = _EC.ReadWord(reg, out value, bigEndian);
         if (success)
         {
-            Log.Debug(Strings.GetString("svcECReadSuccess"), reg, value);
+            Log.Debug(Strings.GetString("svcECRead"), reg, value);
         }
         else
         {
@@ -399,7 +399,7 @@ internal sealed class FanControlService : ServiceBase
         bool success = _EC.WriteByte(reg, value);
         if (success)
         {
-            Log.Debug(Strings.GetString("svcECWriteSuccess"), reg);
+            Log.Debug(Strings.GetString("svcECWrote"), reg);
         }
         else
         {
@@ -414,7 +414,7 @@ internal sealed class FanControlService : ServiceBase
 
         try
         {
-            Config = YAMDCC_Config.Load(Paths.CurrentConfig);
+            Config = YAMDCC_Config.Load(Paths.CurrentConf);
         }
         catch (Exception ex)
         {
@@ -454,7 +454,7 @@ internal sealed class FanControlService : ServiceBase
             for (int i = 0; i < Config.RegConfs.Length; i++)
             {
                 RegConf cfg = Config.RegConfs[i];
-                Log.Info(Strings.GetString("svcWritingCustomRegs", i + 1, Config.RegConfs.Length));
+                Log.Info(Strings.GetString("svcWriteRegConfs", i + 1, Config.RegConfs.Length));
                 if (!LogECWriteByte(cfg.Reg, cfg.Enabled ? cfg.OnVal : cfg.OffVal))
                 {
                     success = false;
@@ -466,7 +466,7 @@ internal sealed class FanControlService : ServiceBase
         for (int i = 0; i < Config.FanConfs.Length; i++)
         {
             FanConf cfg = Config.FanConfs[i];
-            Log.Info(Strings.GetString("svcWritingFans", cfg.Name, i + 1, Config.FanConfs.Length));
+            Log.Info(Strings.GetString("svcWriteFanConfs", cfg.Name, i + 1, Config.FanConfs.Length));
             FanCurveConf curveCfg = cfg.FanCurveConfs[cfg.CurveSel];
 
             for (int j = 0; j < curveCfg.TempThresholds.Length; j++)
@@ -493,7 +493,7 @@ internal sealed class FanControlService : ServiceBase
         // Write the charge threshold:
         if (Config.ChargeLimitConf is not null)
         {
-            Log.Info(Strings.GetString("svcWritingChgLim"));
+            Log.Info(Strings.GetString("svcWriteChgLim"));
             byte value = (byte)(Config.ChargeLimitConf.MinVal + Config.ChargeLimitConf.CurVal);
             if (!LogECWriteByte(Config.ChargeLimitConf.Reg, value))
             {
@@ -504,7 +504,7 @@ internal sealed class FanControlService : ServiceBase
         // Write the performance mode
         if (Config.PerfModeConf is not null)
         {
-            Log.Info(Strings.GetString("svcWritingPerfMode"));
+            Log.Info(Strings.GetString("svcWritePerfMode"));
             byte value = Config.PerfModeConf.PerfModes[Config.PerfModeConf.ModeSel].Value;
             if (!LogECWriteByte(Config.PerfModeConf.Reg, value))
             {
@@ -515,7 +515,7 @@ internal sealed class FanControlService : ServiceBase
         // Write the fan mode
         if (Config.FanModeConf is not null)
         {
-            Log.Info(Strings.GetString("svcWritingFanMode"));
+            Log.Info(Strings.GetString("svcWriteFanMode"));
             byte value = Config.FanModeConf.FanModes[Config.FanModeConf.ModeSel].Value;
             if (!LogECWriteByte(Config.FanModeConf.Reg, value))
             {
@@ -526,7 +526,7 @@ internal sealed class FanControlService : ServiceBase
         // Write the Win/Fn key swap setting
         if (Config.KeySwapConf is not null)
         {
-            Log.Info(Strings.GetString("svcWritingKeySwap"));
+            Log.Info(Strings.GetString("svcWriteKeySwap"));
             byte value = Config.KeySwapConf.Enabled
                 ? Config.KeySwapConf.OnVal
                 : Config.KeySwapConf.OffVal;
@@ -680,14 +680,14 @@ internal sealed class FanControlService : ServiceBase
         return false;
     }
 
-    private bool GetKeyLightBright(int clientId)
+    private bool GetKeyLight(int clientId)
     {
         if (Config?.KeyLightConf is null)
         {
             return false;
         }
 
-        Log.Debug(Strings.GetString("svcGetKeyLightBright"));
+        Log.Debug(Strings.GetString("svcGetKeyLight"));
 
         if (LogECReadByte(Config.KeyLightConf.Reg, out byte value) &&
             value >= Config.KeyLightConf.MinVal && value <= Config.KeyLightConf.MaxVal)
@@ -701,14 +701,14 @@ internal sealed class FanControlService : ServiceBase
         return false;
     }
 
-    private bool SetKeyLightBright(byte brightness)
+    private bool SetKeyLight(byte brightness)
     {
         if (Config?.KeyLightConf is null)
         {
             return false;
         }
 
-        Log.Debug(Strings.GetString("svcSetKeyLightBright", brightness));
+        Log.Debug(Strings.GetString("svcSetKeyLight", brightness));
 
         return LogECWriteByte(Config.KeyLightConf.Reg, (byte)(brightness + Config.KeyLightConf.MinVal));
     }
@@ -722,7 +722,7 @@ internal sealed class FanControlService : ServiceBase
 
         try
         {
-            Log.Info(Strings.GetString("svcReadingModel"));
+            Log.Info(Strings.GetString("svcReadModel"));
 
             string pcManufacturer = GetPCManufacturer(),
                 pcModel = GetPCModel();
@@ -747,7 +747,7 @@ internal sealed class FanControlService : ServiceBase
 
             for (int i = 0; i < Config.FanConfs.Length; i++)
             {
-                Log.Info(Strings.GetString("svcReadingCurves", i + 1, Config.FanConfs.Length));
+                Log.Info(Strings.GetString("svcReadProfs", i + 1, Config.FanConfs.Length));
 
                 FanConf cfg = Config.FanConfs[i];
 
@@ -776,7 +776,7 @@ internal sealed class FanControlService : ServiceBase
 
                 // reset first fan curve config name and description
                 curveCfg.Name = "Default";
-                curveCfg.Desc = Strings.GetString("confDefaultDesc");
+                curveCfg.Desc = Strings.GetString("DefaultDesc");
 
                 for (int j = 0; j < cfg.FanCurveRegs.Length; j++)
                 {
@@ -810,7 +810,7 @@ internal sealed class FanControlService : ServiceBase
             }
 
             Log.Info("Saving config...");
-            Config.Save(Paths.CurrentConfig);
+            Config.Save(Paths.CurrentConf);
 
             FileStream fs = File.Create(Paths.ECToConfSuccess);
             fs.Close();
