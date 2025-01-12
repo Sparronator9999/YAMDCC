@@ -52,10 +52,10 @@
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
       },
-      "Octokit": {
+      "Newtonsoft.Json": {
         "type": "Transitive",
-        "resolved": "13.0.1",
-        "contentHash": "tjXTa2FXzbd3n17VWpi8UXe05EIJqHcWJW8C2kukftIve00duWiZL8x4i1vlZQ0zQ4RbRANbRc7J5K7Co/1spQ=="
+        "resolved": "13.0.3",
+        "contentHash": "HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ=="
       },
       "System.Buffers": {
         "type": "Transitive",
@@ -115,7 +115,7 @@
         "type": "Project",
         "dependencies": {
           "Markdig": "[0.39.1, )",
-          "Octokit": "[13.0.1, )",
+          "Newtonsoft.Json": "[13.0.3, )",
           "TaskScheduler": "[2.11.0, )",
           "YAMDCC.Common": "[1.0.0-beta.6, )"
         }

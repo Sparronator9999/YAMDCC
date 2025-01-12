@@ -1,5 +1,20 @@
+// This file is part of YAMDCC (Yet Another MSI Dragon Center Clone).
+// Copyright © Sparronator9999 and Contributors 2025.
+//
+// YAMDCC is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the Free
+// Software Foundation, either version 3 of the License, or (at your option)
+// any later version.
+//
+// YAMDCC is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+// or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+// more details.
+//
+// You should have received a copy of the GNU General Public License along with
+// YAMDCC. If not, see <https://www.gnu.org/licenses/>.
+
 using Markdig;
-using Octokit;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -13,7 +28,7 @@ using YAMDCC.Common;
 
 namespace YAMDCC.Updater;
 
-internal partial class UpdateForm : Form
+internal sealed partial class UpdateForm : Form
 {
     private readonly bool AutoUpdate;
 
@@ -161,7 +176,7 @@ internal partial class UpdateForm : Form
         }
         catch (Exception ex)
         {
-            if (ex is HttpRequestException or ApiException)
+            if (ex is HttpRequestException)
             {
                 SetProgress(0, $"ERROR: {(ex.InnerException is WebException ex2 ? ex2.Message : ex.Message)}");
                 wbChangelog.DocumentText = GetHtml(Markdown.ToHtml(Resources.GetString(
@@ -225,7 +240,7 @@ internal partial class UpdateForm : Form
         wbChangelog.DocumentText = GetHtml(Resources.GetString("Changelog",
             latest.Name,
             latest.Prerelease ? Resources.GetString("PreReleaseTag") : string.Empty,
-            $"{latest.PublishedAt.Value.ToLocalTime():g}",
+            $"{latest.PublishedAt.ToLocalTime():g}",
             authorLink, latest.HtmlUrl, Markdown.ToHtml(latest.Body)), true);
 
         btnUpdate.Text = $"&Update to {latest.TagName}";

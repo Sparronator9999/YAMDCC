@@ -1,27 +1,38 @@
+// This file is part of YAMDCC (Yet Another MSI Dragon Center Clone).
+// Copyright © Sparronator9999 and Contributors 2025.
+//
+// YAMDCC is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the Free
+// Software Foundation, either version 3 of the License, or (at your option)
+// any later version.
+//
+// YAMDCC is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+// or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+// more details.
+//
+// You should have received a copy of the GNU General Public License along with
+// YAMDCC. If not, see <https://www.gnu.org/licenses/>.
+
 using Microsoft.Win32.TaskScheduler;
-using Octokit;
+using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using YAMDCC.Common;
 
 namespace YAMDCC.Updater;
 
-public static class Updater
+internal static class Updater
 {
     private const string UpdateTask = "YAMDCC auto-update task";
 
     private static readonly string BuildConfig = Assembly.GetCallingAssembly()
         .GetCustomAttribute<AssemblyConfigurationAttribute>().Configuration;
-
-    private static readonly ProductHeaderValue ProductHeader =
-        new("YAMDCC.Updater", Utils.GetVerString());
-
-    private static readonly GitHubClient GHClient = new(ProductHeader);
 
     /// <summary>
     /// Gets a set of the most recent YAMDCC releases.
@@ -38,13 +49,24 @@ public static class Updater
     /// </returns>
     public static async Task<Release[]> GetReleasesAsync(bool preRelease, int numReleases = 20)
     {
-        IReadOnlyList<Release> releases = await GHClient.Repository.Release.GetAll(
-            Paths.ProjectRepo.Split('/')[0], Paths.ProjectRepo.Split('/')[1],
-            new ApiOptions { PageSize = numReleases, PageCount = 1 });
+        string endpoint = $"repos/{Paths.ProjectRepo}/releases";
 
-        return preRelease
-            ? [.. releases]
-            : releases.Where((rel) => !rel.Prerelease).ToArray();
+        using (HttpClient client = new()
+        {
+            BaseAddress = new Uri(Paths.GitHubApiUrl),
+        })
+        {
+            client.DefaultRequestHeaders.Add("User-Agent", $"YAMDCC.Updater/{Utils.GetVerString()}");
+            HttpResponseMessage response = await client.GetAsync($"{endpoint}?per_page={numReleases}");
+            response.EnsureSuccessStatusCode();
+
+            string respBody = await response.Content.ReadAsStringAsync();
+            Release[] releases = JsonConvert.DeserializeObject<Release[]>(respBody);
+
+            return preRelease
+                ? [.. releases]
+                : releases.Where((rel) => !rel.Prerelease).ToArray();
+        }
     }
 
     /// <summary>
@@ -99,12 +121,12 @@ public static class Updater
 
         using (WebClient client = new())
         {
-            client.Headers.Add(HttpRequestHeader.UserAgent, ProductHeader.ToString());
+            client.Headers.Add(HttpRequestHeader.UserAgent, $"YAMDCC.Updater/{Utils.GetVerString()}");
             client.Headers.Add(HttpRequestHeader.Accept, "application/octet-stream");
-            if (GHClient.Credentials.AuthenticationType != AuthenticationType.Anonymous)
+            /*if (GHClient.Credentials.AuthenticationType != AuthenticationType.Anonymous)
             {
                 client.Headers.Add(HttpRequestHeader.Authorization, $"token {GHClient.Credentials.Password}");
-            }
+            }*/
             client.DownloadProgressChanged += progress.Invoke;
             client.DownloadFileCompleted += complete.Invoke;
             client.DownloadFileAsync(new Uri(url), path);

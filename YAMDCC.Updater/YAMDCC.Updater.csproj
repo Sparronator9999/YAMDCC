@@ -34,7 +34,7 @@
     </ItemGroup>
     <ItemGroup>
       <PackageReference Include="Markdig" Version="0.39.1" />
-      <PackageReference Include="Octokit" Version="13.0.1" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
       <PackageReference Include="TaskScheduler" Version="2.11.0" />
     </ItemGroup>
     <ItemGroup>
