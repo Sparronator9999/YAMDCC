@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
+using Microsoft.Win32;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -432,4 +433,42 @@ public static class Utils
         }
         return 0;
     }
+
+    /// <summary>
+    /// Gets the computer model name from registry.
+    /// </summary>
+    /// <returns>
+    /// The computer model if the function succeeds,
+    /// otherwise <c>null</c>.
+    /// </returns>
+    public static string GetPCModel()
+    {
+        return GetBIOSRegValue("SystemProductName");
+    }
+
+    /// <summary>
+    /// Gets the computer manufacturer from registry.
+    /// </summary>
+    /// <returns>
+    /// The computer manufacturer if the function succeeds,
+    /// otherwise <c>null</c>.
+    /// </returns>
+    public static string GetPCManufacturer()
+    {
+        return GetBIOSRegValue("SystemManufacturer");
+    }
+
+    private static string GetBIOSRegValue(string name)
+    {
+        RegistryKey biosKey = Registry.LocalMachine.OpenSubKey(@"HARDWARE\DESCRIPTION\System\BIOS");
+        try
+        {
+            return (string)biosKey?.GetValue(name, null);
+        }
+        finally
+        {
+            biosKey?.Close();
+        }
+    }
+
 }

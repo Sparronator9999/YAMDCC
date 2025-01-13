@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -134,10 +135,7 @@ internal sealed partial class MainWindow : Form
 
         if (!GlobalConfig.AutoUpdateAsked)
         {
-            if (Utils.ShowInfo(
-                "Would you like YAMDCC to check for updates automatically?\n\n" +
-                "You may change this setting by launching `Updater.exe` and " +
-                "clicking `Update options` > `Check for updates automatically`.",
+            if (Utils.ShowInfo(Strings.GetString("dlgAutoUpdate"),
                 "Check for updates?", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 try
@@ -432,6 +430,26 @@ internal sealed partial class MainWindow : Form
         DelFanProfile();
     }
 
+    private void tsiSwitchAll_Click(object sender, EventArgs e)
+    {
+        if (!tsiSwitchAll.Checked)
+        {
+            if (FansHaveSameProfileCount())
+            {
+                tsiSwitchAll.Checked = true;
+            }
+            else
+            {
+                Utils.ShowError("All fans must have the same number of fan profiles.");
+            }
+        }
+        else
+        {
+            tsiSwitchAll.Checked = false;
+        }
+
+    }
+
     private void tsiECtoConf_Click(object sender, EventArgs e)
     {
         if (Utils.ShowInfo(Strings.GetString("dlgECtoConfStart"),
@@ -468,6 +486,91 @@ internal sealed partial class MainWindow : Form
             lblFanRPM.Visible = false;
             lblTemp.Visible = false;
         }
+    }
+
+    private void tsiAdvanced_Click(object sender, EventArgs e)
+    {
+        if (!tsiAdvanced.Checked && Utils.ShowWarning(
+            "WARNING:\n\n" +
+            "You are about to enable adjustment of advanced settings\n" +
+            "that probably should be left on the default value.\n\n" +
+            "Enable advanced settings anyway?",
+            "Show advanced settings?", MessageBoxDefaultButton.Button2) != DialogResult.Yes)
+        {
+            return;
+        }
+        tsiAdvanced.Checked = !tsiAdvanced.Checked;
+
+        if (Config.FanModeConf is not null)
+        {
+            cboFanMode.Enabled = tsiAdvanced.Checked;
+        }
+    }
+
+    private void tsiLogNone_Click(object sender, EventArgs e)
+    {
+        GlobalConfig.LogLevel = LogLevel.None;
+        tsiLogNone.Checked = true;
+        tsiLogDebug.Checked = false;
+        tsiLogInfo.Checked = false;
+        tsiLogWarn.Checked = false;
+        tsiLogError.Checked = false;
+        tsiLogFatal.Checked = false;
+    }
+
+    private void tsiLogDebug_Click(object sender, EventArgs e)
+    {
+        GlobalConfig.LogLevel = LogLevel.Debug;
+        tsiLogNone.Checked = false;
+        tsiLogDebug.Checked = true;
+        tsiLogInfo.Checked = false;
+        tsiLogWarn.Checked = false;
+        tsiLogError.Checked = false;
+        tsiLogFatal.Checked = false;
+    }
+
+    private void tsiLogInfo_Click(object sender, EventArgs e)
+    {
+        GlobalConfig.LogLevel = LogLevel.Info;
+        tsiLogNone.Checked = false;
+        tsiLogDebug.Checked = false;
+        tsiLogInfo.Checked = true;
+        tsiLogWarn.Checked = false;
+        tsiLogError.Checked = false;
+        tsiLogFatal.Checked = false;
+    }
+
+    private void tsiLogWarn_Click(object sender, EventArgs e)
+    {
+        GlobalConfig.LogLevel = LogLevel.Warn;
+        tsiLogNone.Checked = false;
+        tsiLogDebug.Checked = false;
+        tsiLogInfo.Checked = false;
+        tsiLogWarn.Checked = true;
+        tsiLogError.Checked = false;
+        tsiLogFatal.Checked = false;
+    }
+
+    private void tsiLogError_Click(object sender, EventArgs e)
+    {
+        GlobalConfig.LogLevel = LogLevel.Error;
+        tsiLogNone.Checked = false;
+        tsiLogDebug.Checked = false;
+        tsiLogInfo.Checked = false;
+        tsiLogWarn.Checked = false;
+        tsiLogError.Checked = true;
+        tsiLogFatal.Checked = false;
+    }
+
+    private void tsiLogFatal_Click(object sender, EventArgs e)
+    {
+        GlobalConfig.LogLevel = LogLevel.Fatal;
+        tsiLogNone.Checked = false;
+        tsiLogDebug.Checked = false;
+        tsiLogInfo.Checked = false;
+        tsiLogWarn.Checked = false;
+        tsiLogError.Checked = false;
+        tsiLogFatal.Checked = true;
     }
 
     private void tsiStopSvc_Click(object sender, EventArgs e)
@@ -550,6 +653,18 @@ internal sealed partial class MainWindow : Form
     private void tsiSrc_Click(object sender, EventArgs e)
     {
         Process.Start(Paths.GitHubPage);
+    }
+
+    private void tsiCheckUpdate_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            Process.Start("Updater", "--checkupdate");
+        }
+        catch (FileNotFoundException)
+        {
+            Utils.ShowError("Updater.exe not found!");
+        }
     }
     #endregion
 
@@ -716,11 +831,6 @@ internal sealed partial class MainWindow : Form
         btnRevert.Enabled = tsiRevert.Enabled = true;
     }
 
-    private void chkFullBlast_Toggled(object sender, EventArgs e)
-    {
-        SendServiceMessage(new ServiceCommand(Command.FullBlast, chkFullBlast.Checked ? "1" : "0"));
-    }
-
     private void chkChgLim_CheckedChanged(object sender, EventArgs e)
     {
         numChgLim.Enabled = chkChgLim.Checked;
@@ -746,6 +856,17 @@ internal sealed partial class MainWindow : Form
         }
     }
 
+    private void chkWinFnSwap_Toggled(object sender, EventArgs e)
+    {
+        Config.KeySwapConf.Enabled = chkWinFnSwap.Checked;
+        btnRevert.Enabled = tsiRevert.Enabled = true;
+    }
+
+    private void tbKeyLight_Scroll(object sender, EventArgs e)
+    {
+        SendServiceMessage(new ServiceCommand(Command.SetKeyLightBright, $"{tbKeyLight.Value}"));
+    }
+
     private void cboFanMode_IndexChanged(object sender, EventArgs e)
     {
         if (Config is not null)
@@ -758,15 +879,34 @@ internal sealed partial class MainWindow : Form
         }
     }
 
-    private void chkWinFnSwap_Toggled(object sender, EventArgs e)
+    private void txtAuthor_Validating(object sender, CancelEventArgs e)
     {
-        Config.KeySwapConf.Enabled = chkWinFnSwap.Checked;
-        btnRevert.Enabled = tsiRevert.Enabled = true;
+        if (string.IsNullOrWhiteSpace(txtAuthor.Text))
+        {
+            MessageBox.Show("Author must not be empty", "Error",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            txtAuthor.Text = Config.Author;
+        }
     }
 
-    private void tbKeyLight_Scroll(object sender, EventArgs e)
+    private void btnGetModel_Click(object sender, EventArgs e)
     {
-        SendServiceMessage(new ServiceCommand(Command.SetKeyLightBright, $"{tbKeyLight.Value}"));
+        string pcManufacturer = Utils.GetPCManufacturer(),
+                pcModel = Utils.GetPCModel();
+
+        if (!string.IsNullOrEmpty(pcManufacturer))
+        {
+            Config.Manufacturer = pcManufacturer.Trim();
+        }
+        if (!string.IsNullOrEmpty(pcModel))
+        {
+            Config.Model = pcModel.Trim();
+        }
+    }
+
+    private void chkFullBlast_Toggled(object sender, EventArgs e)
+    {
+        SendServiceMessage(new ServiceCommand(Command.FullBlast, chkFullBlast.Checked ? "1" : "0"));
     }
 
     private void btnRevert_Click(object sender, EventArgs e)
@@ -856,6 +996,12 @@ internal sealed partial class MainWindow : Form
         tsiSwitchAll.Checked = FansHaveSameProfileCount();
 
         tsiSaveConf.Enabled = true;
+
+        txtAuthor.Enabled = txtManufacturer.Enabled = txtModel.Enabled = true;
+        txtAuthor.Text = cfg.Author;
+        txtManufacturer.Text = cfg.Manufacturer;
+        txtModel.Text = cfg.Model;
+        btnGetModel.Enabled = true;
 
         if (cfg.FullBlastConf is null)
         {
@@ -1254,92 +1400,6 @@ internal sealed partial class MainWindow : Form
         };
     }
 
-    private void tsiLogNone_Click(object sender, EventArgs e)
-    {
-        GlobalConfig.LogLevel = LogLevel.None;
-        tsiLogNone.Checked = true;
-        tsiLogDebug.Checked = false;
-        tsiLogInfo.Checked = false;
-        tsiLogWarn.Checked = false;
-        tsiLogError.Checked = false;
-        tsiLogFatal.Checked = false;
-    }
-
-    private void tsiLogDebug_Click(object sender, EventArgs e)
-    {
-        GlobalConfig.LogLevel = LogLevel.Debug;
-        tsiLogNone.Checked = false;
-        tsiLogDebug.Checked = true;
-        tsiLogInfo.Checked = false;
-        tsiLogWarn.Checked = false;
-        tsiLogError.Checked = false;
-        tsiLogFatal.Checked = false;
-    }
-
-    private void tsiLogInfo_Click(object sender, EventArgs e)
-    {
-        GlobalConfig.LogLevel = LogLevel.Info;
-        tsiLogNone.Checked = false;
-        tsiLogDebug.Checked = false;
-        tsiLogInfo.Checked = true;
-        tsiLogWarn.Checked = false;
-        tsiLogError.Checked = false;
-        tsiLogFatal.Checked = false;
-    }
-
-    private void tsiLogWarn_Click(object sender, EventArgs e)
-    {
-        GlobalConfig.LogLevel = LogLevel.Warn;
-        tsiLogNone.Checked = false;
-        tsiLogDebug.Checked = false;
-        tsiLogInfo.Checked = false;
-        tsiLogWarn.Checked = true;
-        tsiLogError.Checked = false;
-        tsiLogFatal.Checked = false;
-    }
-
-    private void tsiLogError_Click(object sender, EventArgs e)
-    {
-        GlobalConfig.LogLevel = LogLevel.Error;
-        tsiLogNone.Checked = false;
-        tsiLogDebug.Checked = false;
-        tsiLogInfo.Checked = false;
-        tsiLogWarn.Checked = false;
-        tsiLogError.Checked = true;
-        tsiLogFatal.Checked = false;
-    }
-
-    private void tsiLogFatal_Click(object sender, EventArgs e)
-    {
-        GlobalConfig.LogLevel = LogLevel.Fatal;
-        tsiLogNone.Checked = false;
-        tsiLogDebug.Checked = false;
-        tsiLogInfo.Checked = false;
-        tsiLogWarn.Checked = false;
-        tsiLogError.Checked = false;
-        tsiLogFatal.Checked = true;
-    }
-
-    private void tsiSwitchAll_Click(object sender, EventArgs e)
-    {
-        if (!tsiSwitchAll.Checked)
-        {
-            if (FansHaveSameProfileCount())
-            {
-                tsiSwitchAll.Checked = true;
-            }
-            else
-            {
-                Utils.ShowError("All fans must have the same number of fan profiles.");
-            }
-        }
-        else
-        {
-            tsiSwitchAll.Checked = false;
-        }
-
-    }
-
     private static NumericUpDown FanCurveNUD(int tag, float scale)
     {
         return new NumericUpDown()
@@ -1351,55 +1411,8 @@ internal sealed partial class MainWindow : Form
         };
     }
 
-    private void tsiCheckUpdate_Click(object sender, EventArgs e)
-    {
-        try
-        {
-            Process.Start("Updater", "--checkupdate");
-        }
-        catch (FileNotFoundException)
-        {
-            Utils.ShowError("Updater.exe not found!");
-        }
-    }
-
-    private void tsiAdvanced_Click(object sender, EventArgs e)
-    {
-        if (!tsiAdvanced.Checked && Utils.ShowWarning(
-            "WARNING:\n\n" +
-            "You are about to enable adjustment of advanced settings\n" +
-            "that probably should be left on the default value.\n\n" +
-            "Enable advanced settings anyway?",
-            "Show advanced settings?", MessageBoxDefaultButton.Button2) != DialogResult.Yes)
-        {
-            return;
-        }
-        tsiAdvanced.Checked = !tsiAdvanced.Checked;
-
-        if (Config.FanModeConf is not null)
-        {
-            cboFanMode.Enabled = tsiAdvanced.Checked;
-        }
-    }
-
     private void DisableAll()
     {
-        btnProfAdd.Enabled = false;
-        btnProfDel.Enabled = false;
-        btnRevert.Enabled = false;
-        btnApply.Enabled = false;
-        cboFanSel.Enabled = false;
-        cboProfSel.Enabled = false;
-        cboPerfMode.Enabled = false;
-        cboFanMode.Enabled = false;
-        chkFullBlast.Enabled = false;
-        chkWinFnSwap.Enabled = false;
-        chkChgLim.Enabled = false;
-        numChgLim.Enabled = false;
-        lblKeyLightLow.Enabled = false;
-        lblKeyLightHigh.Enabled = false;
-        tbKeyLight.Enabled = false;
-
         tsiSaveConf.Enabled = false;
         tsiApply.Enabled = false;
         tsiRevert.Enabled = false;
@@ -1409,6 +1422,10 @@ internal sealed partial class MainWindow : Form
         tsiECtoConf.Enabled = false;
         tsiECMon.Enabled = false;
 
+        btnProfAdd.Enabled = false;
+        btnProfDel.Enabled = false;
+        cboFanSel.Enabled = false;
+        cboProfSel.Enabled = false;
         if (tbFanSpds is not null)
         {
             for (int i = 0; i < tbFanSpds.Length; i++)
@@ -1422,6 +1439,24 @@ internal sealed partial class MainWindow : Form
                 }
             }
         }
+
+        cboPerfMode.Enabled = false;
+        cboFanMode.Enabled = false;
+        chkWinFnSwap.Enabled = false;
+        chkChgLim.Enabled = false;
+        numChgLim.Enabled = false;
+        lblKeyLightLow.Enabled = false;
+        lblKeyLightHigh.Enabled = false;
+        tbKeyLight.Enabled = false;
+
+        txtAuthor.Enabled = false;
+        txtManufacturer.Enabled = false;
+        txtModel.Enabled = false;
+        btnGetModel.Enabled = false;
+
+        chkFullBlast.Enabled = false;
+        btnRevert.Enabled = false;
+        btnApply.Enabled = false;
     }
 
     private bool FansHaveSameProfileCount()

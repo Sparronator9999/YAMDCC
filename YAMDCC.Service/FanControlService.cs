@@ -724,8 +724,8 @@ internal sealed class FanControlService : ServiceBase
         {
             Log.Info(Strings.GetString("svcReadModel"));
 
-            string pcManufacturer = GetPCManufacturer(),
-                pcModel = GetPCModel();
+            string pcManufacturer = Utils.GetPCManufacturer(),
+                pcModel = Utils.GetPCModel();
 
             if (string.IsNullOrEmpty(pcManufacturer))
             {
@@ -821,43 +821,6 @@ internal sealed class FanControlService : ServiceBase
             FileStream fs = File.Create(Paths.ECToConfFail);
             fs.Close();
             return false;
-        }
-    }
-
-    /// <summary>
-    /// Gets the computer model name from registry.
-    /// </summary>
-    /// <returns>
-    /// The computer model if the function succeeds,
-    /// otherwise <c>null</c>.
-    /// </returns>
-    private static string GetPCModel()
-    {
-        return GetBIOSRegValue("SystemProductName");
-    }
-
-    /// <summary>
-    /// Gets the computer manufacturer from registry.
-    /// </summary>
-    /// <returns>
-    /// The computer manufacturer if the function succeeds,
-    /// otherwise <c>null</c>.
-    /// </returns>
-    private static string GetPCManufacturer()
-    {
-        return GetBIOSRegValue("SystemManufacturer");
-    }
-
-    private static string GetBIOSRegValue(string name)
-    {
-        RegistryKey biosKey = Registry.LocalMachine.OpenSubKey(@"HARDWARE\DESCRIPTION\System\BIOS");
-        try
-        {
-            return (string)biosKey?.GetValue(name, null);
-        }
-        finally
-        {
-            biosKey?.Close();
         }
     }
 

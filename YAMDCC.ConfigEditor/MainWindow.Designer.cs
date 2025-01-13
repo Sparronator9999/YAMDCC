@@ -64,6 +64,10 @@ namespace YAMDCC.ConfigEditor
             System.Windows.Forms.Label lblKeyLight;
             System.Windows.Forms.FlowLayoutPanel flwKeyLight;
             System.Windows.Forms.FlowLayoutPanel flwChgLim;
+            System.Windows.Forms.TableLayoutPanel tblInfo;
+            System.Windows.Forms.Label lblModel;
+            System.Windows.Forms.Label lblManufacturer;
+            System.Windows.Forms.Label lblAuthor;
             System.Windows.Forms.TableLayoutPanel tblApply;
             System.Windows.Forms.FlowLayoutPanel flwStats;
             this.tsiFile = new System.Windows.Forms.ToolStripMenuItem();
@@ -109,6 +113,11 @@ namespace YAMDCC.ConfigEditor
             this.lblKeyLightHigh = new System.Windows.Forms.Label();
             this.chkChgLim = new System.Windows.Forms.CheckBox();
             this.numChgLim = new System.Windows.Forms.NumericUpDown();
+            this.tabInfo = new System.Windows.Forms.TabPage();
+            this.txtModel = new System.Windows.Forms.TextBox();
+            this.txtManufacturer = new System.Windows.Forms.TextBox();
+            this.txtAuthor = new System.Windows.Forms.TextBox();
+            this.btnGetModel = new System.Windows.Forms.Button();
             this.chkFullBlast = new System.Windows.Forms.CheckBox();
             this.btnRevert = new System.Windows.Forms.Button();
             this.btnApply = new System.Windows.Forms.Button();
@@ -137,6 +146,10 @@ namespace YAMDCC.ConfigEditor
             lblKeyLight = new System.Windows.Forms.Label();
             flwKeyLight = new System.Windows.Forms.FlowLayoutPanel();
             flwChgLim = new System.Windows.Forms.FlowLayoutPanel();
+            tblInfo = new System.Windows.Forms.TableLayoutPanel();
+            lblModel = new System.Windows.Forms.Label();
+            lblManufacturer = new System.Windows.Forms.Label();
+            lblAuthor = new System.Windows.Forms.Label();
             tblApply = new System.Windows.Forms.TableLayoutPanel();
             flwStats = new System.Windows.Forms.FlowLayoutPanel();
             menuStrip.SuspendLayout();
@@ -150,6 +163,8 @@ namespace YAMDCC.ConfigEditor
             ((System.ComponentModel.ISupportInitialize)(this.tbKeyLight)).BeginInit();
             flwChgLim.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numChgLim)).BeginInit();
+            this.tabInfo.SuspendLayout();
+            tblInfo.SuspendLayout();
             tblApply.SuspendLayout();
             flwStats.SuspendLayout();
             this.tblMain.SuspendLayout();
@@ -274,27 +289,27 @@ namespace YAMDCC.ConfigEditor
             // tsiProfRename
             // 
             this.tsiProfRename.Name = "tsiProfRename";
-            this.tsiProfRename.Size = new System.Drawing.Size(178, 22);
+            this.tsiProfRename.Size = new System.Drawing.Size(180, 22);
             this.tsiProfRename.Text = "Change Name";
             this.tsiProfRename.Click += new System.EventHandler(this.tsiProfRename_Click);
             // 
             // tsiProfChangeDesc
             // 
             this.tsiProfChangeDesc.Name = "tsiProfChangeDesc";
-            this.tsiProfChangeDesc.Size = new System.Drawing.Size(178, 22);
+            this.tsiProfChangeDesc.Size = new System.Drawing.Size(180, 22);
             this.tsiProfChangeDesc.Text = "Change Description";
             this.tsiProfChangeDesc.Click += new System.EventHandler(this.tsiProfChangeDesc_Click);
             // 
             // sep3
             // 
             sep3.Name = "sep3";
-            sep3.Size = new System.Drawing.Size(175, 6);
+            sep3.Size = new System.Drawing.Size(177, 6);
             // 
             // tsiProfDel
             // 
             this.tsiProfDel.Name = "tsiProfDel";
-            this.tsiProfDel.ShortcutKeys = System.Windows.Forms.Keys.Delete;
-            this.tsiProfDel.Size = new System.Drawing.Size(178, 22);
+            this.tsiProfDel.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Delete)));
+            this.tsiProfDel.Size = new System.Drawing.Size(180, 22);
             this.tsiProfDel.Text = "Delete";
             this.tsiProfDel.Click += new System.EventHandler(this.tsiProfDel_Click);
             // 
@@ -444,6 +459,7 @@ namespace YAMDCC.ConfigEditor
             // 
             tcMain.Controls.Add(tabFanControl);
             tcMain.Controls.Add(tabExtra);
+            tcMain.Controls.Add(this.tabInfo);
             tcMain.Dock = System.Windows.Forms.DockStyle.Fill;
             tcMain.Location = new System.Drawing.Point(3, 3);
             tcMain.Margin = new System.Windows.Forms.Padding(3, 3, 3, 2);
@@ -785,6 +801,111 @@ namespace YAMDCC.ConfigEditor
             this.numChgLim.TabIndex = 1;
             this.numChgLim.ValueChanged += new System.EventHandler(this.numChgLim_Changed);
             // 
+            // tabInfo
+            // 
+            this.tabInfo.Controls.Add(tblInfo);
+            this.tabInfo.Location = new System.Drawing.Point(4, 24);
+            this.tabInfo.Name = "tabInfo";
+            this.tabInfo.Padding = new System.Windows.Forms.Padding(3);
+            this.tabInfo.Size = new System.Drawing.Size(526, 336);
+            this.tabInfo.TabIndex = 2;
+            this.tabInfo.Text = "Info";
+            this.tabInfo.UseVisualStyleBackColor = true;
+            // 
+            // tblInfo
+            // 
+            tblInfo.ColumnCount = 2;
+            tblInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            tblInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tblInfo.Controls.Add(this.txtModel, 1, 2);
+            tblInfo.Controls.Add(this.txtManufacturer, 1, 1);
+            tblInfo.Controls.Add(lblModel, 0, 2);
+            tblInfo.Controls.Add(lblManufacturer, 0, 1);
+            tblInfo.Controls.Add(lblAuthor, 0, 0);
+            tblInfo.Controls.Add(this.txtAuthor, 1, 0);
+            tblInfo.Controls.Add(this.btnGetModel, 1, 3);
+            tblInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+            tblInfo.Location = new System.Drawing.Point(3, 3);
+            tblInfo.Margin = new System.Windows.Forms.Padding(0);
+            tblInfo.Name = "tblInfo";
+            tblInfo.RowCount = 4;
+            tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tblInfo.Size = new System.Drawing.Size(520, 330);
+            tblInfo.TabIndex = 1;
+            // 
+            // txtModel
+            // 
+            this.txtModel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtModel.Location = new System.Drawing.Point(131, 61);
+            this.txtModel.Name = "txtModel";
+            this.txtModel.ReadOnly = true;
+            this.txtModel.Size = new System.Drawing.Size(386, 23);
+            this.txtModel.TabIndex = 5;
+            // 
+            // txtManufacturer
+            // 
+            this.txtManufacturer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtManufacturer.Location = new System.Drawing.Point(131, 32);
+            this.txtManufacturer.Name = "txtManufacturer";
+            this.txtManufacturer.ReadOnly = true;
+            this.txtManufacturer.Size = new System.Drawing.Size(386, 23);
+            this.txtManufacturer.TabIndex = 4;
+            // 
+            // lblModel
+            // 
+            lblModel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblModel.AutoSize = true;
+            lblModel.Location = new System.Drawing.Point(41, 64);
+            lblModel.Name = "lblModel";
+            lblModel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            lblModel.Size = new System.Drawing.Size(84, 17);
+            lblModel.TabIndex = 0;
+            lblModel.Text = "Laptop model:";
+            // 
+            // lblManufacturer
+            // 
+            lblManufacturer.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblManufacturer.AutoSize = true;
+            lblManufacturer.Location = new System.Drawing.Point(3, 35);
+            lblManufacturer.Name = "lblManufacturer";
+            lblManufacturer.Padding = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            lblManufacturer.Size = new System.Drawing.Size(122, 17);
+            lblManufacturer.TabIndex = 2;
+            lblManufacturer.Text = "Laptop manufacturer:";
+            // 
+            // lblAuthor
+            // 
+            lblAuthor.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblAuthor.AutoSize = true;
+            lblAuthor.Location = new System.Drawing.Point(41, 6);
+            lblAuthor.Name = "lblAuthor";
+            lblAuthor.Padding = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            lblAuthor.Size = new System.Drawing.Size(84, 17);
+            lblAuthor.TabIndex = 1;
+            lblAuthor.Text = "Config author:";
+            // 
+            // txtAuthor
+            // 
+            this.txtAuthor.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtAuthor.Location = new System.Drawing.Point(131, 3);
+            this.txtAuthor.Name = "txtAuthor";
+            this.txtAuthor.Size = new System.Drawing.Size(386, 23);
+            this.txtAuthor.TabIndex = 3;
+            this.txtAuthor.Validating += new System.ComponentModel.CancelEventHandler(this.txtAuthor_Validating);
+            // 
+            // btnGetModel
+            // 
+            this.btnGetModel.Location = new System.Drawing.Point(131, 90);
+            this.btnGetModel.Name = "btnGetModel";
+            this.btnGetModel.Size = new System.Drawing.Size(175, 25);
+            this.btnGetModel.TabIndex = 6;
+            this.btnGetModel.Text = "Get model and manufacturer";
+            this.btnGetModel.UseVisualStyleBackColor = true;
+            this.btnGetModel.Click += new System.EventHandler(this.btnGetModel_Click);
+            // 
             // tblApply
             // 
             tblApply.AutoSize = true;
@@ -945,6 +1066,9 @@ namespace YAMDCC.ConfigEditor
             flwChgLim.ResumeLayout(false);
             flwChgLim.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numChgLim)).EndInit();
+            this.tabInfo.ResumeLayout(false);
+            tblInfo.ResumeLayout(false);
+            tblInfo.PerformLayout();
             tblApply.ResumeLayout(false);
             tblApply.PerformLayout();
             flwStats.ResumeLayout(false);
@@ -1009,5 +1133,10 @@ namespace YAMDCC.ConfigEditor
         private System.Windows.Forms.ToolStripMenuItem tsiSwitchAll;
         private System.Windows.Forms.ToolStripMenuItem tsiAdvanced;
         private System.Windows.Forms.ComboBox cboFanMode;
+        private System.Windows.Forms.TabPage tabInfo;
+        private System.Windows.Forms.TextBox txtModel;
+        private System.Windows.Forms.TextBox txtManufacturer;
+        private System.Windows.Forms.TextBox txtAuthor;
+        private System.Windows.Forms.Button btnGetModel;
     }
 }

@@ -392,4 +392,9 @@ Click or scroll to select your MSI laptop's fan mode.
 Fan mode description:
 {0}</value>
   </data>
+  <data name="dlgAutoUpdate" xml:space="preserve">
+    <value>Would you like YAMDCC to check for updates automatically?
+
+You may change this setting by launching `Updater.exe` and clicking `Update options` &gt; `Check for updates automatically`.</value>
+  </data>
 </root>
