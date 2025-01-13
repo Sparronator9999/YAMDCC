@@ -887,6 +887,10 @@ internal sealed partial class MainWindow : Form
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
             txtAuthor.Text = Config.Author;
         }
+        else
+        {
+            Config.Author = txtAuthor.Text.Trim();
+        }
     }
 
     private void btnGetModel_Click(object sender, EventArgs e)
@@ -896,11 +900,11 @@ internal sealed partial class MainWindow : Form
 
         if (!string.IsNullOrEmpty(pcManufacturer))
         {
-            Config.Manufacturer = pcManufacturer.Trim();
+            txtManufacturer.Text = Config.Manufacturer = pcManufacturer.Trim();
         }
         if (!string.IsNullOrEmpty(pcModel))
         {
-            Config.Model = pcModel.Trim();
+            txtModel.Text = Config.Model = pcModel.Trim();
         }
     }
 
