@@ -77,7 +77,7 @@ internal sealed partial class UpdateForm : Form
     {
         string url = e.Url.ToString();
 
-        if (url.StartsWith("yamdcc:", StringComparison.OrdinalIgnoreCase))
+        if (url.StartsWith("yamdcc", StringComparison.OrdinalIgnoreCase))
         {
             switch (url.Remove(0, url.IndexOf(':') + 1))
             {
@@ -89,15 +89,13 @@ internal sealed partial class UpdateForm : Form
         }
 
         // open external links in user's web browser
-        if (url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
-            url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+        if (url.StartsWith("http", StringComparison.OrdinalIgnoreCase))
         {
             Process.Start(url);
             e.Cancel = true;
         }
     }
 
-    // TODO: better error handling while downloading and installing update
     private async void btnUpdate_Click(object sender, EventArgs e)
     {
         if ("update".Equals(btnUpdate.Tag) && Release is not null)
@@ -124,10 +122,7 @@ internal sealed partial class UpdateForm : Form
             }
             catch (HttpRequestException ex)
             {
-                // re-enable update button to allow retry
-                btnUpdate.Enabled = true;
-                btnUpdate.Text = "Retry update";
-                SetProgress(0, $"ERROR: Failed to download YAMDCC: {ex.Message}");
+                UpdateError(ex, "failed to download update", "errDownload");
             }
 
             try
@@ -137,10 +132,7 @@ internal sealed partial class UpdateForm : Form
             }
             catch (Exception ex)
             {
-                // re-enable update button to allow retry
-                btnUpdate.Enabled = true;
-                btnUpdate.Text = "Retry update";
-                SetProgress(0, $"ERROR: Failed to extract update: {ex.Message}");
+                UpdateError(ex, "failed to extract update", "errExtract");
             }
 
             // delete old YAMDCC install from previous update if it exists
@@ -219,10 +211,7 @@ internal sealed partial class UpdateForm : Form
         }
         catch (HttpRequestException ex)
         {
-            SetProgress(0, $"ERROR: {(ex.InnerException is WebException ex2 ? ex2.Message : ex.Message)}");
-            wbChangelog.DocumentText = GetHtml(Strings.GetString(
-                "errCheckUpdate", ex));
-            btnUpdate.Enabled = true;
+            UpdateError(ex, "failed to check for updates", "errCheckUpdate");
             btnOptions.Enabled = true;
             return;
         }
@@ -285,6 +274,16 @@ internal sealed partial class UpdateForm : Form
             btnLater.Enabled = btnLater.Visible = true;
             btnDisable.Enabled = btnDisable.Visible = true;
         }
+    }
+
+    private void UpdateError(Exception ex, string shortMsg, string longMsg)
+    {
+        SetProgress(0, $"ERROR: {shortMsg}: {(ex.InnerException is WebException ex2 ? ex2.Message : ex.Message)}");
+        wbChangelog.DocumentText = GetHtml(Strings.GetString(
+            longMsg, ex));
+        btnUpdate.Text = "Retry update";
+        // re-enable update button to allow retry
+        btnUpdate.Enabled = true;
     }
 
     private void DownloadProgress(long bytesReceived, long fileSize)

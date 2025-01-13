@@ -133,7 +133,7 @@ Continue?</value>
     <value>Click "Check for updates" to get the latest updates and changelog.</value>
   </data>
   <data name="errNoRelease" xml:space="preserve">
-    <value>**ERROR: failed to get latest release info!**
+    <value>**Failed to get latest release info!**
 
 This could possibly mean one of the following:
 
@@ -143,7 +143,7 @@ This could possibly mean one of the following:
   <data name="errCheckUpdate" xml:space="preserve">
     <value>**An error occurred during the update check.**
 
-First, make sure you're connected to the internet and that your firewall allows connections from this program to `github.com`.
+Make sure you're connected to the internet and that your firewall allows connections from this program to `github.com`.
 
 If the below error message mentions an API rate limit was exceeded, try again later.
 
@@ -167,5 +167,29 @@ Error details:
   </data>
   <data name="InstallPrompt" xml:space="preserve">
     <value>Click "Install update", then click "Yes" at the UAC prompt to install the YAMDCC update.</value>
+  </data>
+  <data name="errDownload" xml:space="preserve">
+    <value>**An error occurred while downloading the update.**
+
+If the below error message mentions an API rate limit was exceeded, try again later.
+
+If the below error is mentions an I/O or security error, try re-running the update as an Administrator, then try updating again.
+
+Error details:
+
+```
+{0}
+```</value>
+  </data>
+  <data name="errExtract" xml:space="preserve">
+    <value>**An error occurred while extracting the downloaded update.**
+
+If the below error is mentions an I/O or security error, try re-running the update as an Administrator, then try updating again.
+
+Error details:
+
+```
+{0}
+```</value>
   </data>
 </root>

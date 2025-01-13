@@ -73,16 +73,10 @@ internal static class Program
     {
         ProgressDialog dlg = new("Installing YAMDCC update...", (e) =>
         {
-            // uninstall the old YAMDCC service
-            // TODO: detect if YAMDCC service is already uninstalled
-            if (Utils.StopService("yamdccsvc"))
-            {
-                if (!Utils.UninstallService($"{destPath}\\yamdccsvc"))
-                {
-                    Utils.ShowError("Failed to uninstall YAMDCC service!");
-                }
-            }
-            else
+            bool svcRunning = Utils.ServiceRunning("yamdccsvc");
+
+            // stop the YAMDCC service if it's running
+            if (svcRunning && !Utils.StopService("yamdccsvc"))
             {
                 Utils.ShowError("Failed to stop YAMDCC service!");
             }
@@ -113,8 +107,8 @@ internal static class Program
                 dir.MoveTo(Path.Combine(destPath, dir.Name));
             }
 
-            // install the new YAMDCC service
-            if (Utils.InstallService($"{destPath}\\yamdccsvc"))
+            // restart the YAMDCC service if it was running before the update
+            if (svcRunning)
             {
                 Utils.StartService("yamdccsvc");
             }

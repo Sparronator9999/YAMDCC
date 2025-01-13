@@ -307,7 +307,7 @@ public static class Utils
     /// </returns>
     public static bool StartService(string svcName)
     {
-        return RunCmd("sc.exe", $"start {svcName}") is 0 or 1056;
+        return RunCmd("net", $"start {svcName}") == 0;
     }
 
     /// <summary>
@@ -323,7 +323,7 @@ public static class Utils
     /// </returns>
     public static bool StopService(string svcName)
     {
-        return RunCmd("sc.exe", $"stop {svcName}") is 0 or 1062;
+        return RunCmd("net", $"stop {svcName}") == 0;
     }
 
     /// <summary>
@@ -341,6 +341,28 @@ public static class Utils
     public static bool ServiceExists(string svcName)
     {
         return ServiceController.GetServices().Any(s => s.ServiceName == svcName);
+    }
+
+    /// <summary>
+    /// Checks to see if the specified service
+    /// is running or pending start on the computer.
+    /// </summary>
+    /// <param name="svcName">
+    /// The service name, as shown in <c>services.msc</c>
+    /// (NOT to be confused with its display name).
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> if the service is
+    /// running, otherwise <see langword="false"/>
+    /// </returns>
+    public static bool ServiceRunning(string svcName)
+    {
+        using (ServiceController service = new(svcName))
+        {
+            return service.Status
+                is ServiceControllerStatus.Running
+                or ServiceControllerStatus.StartPending;
+        }
     }
 
     private static void DeleteInstallUtilLogs()
