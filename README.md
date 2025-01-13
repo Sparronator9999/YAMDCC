@@ -103,12 +103,12 @@ wiki page and follow the instructions to get a config for your laptop.
 
 | Feature                         | MSI Center | YAMDCC      |
 |---------------------------------|------------|-------------|
-| Installed size                  | ~950 MB²   | ~1.17 MB²   |
+| Installed size                  | ~950 MB²   | ~2.5 MB²    |
 | Fan control                     | ✔          | ✔           |
 | Temp. threshold control         | ❌          | ✔           |
 | Multi-fan profile support       | ❌          | ✔           |
 | Charge threshold setting        | Limited³   | ✔           |
-| Perf. mode setting¹             | ✔          | ✔           |
+| Perf. mode setting              | ✔          | ✔           |
 | Win/Fn key swap¹                | ✔          | ✔           |
 | Win key disable                 | ✔          | ❌           |
 | Keyboard backlight adjustment¹  | ❌          | ✔           |
@@ -120,8 +120,8 @@ wiki page and follow the instructions to get a config for your laptop.
 
 2: As of v2.0.38, MSI Center takes about 950 MB of storage space when counting the UWP app (749 MB)
 and the files installed on first launch to `C:\Program Files (x86)\MSI` (205 MB). YAMDCC's installed
-size is based on the Release build of [v1.0 Beta 2](https://github.com/Sparronator9999/YAMDCC/releases/tag/v1.0.0-beta.2),
-and includes all unzipped program files, but excludes config XMLs.
+size is based on the Release build of [v1.0 Beta 7](https://github.com/Sparronator9999/YAMDCC/releases/tag/v1.0.0-beta.7),
+and includes all unzipped program files and included config XMLs.
 
 3: MSI Center only supports setting the charge threshold to 60%, 80%, or 100%, while YAMDCC can set
 this to anything between 0 and 100% (with 0 meaning charge to 100% always).
@@ -132,7 +132,7 @@ this to anything between 0 and 100% (with 0 meaning charge to 100% always).
 
 Below are some changes I would like to make before a 1.0 release of YAMDCC:
 
-- [ ] Fix any remaining bugs and QoL features before the 1.0 release.
+- [ ] Fix any remaining bugs before the 1.0 release.
   - Beta releases are currently available for v1.0. Please download them from
     [Releases](https://github.com/Sparronator9999/YAMDCC/releases) and report any problems to
     [the issue tracker](https://github.com/Sparronator9999/YAMDCC/issues)
