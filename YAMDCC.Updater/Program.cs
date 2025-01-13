@@ -23,6 +23,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using YAMDCC.Common;
 using YAMDCC.Common.Dialogs;
+using YAMDCC.Updater.GitHubApi;
 
 namespace YAMDCC.Updater;
 
@@ -49,15 +50,15 @@ internal static class Program
                     return BGUpdate(false) ? 0 : 1;
                 case "--setautoupdate":
                     if (Utils.IsAdmin() && args.Length >= 2 &&
-                        bool.TryParse(args[1], out bool enable))
+                        bool.TryParse(args[1], out bool enabled))
                     {
-                        Updater.SetAutoUpdateEnabled(enable);
+                        Updater.SetAutoUpdateEnabled(enabled);
                         return 0;
                     }
                     Utils.ShowError("Could not set auto-update state!");
                     return 1;
                 case "--install":
-                    // args: oldPath, updatePath, destPath
+                    // args: --install <oldPath> <updatePath> <destPath>
                     if (args.Length >= 4)
                     {
                         InstallUpdate(args[1], args[2], args[3]);
@@ -77,6 +78,7 @@ internal static class Program
         ProgressDialog dlg = new("Installing YAMDCC update...", (e) =>
         {
             // uninstall the old YAMDCC service
+            // TODO: detect if YAMDCC service is already uninstalled
             if (Utils.StopService("yamdccsvc"))
             {
                 if (!Utils.UninstallService($"{destPath}\\yamdccsvc"))
@@ -122,6 +124,7 @@ internal static class Program
             }
 
             // cleanup :)
+            // (note: does not delete "Old" folder that we should be running from)
             Directory.Delete(updatePath);
         });
         dlg.ShowDialog();
@@ -139,11 +142,11 @@ internal static class Program
     {
         try
         {
-            Release[] releases = Updater.GetReleasesAsync(Utils.GetCurrentVerSuffix() != "release").GetAwaiter().GetResult();
+            Release release = Updater.GetLatestReleaseAsync(Utils.GetCurrentVerSuffix() != "release").GetAwaiter().GetResult();
 
-            if (Utils.GetCurrentVersion() < Utils.GetVersion(releases[0].TagName.Remove(0, 1)))
+            if (Utils.GetCurrentVersion() < Utils.GetVersion(release.TagName.Remove(0, 1)))
             {
-                Application.Run(new UpdateForm(releases, autoUpdate));
+                Application.Run(new UpdateForm(release, autoUpdate));
             }
             else if (!autoUpdate)
             {
@@ -151,26 +154,22 @@ internal static class Program
             }
             return true;
         }
-        catch (Exception ex)
+        catch (HttpRequestException ex)
         {
-            if (ex is HttpRequestException)
-            {
-                Utils.ShowError("Failed to check for YAMDCC update!\n" +
-                    $"Details:\n{GetExceptionMsgs(ex)}");
-                return false;
-            }
-            else
-            {
-                throw;
-            }
+            Utils.ShowError("Failed to check for YAMDCC update!\n" +
+                $"Details:\n{GetExceptionMsgs(ex)}");
+            return false;
         }
     }
 
     private static string GetExceptionMsgs(Exception ex)
     {
-        return ex.InnerException is null
-            ? $"{ex.GetType()}: {ex.Message}"
-            : $"{ex.GetType()}: {ex.Message} ---> {GetExceptionMsgs(ex.InnerException)}";
+        string str = $"{ex.GetType()}: {ex.Message}";
+        if (ex.InnerException is not null)
+        {
+            str += $" ---> {GetExceptionMsgs(ex.InnerException)}";
+        }
+        return str;
     }
 
     private static Assembly AssemblyResolve(object sender, ResolveEventArgs e)
@@ -187,9 +186,6 @@ internal static class Program
 
             return Assembly.Load(output.ToArray());
         }
-        else
-        {
-            return null;
-        }
+        return null;
     }
 }

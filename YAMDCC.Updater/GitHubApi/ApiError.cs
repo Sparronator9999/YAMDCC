@@ -14,53 +14,22 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
-using System;
 using Newtonsoft.Json;
 
-namespace YAMDCC.Updater;
+namespace YAMDCC.Updater.GitHubApi;
 
 // suppress warning about default values never getting overwritten
 // since they get populated when deserialising JSON to these classes
 #pragma warning disable CS0649
-internal class ReleaseAsset
+internal class ApiError
 {
-    [JsonProperty("url")]
-    public string Url;
+    [JsonProperty("message")]
+    public string Message;
 
-    [JsonProperty("browser_download_url")]
-    public string BrowserDownloadUrl;
+    [JsonProperty("documentation_url")]
+    public string DocsUrl;
 
-    [JsonProperty("id")]
-    public int Id;
-
-    [JsonProperty("node_id")]
-    public string NodeId;
-
-    [JsonProperty("name")]
-    public string Name;
-
-    [JsonProperty("label")]
-    public string Label;
-
-    [JsonProperty("state")]
-    public string State;
-
-    [JsonProperty("content_type")]
-    public string ContentType;
-
-    [JsonProperty("size")]
-    public int Size;
-
-    [JsonProperty("download_count")]
-    public int DownloadCount;
-
-    [JsonProperty("created_at")]
-    public DateTime CreatedAt;
-
-    [JsonProperty("updated_at")]
-    public DateTime UpdatedAt;
-
-    [JsonProperty("uploader")]
-    public Author Uploader;
+    [JsonProperty("status")]
+    public string Status;
 }
 #pragma warning restore CS0649

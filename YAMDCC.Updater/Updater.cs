@@ -17,13 +17,15 @@
 using Microsoft.Win32.TaskScheduler;
 using Newtonsoft.Json;
 using System;
-using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using YAMDCC.Common;
+using YAMDCC.Updater.GitHubApi;
+using Task = System.Threading.Tasks.Task;
 
 namespace YAMDCC.Updater;
 
@@ -35,37 +37,54 @@ internal static class Updater
         .GetCustomAttribute<AssemblyConfigurationAttribute>().Configuration;
 
     /// <summary>
-    /// Gets a set of the most recent YAMDCC releases.
+    /// Gets the latest YAMDCC release
+    /// (or pre-release if <paramref name="preRelease"/> is <see langword="true"/>).
     /// </summary>
     /// <param name="preRelease">
-    /// Set to <see langword="true"/> to include pre-release updates.
-    /// </param>
-    /// <param name="numReleases">
-    /// The number of releases to return. Defaults to the 20 most recent releases.
+    /// Set to <see langword="true"/> to get the latest pre-release.
     /// </param>
     /// <returns>
-    /// A <see cref="Release"/> array with up to <paramref name="numReleases"/>
-    /// most recent releases.
+    /// The latest <see cref="Release"/> (if it exists),
+    /// otherwise <see langword="null"/>.
     /// </returns>
-    public static async Task<Release[]> GetReleasesAsync(bool preRelease, int numReleases = 20)
+    public static async Task<Release> GetLatestReleaseAsync(bool preRelease)
     {
-        string endpoint = $"repos/{Paths.ProjectRepo}/releases";
-
-        using (HttpClient client = new()
+        using (HttpClient client = new())
         {
-            BaseAddress = new Uri(Paths.GitHubApiUrl),
-        })
-        {
+            client.BaseAddress = new Uri(Paths.GitHubApiUrl);
             client.DefaultRequestHeaders.Add("User-Agent", $"YAMDCC.Updater/{Utils.GetVerString()}");
-            HttpResponseMessage response = await client.GetAsync($"{endpoint}?per_page={numReleases}");
-            response.EnsureSuccessStatusCode();
 
-            string respBody = await response.Content.ReadAsStringAsync();
-            Release[] releases = JsonConvert.DeserializeObject<Release[]>(respBody);
+            // get latest release directly if we want non-prerelease,
+            // otherwise get latest few releases in case the latest is a draft release
+            using (HttpResponseMessage response = await client.GetAsync(
+                $"repos/{Paths.ProjectRepo}/releases{(preRelease ? "?per_page=5" : "/latest")}"))
+            {
+                try
+                {
+                    response.ThrowOnApiError();
+                }
+                catch (HttpRequestException)
+                {
+                    // 404 is returned by API if there is no latest release,
+                    // so just return null to match pre-release behaviour
+                    if (response.StatusCode == HttpStatusCode.NotFound)
+                    {
+                        return null;
+                    }
+                    throw;
+                }
 
-            return preRelease
-                ? [.. releases]
-                : releases.Where((rel) => !rel.Prerelease).ToArray();
+                string respBody = await response.Content.ReadAsStringAsync();
+                if (preRelease)
+                {
+                    Release[] releases = JsonConvert.DeserializeObject<Release[]>(respBody);
+                    return releases.FirstOrDefault((release) => !release.Draft);
+                }
+                else
+                {
+                    return JsonConvert.DeserializeObject<Release>(respBody);
+                }
+            }
         }
     }
 
@@ -81,10 +100,11 @@ internal static class Updater
     /// Where to save the downloaded release asset.
     /// </param>
     /// <param name="progress">
-    /// An optional callback for asset download progress updates.
-    /// </param>
-    /// <param name="complete">
-    /// An optional callback for when the asset download is complete.
+    /// <para>An optional callback for asset download progress updates.</para>
+    /// <para>Parameters:<br/>
+    /// - bytesReceived: The number of bytes received so far.<br/>
+    /// - totalBytesToReceive: The total size of the release asset being downloaded, or -1 if it couldn't be determined.
+    /// </para>
     /// </param>
     /// <returns>
     /// <c>true</c> if the download was started successfully,
@@ -92,10 +112,9 @@ internal static class Updater
     /// or the browser download URL was null/empty.
     /// </returns>
     /// <exception cref="ArgumentException"/>
-    public static bool DownloadUpdateAsync(
+    public static async Task DownloadUpdateAsync(
         Release release, string path,
-        Action<object, DownloadProgressChangedEventArgs> progress,
-        Action<object, AsyncCompletedEventArgs> complete)
+        Action<long, long> progress)
     {
         if (release is null)
         {
@@ -105,33 +124,45 @@ internal static class Updater
         {
             throw new ArgumentNullException(nameof(path));
         }
-        if (progress is null)
-        {
-            throw new ArgumentNullException(nameof(release));
-        }
-        if (complete is null)
-        {
-            throw new ArgumentNullException(nameof(path));
-        }
 
         // download the first YAMDCC version that
         // matches the current build configuration
-        string url = release.Assets.First((asset) =>
-            asset.Name.Contains(BuildConfig)).Url;
+        string url = release.Assets.FirstOrDefault((asset) =>
+            asset.Name.Contains(BuildConfig))?.Url;
 
-        using (WebClient client = new())
+        using (HttpClient client = new())
         {
-            client.Headers.Add(HttpRequestHeader.UserAgent, $"YAMDCC.Updater/{Utils.GetVerString()}");
-            client.Headers.Add(HttpRequestHeader.Accept, "application/octet-stream");
-            /*if (GHClient.Credentials.AuthenticationType != AuthenticationType.Anonymous)
+            client.DefaultRequestHeaders.Add("User-Agent", $"YAMDCC.Updater/{Utils.GetVerString()}");
+            client.DefaultRequestHeaders.Add("Accept", "application/octet-stream");
+
+            using (HttpResponseMessage response = await client.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
             {
-                client.Headers.Add(HttpRequestHeader.Authorization, $"token {GHClient.Credentials.Password}");
-            }*/
-            client.DownloadProgressChanged += progress.Invoke;
-            client.DownloadFileCompleted += complete.Invoke;
-            client.DownloadFileAsync(new Uri(url), path);
+                response.ThrowOnApiError();
+
+                // partially based on: https://stackoverflow.com/q/20661652
+                using (Stream src = await response.Content.ReadAsStreamAsync())
+                using (FileStream dest = File.Create(path, 8192))
+                {
+                    byte[] buf = new byte[8192];
+                    long fileSize = response.Content.Headers.ContentLength ?? -1,
+                        totalBytes = 0;
+
+                    while (true)
+                    {
+                        int bytesRead = await src.ReadAsync(buf, 0, buf.Length);
+                        totalBytes += bytesRead;
+
+                        if (bytesRead == 0)
+                        {
+                            break;
+                        }
+
+                        await dest.WriteAsync(buf, 0, bytesRead);
+                        progress?.Invoke(totalBytes, fileSize);
+                    }
+                }
+            }
         }
-        return true;
     }
 
     public static bool GetAutoUpdateEnabled()
@@ -139,10 +170,10 @@ internal static class Updater
         return TaskService.Instance.GetTask(UpdateTask) is not null;
     }
 
-    public static void SetAutoUpdateEnabled(bool enable)
+    public static void SetAutoUpdateEnabled(bool enabled)
     {
         TaskService ts = TaskService.Instance;
-        if (enable)
+        if (enabled)
         {
             // create a new task if it doesn't exist already;
             // otherwise use the existing one
@@ -181,6 +212,29 @@ internal static class Updater
         {
             // try to delete task if it exists
             ts.RootFolder.DeleteTask(UpdateTask, false);
+        }
+    }
+
+    private static void ThrowOnApiError(this HttpResponseMessage response)
+    {
+        string body = string.Empty;
+        try
+        {
+            body = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            response.EnsureSuccessStatusCode();
+        }
+        catch (HttpRequestException ex)
+        {
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.Unauthorized:
+                case HttpStatusCode.Forbidden:
+                case (HttpStatusCode)429:   // Too Many Requests
+                    ApiError error = JsonConvert.DeserializeObject<ApiError>(body);
+                    throw new HttpRequestException($"API error: {error.Message}", ex);
+                default:
+                    throw;
+            }
         }
     }
 }

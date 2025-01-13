@@ -16,7 +16,7 @@
 
 using Newtonsoft.Json;
 
-namespace YAMDCC.Updater;
+namespace YAMDCC.Updater.GitHubApi;
 
 // suppress warning about default values never getting overwritten
 // since they get populated when deserialising JSON to these classes
@@ -57,7 +57,7 @@ internal class Author
     public string StarredUrl;
 
     [JsonProperty("subscriptions_url")]
-    public string SubscriptionsUrl;
+    public string SubsUrl;
 
     [JsonProperty("organizations_url")]
     public string OrganizationsUrl;

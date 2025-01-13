@@ -17,7 +17,7 @@
 using System;
 using Newtonsoft.Json;
 
-namespace YAMDCC.Updater;
+namespace YAMDCC.Updater.GitHubApi;
 
 // suppress warning about default values never getting overwritten
 // since they get populated when deserialising JSON to these classes
@@ -64,13 +64,13 @@ internal class Release
     public bool Draft;
 
     [JsonProperty("prerelease")]
-    public bool Prerelease;
+    public bool PreRelease;
 
     [JsonProperty("created_at")]
-    public DateTime CreatedAt;
+    public DateTimeOffset CreatedAt;
 
     [JsonProperty("published_at")]
-    public DateTime PublishedAt;
+    public DateTimeOffset PublishedAt;
 
     [JsonProperty("author")]
     public Author Author;

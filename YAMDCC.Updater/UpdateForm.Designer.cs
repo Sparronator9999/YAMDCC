@@ -168,7 +168,7 @@ namespace YAMDCC.Updater
             this.btnLater.Text = "Remind me &later";
             this.btnLater.UseVisualStyleBackColor = true;
             this.btnLater.Visible = false;
-            this.btnLater.Click += new System.EventHandler(this.btnRemindLater_Click);
+            this.btnLater.Click += new System.EventHandler(this.btnLater_Click);
             // 
             // btnDisable
             // 
@@ -180,7 +180,7 @@ namespace YAMDCC.Updater
             this.btnDisable.Text = "&Never auto-update";
             this.btnDisable.UseVisualStyleBackColor = true;
             this.btnDisable.Visible = false;
-            this.btnDisable.Click += new System.EventHandler(this.btnDisableUpdates_Click);
+            this.btnDisable.Click += new System.EventHandler(this.btnDisable_Click);
             // 
             // OptMenu
             // 

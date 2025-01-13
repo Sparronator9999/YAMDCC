@@ -23,8 +23,10 @@ using System.IO.Compression;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using YAMDCC.Common;
+using YAMDCC.Updater.GitHubApi;
 
 namespace YAMDCC.Updater;
 
@@ -32,9 +34,7 @@ internal sealed partial class UpdateForm : Form
 {
     private readonly bool AutoUpdate;
 
-    private Release[] Releases;
-
-    private readonly BackgroundWorker ExtractWorker = new();
+    private Release Release;
 
     private static readonly string ExeName = Path.GetFileName(Assembly.GetEntryAssembly().Location);
     private static readonly string TargetPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
@@ -42,9 +42,7 @@ internal sealed partial class UpdateForm : Form
     private static readonly string UpdatePath = Path.GetFullPath("Update");
     private static readonly string OldPath = Path.GetFullPath("Old");
 
-    private static readonly string[] ExtractArgs = [DownloadPath, UpdatePath];
-
-    public UpdateForm(Release[] releases = null, bool autoUpdate = false)
+    public UpdateForm(Release release = null, bool autoUpdate = false)
     {
         InitializeComponent();
         Icon = Utils.GetEntryAssemblyIcon();
@@ -54,7 +52,7 @@ internal sealed partial class UpdateForm : Form
         tsiPreRelease.Checked = Utils.GetCurrentVerSuffix() != "release";
         tsiAutoUpdate.Checked = Updater.GetAutoUpdateEnabled();
 
-        if (releases is null)
+        if (release is null)
         {
             wbChangelog.DocumentText = GetHtml(
                 Resources.GetString("UpdatePrompt") +
@@ -62,7 +60,7 @@ internal sealed partial class UpdateForm : Form
         }
         else
         {
-            Releases = releases;
+            Release = release;
             UpdateAvailable();
         }
     }
@@ -91,10 +89,10 @@ internal sealed partial class UpdateForm : Form
         }
     }
 
-    private void btnUpdate_Click(object sender, EventArgs e)
+    // TODO: better error handling while downloading and installing update
+    private async void btnUpdate_Click(object sender, EventArgs e)
     {
-        if ("update".Equals(btnUpdate.Tag) &&
-            Releases is not null && Releases.Length > 0)
+        if ("update".Equals(btnUpdate.Tag) && Release is not null)
         {
             // disable buttons while updating
             btnUpdate.Enabled = false;
@@ -111,8 +109,45 @@ internal sealed partial class UpdateForm : Form
             }
             catch (FileNotFoundException) { }
 
-            Updater.DownloadUpdateAsync(Releases[0], DownloadPath,
-                DownloadProgress, DownloadComplete);
+            try
+            {
+                await Updater.DownloadUpdateAsync(
+                    Release, DownloadPath, DownloadProgress);
+            }
+            catch (HttpRequestException ex)
+            {
+                // re-enable update button to allow retry
+                btnUpdate.Enabled = true;
+                btnUpdate.Text = "Retry update";
+                SetProgress(0, $"ERROR: Failed to download YAMDCC: {ex.Message}");
+            }
+
+            try
+            {
+                SetProgress(-1, "Extracting update...");
+                await ExtractUpdate(DownloadPath, UpdatePath);
+            }
+            catch (Exception ex)
+            {
+                // re-enable update button to allow retry
+                btnUpdate.Enabled = true;
+                btnUpdate.Text = "Retry update";
+                SetProgress(0, $"ERROR: Failed to extract update: {ex.Message}");
+            }
+
+            // delete old YAMDCC install from previous update if it exists
+            SetProgress(-1, "Preparing to install update...");
+            try
+            {
+                Directory.Delete(OldPath, true);
+            }
+            catch (DirectoryNotFoundException) { }
+
+            // make a copy of the old YAMDCC installation
+            CopyDir(new DirectoryInfo(TargetPath), new DirectoryInfo(OldPath));
+
+            // actually install the update
+            InstallUpdate();
             return;
         }
         else if ("install".Equals(btnUpdate.Tag))
@@ -125,14 +160,14 @@ internal sealed partial class UpdateForm : Form
         }
     }
 
-    private void btnRemindLater_Click(object sender, EventArgs e)
+    private void btnLater_Click(object sender, EventArgs e)
     {
         // just close the updater and let Windows task
         // scheduler do the reminding by re-running the updater
         Close();
     }
 
-    private void btnDisableUpdates_Click(object sender, EventArgs e)
+    private void btnDisable_Click(object sender, EventArgs e)
     {
         // disable auto-updates
         SetAutoUpdate(false);
@@ -172,26 +207,19 @@ internal sealed partial class UpdateForm : Form
 
         try
         {
-            Releases = await Updater.GetReleasesAsync(tsiPreRelease.Checked);
+            Release = await Updater.GetLatestReleaseAsync(tsiPreRelease.Checked);
         }
-        catch (Exception ex)
+        catch (HttpRequestException ex)
         {
-            if (ex is HttpRequestException)
-            {
-                SetProgress(0, $"ERROR: {(ex.InnerException is WebException ex2 ? ex2.Message : ex.Message)}");
-                wbChangelog.DocumentText = GetHtml(Markdown.ToHtml(Resources.GetString(
-                    "errCheckUpdate", ex)));
-                btnUpdate.Enabled = true;
-                btnOptions.Enabled = true;
-                return;
-            }
-            else
-            {
-                throw;
-            }
+            SetProgress(0, $"ERROR: {(ex.InnerException is WebException ex2 ? ex2.Message : ex.Message)}");
+            wbChangelog.DocumentText = GetHtml(Markdown.ToHtml(Resources.GetString(
+                "errCheckUpdate", ex)));
+            btnUpdate.Enabled = true;
+            btnOptions.Enabled = true;
+            return;
         }
 
-        if (Releases is null || Releases.Length == 0)
+        if (Release is null)
         {
             SetProgress(0, Resources.GetString("errNoReleaseS"));
             wbChangelog.DocumentText = GetHtml(Resources.GetString(
@@ -200,13 +228,13 @@ internal sealed partial class UpdateForm : Form
         else
         {
             Version current = Utils.GetCurrentVersion(),
-                latest = Utils.GetVersion(Releases[0].TagName.Remove(0, 1));
+                latest = Utils.GetVersion(Release.TagName.Remove(0, 1));
 
             if (current == latest)
             {
-                SetProgress(100, "YAMDCC is up-to-date.");
+                SetProgress(100, "YAMDCC is up to date.");
                 SetTitleText("Up to date");
-                wbChangelog.DocumentText = GetHtml("YAMDCC is up-to-date.\n\n" +
+                wbChangelog.DocumentText = GetHtml("YAMDCC is up to date.\n\n" +
                     "[Force-reinstall latest release?](yamdcc:reinstall)");
             }
             else if (current > latest)
@@ -228,22 +256,21 @@ internal sealed partial class UpdateForm : Form
 
     private void UpdateAvailable()
     {
-        Release latest = Releases[0];
-        SetProgress(0, $"Update available! (v{Utils.GetVerString()} -> {latest.TagName})");
+        SetProgress(0, $"Update available! (v{Utils.GetVerString()} -> {Release.TagName})");
         SetTitleText("Update available!");
 
-        string authorLink = string.IsNullOrEmpty(Releases[0].Author.HtmlUrl)
-            ? latest.Author.Login
-            : $"<a href=\"{latest.Author.HtmlUrl}\">{latest.Author.Login}</a>";
+        string authorLink = string.IsNullOrEmpty(Release.Author.HtmlUrl)
+            ? Release.Author.Login
+            : $"<a href=\"{Release.Author.HtmlUrl}\">{Release.Author.Login}</a>";
 
         // show the changelog of the latest release from GitHub
         wbChangelog.DocumentText = GetHtml(Resources.GetString("Changelog",
-            latest.Name,
-            latest.Prerelease ? Resources.GetString("PreReleaseTag") : string.Empty,
-            $"{latest.PublishedAt.ToLocalTime():g}",
-            authorLink, latest.HtmlUrl, Markdown.ToHtml(latest.Body)), true);
+            Release.Name,
+            Release.PreRelease ? Resources.GetString("PreReleaseTag") : string.Empty,
+            $"{Release.PublishedAt.ToLocalTime():g}",
+            authorLink, Release.HtmlUrl, Markdown.ToHtml(Release.Body)), true);
 
-        btnUpdate.Text = $"&Update to {latest.TagName}";
+        btnUpdate.Text = $"&Update to {Release.TagName}";
         btnUpdate.Tag = "update";
         if (AutoUpdate)
         {
@@ -252,72 +279,25 @@ internal sealed partial class UpdateForm : Form
         }
     }
 
-    private void DownloadProgress(object sender, DownloadProgressChangedEventArgs e)
+    private void DownloadProgress(long bytesReceived, long fileSize)
     {
-        SetProgress(e.ProgressPercentage, $"Downloading update ({FormatByteCount(e.TotalBytesToReceive - e.BytesReceived)} remaining)...");
+        SetProgress((int)(bytesReceived * 100 / fileSize),
+            $"Downloading update ({FormatByteCount(fileSize - bytesReceived)} remaining)...");
     }
 
-    private void DownloadComplete(object sender, AsyncCompletedEventArgs e)
+    private static async Task ExtractUpdate(string src, string dest)
     {
-        if (e.Error is null)
+        // delete target directory if it exists
+        try
         {
-            SetProgress(-1, "Extracting update...");
-            ExtractWorker.DoWork += ExtractUpdate;
-            ExtractWorker.RunWorkerCompleted += ExtractComplete;
-            ExtractWorker.RunWorkerAsync(ExtractArgs);
+            Directory.Delete(dest, true);
         }
-        else
-        {
-            // re-enable update button to allow retry
-            btnUpdate.Enabled = true;
-            btnUpdate.Text = "Retry update";
-            SetProgress(0, $"ERROR: Failed to download YAMDCC: {e.Error.Message}");
-        }
-    }
+        catch (DirectoryNotFoundException) { }
 
-    private void ExtractUpdate(object sender, DoWorkEventArgs e)
-    {
-        // args: archivePath, destPath
-        if (e.Argument is string[] args && args.Length >= 2)
-        {
-            // delete target directory if it exists
-            try
-            {
-                Directory.Delete(args[1], true);
-            }
-            catch (DirectoryNotFoundException) { }
-
-            // extract the archive
-            Directory.CreateDirectory(args[1]);
-            ZipFile.ExtractToDirectory(args[0], args[1]);
-            return;
-        }
-    }
-
-    private void ExtractComplete(object sender, RunWorkerCompletedEventArgs e)
-    {
-        if (e.Error is null)
-        {
-            // install the update
-            SetProgress(-1, "Preparing to install update...");
-
-            // make a copy of the old YAMDCC installation
-            try
-            {
-                Directory.Delete(OldPath, true);
-            }
-            catch (DirectoryNotFoundException) { }
-            CopyDirectory(TargetPath, OldPath);
-
-            InstallUpdate();
-        }
-        else
-        {
-            // re-enable update button to allow retry
-            btnUpdate.Enabled = true;
-            btnUpdate.Text = "Retry update";
-            SetProgress(0, $"ERROR: Failed to extract update: {e.Error.Message}");
-        }
+        // extract the archive
+        Directory.CreateDirectory(dest);
+        await Task.Run(() => ZipFile.ExtractToDirectory(src, dest));
+        return;
     }
 
     private void InstallUpdate()
@@ -334,8 +314,8 @@ internal sealed partial class UpdateForm : Form
         {
             if (ex.ErrorCode == -2147467259) // 0x80004005 - operation cancelled by user
             {
-                Utils.ShowError("Admin is required to finish update install.");
                 SetProgress(100, Resources.GetString("InstallPrompt"));
+                Utils.ShowError("Admin is required to finish update install.");
                 btnUpdate.Tag = "install";
                 btnUpdate.Text = "Install update";
                 btnUpdate.Enabled = true;
@@ -353,12 +333,12 @@ internal sealed partial class UpdateForm : Form
         Text += Utils.IsAdmin() ? " (Administrator)" : string.Empty;
     }
 
-    private static string GetHtml(string markdown, bool html = false)
+    private static string GetHtml(string text, bool html = false)
     {
-        return Resources.GetString("HtmlTemplate", html ? markdown : Markdown.ToHtml(markdown));
+        return Resources.GetString("HtmlTemplate", html ? text : Markdown.ToHtml(text));
     }
 
-    private void SetProgress(int progress, string message)
+    private void SetProgress(int progress, string text)
     {
         if (progress < 0)
         {
@@ -370,26 +350,18 @@ internal sealed partial class UpdateForm : Form
             pbProgress.Value = progress;
         }
 
-        if (!string.IsNullOrEmpty(message))
+        if (!string.IsNullOrEmpty(text))
         {
-            grpProgress.Text = message;
+            grpProgress.Text = text;
         }
     }
 
-    internal static void CopyDirectory(string sourceDir, string destDir)
-    {
-        DirectoryInfo diSource = new(sourceDir);
-        DirectoryInfo diTarget = new(destDir);
-
-        CopyDir(diSource, diTarget);
-    }
-
-    internal static void CopyDir(DirectoryInfo source, DirectoryInfo dest)
+    internal static void CopyDir(DirectoryInfo src, DirectoryInfo dest)
     {
         Directory.CreateDirectory(dest.FullName);
 
         // Copy each file into the new directory.
-        foreach (FileInfo fi in source.GetFiles())
+        foreach (FileInfo fi in src.GetFiles())
         {
             if (fi.FullName != DownloadPath)
             {
@@ -398,7 +370,7 @@ internal sealed partial class UpdateForm : Form
         }
 
         // Copy each subdirectory using recursion.
-        foreach (DirectoryInfo diSourceSubDir in source.GetDirectories())
+        foreach (DirectoryInfo diSourceSubDir in src.GetDirectories())
         {
             if (diSourceSubDir.FullName != OldPath &&
                 diSourceSubDir.FullName != UpdatePath)
