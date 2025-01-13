@@ -4,8 +4,8 @@
     ".NETFramework,Version=v4.8": {
       "Markdig": {
         "type": "Transitive",
-        "resolved": "0.39.1",
-        "contentHash": "QrH/Aq9A5P7fIdy4tEBQGqVvrJoEew9+jL0k2WlrmgD0yxXP0UUtdkhJWgpVgwT18R0ubpt9cyF+LQXbTUSOrg==",
+        "resolved": "0.40.0",
+        "contentHash": "4ve14zs+gt1irldTQE3y5FLAHuzmhW7T99lAAvVipe/q2LWT/nUCO0iICb9TXGvMX6n7Z1OZroFXkdSy91rO8w==",
         "dependencies": {
           "System.Memory": "4.5.5"
         }
@@ -107,29 +107,29 @@
       "ec-inspect": {
         "type": "Project",
         "dependencies": {
-          "YAMDCC.Common": "[1.0.0-beta.6, )",
+          "YAMDCC.Common": "[1.0.0-dev, )",
           "YAMDCC.IPC": "[2.1.3-release, )"
         }
       },
       "Updater": {
         "type": "Project",
         "dependencies": {
-          "Markdig": "[0.39.1, )",
+          "Markdig": "[0.40.0, )",
           "Newtonsoft.Json": "[13.0.3, )",
           "TaskScheduler": "[2.11.0, )",
-          "YAMDCC.Common": "[1.0.0-beta.6, )"
+          "YAMDCC.Common": "[1.0.0-dev, )"
         }
       },
       "yamdcc.common": {
         "type": "Project",
         "dependencies": {
-          "YAMDCC.Logs": "[1.0.0-beta.6, )"
+          "YAMDCC.Logs": "[1.0.0-dev, )"
         }
       },
       "yamdcc.config": {
         "type": "Project",
         "dependencies": {
-          "YAMDCC.Common": "[1.0.0-beta.6, )"
+          "YAMDCC.Common": "[1.0.0-dev, )"
         }
       },
       "yamdcc.ecaccess": {
@@ -147,11 +147,11 @@
       "yamdccsvc": {
         "type": "Project",
         "dependencies": {
-          "YAMDCC.Common": "[1.0.0-beta.6, )",
-          "YAMDCC.Config": "[1.0.0-beta.6, )",
-          "YAMDCC.ECAccess": "[1.0.0-beta.6, )",
+          "YAMDCC.Common": "[1.0.0-dev, )",
+          "YAMDCC.Config": "[1.0.0-dev, )",
+          "YAMDCC.ECAccess": "[1.0.0-dev, )",
           "YAMDCC.IPC": "[2.1.3-release, )",
-          "YAMDCC.Logs": "[1.0.0-beta.6, )"
+          "YAMDCC.Logs": "[1.0.0-dev, )"
         }
       }
     },
