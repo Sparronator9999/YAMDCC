@@ -19,12 +19,12 @@ namespace YAMDCC.ConfigEditor;
 internal sealed class Status
 {
     internal StatusCode Code;
-    internal int RepeatCount;
+    internal int Repeats;
 
     internal Status()
     {
         Code = StatusCode.None;
-        RepeatCount = 0;
+        Repeats = 0;
     }
 }
 

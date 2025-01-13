@@ -30,8 +30,8 @@ internal static class Program
     private static readonly Logger Log = new()
     {
         LogDir = Paths.Logs,
-        ConsoleLogLevel = LogLevel.None,
-        FileLogLevel = LogLevel.Debug,
+        ConsoleLevel = LogLevel.None,
+        FileLevel = LogLevel.Debug,
     };
 
     /// <summary>
@@ -40,7 +40,7 @@ internal static class Program
     private static void Main()
     {
         AppDomain.CurrentDomain.UnhandledException += static (sender, e) =>
-            Log.Fatal(Strings.GetString("svcException"), e.ExceptionObject);
+            Log.Fatal(Strings.GetString("svcException", e.ExceptionObject));
 
         if (Environment.UserInteractive)
         {
@@ -53,7 +53,7 @@ internal static class Program
                 $"OS version: {Environment.OSVersion}\n" +
                 $"Service version: {Application.ProductVersion}");
 
-            Log.FileLogLevel = cfg.LogLevel;
+            Log.FileLevel = cfg.LogLevel;
             Log.Debug("Log level is set to debug mode.");
             ServiceBase.Run(new FanControlService(Log));
         }

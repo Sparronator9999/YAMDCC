@@ -1,5 +1,5 @@
 // This file is part of YAMDCC (Yet Another MSI Dragon Center Clone).
-// Copyright © Sparronator9999 and Contributors 2023-2025.
+// Copyright © Sparronator9999 and Contributors 2025.
 //
 // YAMDCC is free software: you can redistribute it and/or modify it
 // under the terms of the GNU General Public License as published by the Free
@@ -17,11 +17,8 @@
 using System.Globalization;
 using System.Resources;
 
-namespace YAMDCC.ConfigEditor;
+namespace YAMDCC.Updater;
 
-/// <summary>
-/// A resource class for retrieving strings.
-/// </summary>
 internal static class Strings
 {
     private static ResourceManager resMan;

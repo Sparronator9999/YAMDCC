@@ -27,34 +27,14 @@ internal static class Strings
     private static ResourceManager resMan;
 
     /// <summary>
-    /// Gets a string from the underlying resource file.
-    /// </summary>
-    /// <remarks>
-    /// This function internally calls
-    /// <see cref="ResourceManager.GetString(string)"/> to retrieve the string.
-    /// </remarks>
-    /// <param name="name">
-    /// The name of the string to find.
-    /// </param>
-    /// <returns>
-    /// <para>The value of the specified string name, if found.</para>
-    /// <para><c>null</c> if the string couldn't be found.</para>
-    /// </returns>
-    public static string GetString(string name)
-    {
-        resMan ??= new ResourceManager(typeof(Strings));
-        return resMan.GetString(name, CultureInfo.InvariantCulture);
-    }
-
-    /// <summary>
     /// Gets a string from the underlying resource file, and
     /// replaces format objects with their string representation.
     /// </summary>
     /// <param name="name">
     /// The name of the string to find.
     /// </param>
-    /// <param name="arg0">
-    /// The object to format the string with.
+    /// <param name="args">
+    /// The objects to format the string with.
     /// </param>
     /// <returns>
     /// <para>
@@ -63,11 +43,13 @@ internal static class Strings
     /// </para>
     /// <para><c>null</c> if the string couldn't be found.</para>
     /// </returns>
-    public static string GetString(string name, object arg0)
+    public static string GetString(string name, params object[] args)
     {
-        string temp = GetString(name);
+        resMan ??= new ResourceManager(typeof(Strings));
+        string temp = resMan.GetString(name, CultureInfo.InvariantCulture);
+
         return temp is null
             ? null
-            : string.Format(CultureInfo.InvariantCulture, temp, arg0);
+            : string.Format(CultureInfo.InvariantCulture, temp, args);
     }
 }

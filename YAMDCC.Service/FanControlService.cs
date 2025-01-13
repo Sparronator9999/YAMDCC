@@ -371,7 +371,7 @@ internal sealed class FanControlService : ServiceBase
         bool success = _EC.ReadByte(reg, out value);
         if (success)
         {
-            Log.Debug(Strings.GetString("svcECRead"), reg, value);
+            Log.Debug(Strings.GetString("svcECRead", reg, value));
         }
         else
         {
@@ -385,7 +385,7 @@ internal sealed class FanControlService : ServiceBase
         bool success = _EC.ReadWord(reg, out value, bigEndian);
         if (success)
         {
-            Log.Debug(Strings.GetString("svcECRead"), reg, value);
+            Log.Debug(Strings.GetString("svcECRead", reg, value));
         }
         else
         {
@@ -399,7 +399,7 @@ internal sealed class FanControlService : ServiceBase
         bool success = _EC.WriteByte(reg, value);
         if (success)
         {
-            Log.Debug(Strings.GetString("svcECWrote"), reg);
+            Log.Debug(Strings.GetString("svcECWrote", reg));
         }
         else
         {

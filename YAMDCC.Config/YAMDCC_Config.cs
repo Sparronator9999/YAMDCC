@@ -22,10 +22,17 @@ using YAMDCC.Common;
 
 namespace YAMDCC.Config;
 
+// IDE0079: Remove unnecessary suppression (even though it *is* necessary)
+#pragma warning disable IDE0079
+// CA1707: Identifiers should not contain underscores
+#pragma warning disable CA1707
 /// <summary>
 /// Represents a YAMDCC configuration.
 /// </summary>
+
 public sealed class YAMDCC_Config
+#pragma warning restore CA1707
+#pragma warning restore IDE0079
 {
     /// <summary>
     /// The config version expected when loading a config.
@@ -131,17 +138,17 @@ public sealed class YAMDCC_Config
     /// Parses a YAMDCC config XML and returns a
     /// <see cref="YAMDCC_Config"/> object.
     /// </summary>
-    /// <param name="xmlFile">
+    /// <param name="path">
     /// The path to an XML config file.
     /// </param>
     /// <exception cref="InvalidConfigException"/>
     /// <exception cref="ArgumentNullException"/>
     /// <exception cref="FileNotFoundException"/>
     /// <exception cref="InvalidOperationException"/>
-    public static YAMDCC_Config Load(string xmlFile)
+    public static YAMDCC_Config Load(string path)
     {
         XmlSerializer serialiser = new(typeof(YAMDCC_Config));
-        using (XmlReader reader = XmlReader.Create(xmlFile))
+        using (XmlReader reader = XmlReader.Create(path))
         {
             YAMDCC_Config cfg = (YAMDCC_Config)serialiser.Deserialize(reader);
             return cfg.IsValid() ? cfg : throw new InvalidConfigException();
@@ -151,23 +158,23 @@ public sealed class YAMDCC_Config
     /// <summary>
     /// Saves a YAMDCC config to the specified location.
     /// </summary>
-    /// <param name="xmlFile">
+    /// <param name="path">
     /// The XML file to write to.
     /// </param>
     /// <exception cref="ArgumentNullException"/>
     /// <exception cref="InvalidOperationException"/>
-    public void Save(string xmlFile)
+    public void Save(string path)
     {
-        XmlSerializer serializer = new(typeof(YAMDCC_Config));
+        XmlSerializer serialiser = new(typeof(YAMDCC_Config));
         XmlWriterSettings settings = new()
         {
             Indent = true,
             IndentChars = "\t",
         };
 
-        using (XmlWriter writer = XmlWriter.Create(xmlFile, settings))
+        using (XmlWriter writer = XmlWriter.Create(path, settings))
         {
-            serializer.Serialize(writer, this);
+            serialiser.Serialize(writer, this);
         }
     }
 

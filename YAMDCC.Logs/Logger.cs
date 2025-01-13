@@ -15,7 +15,6 @@
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
@@ -42,11 +41,11 @@ public sealed class Logger : IDisposable
     /// <summary>
     /// The newline characters to split provided log message lines by.
     /// </summary>
-    private static readonly char[] NewLineChars = ['\r', '\n'];
+    private static readonly char[] NewLine = ['\r', '\n'];
 
-    private static string LogString(string text, LogLevel level, bool date)
+    private static string LogString(string str, LogLevel level, bool date)
     {
-        return (date ? $"[{DateTime.Now:dd/MM/yyyy HH:mm:ss.fff}] " : "") + $"[{level}]".PadRight(8).ToUpperInvariant() + text;
+        return $"{(date ? $"[{DateTime.Now:dd/MM/yyyy HH:mm:ss.fff}] " : "")}{$"[{level}]",-8} {str}";
     }
 
     /// <summary>
@@ -73,27 +72,27 @@ public sealed class Logger : IDisposable
     /// <summary>
     /// The maximum number of logs to archive.
     /// </summary>
-    public int MaxArchivedLogs { get; set; } = 9;
+    public int MaxArchived { get; set; } = 9;
 
     /// <summary>
     /// How verbose should console logs be?
     /// </summary>
-    public LogLevel ConsoleLogLevel { get; set; } = LogLevel.Info;
+    public LogLevel ConsoleLevel { get; set; } = LogLevel.Info;
 
     /// <summary>
     /// How verbose should logs written to disk be?
     /// </summary>
-    public LogLevel FileLogLevel { get; set; } = LogLevel.Info;
+    public LogLevel FileLevel { get; set; } = LogLevel.Info;
 
     /// <summary>
     /// Should the log time be shown in console logs?
     /// </summary>
-    public bool LogTimeToConsole { get; set; }
+    public bool TimeToConsole { get; set; }
 
     /// <summary>
     /// Should the log time be shown in logs written to disk?
     /// </summary>
-    public bool LogTimeToFile { get; set; } = true;
+    public bool TimeToFile { get; set; } = true;
 
     /// <summary>
     /// Writes a Debug event to the <see cref="Logger"/>.
@@ -103,34 +102,15 @@ public sealed class Logger : IDisposable
     /// </param>
     public void Debug(string msg)
     {
-        if (FileLogLevel >= LogLevel.Debug)
+        if (FileLevel >= LogLevel.Debug)
         {
             LogFile(msg, LogLevel.Debug);
         }
 
-        if (ConsoleLogLevel >= LogLevel.Debug)
+        if (ConsoleLevel >= LogLevel.Debug)
         {
             LogConsole(msg, LogLevel.Debug);
         }
-    }
-
-    /// <summary>
-    /// Writes a Debug event to the <see cref="Logger"/>,
-    /// replacing format items with the objects in <paramref name="args"/>.
-    /// </summary>
-    /// <remarks>
-    /// Equivalent to passing a <see cref="string.Format(string, object[])"/>
-    /// to the <paramref name="msg"/> argument.
-    /// </remarks>
-    /// <param name="msg">
-    /// The message to write to the log.
-    /// </param>
-    /// <param name="args">
-    /// The objects to format.
-    /// </param>
-    public void Debug(string msg, params object[] args)
-    {
-        Debug(string.Format(CultureInfo.InvariantCulture, msg, args));
     }
 
     /// <summary>
@@ -141,34 +121,15 @@ public sealed class Logger : IDisposable
     /// </param>
     public void Info(string msg)
     {
-        if (FileLogLevel >= LogLevel.Info)
+        if (FileLevel >= LogLevel.Info)
         {
             LogFile(msg, LogLevel.Info);
         }
 
-        if (ConsoleLogLevel >= LogLevel.Info)
+        if (ConsoleLevel >= LogLevel.Info)
         {
             LogConsole(msg, LogLevel.Info);
         }
-    }
-
-    /// <summary>
-    /// Writes an Info event to the <see cref="Logger"/>,
-    /// replacing format items with the objects in <paramref name="args"/>.
-    /// </summary>
-    /// <remarks>
-    /// Equivalent to passing a <see cref="string.Format(string, object[])"/>
-    /// to the <paramref name="msg"/> argument.
-    /// </remarks>
-    /// <param name="msg">
-    /// The message to write to the log.
-    /// </param>
-    /// <param name="args">
-    /// The objects to format.
-    /// </param>
-    public void Info(string msg, params object[] args)
-    {
-        Info(string.Format(CultureInfo.InvariantCulture, msg, args));
     }
 
     /// <summary>
@@ -179,34 +140,15 @@ public sealed class Logger : IDisposable
     /// </param>
     public void Warn(string msg)
     {
-        if (FileLogLevel >= LogLevel.Warn)
+        if (FileLevel >= LogLevel.Warn)
         {
             LogFile(msg, LogLevel.Warn);
         }
 
-        if (ConsoleLogLevel >= LogLevel.Warn)
+        if (ConsoleLevel >= LogLevel.Warn)
         {
             LogConsole(msg, LogLevel.Warn);
         }
-    }
-
-    /// <summary>
-    /// Writes a Warning to the <see cref="Logger"/>,
-    /// replacing format items with the objects in <paramref name="args"/>.
-    /// </summary>
-    /// <remarks>
-    /// Equivalent to passing a <see cref="string.Format(string, object[])"/>
-    /// to the <paramref name="msg"/> argument.
-    /// </remarks>
-    /// <param name="msg">
-    /// The message to write to the log.
-    /// </param>
-    /// <param name="args">
-    /// The objects to format.
-    /// </param>
-    public void Warn(string msg, params object[] args)
-    {
-        Warn(string.Format(CultureInfo.InvariantCulture, msg, args));
     }
 
     /// <summary>
@@ -217,34 +159,15 @@ public sealed class Logger : IDisposable
     /// </param>
     public void Error(string msg)
     {
-        if (FileLogLevel >= LogLevel.Error)
+        if (FileLevel >= LogLevel.Error)
         {
             LogFile(msg, LogLevel.Error);
         }
 
-        if (ConsoleLogLevel >= LogLevel.Error)
+        if (ConsoleLevel >= LogLevel.Error)
         {
             LogConsole(msg, LogLevel.Error);
         }
-    }
-
-    /// <summary>
-    /// Writes an Error to the <see cref="Logger"/>,
-    /// replacing format items with the objects in <paramref name="args"/>.
-    /// </summary>
-    /// <remarks>
-    /// Equivalent to passing a <see cref="string.Format(string, object[])"/>
-    /// to the <paramref name="msg"/> argument.
-    /// </remarks>
-    /// <param name="msg">
-    /// The message to write to the log.
-    /// </param>
-    /// <param name="args">
-    /// The objects to format.
-    /// </param>
-    public void Error(string msg, params object[] args)
-    {
-        Error(string.Format(CultureInfo.InvariantCulture, msg, args));
     }
 
     /// <summary>
@@ -256,35 +179,15 @@ public sealed class Logger : IDisposable
     /// </param>
     public void Fatal(string msg)
     {
-        if (FileLogLevel >= LogLevel.Fatal)
+        if (FileLevel >= LogLevel.Fatal)
         {
             LogFile(msg, LogLevel.Fatal);
         }
 
-        if (ConsoleLogLevel >= LogLevel.Fatal)
+        if (ConsoleLevel >= LogLevel.Fatal)
         {
             LogConsole(msg, LogLevel.Fatal);
         }
-    }
-
-    /// <summary>
-    /// Writes a Fatal error to the <see cref="Logger"/>,
-    /// replacing format items with the objects in <paramref name="args"/>.
-    /// Use when an application is about to terminate due to a fatal error.
-    /// </summary>
-    /// <remarks>
-    /// Equivalent to passing a <see cref="string.Format(string, object[])"/>
-    /// to the <paramref name="msg"/> argument.
-    /// </remarks>
-    /// <param name="msg">
-    /// The message to write to the log.
-    /// </param>
-    /// <param name="args">
-    /// The objects to format.
-    /// </param>
-    public void Fatal(string msg, params object[] args)
-    {
-        Fatal(string.Format(CultureInfo.InvariantCulture, msg, args));
     }
 
     /// <summary>
@@ -292,7 +195,7 @@ public sealed class Logger : IDisposable
     /// </summary>
     public void DeleteArchived()
     {
-        for (int i = 1; i <= MaxArchivedLogs; i++)
+        for (int i = 1; i <= MaxArchived; i++)
         {
             try
             {
@@ -316,9 +219,9 @@ public sealed class Logger : IDisposable
 
         lock (LogWriter)
         {
-            foreach (string str in msg.Split(NewLineChars, StringSplitOptions.RemoveEmptyEntries))
+            foreach (string str in msg.Split(NewLine, StringSplitOptions.RemoveEmptyEntries))
             {
-                LogWriter.WriteLine(LogString(str, level, LogTimeToFile));
+                LogWriter.WriteLine(LogString(str, level, TimeToFile));
             }
         }
     }
@@ -356,9 +259,9 @@ public sealed class Logger : IDisposable
                     break;
             }
 
-            foreach (string str in msg.Split(NewLineChars, StringSplitOptions.RemoveEmptyEntries))
+            foreach (string str in msg.Split(NewLine, StringSplitOptions.RemoveEmptyEntries))
             {
-                Console.WriteLine(LogString(str, level, LogTimeToConsole));
+                Console.WriteLine(LogString(str, level, TimeToConsole));
             }
 
             Console.BackgroundColor = bgColour;
@@ -381,11 +284,11 @@ public sealed class Logger : IDisposable
 
         // Rename old log files, and delete the oldest file if
         // there's too many log files
-        for (int i = MaxArchivedLogs; i >= 0; i--)
+        for (int i = MaxArchived; i >= 0; i--)
         {
             try
             {
-                if (i == MaxArchivedLogs)
+                if (i == MaxArchived)
                 {
                     File.Delete($"{LogPath}.{i}.log.gz");
                 }

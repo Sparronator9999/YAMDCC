@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
-using Markdig;
+using MarkedNet;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -32,6 +32,14 @@ namespace YAMDCC.Updater;
 
 internal sealed partial class UpdateForm : Form
 {
+    private static readonly Marked Markdown = new()
+    {
+        Options = new Options()
+        {
+            Gfm = true,
+        },
+    };
+
     private readonly bool AutoUpdate;
 
     private Release Release;
@@ -55,8 +63,8 @@ internal sealed partial class UpdateForm : Form
         if (release is null)
         {
             wbChangelog.DocumentText = GetHtml(
-                Resources.GetString("UpdatePrompt") +
-                (tsiPreRelease.Checked ? Resources.GetString("PreReleaseOn") : string.Empty));
+                Strings.GetString("UpdatePrompt") +
+                (tsiPreRelease.Checked ? Strings.GetString("PreReleaseOn") : string.Empty));
         }
         else
         {
@@ -192,8 +200,8 @@ internal sealed partial class UpdateForm : Form
         if (btnUpdate.Tag is null)
         {
             wbChangelog.DocumentText = GetHtml(
-                Resources.GetString("UpdatePrompt") +
-                (tsiPreRelease.Checked ? Resources.GetString("PreReleaseOn") : string.Empty));
+                Strings.GetString("UpdatePrompt") +
+                (tsiPreRelease.Checked ? Strings.GetString("PreReleaseOn") : string.Empty));
         }
     }
 
@@ -212,8 +220,8 @@ internal sealed partial class UpdateForm : Form
         catch (HttpRequestException ex)
         {
             SetProgress(0, $"ERROR: {(ex.InnerException is WebException ex2 ? ex2.Message : ex.Message)}");
-            wbChangelog.DocumentText = GetHtml(Markdown.ToHtml(Resources.GetString(
-                "errCheckUpdate", ex)));
+            wbChangelog.DocumentText = GetHtml(Strings.GetString(
+                "errCheckUpdate", ex));
             btnUpdate.Enabled = true;
             btnOptions.Enabled = true;
             return;
@@ -221,8 +229,8 @@ internal sealed partial class UpdateForm : Form
 
         if (Release is null)
         {
-            SetProgress(0, Resources.GetString("errNoReleaseS"));
-            wbChangelog.DocumentText = GetHtml(Resources.GetString(
+            SetProgress(0, Strings.GetString("errNoReleaseS"));
+            wbChangelog.DocumentText = GetHtml(Strings.GetString(
                 "errNoRelease"));
         }
         else
@@ -264,11 +272,11 @@ internal sealed partial class UpdateForm : Form
             : $"<a href=\"{Release.Author.HtmlUrl}\">{Release.Author.Login}</a>";
 
         // show the changelog of the latest release from GitHub
-        wbChangelog.DocumentText = GetHtml(Resources.GetString("Changelog",
+        wbChangelog.DocumentText = GetHtml(Strings.GetString("Changelog",
             Release.Name,
-            Release.PreRelease ? Resources.GetString("PreReleaseTag") : string.Empty,
+            Release.PreRelease ? Strings.GetString("PreReleaseTag") : string.Empty,
             $"{Release.PublishedAt.ToLocalTime():g}",
-            authorLink, Release.HtmlUrl, Markdown.ToHtml(Release.Body)), true);
+            authorLink, Release.HtmlUrl, Markdown.Parse(Release.Body)), true);
 
         btnUpdate.Text = $"&Update to {Release.TagName}";
         btnUpdate.Tag = "update";
@@ -314,7 +322,7 @@ internal sealed partial class UpdateForm : Form
         {
             if (ex.ErrorCode == -2147467259) // 0x80004005 - operation cancelled by user
             {
-                SetProgress(100, Resources.GetString("InstallPrompt"));
+                SetProgress(100, Strings.GetString("InstallPrompt"));
                 Utils.ShowError("Admin is required to finish update install.");
                 btnUpdate.Tag = "install";
                 btnUpdate.Text = "Install update";
@@ -335,7 +343,7 @@ internal sealed partial class UpdateForm : Form
 
     private static string GetHtml(string text, bool html = false)
     {
-        return Resources.GetString("HtmlTemplate", html ? text : Markdown.ToHtml(text));
+        return Strings.GetString("HtmlTemplate", html ? text : Markdown.Parse(text));
     }
 
     private void SetProgress(int progress, string text)

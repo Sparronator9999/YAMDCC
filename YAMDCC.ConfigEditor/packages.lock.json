@@ -2,13 +2,10 @@
   "version": 1,
   "dependencies": {
     ".NETFramework,Version=v4.8": {
-      "Markdig": {
+      "MarkedNet": {
         "type": "Transitive",
-        "resolved": "0.40.0",
-        "contentHash": "4ve14zs+gt1irldTQE3y5FLAHuzmhW7T99lAAvVipe/q2LWT/nUCO0iICb9TXGvMX6n7Z1OZroFXkdSy91rO8w==",
-        "dependencies": {
-          "System.Memory": "4.5.5"
-        }
+        "resolved": "2.1.4",
+        "contentHash": "7JSHAIeNM1Zsmza046u6OIBx36GzzGDLjKCSxroAeYKYiAFQ+34dGfbx06nX1KR1RhxBucGyZxlDD1fv/33FIg=="
       },
       "MessagePack": {
         "type": "Transitive",
@@ -114,7 +111,7 @@
       "Updater": {
         "type": "Project",
         "dependencies": {
-          "Markdig": "[0.40.0, )",
+          "MarkedNet": "[2.1.4, )",
           "Newtonsoft.Json": "[13.0.3, )",
           "TaskScheduler": "[2.11.0, )",
           "YAMDCC.Common": "[1.0.0-dev, )"

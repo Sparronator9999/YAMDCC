@@ -17,9 +17,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Net.Http;
-using System.Reflection;
 using System.Windows.Forms;
 using YAMDCC.Common;
 using YAMDCC.Common.Dialogs;
@@ -37,8 +35,6 @@ internal static class Program
     {
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
-
-        AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
 
         if (args.Length > 0)
         {
@@ -170,22 +166,5 @@ internal static class Program
             str += $" ---> {GetExceptionMsgs(ex.InnerException)}";
         }
         return str;
-    }
-
-    private static Assembly AssemblyResolve(object sender, ResolveEventArgs e)
-    {
-        // fix conflict between MessagePack's System.Runtime.CompilerServices.Unsafe
-        // assembly (v6.0.0.0) and the version that Markdig needs (v4.0.4.1) that
-        // can't be resolved with a binding redirect:
-        if (e.Name == Resources.GetString("SRCSU_Name"))
-        {
-            // unpack gzipped System.Runtime.CompilerServices.Unsafe dll
-            GZipStream input = new(new MemoryStream(Resources.GetObject("SRCSU_Dll")), CompressionMode.Decompress);
-            MemoryStream output = new();
-            input.CopyTo(output);
-
-            return Assembly.Load(output.ToArray());
-        }
-        return null;
     }
 }

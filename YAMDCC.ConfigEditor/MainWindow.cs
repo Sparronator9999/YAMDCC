@@ -1444,12 +1444,12 @@ internal sealed partial class MainWindow : Form
         {
             if (AppStatus.Code == status)
             {
-                AppStatus.RepeatCount++;
+                AppStatus.Repeats++;
             }
             else
             {
                 AppStatus.Code = status;
-                AppStatus.RepeatCount = 0;
+                AppStatus.Repeats = 0;
             }
 
             // set status text
@@ -1464,6 +1464,7 @@ internal sealed partial class MainWindow : Form
                     lblStatus.Text = Strings.GetString("statResponseEmpty");
                     break;
                 case StatusCode.ServiceTimeout:
+                    persist = true;
                     lblStatus.Text = Strings.GetString("statSvcTimeout");
                     break;
                 case StatusCode.NoConfig:
@@ -1481,14 +1482,14 @@ internal sealed partial class MainWindow : Form
                     break;
                 default:
                     persist = true;
-                    AppStatus.RepeatCount = 0;
+                    AppStatus.Repeats = 0;
                     lblStatus.Text = "Ready";
                     break;
             }
 
-            if (AppStatus.RepeatCount > 0)
+            if (AppStatus.Repeats > 0)
             {
-                lblStatus.Text += $" (x{AppStatus.RepeatCount + 1})";
+                lblStatus.Text += $" (x{AppStatus.Repeats + 1})";
             }
 
             tmrStatusReset.Stop();
