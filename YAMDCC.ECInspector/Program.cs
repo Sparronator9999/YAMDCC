@@ -15,8 +15,6 @@
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.IO;
-using System.Reflection;
 using System.ServiceProcess;
 using System.Threading;
 using YAMDCC.Common;
@@ -26,9 +24,6 @@ namespace YAMDCC.ECInspector;
 
 internal sealed class Program
 {
-    private static readonly string ExeName =
-        Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly().Location);
-
     private static readonly NamedPipeClient<ServiceResponse, ServiceCommand> IPCClient =
         new("YAMDCC-Server");
 
@@ -40,7 +35,7 @@ internal sealed class Program
     {
         if (!Utils.IsAdmin())
         {
-            Console.WriteLine("ERROR: please re-run this program as admin.");
+            Console.WriteLine(Strings.GetString("NoAdmin"));
             return 255;
         }
 
@@ -50,17 +45,13 @@ internal sealed class Program
         {
             if (yamdccSvc.Status == ServiceControllerStatus.Stopped)
             {
-                Console.WriteLine(
-                    "ERROR: the YAMDCC service is not running.\n" +
-                    "Please run the YAMDCC config editor to start the service.");
+                Console.WriteLine(Strings.GetString("SvcStopped"));
                 return 1;
             }
         }
         catch
         {
-            Console.WriteLine(
-                "ERROR: the YAMDCC service is not installed.\n" +
-                "Please run the YAMDCC config editor to install the service.");
+            Console.WriteLine(Strings.GetString("SvcNotFound"));
             return 1;
         }
         finally
@@ -70,8 +61,8 @@ internal sealed class Program
 
         if (args.Length == 0)
         {
-            Console.WriteLine("ERROR: no command specified\n");
-            PrintHelp();
+            Console.WriteLine(Strings.GetString("NoCmd"));
+            Help();
             return 2;
         }
         switch (args[0])
@@ -82,7 +73,7 @@ internal sealed class Program
                 return 0;
             case "--help":
             case "-h":
-                PrintHelp();
+                Help();
                 return 0;
             case "--dump":
             case "-d":
@@ -101,41 +92,32 @@ internal sealed class Program
                 }
                 return 3;
             case "":
-                Console.WriteLine("ERROR: no command specified\n");
-                PrintHelp();
+                Console.WriteLine(Strings.GetString("NoCmd"));
+                Help();
                 return 2;
             default:
-                Console.WriteLine($"ERROR: unknown command: {args[0]}\n");
-                PrintHelp();
+                Console.WriteLine(Strings.GetString("BadCmd", args[0]));
+                Help();
                 return 2;
         }
     }
 
-    private static void PrintHelp()
+    private static void Help()
     {
-        Console.WriteLine(
-            "YAMDCC EC inspection utility\n\n" +
-            $"OS version: {Environment.OSVersion}\n" +
-            $"App version: {Utils.GetVerString()}\n" +
-            $"Revision (git): {Utils.GetRevision()}\n\n" +
-            $"Usage: {ExeName} <command> [<args>]\n\n" +
-            "Commands:\n\n" +
-            "  --help, -h                      Print this help screen\n" +
-            "  --version, -v                   Print the program version\n" +
-            "  --dump, -d                      Dump all EC registers\n" +
-            "  --monitor, -m                   Dump EC and monitor for changes\n" +
-            "    --interval, -i <seconds>        EC polling interval");
+        Console.WriteLine(Strings.GetString("Help",
+            Environment.OSVersion, Utils.GetVerString(),
+            Utils.GetRevision(), AppDomain.CurrentDomain.FriendlyName));
     }
 
     private static bool ConnectService()
     {
-        IPCClient.ServerMessage += IPCClient_ServerMessage;
-        IPCClient.Error += IPCClient_Error;
+        IPCClient.ServerMessage += ServerMessage;
+        IPCClient.Error += IPCError;
 
         IPCClient.Start();
         if (!IPCClient.WaitForConnection(5000))
         {
-            Console.WriteLine("ERROR: failed to connect to YAMDCC service!");
+            Console.WriteLine(Strings.GetString("SvcConnErr"));
             return false;
         }
         return true;
@@ -158,7 +140,7 @@ internal sealed class Program
             Console.Write($" 0{i:X}");
         }
         Console.WriteLine();
-        Console.WriteLine("----|------------------------------------------------");
+        Console.WriteLine("|".PadLeft(5, '-').PadRight(53, '-'));
 
         for (int i = 0; i < 16; i++)
         {
@@ -167,7 +149,7 @@ internal sealed class Program
 
         Console.WriteLine("\nPress Ctrl+C to exit");
         Console.CursorVisible = false;
-        Console.CancelKeyPress += Console_CancelKeyPress;
+        Console.CancelKeyPress += CancelKey;
 
         int j = 0;
         while (true)
@@ -188,51 +170,47 @@ internal sealed class Program
         IPCClient.Stop();
     }
 
-    private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
+    private static void CancelKey(object sender, ConsoleCancelEventArgs e)
     {
         Console.CursorVisible = true;
         IPCClient.Stop();
     }
 
-    private static void IPCClient_ServerMessage(object sender, PipeMessageEventArgs<ServiceResponse, ServiceCommand> e)
+    private static void ServerMessage(object sender, PipeMessageEventArgs<ServiceResponse, ServiceCommand> e)
     {
         if (LogMutex.WaitOne())
         {
             try
             {
-                switch (e.Message.Response)
+                if (e.Message.Response == Response.ReadResult &&
+                    ParseArgs(e.Message.Value, out int[] args) && args.Length == 2)
                 {
-                    case Response.ReadResult:
-                        if (ParseArgs(e.Message.Value, out int[] args) && args.Length == 2)
-                        {
-                            int lowBits = args[0] & 0x0F,
-                                hiBits = (args[0] & 0xF0) >> 4;
-                            Console.SetCursorPosition(6 + lowBits * 3, 4 + hiBits);
+                    int lowBits = args[0] & 0x0F,
+                        hiBits = (args[0] & 0xF0) >> 4;
+                    Console.SetCursorPosition(6 + lowBits * 3, 4 + hiBits);
 
-                            ConsoleColor original = Console.ForegroundColor;
+                    ConsoleColor original = Console.ForegroundColor;
 
 
-                            if (ECValues[args[0]].Value == args[1])
-                            {
-                                ECValues[args[0]].Age++;
-                                Console.ForegroundColor = ConsoleColor.DarkRed;
-                            }
-                            else
-                            {
-                                ECValues[args[0]].Value = args[1];
-                                ECValues[args[0]].Age = 0;
-                                Console.ForegroundColor = ConsoleColor.Green;
-                            }
+                    if (ECValues[args[0]].Value == args[1])
+                    {
+                        ECValues[args[0]].Age++;
+                        Console.ForegroundColor = ConsoleColor.DarkRed;
+                    }
+                    else
+                    {
+                        ECValues[args[0]].Value = args[1];
+                        ECValues[args[0]].Age = 0;
+                        Console.ForegroundColor = ConsoleColor.Green;
+                    }
 
-                            if (args[1] == 0)
-                            {
-                                Console.ForegroundColor = ConsoleColor.DarkGray;
-                            }
-                            Console.Write($"{args[1]:X2}");
-                            Console.ForegroundColor = original;
-                            Console.SetCursorPosition(0, 20);
-                        }
-                        break;
+                    if (args[1] == 0)
+                    {
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                    }
+                    Console.Write($"{args[1]:X2}");
+                    Console.ForegroundColor = original;
+                    Console.SetCursorPosition(0, 20);
                 }
             }
             finally
@@ -242,7 +220,7 @@ internal sealed class Program
         }
     }
 
-    private static void IPCClient_Error(object sender, PipeErrorEventArgs<ServiceResponse, ServiceCommand> e)
+    private static void IPCError(object sender, PipeErrorEventArgs<ServiceResponse, ServiceCommand> e)
     {
         throw e.Exception;
     }

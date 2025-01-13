@@ -31,4 +31,9 @@
     <ItemGroup>
       <Reference Include="System.ServiceProcess" />
     </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Update="Strings.resx">
+        <SubType>Designer</SubType>
+      </EmbeddedResource>
+    </ItemGroup>
 </Project>
