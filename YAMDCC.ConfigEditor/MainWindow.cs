@@ -82,6 +82,13 @@ internal sealed partial class MainWindow : Form
         tsiECtoConf.ToolTipText = Strings.GetString("ttECtoConf");
         tsiProfDel.ToolTipText = Strings.GetString("ttProfDel");
         tsiECMon.ToolTipText = Strings.GetString("ttECMon");
+        tsiAdvanced.ToolTipText = Strings.GetString("ttAdvanced");
+        tsiLogDebug.ToolTipText = Strings.GetString("ttLogLevel");
+        tsiLogInfo.ToolTipText = Strings.GetString("ttLogLevel");
+        tsiLogWarn.ToolTipText = Strings.GetString("ttLogLevel");
+        tsiLogError.ToolTipText = Strings.GetString("ttLogLevel");
+        tsiLogFatal.ToolTipText = Strings.GetString("ttLogLevel");
+        tsiLogNone.ToolTipText = Strings.GetString("ttLogLevel");
         tsiStopSvc.ToolTipText = Strings.GetString("ttSvcStop");
         tsiUninstall.ToolTipText = Strings.GetString("ttSvcUninstall");
         tsiAbout.ToolTipText = Strings.GetString("ttAbout");
@@ -490,11 +497,7 @@ internal sealed partial class MainWindow : Form
 
     private void tsiAdvanced_Click(object sender, EventArgs e)
     {
-        if (!tsiAdvanced.Checked && Utils.ShowWarning(
-            "WARNING:\n\n" +
-            "You are about to enable adjustment of advanced settings\n" +
-            "that probably should be left on the default value.\n\n" +
-            "Enable advanced settings anyway?",
+        if (!tsiAdvanced.Checked && Utils.ShowWarning(Strings.GetString("dlgAdvanced"),
             "Show advanced settings?", MessageBoxDefaultButton.Button2) != DialogResult.Yes)
         {
             return;

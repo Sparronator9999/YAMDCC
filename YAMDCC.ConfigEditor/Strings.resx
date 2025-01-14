@@ -397,4 +397,24 @@ Fan mode description:
 
 You may change this setting by launching `Updater.exe` and clicking `Update options` &gt; `Check for updates automatically`.</value>
   </data>
+  <data name="ttLogLevel" xml:space="preserve">
+    <value>Click to change the log level of the YAMDCC service.
+It is recommended to leave this on Info or lower (unless helping a developer with debugging),
+since Debug can produce quite a lot of output.</value>
+  </data>
+  <data name="ttUpdate" xml:space="preserve">
+    <value>Click to check for YAMDCC updates.
+To change whether automatic update checks are enabled or to enable or disable pre-release updates, launch `Updater.exe` and click `Update options`.</value>
+  </data>
+  <data name="dlgAdvanced" xml:space="preserve">
+    <value>WARNING:
+
+You are about to enable adjustment of advanced settings that probably should be left on the default value.
+
+Enable advanced settings anyway?</value>
+  </data>
+  <data name="ttAdvanced" xml:space="preserve">
+    <value>Click to toggle whether advanced settings can be adjusted.
+NOTE: these settings should be left on the default value unless you know what you're doing.</value>
+  </data>
 </root>
