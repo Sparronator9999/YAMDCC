@@ -38,23 +38,109 @@ public class CommonConfig
     public int Ver { get; set; } = 1;
 
     /// <summary>
+    /// The path to the last YAMDCC config loaded by the config editor.
+    /// </summary>
+    [XmlElement]
+    public string LastConf { get; set; }
+
+    /// <summary>
+    /// The current progress of the EC-to-config feature.
+    /// </summary>
+    /// <remarks>
+    /// 0 = EC-to-config not in progress<br/>
+    /// 1 = EC-to-config pending, reboot required<br/>
+    /// 2 = EC-to-config pending, post-reboot<br/>
+    /// 3 = EC-to-config successful<br/>
+    /// 4 = EC-to-config failed
+    /// </remarks>
+    [XmlElement]
+    public ECtoConfState ECtoConfState { get; set; }
+
+    /// <summary>
     /// How verbose logs should be.
     /// </summary>
     [XmlElement]
     public LogLevel LogLevel { get; set; } = LogLevel.Debug;
 
     /// <summary>
-    /// <c>true</c> if we've already asked to enable auto-updating,
-    /// otherwise <c>false</c>.
+    /// <see langword="true"/> if we've already asked to enable auto-updating,
+    /// otherwise <see langword="false"/>.
     /// </summary>
     [XmlElement]
     public bool AutoUpdateAsked { get; set; }
 
     /// <summary>
+    /// <see langword="true"/> if the YAMDCC updater should update
+    /// to pre-releases, otherwise <see langword="false"/>.
+    /// </summary>
+    [XmlElement]
+    public bool PreRelease { get; set; } = true;
+
+    public static string GetLastConf()
+    {
+        return Load().LastConf;
+    }
+
+    public static ECtoConfState GetECtoConfState()
+    {
+        return Load().ECtoConfState;
+    }
+
+    public static LogLevel GetLogLevel()
+    {
+        return Load().LogLevel;
+    }
+
+    public static bool GetAutoUpdateAsked()
+    {
+        return Load().AutoUpdateAsked;
+    }
+
+    public static bool GetPreRelease()
+    {
+        return Load().PreRelease;
+    }
+
+    public static void SetLastConf(string path)
+    {
+        CommonConfig cfg = Load();
+        cfg.LastConf = path;
+        cfg.Save();
+    }
+
+    public static void SetECtoConfState(ECtoConfState state)
+    {
+        CommonConfig cfg = Load();
+        cfg.ECtoConfState = state;
+        cfg.Save();
+    }
+
+    public static void SetLogLevel(LogLevel level)
+    {
+        CommonConfig cfg = Load();
+        cfg.LogLevel = level;
+        cfg.Save();
+    }
+
+    public static void SetAutoUpdateAsked(bool value)
+    {
+        CommonConfig cfg = Load();
+        cfg.AutoUpdateAsked = value;
+        cfg.Save();
+    }
+
+    public static void SetPreRelease(bool value)
+    {
+        CommonConfig cfg = Load();
+        cfg.PreRelease = value;
+        cfg.Save();
+    }
+
+    /// <summary>
     /// Loads the global app config XML and returns a
     /// <see cref="CommonConfig"/> object.
     /// </summary>
-    public static CommonConfig Load()
+    private static CommonConfig Load()
     {
         XmlSerializer serialiser = new(typeof(CommonConfig));
         try
@@ -86,7 +172,7 @@ public class CommonConfig
     /// Saves the global app config XML.
     /// </summary>
     /// <exception cref="InvalidOperationException"/>
-    public void Save()
+    private void Save()
     {
         XmlSerializer serializer = new(typeof(CommonConfig));
         XmlWriterSettings settings = new()
@@ -100,4 +186,13 @@ public class CommonConfig
             serializer.Serialize(writer, this);
         }
     }
+}
+
+public enum ECtoConfState
+{
+    None,
+    PendingReboot,
+    PostReboot,
+    Success,
+    Fail,
 }

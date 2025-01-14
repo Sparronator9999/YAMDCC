@@ -57,7 +57,7 @@ internal sealed partial class UpdateForm : Form
         AutoUpdate = autoUpdate;
 
         SetTitleText(string.Empty);
-        tsiPreRelease.Checked = Utils.GetCurrentVerSuffix() != "release";
+        tsiPreRelease.Checked = CommonConfig.GetPreRelease();
         tsiAutoUpdate.Checked = Updater.GetAutoUpdateEnabled();
 
         if (release is null)
@@ -170,7 +170,7 @@ internal sealed partial class UpdateForm : Form
     private void btnDisable_Click(object sender, EventArgs e)
     {
         // disable auto-updates
-        SetAutoUpdate(false);
+        SetAdminSetting("setautoupdate", false);
         Close();
     }
 
@@ -181,7 +181,7 @@ internal sealed partial class UpdateForm : Form
 
     private void tsiAutoUpdate_Click(object sender, EventArgs e)
     {
-        if (SetAutoUpdate(!tsiAutoUpdate.Checked))
+        if (SetAdminSetting("setautoupdate", !tsiAutoUpdate.Checked))
         {
             tsiAutoUpdate.Checked = !tsiAutoUpdate.Checked;
         }
@@ -189,11 +189,15 @@ internal sealed partial class UpdateForm : Form
 
     private void tsiPreRelease_Click(object sender, EventArgs e)
     {
-        if (btnUpdate.Tag is null)
+        if (SetAdminSetting("setprerelease", tsiPreRelease.Checked))
         {
-            wbChangelog.DocumentText = GetHtml(
-                Strings.GetString("UpdatePrompt") +
-                (tsiPreRelease.Checked ? Strings.GetString("PreReleaseOn") : string.Empty));
+            tsiPreRelease.Checked = !tsiPreRelease.Checked;
+            if (btnUpdate.Tag is null)
+            {
+                wbChangelog.DocumentText = GetHtml(
+                    Strings.GetString("UpdatePrompt") +
+                    (tsiPreRelease.Checked ? Strings.GetString("PreReleaseOn") : string.Empty));
+            }
         }
     }
 
@@ -405,28 +409,20 @@ internal sealed partial class UpdateForm : Form
         return $"{bytes} bytes";
     }
 
-    private static bool SetAutoUpdate(bool enabled)
+    private static bool SetAdminSetting(string cmd, bool enabled)
     {
-        if (!Utils.IsAdmin())
+        try
         {
-            try
-            {
-                return Utils.RunCmd(Assembly.GetExecutingAssembly().Location, $"--setautoupdate {enabled}") == 0;
-            }
-            catch (Win32Exception ex)
-            {
-                if (ex.ErrorCode == -2147467259) // 0x80004005 - operation cancelled by user
-                {
-                    Utils.ShowError("Admin is required to change auto-update setting.");
-                    return false;
-                }
-                throw;
-            }
+            return Utils.RunCmd(Assembly.GetExecutingAssembly().Location, $"--{cmd} {enabled}") == 0;
         }
-        else
+        catch (Win32Exception ex)
         {
-            Updater.SetAutoUpdateEnabled(false);
-            return true;
+            if (ex.ErrorCode == -2147467259) // 0x80004005 - operation cancelled by user
+            {
+                Utils.ShowError("Admin is required to change this setting.");
+                return false;
+            }
+            throw;
         }
     }
 }

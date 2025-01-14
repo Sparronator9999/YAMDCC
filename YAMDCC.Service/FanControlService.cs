@@ -120,24 +120,10 @@ internal sealed class FanControlService : ServiceBase
         Log.Info(Strings.GetString("svcStarted"));
 
         // Attempt to read default fan curve if it's pending:
-        int rebootFlag = -1;
-        try
+        if (CommonConfig.GetECtoConfState() == ECtoConfState.PostReboot)
         {
-            StreamReader sr = new(Paths.ECToConfPending);
-            if (int.TryParse(sr.ReadToEnd(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int value))
-            {
-                rebootFlag = value;
-            }
-            sr.Close();
-
-            if (rebootFlag == 0)
-            {
-                ECToConf();
-                File.Delete(Paths.ECToConfPending);
-            }
+            ECtoConf();
         }
-        catch (FileNotFoundException) { }
-        catch (DirectoryNotFoundException) { }
 
         // Apply the fan curve and charging threshold:
         if (confLoaded)
@@ -159,37 +145,10 @@ internal sealed class FanControlService : ServiceBase
 
     protected override void OnShutdown()
     {
-        int rebootFlag = -1;
-        try
+        if (CommonConfig.GetECtoConfState() == ECtoConfState.PendingReboot)
         {
-            StreamReader sr = new(Paths.ECToConfPending);
-            try
-            {
-                if (int.TryParse(sr.ReadToEnd(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int value))
-                {
-                    rebootFlag = value;
-                }
-            }
-            finally
-            {
-                sr.Close();
-            }
-
-            if (rebootFlag == 1)
-            {
-                StreamWriter sw = new(Paths.ECToConfPending);
-                try
-                {
-                    sw.Write(0);
-                }
-                finally
-                {
-                    sw.Close();
-                }
-            }
+            CommonConfig.SetECtoConfState(ECtoConfState.PostReboot);
         }
-        catch (FileNotFoundException) { }
-        catch (DirectoryNotFoundException) { }
         StopSvc();
     }
 
@@ -713,7 +672,7 @@ internal sealed class FanControlService : ServiceBase
         return LogECWriteByte(Config.KeyLightConf.Reg, (byte)(brightness + Config.KeyLightConf.MinVal));
     }
 
-    private bool ECToConf()
+    private bool ECtoConf()
     {
         if (Config is null)
         {
@@ -812,14 +771,12 @@ internal sealed class FanControlService : ServiceBase
             Log.Info("Saving config...");
             Config.Save(Paths.CurrentConf);
 
-            FileStream fs = File.Create(Paths.ECToConfSuccess);
-            fs.Close();
+            CommonConfig.SetECtoConfState(ECtoConfState.Success);
             return true;
         }
         catch
         {
-            FileStream fs = File.Create(Paths.ECToConfFail);
-            fs.Close();
+            CommonConfig.SetECtoConfState(ECtoConfState.Fail);
             return false;
         }
     }

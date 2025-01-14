@@ -188,7 +188,7 @@ namespace YAMDCC.Updater
             this.tsiAutoUpdate,
             this.tsiPreRelease});
             this.OptMenu.Name = "OptionsMenu";
-            this.OptMenu.Size = new System.Drawing.Size(246, 48);
+            this.OptMenu.Size = new System.Drawing.Size(246, 70);
             // 
             // tsiAutoUpdate
             // 
@@ -200,7 +200,6 @@ namespace YAMDCC.Updater
             // tsiPreRelease
             // 
             this.tsiPreRelease.Checked = true;
-            this.tsiPreRelease.CheckOnClick = true;
             this.tsiPreRelease.CheckState = System.Windows.Forms.CheckState.Checked;
             this.tsiPreRelease.Name = "tsiPreRelease";
             this.tsiPreRelease.Size = new System.Drawing.Size(245, 22);

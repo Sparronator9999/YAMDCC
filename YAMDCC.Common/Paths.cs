@@ -74,11 +74,8 @@ public static class Paths
     /// The path where the path to the last saved YAMDCC config is saved.
     /// </summary>
     /// <remarks>
-    /// (C:\ProgramData\Sparronator9999\YAMDCC\CurrentConfig.xml on Windows)
+    /// (C:\ProgramData\Sparronator9999\YAMDCC\LastConfig on Windows)
     /// </remarks>
+    // TODO: remove legacy LastConfig after upgrade to CommonConfig
     public static readonly string LastConf = Path.Combine(Data, "LastConfig");
-
-    public static readonly string ECToConfSuccess = Path.Combine(Data, "ECToConfSuccess");
-    public static readonly string ECToConfFail = Path.Combine(Data, "ECToConfFail");
-    public static readonly string ECToConfPending = Path.Combine(Data, "ECToConfPending");
 }

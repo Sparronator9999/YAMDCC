@@ -53,6 +53,15 @@ internal static class Program
                     }
                     Utils.ShowError("Could not set auto-update state!");
                     return 1;
+                case "--setprerelease":
+                    if (Utils.IsAdmin() && args.Length >= 2 &&
+                        bool.TryParse(args[1], out enabled))
+                    {
+                        CommonConfig.SetPreRelease(enabled);
+                        return 0;
+                    }
+                    Utils.ShowError("Could not set pre-release setting!");
+                    return 1;
                 case "--install":
                     // args: --install <oldPath> <updatePath> <destPath>
                     if (args.Length >= 4)
@@ -132,7 +141,7 @@ internal static class Program
     {
         try
         {
-            Release release = Updater.GetLatestReleaseAsync(Utils.GetCurrentVerSuffix() != "release").GetAwaiter().GetResult();
+            Release release = Updater.GetLatestReleaseAsync(CommonConfig.GetPreRelease()).GetAwaiter().GetResult();
 
             if (Utils.GetCurrentVersion() < Utils.GetVersion(release.TagName.Remove(0, 1)))
             {

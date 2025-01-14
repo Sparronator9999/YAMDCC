@@ -185,29 +185,12 @@ internal static class Program
 
     private static void Start()
     {
-        int rebootFlag = -1;
-        try
-        {
-            StreamReader sr = new(Paths.ECToConfPending);
-            if (int.TryParse(sr.ReadToEnd(), NumberStyles.Integer, CultureInfo.InvariantCulture, out int value))
-            {
-                rebootFlag = value;
-            }
-            sr.Close();
-        }
-        catch (FileNotFoundException) { }
-        catch (DirectoryNotFoundException) { }
-
-        if (rebootFlag == 1)
+        if (CommonConfig.GetECtoConfState() == ECtoConfState.PendingReboot)
         {
             if (Utils.ShowWarning(Strings.GetString("dlgECtoConfReboot"),
                 "Reboot pending", MessageBoxDefaultButton.Button2) == DialogResult.Yes)
             {
-                try
-                {
-                    File.Delete(Paths.ECToConfPending);
-                }
-                catch (DirectoryNotFoundException) { }
+                CommonConfig.SetECtoConfState(ECtoConfState.None);
             }
             else
             {

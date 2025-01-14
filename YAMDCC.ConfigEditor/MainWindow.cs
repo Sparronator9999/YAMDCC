@@ -35,8 +35,6 @@ internal sealed partial class MainWindow : Form
     #region Fields
     private readonly Status AppStatus = new();
 
-    private readonly CommonConfig GlobalConfig;
-
     /// <summary>
     /// The YAMDCC config that is currently open for editing.
     /// </summary>
@@ -117,8 +115,7 @@ internal sealed partial class MainWindow : Form
         };
         tmrSvcTimeout.Tick += tmrSvcTimeout_Tick;
 
-        GlobalConfig = CommonConfig.Load();
-        switch (GlobalConfig.LogLevel)
+        switch (CommonConfig.GetLogLevel())
         {
             case LogLevel.None:
                 tsiLogNone.Checked = true;
@@ -140,7 +137,7 @@ internal sealed partial class MainWindow : Form
                 break;
         }
 
-        if (!GlobalConfig.AutoUpdateAsked)
+        if (!CommonConfig.GetAutoUpdateAsked())
         {
             if (Utils.ShowInfo(Strings.GetString("dlgAutoUpdate"),
                 "Check for updates?", MessageBoxButtons.YesNo) == DialogResult.Yes)
@@ -154,9 +151,27 @@ internal sealed partial class MainWindow : Form
                     Utils.ShowError("Updater.exe not found!");
                 }
             }
-            GlobalConfig.AutoUpdateAsked = true;
+            CommonConfig.SetAutoUpdateAsked(true);
         }
 
+        try
+        {
+            string path;
+            StreamReader sr = new(Paths.LastConf, Encoding.UTF8);
+            try
+            {
+                path = sr.ReadLine();
+                CommonConfig.SetLastConf(path);
+            }
+            finally
+            {
+                sr.Close();
+            }
+            File.Delete(Paths.LastConf);
+        }
+        // legacy LastConf file doesn't exist
+        catch (FileNotFoundException) { }
+    
         DisableAll();
     }
 
@@ -191,20 +206,17 @@ internal sealed partial class MainWindow : Form
             }
         }
 
-        if (File.Exists(Paths.ECToConfFail))
+        switch (CommonConfig.GetECtoConfState())
         {
-            Utils.ShowError(Strings.GetString("dlgECtoConfErr", Paths.Logs));
+            case ECtoConfState.Fail:
+                Utils.ShowError(Strings.GetString("dlgECtoConfErr", Paths.Logs));
+                CommonConfig.SetECtoConfState(ECtoConfState.None);
+                break;
+            case ECtoConfState.Success:
+                Utils.ShowInfo(Strings.GetString("dlgECtoConfSuccess"), "Success");
+                CommonConfig.SetECtoConfState(ECtoConfState.None);
+                break;
         }
-        else if (File.Exists(Paths.ECToConfSuccess))
-        {
-            Utils.ShowInfo(Strings.GetString("dlgECtoConfSuccess"), "Success");
-        }
-        try
-        {
-            File.Delete(Paths.ECToConfSuccess);
-            File.Delete(Paths.ECToConfFail);
-        }
-        catch (DirectoryNotFoundException) { }
     }
 
     private void MainWindow_Closing(object sender, FormClosingEventArgs e)
@@ -214,14 +226,6 @@ internal sealed partial class MainWindow : Form
         {
             SendServiceMessage(new ServiceCommand(Command.FullBlast, "0"));
         }
-
-        try
-        {
-            GlobalConfig.Save();
-        }
-        // ignore DirectoryNotFoundException, since we probably closed the
-        // window due to uninstalling with data directory delete enabled
-        catch (DirectoryNotFoundException) { }
     }
 
     private void OnProcessExit(object sender, EventArgs e)
@@ -353,7 +357,7 @@ internal sealed partial class MainWindow : Form
         if (ofd.ShowDialog() == DialogResult.OK)
         {
             LoadConf(ofd.FileName);
-            SetLastConfPath(ofd.FileName);
+            CommonConfig.SetLastConf(ofd.FileName);
             btnRevert.Enabled = tsiRevert.Enabled = false;
         }
     }
@@ -373,7 +377,7 @@ internal sealed partial class MainWindow : Form
             Config.ChargeLimitConf.CurVal = (byte)(chkChgLim.Checked
                 ? numChgLim.Value : 0);
             Config.Save(sfd.FileName);
-            SetLastConfPath(sfd.FileName);
+            CommonConfig.SetLastConf(sfd.FileName);
             btnRevert.Enabled = tsiRevert.Enabled = false;
         }
     }
@@ -462,17 +466,7 @@ internal sealed partial class MainWindow : Form
         if (Utils.ShowInfo(Strings.GetString("dlgECtoConfStart"),
             "Default fan profile from EC?", MessageBoxButtons.YesNo) == DialogResult.Yes)
         {
-            StreamWriter sw = new(Paths.ECToConfPending, false);
-            try
-            {
-                sw.Write(1);
-                sw.Flush();
-            }
-            finally
-            {
-                sw.Close();
-            }
-            Application.Exit();
+            CommonConfig.SetECtoConfState(ECtoConfState.PendingReboot);
         }
     }
 
@@ -512,7 +506,7 @@ internal sealed partial class MainWindow : Form
 
     private void tsiLogNone_Click(object sender, EventArgs e)
     {
-        GlobalConfig.LogLevel = LogLevel.None;
+        CommonConfig.SetLogLevel(LogLevel.None);
         tsiLogNone.Checked = true;
         tsiLogDebug.Checked = false;
         tsiLogInfo.Checked = false;
@@ -523,7 +517,7 @@ internal sealed partial class MainWindow : Form
 
     private void tsiLogDebug_Click(object sender, EventArgs e)
     {
-        GlobalConfig.LogLevel = LogLevel.Debug;
+        CommonConfig.SetLogLevel(LogLevel.Debug);
         tsiLogNone.Checked = false;
         tsiLogDebug.Checked = true;
         tsiLogInfo.Checked = false;
@@ -534,7 +528,7 @@ internal sealed partial class MainWindow : Form
 
     private void tsiLogInfo_Click(object sender, EventArgs e)
     {
-        GlobalConfig.LogLevel = LogLevel.Info;
+        CommonConfig.SetLogLevel(LogLevel.Info);
         tsiLogNone.Checked = false;
         tsiLogDebug.Checked = false;
         tsiLogInfo.Checked = true;
@@ -545,7 +539,7 @@ internal sealed partial class MainWindow : Form
 
     private void tsiLogWarn_Click(object sender, EventArgs e)
     {
-        GlobalConfig.LogLevel = LogLevel.Warn;
+        CommonConfig.SetLogLevel(LogLevel.Warn);
         tsiLogNone.Checked = false;
         tsiLogDebug.Checked = false;
         tsiLogInfo.Checked = false;
@@ -556,7 +550,7 @@ internal sealed partial class MainWindow : Form
 
     private void tsiLogError_Click(object sender, EventArgs e)
     {
-        GlobalConfig.LogLevel = LogLevel.Error;
+        CommonConfig.SetLogLevel(LogLevel.Error);
         tsiLogNone.Checked = false;
         tsiLogDebug.Checked = false;
         tsiLogInfo.Checked = false;
@@ -567,7 +561,7 @@ internal sealed partial class MainWindow : Form
 
     private void tsiLogFatal_Click(object sender, EventArgs e)
     {
-        GlobalConfig.LogLevel = LogLevel.Fatal;
+        CommonConfig.SetLogLevel(LogLevel.Fatal);
         tsiLogNone.Checked = false;
         tsiLogDebug.Checked = false;
         tsiLogInfo.Checked = false;
@@ -1125,7 +1119,7 @@ internal sealed partial class MainWindow : Form
         {
             try
             {
-                YAMDCC_Config tempConf = YAMDCC_Config.Load(GetLastConfPath());
+                YAMDCC_Config tempConf = YAMDCC_Config.Load(CommonConfig.GetLastConf());
                 LoadConf(tempConf);
                 Config = tempConf;
                 UpdateFanCurveDisplay();
@@ -1259,33 +1253,6 @@ internal sealed partial class MainWindow : Form
                     cboProfSel.SelectedIndex = cfg.CurveSel;
                 }
             }
-        }
-    }
-
-    private static string GetLastConfPath()
-    {
-        StreamReader sr = new(Paths.LastConf, Encoding.UTF8);
-        try
-        {
-            string path = sr.ReadLine();
-            return path;
-        }
-        finally
-        {
-            sr.Close();
-        }
-    }
-
-    private static void SetLastConfPath(string path)
-    {
-        StreamWriter sw = new(Paths.LastConf, false, Encoding.UTF8);
-        try
-        {
-            sw.WriteLine(path);
-        }
-        finally
-        {
-            sw.Close();
         }
     }
 

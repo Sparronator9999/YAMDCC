@@ -48,12 +48,11 @@ internal static class Program
         }
         else
         {
-            CommonConfig cfg = CommonConfig.Load();
             Log.Info(
                 $"OS version: {Environment.OSVersion}\n" +
                 $"Service version: {Application.ProductVersion}");
 
-            Log.FileLevel = cfg.LogLevel;
+            Log.FileLevel = CommonConfig.GetLogLevel();
             Log.Debug("Log level is set to debug mode.");
             ServiceBase.Run(new FanControlService(Log));
         }
