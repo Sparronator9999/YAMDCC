@@ -501,7 +501,7 @@ internal sealed partial class MainWindow : Form
         }
         tsiAdvanced.Checked = !tsiAdvanced.Checked;
 
-        if (Config.FanModeConf is not null)
+        if (Config?.FanModeConf is not null)
         {
             cboFanMode.Enabled = tsiAdvanced.Checked;
         }
