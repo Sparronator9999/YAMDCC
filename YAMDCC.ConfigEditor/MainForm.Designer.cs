@@ -16,7 +16,7 @@
 
 namespace YAMDCC.ConfigEditor
 {
-    partial class MainWindow
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -286,30 +286,30 @@ namespace YAMDCC.ConfigEditor
             this.tsiProfEdit.Size = new System.Drawing.Size(257, 22);
             this.tsiProfEdit.Text = "&Edit current fan profile";
             // 
-            // tsiProfRename
+            // tsiProfRen
             // 
-            this.tsiProfRen.Name = "tsiProfRename";
-            this.tsiProfRen.Size = new System.Drawing.Size(180, 22);
+            this.tsiProfRen.Name = "tsiProfRen";
+            this.tsiProfRen.Size = new System.Drawing.Size(178, 22);
             this.tsiProfRen.Text = "Change Name";
             this.tsiProfRen.Click += new System.EventHandler(this.ProfRename);
             // 
             // tsiProfChangeDesc
             // 
             this.tsiProfChangeDesc.Name = "tsiProfChangeDesc";
-            this.tsiProfChangeDesc.Size = new System.Drawing.Size(180, 22);
+            this.tsiProfChangeDesc.Size = new System.Drawing.Size(178, 22);
             this.tsiProfChangeDesc.Text = "Change Description";
             this.tsiProfChangeDesc.Click += new System.EventHandler(this.ProfChangeDesc);
             // 
             // sep3
             // 
             sep3.Name = "sep3";
-            sep3.Size = new System.Drawing.Size(177, 6);
+            sep3.Size = new System.Drawing.Size(175, 6);
             // 
             // tsiProfDel
             // 
             this.tsiProfDel.Name = "tsiProfDel";
             this.tsiProfDel.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Delete)));
-            this.tsiProfDel.Size = new System.Drawing.Size(180, 22);
+            this.tsiProfDel.Size = new System.Drawing.Size(178, 22);
             this.tsiProfDel.Text = "Delete";
             this.tsiProfDel.Click += new System.EventHandler(this.ProfDel);
             // 
@@ -799,7 +799,6 @@ namespace YAMDCC.ConfigEditor
             this.numChgLim.Name = "numChgLim";
             this.numChgLim.Size = new System.Drawing.Size(50, 23);
             this.numChgLim.TabIndex = 1;
-            this.numChgLim.ValueChanged += new System.EventHandler(this.ChgLimChange);
             // 
             // tabInfo
             // 
@@ -1032,7 +1031,7 @@ namespace YAMDCC.ConfigEditor
             this.tblMain.Size = new System.Drawing.Size(540, 416);
             this.tblMain.TabIndex = 1;
             // 
-            // MainWindow
+            // MainForm
             // 
             this.AcceptButton = this.btnApply;
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -1045,7 +1044,7 @@ namespace YAMDCC.ConfigEditor
             this.MainMenuStrip = menuStrip;
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.MaximizeBox = false;
-            this.Name = "MainWindow";
+            this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_Closing);
             this.Load += new System.EventHandler(this.MainWindow_Load);

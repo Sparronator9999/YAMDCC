@@ -179,7 +179,7 @@ internal static class Program
             }
         }
 
-        Application.Run(new MainWindow());
+        Application.Run(new MainForm());
     }
 
     [DllImport("user32.dll")]

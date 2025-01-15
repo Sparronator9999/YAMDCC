@@ -338,10 +338,10 @@ Increase the gap (e.g. to 5°C) if your fan often quickly cycles between this sp
     <value>This is the fan speed that the fan will run at when the component's
 temperature is between the up and down thresholds below.
 
-Recommended values:
-To turn the fan off at idle, set the lowest fan speed to 0%.
+Recommended values (for MSI laptops):
+To turn the fan off when idle, set the lowest fan speed to 0%.
 Start at ~30-40% for the next speed up (depending on your laptop),
-increasing to (or close to) 100% for the highest setting.</value>
+increasing to 100% for the highest setting (or lower, if you want a quieter fan profile).</value>
   </data>
   <data name="ttKeyLight" xml:space="preserve">
     <value>Drag to the right to increase your laptop's keyboard backlight

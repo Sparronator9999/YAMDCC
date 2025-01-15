@@ -28,7 +28,6 @@
     </PropertyGroup>
     <ItemGroup>
       <EmbeddedResource Remove="MainWindow.resx" />
-      <EmbeddedResource Remove="Program.resx" />
     </ItemGroup>
     <ItemGroup>
         <Reference Include="System.ServiceProcess" />
@@ -60,7 +59,6 @@
         </BootstrapperPackage>
     </ItemGroup>
     <ItemGroup>
-      <None Include="MainWindow.resx" />
-      <None Include="Program.resx" />
+      <None Include="MainForm.resx" />
     </ItemGroup>
 </Project>

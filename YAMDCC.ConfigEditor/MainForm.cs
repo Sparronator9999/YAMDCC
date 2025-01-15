@@ -15,7 +15,6 @@
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -30,7 +29,7 @@ using YAMDCC.Logs;
 
 namespace YAMDCC.ConfigEditor;
 
-internal sealed partial class MainWindow : Form
+internal sealed partial class MainForm : Form
 {
     #region Fields
     private readonly Status AppStatus = new();
@@ -56,7 +55,7 @@ internal sealed partial class MainWindow : Form
     private int Debug;
     #endregion
 
-    public MainWindow()
+    public MainForm()
     {
         InitializeComponent();
 
@@ -189,7 +188,7 @@ internal sealed partial class MainWindow : Form
 
         if (Config is not null)
         {
-            if (Config.KeyLightConf is null)
+            if (Config?.KeyLightConf is null)
             {
                 ttMain.SetToolTip(tbKeyLight, Strings.GetString("ttNotSupported"));
             }
@@ -350,7 +349,6 @@ internal sealed partial class MainWindow : Form
         {
             LoadConf(ofd.FileName);
             CommonConfig.SetLastConf(ofd.FileName);
-            btnRevert.Enabled = tsiRevert.Enabled = false;
         }
     }
 
@@ -370,7 +368,6 @@ internal sealed partial class MainWindow : Form
                 ? numChgLim.Value : 0);
             Config.Save(sfd.FileName);
             CommonConfig.SetLastConf(sfd.FileName);
-            btnRevert.Enabled = tsiRevert.Enabled = false;
         }
     }
 
@@ -393,7 +390,6 @@ internal sealed partial class MainWindow : Form
         {
             curveCfg.Name = dlg.Result;
             cboProfSel.Items[cboProfSel.SelectedIndex] = dlg.Result;
-            btnRevert.Enabled = tsiRevert.Enabled = true;
         }
     }
 
@@ -410,7 +406,6 @@ internal sealed partial class MainWindow : Form
             curveCfg.Desc = dlg.Result;
             ttMain.SetToolTip(cboProfSel, Strings.GetString(
                 "ttProfSel", dlg.Result));
-            btnRevert.Enabled = tsiRevert.Enabled = true;
         }
     }
 
@@ -570,7 +565,7 @@ internal sealed partial class MainWindow : Form
     private void tsiUninstall_Click(object sender, EventArgs e)
     {
         if (Utils.ShowWarning(Strings.GetString("dlgUninstall"),
-            "Uninstall service?") == DialogResult.Yes)
+            "Uninstall?") == DialogResult.Yes)
         {
             bool delData = Utils.ShowWarning(
                 Strings.GetString("dlgSvcDelData", Paths.Data),
@@ -581,14 +576,17 @@ internal sealed partial class MainWindow : Form
             IPCClient.Stop();
             Hide();
 
-            // Apparently this fixes the YAMDCC service not uninstalling
-            // when YAMDCC is launched by certain means
             ProgressDialog dlg = new(Strings.GetString("dlgSvcUninstalling"), (e) =>
             {
+                // Apparently this fixes the YAMDCC service not uninstalling
+                // when YAMDCC is launched by certain means
                 if (Utils.StopService("yamdccsvc"))
                 {
                     if (Utils.UninstallService("yamdccsvc"))
                     {
+                        // Delete the auto-update scheduled task
+                        Utils.RunCmd("updater", "--setautoupdate false");
+
                         // Only delete service data if the
                         // service uninstalled successfully
                         if (delData)
@@ -607,9 +605,6 @@ internal sealed partial class MainWindow : Form
                 }
             });
             dlg.ShowDialog();
-
-            Utils.RunCmd("updater", "--setautoupdate false");
-
             Close();
         }
     }
@@ -643,9 +638,98 @@ internal sealed partial class MainWindow : Form
 
     private void FanSelChanged(object sender, EventArgs e)
     {
-        if (Config is not null)
+        FanConf cfg = Config.FanConfs[cboFanSel.SelectedIndex];
+
+        cboProfSel.Items.Clear();
+        foreach (FanCurveConf curve in cfg.FanCurveConfs)
         {
-            UpdateCurveEditor();
+            cboProfSel.Items.Add(curve.Name);
+        }
+
+        if (numFanSpds is null || numFanSpds.Length != cfg.FanCurveRegs.Length)
+        {
+            tblCurve.SuspendLayout();
+            float scale = CurrentAutoScaleDimensions.Height / 72;
+
+            tblCurve.Controls.Clear();
+            numUpTs = new NumericUpDown[cfg.UpThresholdRegs.Length];
+            numDownTs = new NumericUpDown[cfg.DownThresholdRegs.Length];
+            numFanSpds = new NumericUpDown[cfg.FanCurveRegs.Length];
+            tbFanSpds = new TrackBar[cfg.FanCurveRegs.Length];
+
+            tblCurve.ColumnStyles.Clear();
+            tblCurve.ColumnCount = numFanSpds.Length + 1;
+
+            // labels on left side
+            tblCurve.ColumnStyles.Add(new ColumnStyle());
+            tblCurve.Controls.Add(FanCurveLabel("Speed (%)", scale), 0, 0);
+            tblCurve.Controls.Add(FanCurveLabel("Up (°C)", scale), 0, 2);
+            tblCurve.Controls.Add(FanCurveLabel("Down (°C)", scale), 0, 3);
+
+            for (int i = 0; i < numFanSpds.Length; i++)
+            {
+                tblCurve.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F / numFanSpds.Length));
+
+                numFanSpds[i] = FanCurveNUD(i, scale);
+                ttMain.SetToolTip(numFanSpds[i], Strings.GetString("ttFanSpd"));
+                numFanSpds[i].ValueChanged += new EventHandler(FanSpdChange);
+                tblCurve.Controls.Add(numFanSpds[i], i + 1, 0);
+
+                tbFanSpds[i] = new TrackBar()
+                {
+                    Dock = DockStyle.Fill,
+                    LargeChange = 10,
+                    Margin = new Padding((int)(10 * scale), 0, (int)(10 * scale), 0),
+                    Orientation = Orientation.Vertical,
+                    Tag = i,
+                    TickFrequency = 5,
+                    TickStyle = TickStyle.Both,
+                };
+                ttMain.SetToolTip(tbFanSpds[i], Strings.GetString("ttFanSpd"));
+                tbFanSpds[i].ValueChanged += new EventHandler(FanSpdChange);
+                tblCurve.Controls.Add(tbFanSpds[i], i + 1, 1);
+
+                if (i != 0)
+                {
+                    numUpTs[i - 1] = FanCurveNUD(i - 1, scale);
+                    ttMain.SetToolTip(numUpTs[i - 1], Strings.GetString("ttUpT"));
+                    numUpTs[i - 1].ValueChanged += new EventHandler(UpTChange);
+                    tblCurve.Controls.Add(numUpTs[i - 1], i + 1, 2);
+                }
+                else
+                {
+                    tblCurve.Controls.Add(FanCurveLabel("Default", scale, ContentAlignment.MiddleCenter), i + 1, 2);
+                }
+
+                if (i != numFanSpds.Length - 1)
+                {
+                    numDownTs[i] = FanCurveNUD(i, scale);
+                    ttMain.SetToolTip(numDownTs[i], Strings.GetString("ttDownT"));
+                    numDownTs[i].ValueChanged += new EventHandler(DownTChange);
+                    tblCurve.Controls.Add(numDownTs[i], i + 1, 3);
+                }
+                else
+                {
+                    tblCurve.Controls.Add(FanCurveLabel("Max", scale, ContentAlignment.MiddleCenter), i + 1, 3);
+                }
+            }
+            tblCurve.ResumeLayout(true);
+        }
+
+        for (int i = 0; i < numFanSpds.Length; i++)
+        {
+            numFanSpds[i].Maximum = tbFanSpds[i].Maximum =
+                Math.Abs(cfg.MaxSpeed - cfg.MinSpeed);
+        }
+
+        cboProfSel.Enabled = true;
+        cboProfSel.SelectedIndex = cfg.CurveSel;
+
+        if (tsiECMon.Checked)
+        {
+            tmrPoll.Stop();
+            PollEC();
+            tmrPoll.Start();
         }
     }
 
@@ -686,7 +770,6 @@ internal sealed partial class MainWindow : Form
                 numUpTs[i].Enabled = numDownTs[i].Enabled = curveCfg.Name != "Default";
             }
         }
-        btnApply.Enabled = tsiApply.Enabled = true;
         btnProfDel.Enabled = tsiProfDel.Enabled = curveCfg.Name != "Default";
     }
 
@@ -708,8 +791,6 @@ internal sealed partial class MainWindow : Form
         {
             tsiSwitchAll.Checked = false;
         }
-
-        btnRevert.Enabled = tsiRevert.Enabled = true;
     }
 
     private void ProfAdd(int start, int end)
@@ -796,8 +877,6 @@ internal sealed partial class MainWindow : Form
         {
             tsiSwitchAll.Checked = false;
         }
-
-        btnRevert.Enabled = tsiRevert.Enabled = true;
     }
 
     private void ProfDel(int start, int end)
@@ -842,8 +921,6 @@ internal sealed partial class MainWindow : Form
         Config.FanConfs[cboFanSel.SelectedIndex]
             .FanCurveConfs[cboProfSel.SelectedIndex]
             .TempThresholds[i].FanSpeed = (byte)numFanSpds[i].Value;
-
-        btnRevert.Enabled = tsiRevert.Enabled = true;
     }
 
     private void UpTChange(object sender, EventArgs e)
@@ -859,8 +936,6 @@ internal sealed partial class MainWindow : Form
         numDownTs[i].Value += nud.Value - threshold.UpThreshold;
 
         threshold.UpThreshold = (byte)numUpTs[i].Value;
-
-        btnRevert.Enabled = tsiRevert.Enabled = true;
     }
 
     private void DownTChange(object sender, EventArgs e)
@@ -871,8 +946,6 @@ internal sealed partial class MainWindow : Form
         Config.FanConfs[cboFanSel.SelectedIndex]
             .FanCurveConfs[cboProfSel.SelectedIndex]
             .TempThresholds[i + 1].DownThreshold = (byte)numDownTs[i].Value;
-
-        btnRevert.Enabled = tsiRevert.Enabled = true;
     }
 
     private void ChgLimToggle(object sender, EventArgs e)
@@ -880,30 +953,17 @@ internal sealed partial class MainWindow : Form
         numChgLim.Enabled = chkChgLim.Checked;
     }
 
-    private void ChgLimChange(object sender, EventArgs e)
-    {
-        if (Config is not null)
-        {
-            btnRevert.Enabled = tsiRevert.Enabled = true;
-        }
-    }
-
     private void PerfModeChange(object sender, EventArgs e)
     {
-        if (Config is not null)
-        {
-            int idx = cboPerfMode.SelectedIndex;
-            Config.PerfModeConf.ModeSel = idx;
-            ttMain.SetToolTip(cboPerfMode,
-                Strings.GetString("ttPerfMode", Config.PerfModeConf.PerfModes[idx].Desc));
-            btnRevert.Enabled = tsiRevert.Enabled = true;
-        }
+        int idx = cboPerfMode.SelectedIndex;
+        Config.PerfModeConf.ModeSel = idx;
+        ttMain.SetToolTip(cboPerfMode,
+            Strings.GetString("ttPerfMode", Config.PerfModeConf.PerfModes[idx].Desc));
     }
 
     private void WinFnSwapToggle(object sender, EventArgs e)
     {
         Config.KeySwapConf.Enabled = chkWinFnSwap.Checked;
-        btnRevert.Enabled = tsiRevert.Enabled = true;
     }
 
     private void KeyLightChange(object sender, EventArgs e)
@@ -913,15 +973,11 @@ internal sealed partial class MainWindow : Form
 
     private void FanModeChange(object sender, EventArgs e)
     {
-        if (Config is not null)
-        {
-            int idx = cboFanMode.SelectedIndex;
-            Config.FanModeConf.ModeSel = idx;
-            ttMain.SetToolTip(cboFanMode,
-                Strings.GetString("ttFanMode", Config.FanModeConf.FanModes[idx].Desc));
-            btnRevert.Enabled = tsiRevert.Enabled = true;
-        }
-    }
+        int idx = cboFanMode.SelectedIndex;
+        Config.FanModeConf.ModeSel = idx;
+        ttMain.SetToolTip(cboFanMode,
+            Strings.GetString("ttFanMode", Config.FanModeConf.FanModes[idx].Desc));
+}
 
     private void txtAuthor_Validating(object sender, CancelEventArgs e)
     {
@@ -965,12 +1021,9 @@ internal sealed partial class MainWindow : Form
         {
             try
             {
-                YAMDCC_Config tempConf = YAMDCC_Config.Load(CommonConfig.GetLastConf());
-                LoadConf(tempConf);
-                Config = tempConf;
-                UpdateCurveEditor();
+                Config = YAMDCC_Config.Load(CommonConfig.GetLastConf());
+                LoadConf(Config);
                 ApplyConf(sender, e);
-                btnRevert.Enabled = tsiRevert.Enabled = false;
             }
             catch (Exception ex)
             {
@@ -995,8 +1048,7 @@ internal sealed partial class MainWindow : Form
         ToggleSvcCmds(false);
 
         // Save the updated config
-        Config.ChargeLimitConf.CurVal = (byte)(chkChgLim.Checked
-            ? numChgLim.Value : 0);
+        Config.ChargeLimitConf.CurVal = (byte)(chkChgLim.Checked ? numChgLim.Value : 0);
         Config.Save(Paths.CurrentConf);
 
         // Tell the service to reload and apply the updated config
@@ -1105,8 +1157,6 @@ internal sealed partial class MainWindow : Form
             }
 
             cboPerfMode.SelectedIndex = perfModeConf.ModeSel;
-            ttMain.SetToolTip(cboPerfMode, Strings.GetString(
-                "ttPerfMode", perfModeConf.PerfModes[perfModeConf.ModeSel].Desc));
             cboPerfMode.Enabled = true;
         }
 
@@ -1124,8 +1174,6 @@ internal sealed partial class MainWindow : Form
             }
 
             cboFanMode.SelectedIndex = fanModeConf.ModeSel;
-            ttMain.SetToolTip(cboFanMode, Strings.GetString(
-                "ttFanMode", fanModeConf.FanModes[fanModeConf.ModeSel].Desc));
             cboFanMode.Enabled = tsiAdvanced.Checked;
         }
 
@@ -1154,6 +1202,7 @@ internal sealed partial class MainWindow : Form
         tsiECMon.Enabled = true;
 
         UpdateStatus(StatusCode.None);
+        ToggleSvcCmds(true);
     }
 
     private void PollEC()
@@ -1163,107 +1212,7 @@ internal sealed partial class MainWindow : Form
         SendSvcMessage(new ServiceCommand(Command.GetFanRPM, $"{cboFanSel.SelectedIndex}"));
     }
 
-    private void UpdateCurveEditor()
-    {
-        FanConf cfg = Config.FanConfs[cboFanSel.SelectedIndex];
-
-        cboProfSel.Items.Clear();
-        foreach (FanCurveConf curve in cfg.FanCurveConfs)
-        {
-            cboProfSel.Items.Add(curve.Name);
-        }
-
-        if (numUpTs is null || numDownTs is null || numFanSpds is null || tbFanSpds is null ||
-            numUpTs.Length != cfg.UpThresholdRegs.Length ||
-            numDownTs.Length != cfg.DownThresholdRegs.Length ||
-            numFanSpds.Length != cfg.FanCurveRegs.Length ||
-            tbFanSpds.Length != cfg.FanCurveRegs.Length)
-        {
-            tblCurve.SuspendLayout();
-            float scale = CurrentAutoScaleDimensions.Height / 72;
-
-            tblCurve.Controls.Clear();
-            numUpTs = new NumericUpDown[cfg.UpThresholdRegs.Length];
-            numDownTs = new NumericUpDown[cfg.DownThresholdRegs.Length];
-            numFanSpds = new NumericUpDown[cfg.FanCurveRegs.Length];
-            tbFanSpds = new TrackBar[cfg.FanCurveRegs.Length];
-
-            tblCurve.ColumnStyles.Clear();
-            tblCurve.ColumnCount = numFanSpds.Length + 2;
-
-            // labels on left side
-            tblCurve.ColumnStyles.Add(new ColumnStyle());
-            tblCurve.Controls.Add(FanCurveLabel("Speed (%)", scale), 0, 0);
-            tblCurve.Controls.Add(FanCurveLabel("Up (°C)", scale), 0, 2);
-            tblCurve.Controls.Add(FanCurveLabel("Down (°C)", scale), 0, 3);
-
-            for (int i = 0; i < numFanSpds.Length; i++)
-            {
-                tblCurve.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F / numFanSpds.Length));
-                numFanSpds[i] = FanCurveNUD(i, scale);
-                ttMain.SetToolTip(numFanSpds[i], Strings.GetString("ttFanSpd"));
-                numFanSpds[i].ValueChanged += new EventHandler(FanSpdChange);
-                tblCurve.Controls.Add(numFanSpds[i], i + 1, 0);
-
-                tbFanSpds[i] = new TrackBar()
-                {
-                    Dock = DockStyle.Fill,
-                    LargeChange = 10,
-                    Margin = new Padding((int)(10 * scale), 0, (int)(10 * scale), 0),
-                    Orientation = Orientation.Vertical,
-                    Tag = i,
-                    TickFrequency = 5,
-                    TickStyle = TickStyle.Both,
-                };
-                ttMain.SetToolTip(tbFanSpds[i], Strings.GetString("ttFanSpd"));
-                tbFanSpds[i].ValueChanged += new EventHandler(FanSpdChange);
-                tblCurve.Controls.Add(tbFanSpds[i], i + 1, 1);
-
-                if (i != 0)
-                {
-                    numUpTs[i - 1] = FanCurveNUD(i - 1, scale);
-                    ttMain.SetToolTip(numUpTs[i - 1], Strings.GetString("ttUpT"));
-                    numUpTs[i - 1].ValueChanged += new EventHandler(UpTChange);
-                    tblCurve.Controls.Add(numUpTs[i - 1], i + 1, 2);
-                }
-                else
-                {
-                    tblCurve.Controls.Add(FanCurveLabel("Default", scale, ContentAlignment.MiddleCenter), i + 1, 2);
-                }
-
-                if (i != numFanSpds.Length - 1)
-                {
-                    numDownTs[i] = FanCurveNUD(i, scale);
-                    ttMain.SetToolTip(numDownTs[i], Strings.GetString("ttDownT"));
-                    numDownTs[i].ValueChanged += new EventHandler(DownTChange);
-                    tblCurve.Controls.Add(numDownTs[i], i + 1, 3);
-                }
-                else
-                {
-                    tblCurve.Controls.Add(FanCurveLabel("Max", scale, ContentAlignment.MiddleCenter), i + 1, 3);
-                }
-            }
-            tblCurve.ResumeLayout(true);
-        }
-
-        for (int i = 0; i < numFanSpds.Length; i++)
-        {
-            numFanSpds[i].Maximum = tbFanSpds[i].Maximum =
-                Math.Abs(cfg.MaxSpeed - cfg.MinSpeed);
-        }
-
-        cboProfSel.Enabled = true;
-        cboProfSel.SelectedIndex = cfg.CurveSel;
-
-        if (tsiECMon.Checked)
-        {
-            tmrPoll.Stop();
-            PollEC();
-            tmrPoll.Start();
-        }
-    }
-
-    private static Label FanCurveLabel(string text, float scale, ContentAlignment textAlign = ContentAlignment.MiddleRight)
+    private static Label FanCurveLabel(string text, float scale, ContentAlignment align = ContentAlignment.MiddleRight)
     {
         return new Label
         {
@@ -1272,7 +1221,7 @@ internal sealed partial class MainWindow : Form
             Margin = new Padding((int)(2 * scale)),
             Padding = new Padding(0, 0, 0, (int)(3 * scale)),
             Text = text,
-            TextAlign = textAlign,
+            TextAlign = align,
         };
     }
 
@@ -1343,9 +1292,8 @@ internal sealed partial class MainWindow : Form
     {
         for (int i = 0; i < Config.FanConfs.Count - 1; i++)
         {
-            List<FanConf> fanCfgs = Config.FanConfs;
-
-            if (fanCfgs[i].FanCurveConfs.Count != fanCfgs[i + 1].FanCurveConfs.Count)
+            if (Config.FanConfs[i].FanCurveConfs.Count !=
+                Config.FanConfs[i + 1].FanCurveConfs.Count)
             {
                 return false;
             }
