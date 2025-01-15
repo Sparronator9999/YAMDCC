@@ -256,7 +256,7 @@ internal sealed partial class MainWindow : Form
                     switch ((Command)value)
                     {
                         case Command.ApplyConfig:
-                            btnApply.Enabled = tsiApply.Enabled = true;
+                            ToggleSvcCmds(true);
                             UpdateStatus(StatusCode.ConfApplied);
                             if (Config.KeyLightConf is not null)
                             {
@@ -264,6 +264,7 @@ internal sealed partial class MainWindow : Form
                             }
                             break;
                         case Command.FullBlast:
+                            ToggleSvcCmds(true);
                             UpdateStatus(StatusCode.FullBlastToggled);
                             break;
                     }
@@ -953,6 +954,7 @@ internal sealed partial class MainWindow : Form
 
     private void FullBlastToggle(object sender, EventArgs e)
     {
+        ToggleSvcCmds(false);
         SendSvcMessage(new ServiceCommand(Command.FullBlast, chkFullBlast.Checked ? "1" : "0"));
     }
 
@@ -990,7 +992,7 @@ internal sealed partial class MainWindow : Form
 
     private void ApplyConf(object sender, EventArgs e)
     {
-        btnApply.Enabled = tsiApply.Enabled = false;
+        ToggleSvcCmds(false);
 
         // Save the updated config
         Config.ChargeLimitConf.CurVal = (byte)(chkChgLim.Checked
@@ -1287,9 +1289,8 @@ internal sealed partial class MainWindow : Form
 
     private void DisableAll()
     {
+        ToggleSvcCmds(false);
         tsiSaveConf.Enabled = false;
-        tsiApply.Enabled = false;
-        tsiRevert.Enabled = false;
         tsiProfAdd.Enabled = false;
         tsiProfEdit.Enabled = false;
         tsiProfDel.Enabled = false;
@@ -1327,10 +1328,15 @@ internal sealed partial class MainWindow : Form
         txtManufacturer.Enabled = false;
         txtModel.Enabled = false;
         btnGetModel.Enabled = false;
+    }
 
-        chkFullBlast.Enabled = false;
-        btnRevert.Enabled = false;
-        btnApply.Enabled = false;
+    private void ToggleSvcCmds(bool enable)
+    {
+        tsiApply.Enabled = enable;
+        tsiRevert.Enabled = enable;
+        chkFullBlast.Enabled = enable;
+        btnApply.Enabled = enable;
+        btnRevert.Enabled = enable;
     }
 
     private bool FansHaveSameProfCount()
