@@ -38,7 +38,7 @@ internal static class Strings
     /// The formatted string corresponding to
     /// the specified string name, if found.
     /// </para>
-    /// <para><c>null</c> if the string couldn't be found.</para>
+    /// <para><see langword="null"/> if the string couldn't be found.</para>
     /// </returns>
     public static string GetString(string name, params object[] args)
     {

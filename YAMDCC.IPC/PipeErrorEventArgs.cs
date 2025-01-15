@@ -25,7 +25,7 @@ public class PipeErrorEventArgs<TRead, TWrite> : EventArgs
     /// <param name="connection">
     /// <para>The connection that caused the error.</para>
     /// <para>
-    /// The only time this should be <c>null</c> is if the error was caused
+    /// The only time this should be <see langword="null"/> is if the error was caused
     /// by <see cref="NamedPipeServer{TRead, TWrite}.WaitForConnection"/>.
     /// </para>
     /// </param>

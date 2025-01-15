@@ -126,7 +126,7 @@ YAMDCC and its authors are not affiliated with Micro-Star International Co., Ltd
 Made in Australia from at least 99% Australian contributions.</value>
   </data>
   <data name="Crash" xml:space="preserve">
-    <value>YAMDCC has crashed!
+    <value>{0} has crashed!
 
 Before reporting a bug, try again on the latest release of YAMDCC (if available).
 If the crash still occurs, please create an issue with the following crash report:</value>

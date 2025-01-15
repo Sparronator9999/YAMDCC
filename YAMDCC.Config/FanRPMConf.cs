@@ -38,20 +38,20 @@ public sealed class FanRPMConf
 
     /// <summary>
     /// Is the RPM value big-endian? This will only have an
-    /// effect if <see cref="Is16Bit"/> is set to <c>true</c>.
+    /// effect if <see cref="Is16Bit"/> is set to <see langword="true"/>.
     /// </summary>
     [XmlElement]
     public bool IsBigEndian { get; set; }
 
     /// <summary>
     /// The value to multiply (or divide, if <see cref="DivideByMult"/>
-    /// is <c>true</c>) the read RPM value by.
+    /// is <see langword="true"/>) the read RPM value by.
     /// </summary>
     [XmlElement]
     public int RPMMult { get; set; } = 1;
 
     /// <summary>
-    /// If <c>true</c>, divides the read RPM value by
+    /// If <see langword="true"/>, divides the read RPM value by
     /// <see cref="RPMMult"/> instead of multiplying.
     /// </summary>
     [XmlElement]

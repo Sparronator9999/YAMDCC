@@ -163,6 +163,7 @@ namespace YAMDCC.Common.Dialogs
             this.Name = "CrashDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Crash!";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CrashDialog_FormClosing);
             tblMain.ResumeLayout(false);
             tblMain.PerformLayout();
             grpReport.ResumeLayout(false);

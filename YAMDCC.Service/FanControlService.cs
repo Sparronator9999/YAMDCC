@@ -506,8 +506,8 @@ internal sealed class FanControlService : ServiceBase
     /// The parsed arguments. Will be empty if parsing fails.
     /// </param>
     /// <returns>
-    /// <c>true</c> if the arguments were parsed successfully,
-    /// otherise <c>false</c>.
+    /// <see langword="true"/> if the arguments were
+    /// parsed successfully, otherise <see langword="false"/>.
     /// </returns>
     private static bool ParseArgs(string argsIn, out int[] argsOut)
     {

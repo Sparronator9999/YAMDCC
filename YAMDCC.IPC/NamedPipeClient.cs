@@ -45,7 +45,7 @@ public class NamedPipeClient<TRead, TWrite> : IDisposable
     /// connection.
     /// </summary>
     /// <remarks>
-    /// The default value is <c>true</c>.
+    /// The default value is <see langword="true"/>.
     /// </remarks>
     public bool AutoReconnect { get; set; } = true;
 
@@ -160,8 +160,8 @@ public class NamedPipeClient<TRead, TWrite> : IDisposable
     /// The timeout, in milliseconds, to wait for the server connection.
     /// </param>
     /// <returns>
-    /// <c>true</c> if the server connection was established
-    /// before the timeout, otherwise <c>false</c>.
+    /// <see langword="true"/> if the server connection was established
+    /// before the timeout, otherwise <see langword="false"/>.
     /// </returns>
     public bool WaitForConnection(int timeout)
     {
@@ -178,8 +178,8 @@ public class NamedPipeClient<TRead, TWrite> : IDisposable
     /// (in milliseconds) to wait for the server connection.
     /// </param>
     /// <returns>
-    /// <c>true</c> if the server connection was established
-    /// before the timeout, otherwise <c>false</c>.
+    /// <see langword="true"/> if the server connection was established
+    /// before the timeout, otherwise <see langword="false"/>.
     /// </returns>
     public bool WaitForConnection(TimeSpan timeout)
     {
@@ -204,8 +204,8 @@ public class NamedPipeClient<TRead, TWrite> : IDisposable
     /// The timeout, in milliseconds, to wait for the server to disconnect.
     /// </param>
     /// <returns>
-    /// <c>true</c> if the client disconnected
-    /// before the timeout, otherwise <c>false</c>.
+    /// <see langword="true"/> if the client disconnected
+    /// before the timeout, otherwise <see langword="false"/>.
     /// </returns>
     public bool WaitForDisconnection(int timeout)
     {
@@ -222,8 +222,8 @@ public class NamedPipeClient<TRead, TWrite> : IDisposable
     /// (in milliseconds) to wait for the server to disconnect.
     /// </param>
     /// <returns>
-    /// <c>true</c> if the client disconnected
-    /// before the timeout, otherwise <c>false</c>.
+    /// <see langword="true"/> if the client disconnected
+    /// before the timeout, otherwise <see langword="false"/>.
     /// </returns>
     public bool WaitForDisconnection(TimeSpan timeout)
     {

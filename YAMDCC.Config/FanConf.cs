@@ -65,7 +65,7 @@ public sealed class FanConf
     /// Contains information on how to calculate the fan RPM.
     /// </summary>
     /// <remarks>
-    /// May be <c>null</c>.
+    /// May be <see langword="null"/>.
     /// </remarks>
     [XmlElement]
     public FanRPMConf RPMConf { get; set; }
@@ -92,7 +92,7 @@ public sealed class FanConf
     /// The list of <see cref="FanCurveConf"/>s associated with this fan.
     /// </summary>
     /// <remarks>
-    /// If the base config is a template, this may be <c>null</c>,
+    /// If the base config is a template, this may be <see langword="null"/>,
     /// otherwise at least one fan curve (the "default" curve) must exist.
     /// </remarks>
     [XmlArray]

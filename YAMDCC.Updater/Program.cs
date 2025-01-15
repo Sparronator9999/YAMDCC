@@ -18,6 +18,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
+using System.Threading;
 using System.Windows.Forms;
 using YAMDCC.Common;
 using YAMDCC.Common.Dialogs;
@@ -35,6 +36,9 @@ internal static class Program
     {
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
+
+        Application.ThreadException += new ThreadExceptionEventHandler(ThreadException);
+        AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandledException);
 
         if (args.Length > 0)
         {
@@ -169,5 +173,15 @@ internal static class Program
             str += $" ---> {GetExceptionMsgs(ex.InnerException)}";
         }
         return str;
+    }
+
+    private static void ThreadException(object sender, ThreadExceptionEventArgs e)
+    {
+        new CrashDialog(e.Exception).ShowDialog();
+    }
+
+    private static void UnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+        new CrashDialog((Exception)e.ExceptionObject).ShowDialog();
     }
 }

@@ -40,7 +40,7 @@ internal sealed class Driver
     /// Gets whether the driver is installed to the computer.
     /// </summary>
     /// <remarks>
-    /// This will be <c>false</c> if the driver has not been
+    /// This will be <see langword="false"/> if the driver has not been
     /// installed by this instance of the <see cref="Driver"/>,
     /// even if it is actaully installed to the system.
     /// </remarks>
@@ -73,8 +73,8 @@ internal sealed class Driver
     /// Installs the driver on the local computer.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the driver was installed
-    /// successfully, otherwise <c>false</c>.
+    /// <see langword="true"/> if the driver was installed
+    /// successfully, otherwise <see langword="false"/>.
     /// </returns>
     public bool Install()
     {
@@ -170,8 +170,8 @@ internal sealed class Driver
     /// Uninstalls the driver from the local computer.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the driver was uninstalled
-    /// successfully, otherwise <c>false</c>.
+    /// <see langword="true"/> if the driver was uninstalled
+    /// successfully, otherwise <see langword="false"/>.
     /// </returns>
     public bool Uninstall()
     {
@@ -224,8 +224,8 @@ internal sealed class Driver
     /// Opens a connection to the driver.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the driver connection was
-    /// opened successfully, otherwise <c>false</c>.
+    /// <see langword="true"/> if the driver connection was
+    /// opened successfully, otherwise <see langword="false"/>.
     /// </returns>
     public bool Open()
     {

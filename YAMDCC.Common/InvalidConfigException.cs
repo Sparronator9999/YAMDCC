@@ -24,7 +24,7 @@ namespace YAMDCC.Common;
 public sealed class InvalidConfigException : Exception
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="InvalidConfigException" /> class.
+    /// Initializes a new instance of the <see cref="InvalidConfigException"/> class.
     /// </summary>
     public InvalidConfigException()
         : base("The config was not in the expected format.") { }

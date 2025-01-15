@@ -4,7 +4,7 @@
         <ApplicationIcon>fan-update.ico</ApplicationIcon>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AssemblyName>Updater</AssemblyName>
-        <AssemblyTitle>YAMDCC component updater</AssemblyTitle>
+        <AssemblyTitle>YAMDCC updater</AssemblyTitle>
         <Authors>Sparronator9999</Authors>
         <Copyright>Copyright © 2025 Sparronator9999 (and Contributors)</Copyright>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>

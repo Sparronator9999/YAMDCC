@@ -107,9 +107,9 @@ internal static class Updater
     /// </para>
     /// </param>
     /// <returns>
-    /// <c>true</c> if the download was started successfully,
-    /// <c>false</c> if no release assets match the updater's build configuration,
-    /// or the browser download URL was null/empty.
+    /// <see langword="true"/> if the download was started successfully,
+    /// <see langword="false"/> if no release assets match the updater's build
+    /// configuration, or the browser download URL was <see langword="null"/>/empty.
     /// </returns>
     /// <exception cref="ArgumentException"/>
     public static async Task DownloadUpdateAsync(

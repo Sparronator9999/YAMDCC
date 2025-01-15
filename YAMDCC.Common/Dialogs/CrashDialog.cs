@@ -25,8 +25,11 @@ public sealed partial class CrashDialog : Form
     public CrashDialog(Exception ex)
     {
         InitializeComponent();
-        lblError.Text = Strings.GetString("Crash");
-        txtReport.Text = $"{ex.GetType()}: {ex.Message}\r\n{ex.StackTrace}";
+        lblError.Text = Strings.GetString("Crash", Utils.GetAppTitle());
+        txtReport.Text =
+            $"Version: {Utils.GetVerString()}\r\n" +
+            $"Revision (git): {Utils.GetRevision()}\r\n" +
+            $"Crash report:\r\n{ex.GetType()}: {ex.Message}\r\n{ex.StackTrace}";
     }
 
     private void btnReportIssue_Click(object sender, EventArgs e)
@@ -41,6 +44,11 @@ public sealed partial class CrashDialog : Form
     }
 
     private void btnExit_Click(object sender, EventArgs e)
+    {
+        Close();
+    }
+
+    private void CrashDialog_FormClosing(object sender, FormClosingEventArgs e)
     {
         Environment.Exit(0);
     }

@@ -76,7 +76,7 @@ public sealed class YAMDCC_Config
     /// The laptop's Full Blast config.
     /// </summary>
     /// <remarks>
-    /// May be <c>null</c> if not supported on the laptop.
+    /// May be <see langword="null"/> if not supported on the laptop.
     /// </remarks>
     [XmlElement]
     public FullBlastConf FullBlastConf { get; set; }
@@ -85,7 +85,7 @@ public sealed class YAMDCC_Config
     /// The laptop's charge threshold config.
     /// </summary>
     /// <remarks>
-    /// May be <c>null</c> if not supported on the laptop.
+    /// May be <see langword="null"/> if not supported on the laptop.
     /// </remarks>
     [XmlElement]
     public ChargeLimitConf ChargeLimitConf { get; set; }
@@ -94,7 +94,7 @@ public sealed class YAMDCC_Config
     /// The laptop's performance mode config.
     /// </summary>
     /// <remarks>
-    /// May be <c>null</c> if not supported on the laptop.
+    /// May be <see langword="null"/> if not supported on the laptop.
     /// </remarks>
     [XmlElement]
     public PerfModeConf PerfModeConf { get; set; }
@@ -103,7 +103,7 @@ public sealed class YAMDCC_Config
     /// The laptop's fan mode config.
     /// </summary>
     /// <remarks>
-    /// May be <c>null</c> if not supported on the laptop.
+    /// May be <see langword="null"/> if not supported on the laptop.
     /// </remarks>
     [XmlElement]
     public FanModeConf FanModeConf { get; set; }
@@ -112,7 +112,7 @@ public sealed class YAMDCC_Config
     /// The laptop's Win/Fn keyboard swap config.
     /// </summary>
     /// <remarks>
-    /// May be <c>null</c> if not supported on the laptop.
+    /// May be <see langword="null"/> if not supported on the laptop.
     /// </remarks>
     [XmlElement]
     public KeySwapConf KeySwapConf { get; set; }
@@ -121,7 +121,7 @@ public sealed class YAMDCC_Config
     /// The laptop's keyboard backlight config.
     /// </summary>
     /// <remarks>
-    /// May be <c>null</c> if not supported on the laptop.
+    /// May be <see langword="null"/> if not supported on the laptop.
     /// </remarks>
     [XmlElement]
     public KeyLightConf KeyLightConf { get; set; }
@@ -130,7 +130,7 @@ public sealed class YAMDCC_Config
     /// A list of registers to write when applying a fan config.
     /// </summary>
     /// <remarks>
-    /// May be <c>null</c> or empty if not needed.
+    /// May be <see langword="null"/> or empty if not needed.
     /// </remarks>
     [XmlArray]
     public List<RegConf> RegConfs { get; set; }
@@ -188,7 +188,7 @@ public sealed class YAMDCC_Config
     /// (e.g. register values are not checked)
     /// </remarks>
     /// <returns>
-    /// <c>true</c> if the config is valid, otherwise <c>false</c>.
+    /// <see langword="true"/> if the config is valid, otherwise <see langword="false"/>.
     /// </returns>
     private bool IsValid()
     {

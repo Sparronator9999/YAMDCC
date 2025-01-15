@@ -230,6 +230,11 @@ public static class Utils
         return Icon.ExtractAssociatedIcon(Assembly.GetEntryAssembly().Location);
     }
 
+    public static string GetAppTitle()
+    {
+        return Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyTitleAttribute>().Title;
+    }
+
     /// <summary>
     /// Gets whether the application is running with administrator privileges.
     /// </summary>

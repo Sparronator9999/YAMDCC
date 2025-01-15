@@ -4,7 +4,7 @@
         <ApplicationIcon>fan.ico</ApplicationIcon>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AssemblyName>ConfigEditor</AssemblyName>
-        <AssemblyTitle>YAMDCC configuration utility</AssemblyTitle>
+        <AssemblyTitle>YAMDCC config editor</AssemblyTitle>
         <Authors>Sparronator9999</Authors>
         <BootstrapperEnabled>true</BootstrapperEnabled>
         <Copyright>Copyright © 2023-2025 Sparronator9999 (and Contributors)</Copyright>

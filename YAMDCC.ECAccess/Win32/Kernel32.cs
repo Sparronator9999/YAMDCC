@@ -37,7 +37,7 @@ internal static class Kernel32
     /// An handle to close.
     /// </param>
     /// <returns>
-    /// <para><c>true</c> if the function succeeds, otherwise <c>false</c>.</para>
+    /// <para><see langword="true"/> if the function succeeds, otherwise <see langword="false"/>.</para>
     /// <para>To get error information, call <see cref="Marshal.GetLastWin32Error"/>.</para>
     /// </returns>
     [DllImport("kernel32.dll",
@@ -83,7 +83,7 @@ internal static class Kernel32
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/api/ioapiset/nf-ioapiset-deviceiocontrol"/>
     /// </remarks>
     /// <returns>
-    /// <c>true</c> if the operation was successful, otherwise <c>false</c>.
+    /// <see langword="true"/> if the operation was successful, otherwise <see langword="false"/>.
     /// </returns>
     [DllImport("kernel32.dll",
         ExactSpelling = true, SetLastError = true)]

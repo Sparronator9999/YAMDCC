@@ -49,8 +49,8 @@ internal class PipeStreamWrapper<TRead, TWrite>
     /// <see cref="BaseStream"/> object is connected or not.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the <see cref="BaseStream"/>
-    /// object is connected, otherwise <c>false</c>.
+    /// <see langword="true"/> if the <see cref="BaseStream"/>
+    /// object is connected, otherwise <see langword="false"/>.
     /// </returns>
     internal bool IsConnected => BaseStream.IsConnected && _reader.IsConnected;
 
@@ -59,8 +59,8 @@ internal class PipeStreamWrapper<TRead, TWrite>
     /// current stream supports read operations.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the stream supports read
-    /// operations, otherwise <c>false</c>.
+    /// <see langword="true"/> if the stream supports read
+    /// operations, otherwise <see langword="false"/>.
     /// </returns>
     internal bool CanRead => BaseStream.CanRead;
 
@@ -69,8 +69,8 @@ internal class PipeStreamWrapper<TRead, TWrite>
     /// stream supports write operations.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the stream supports write
-    /// operation, otherwise <c>false</c>.
+    /// <see langword="true"/> if the stream supports write
+    /// operation, otherwise <see langword="false"/>.
     /// </returns>
     internal bool CanWrite => BaseStream.CanWrite;
 
@@ -101,7 +101,7 @@ internal class PipeStreamWrapper<TRead, TWrite>
     /// </remarks>
     /// <returns>
     /// The next object read from the pipe, or
-    /// <c>null</c> if the pipe disconnected.
+    /// <see langword="null"/> if the pipe disconnected.
     /// </returns>
     internal TRead ReadObject()
     {
@@ -125,15 +125,9 @@ internal class PipeStreamWrapper<TRead, TWrite>
     /// <summary>
     /// Waits for the other end of the pipe to read all sent bytes.
     /// </summary>
-    /// <exception cref="ObjectDisposedException">
-    /// The pipe is closed.
-    /// </exception>
-    /// <exception cref="NotSupportedException">
-    /// The pipe does not support write operations.
-    /// </exception>
-    /// <exception cref="IOException">
-    /// The pipe is broken or another I/O error occurred.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException"/>
+    /// <exception cref="NotSupportedException"/>
+    /// <exception cref="IOException"/>
     internal void WaitForPipeDrain()
     {
         _writer.WaitForPipeDrain();

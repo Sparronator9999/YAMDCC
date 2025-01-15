@@ -107,7 +107,7 @@ internal static class AdvApi32
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/api/winsvc/nf-winsvc-startservicew"/>
     /// </remarks>
     /// <returns>
-    /// <para><c>true</c> if the function succeeds, otherwise <c>false.</c></para>
+    /// <para><see langword="true"/> if the function succeeds, otherwise <see langword="false"/>.</para>
     /// <para>Call <see cref="Marshal.GetLastWin32Error"/> to get error information.</para>
     /// </returns>
     [DllImport("advapi32.dll",
@@ -128,7 +128,7 @@ internal static class AdvApi32
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/api/winsvc/nf-winsvc-controlservice"/>
     /// </remarks>
     /// <returns>
-    /// <para><c>true</c> if the function succeeds, otherwise <c>false.</c></para>
+    /// <para><see langword="true"/> if the function succeeds, otherwise <see langword="false"/>.</para>
     /// <para>Call <see cref="Marshal.GetLastWin32Error"/> to get error information.</para>
     /// </returns>
     [DllImport("advapi32.dll",
@@ -158,7 +158,7 @@ internal static class AdvApi32
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/api/winsvc/nf-winsvc-deleteservice"/>
     /// </remarks>
     /// <returns>
-    /// <para><c>true</c> if the function succeeds, otherwise <c>false.</c></para>
+    /// <para><see langword="true"/> if the function succeeds, otherwise <see langword="false"/>.</para>
     /// <para>Call <see cref="Marshal.GetLastWin32Error"/> to get error information.</para>
     /// </returns>
     [DllImport("advapi32.dll",
@@ -174,7 +174,7 @@ internal static class AdvApi32
     /// <see href="https://learn.microsoft.com/en-us/windows/win32/api/winsvc/nf-winsvc-closeservicehandle"/>
     /// </remarks>
     /// <returns>
-    /// <para><c>true</c> if the function succeeds, otherwise <c>false.</c></para>
+    /// <para><see langword="true"/> if the function succeeds, otherwise <see langword="false"/>.</para>
     /// <para>To get error information, call <see cref="Marshal.GetLastWin32Error"/>.</para>
     /// </returns>
     [DllImport("advapi32.dll",

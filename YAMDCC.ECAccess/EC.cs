@@ -88,12 +88,12 @@ public sealed class EC
     /// Loads the WinRing0 driver (if not already loaded).
     /// </summary>
     /// <remarks>
-    /// If <c>false</c> was returned by this function,
+    /// If <see langword="false"/> was returned by this function,
     /// <see cref="GetDriverError"/> can be called to check for driver errors.
     /// </remarks>
     /// <returns>
-    /// <c>true</c> if the WinRing0 driver was loaded successfully
-    /// (or is already loaded), <c>false</c> otherwise.
+    /// <see langword="true"/> if the WinRing0 driver was loaded successfully
+    /// (or is already loaded), <see langword="false"/> otherwise.
     /// </returns>
     public bool LoadDriver()
     {
@@ -150,7 +150,7 @@ public sealed class EC
     /// If successful, contains the value at the specified register (otherwise zero).
     /// </param>
     /// <returns>
-    /// <c>true</c> if the operation was successful, otherwise <c>false</c>.
+    /// <see langword="true"/> if the operation was successful, otherwise <see langword="false"/>.
     /// </returns>
     public bool ReadByte(byte reg, out byte value)
     {
@@ -180,7 +180,7 @@ public sealed class EC
     /// The value to write to the register.
     /// </param>
     /// <returns>
-    /// <c>true</c> if the operation was successful, otherwise <c>false</c>.
+    /// <see langword="true"/> if the operation was successful, otherwise <see langword="false"/>.
     /// </returns>
     public bool WriteByte(byte reg, byte value)
     {
@@ -206,13 +206,13 @@ public sealed class EC
     /// </param>
     /// <param name="bigEndian">
     /// Indicates the endianness of the value to be read.
-    /// Defaults to <c>false</c> (little-endian).
+    /// Defaults to <see langword="false"/> (little-endian).
     /// </param>
     /// <param name="value">
     /// If successful, contains the value at the specified register (otherwise zero).
     /// </param>
     /// <returns>
-    /// <c>true</c> if the operation was successful, otherwise <c>false</c>.
+    /// <see langword="true"/> if the operation was successful, otherwise <see langword="false"/>.
     /// </returns>
     public bool ReadWord(byte reg, out ushort value, bool bigEndian = false)
     {
@@ -243,10 +243,10 @@ public sealed class EC
     /// </param>
     /// <param name="bigEndian">
     /// Indicates the endianness of the value to be written.
-    /// Defaults to <c>false</c> (little-endian).
+    /// Defaults to <see langword="false"/> (little-endian).
     /// </param>
     /// <returns>
-    /// <c>true</c> if the operation was successful, otherwise <c>false</c>.
+    /// <see langword="true"/> if the operation was successful, otherwise <see langword="false"/>.
     /// </returns>
     public bool WriteWord(byte reg, ushort value, bool bigEndian = false)
     {
@@ -345,8 +345,8 @@ public sealed class EC
     /// Waits for the EC to process a read command.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the EC is ready to have data read from it,
-    /// <c>false</c> if the operation timed out.
+    /// <see langword="true"/> if the EC is ready to have data read from it,
+    /// <see langword="false"/> if the operation timed out.
     /// </returns>
     private bool WaitRead()
     {
@@ -357,8 +357,8 @@ public sealed class EC
     /// Waits for the EC to process a write command.
     /// </summary>
     /// <returns>
-    /// <c>true</c> if the EC is ready to accept data,
-    /// <c>false</c> if the operation timed out.
+    /// <see langword="true"/> if the EC is ready to accept data,
+    /// <see langword="false"/> if the operation timed out.
     /// </returns>
     private bool WaitWrite()
     {
@@ -375,8 +375,8 @@ public sealed class EC
     /// Whether to wait for the status to be set or unset.
     /// </param>
     /// <returns>
-    /// <c>true</c> if the EC status was (un)set before timing out,
-    /// otherwise <c>false</c>.
+    /// <see langword="true"/> if the EC status was (un)set
+    /// before timing out, otherwise <see langword="false"/>.
     /// </returns>
     private bool WaitForECStatus(ECStatus status, bool isSet)
     {
