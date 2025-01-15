@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace YAMDCC.Config;
@@ -39,7 +40,7 @@ public sealed class FanCurveConf
     /// The fan speeds and associated up and down thresholds.
     /// </summary>
     [XmlArray]
-    public TempThreshold[] TempThresholds { get; set; }
+    public List<TempThreshold> TempThresholds { get; set; }
 
     /// <summary>
     /// Creates a deep copy of this <see cref="FanCurveConf"/>.
@@ -53,12 +54,10 @@ public sealed class FanCurveConf
         FanCurveConf newCfg = (FanCurveConf)MemberwiseClone();
 
         // create a copy of everything that didn't get copied by the above
-        newCfg.Name = string.Copy(Name);
-        newCfg.Desc = string.Copy(Desc);
-        newCfg.TempThresholds = new TempThreshold[TempThresholds.Length];
-        for (int i = 0; i < newCfg.TempThresholds.Length; i++)
+        newCfg.TempThresholds = new List<TempThreshold>(TempThresholds.Count);
+        for (int i = 0; i < TempThresholds.Count; i++)
         {
-            newCfg.TempThresholds[i] = TempThresholds[i].Copy();
+            newCfg.TempThresholds.Add(TempThresholds[i].Copy());
         }
         return newCfg;
     }

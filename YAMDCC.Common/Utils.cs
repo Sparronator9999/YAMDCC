@@ -460,14 +460,9 @@ public static class Utils
 
     private static string GetBIOSRegValue(string name)
     {
-        RegistryKey biosKey = Registry.LocalMachine.OpenSubKey(@"HARDWARE\DESCRIPTION\System\BIOS");
-        try
+        using (RegistryKey biosKey = Registry.LocalMachine.OpenSubKey(@"HARDWARE\DESCRIPTION\System\BIOS"))
         {
             return (string)biosKey?.GetValue(name, null);
-        }
-        finally
-        {
-            biosKey?.Close();
         }
     }
 

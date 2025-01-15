@@ -36,6 +36,6 @@ internal enum StatusCode
     ServiceTimeout,
     ConfLoading,
     NoConfig,
-    ConfApplySuccess,
-    FullBlastToggleSuccess,
+    ConfApplied,
+    FullBlastToggled,
 }

@@ -104,11 +104,11 @@ public sealed partial class ProgressDialog : Form
         SetTitle(Caption);
 
         // event setup
-        Worker.DoWork += Worker_DoWork;
-        Worker.RunWorkerCompleted += Worker_RunWorkerCompleted;
+        Worker.DoWork += new DoWorkEventHandler(Worker_DoWork);
+        Worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(Worker_RunWorkerCompleted);
         if (reportsProgress)
         {
-            Worker.ProgressChanged += Worker_ProgressChanged;
+            Worker.ProgressChanged += new ProgressChangedEventHandler(Worker_ProgressChanged);
         }
         else
         {
@@ -127,7 +127,7 @@ public sealed partial class ProgressDialog : Form
         }
 
         DisplayTimer.Interval = 1000;
-        DisplayTimer.Tick += DisplayTimer_Tick;
+        DisplayTimer.Tick += new EventHandler(DisplayTimer_Tick);
     }
 
     private void ProgressDialog_Load(object sender, EventArgs e)

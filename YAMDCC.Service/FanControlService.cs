@@ -14,11 +14,9 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.IO;
 using System.IO.Pipes;
 using System.ServiceProcess;
@@ -408,12 +406,12 @@ internal sealed class FanControlService : ServiceBase
         bool success = true;
 
         // Write custom register values, if configured:
-        if (Config.RegConfs?.Length > 0)
+        if (Config.RegConfs?.Count > 0)
         {
-            for (int i = 0; i < Config.RegConfs.Length; i++)
+            for (int i = 0; i < Config.RegConfs.Count; i++)
             {
                 RegConf cfg = Config.RegConfs[i];
-                Log.Info(Strings.GetString("svcWriteRegConfs", i + 1, Config.RegConfs.Length));
+                Log.Info(Strings.GetString("svcWriteRegConfs", i + 1, Config.RegConfs.Count));
                 if (!LogECWriteByte(cfg.Reg, cfg.Enabled ? cfg.OnVal : cfg.OffVal))
                 {
                     success = false;
@@ -422,13 +420,13 @@ internal sealed class FanControlService : ServiceBase
         }
 
         // Write the fan curve to the appropriate registers for each fan:
-        for (int i = 0; i < Config.FanConfs.Length; i++)
+        for (int i = 0; i < Config.FanConfs.Count; i++)
         {
             FanConf cfg = Config.FanConfs[i];
-            Log.Info(Strings.GetString("svcWriteFanConfs", cfg.Name, i + 1, Config.FanConfs.Length));
+            Log.Info(Strings.GetString("svcWriteFanConfs", cfg.Name, i + 1, Config.FanConfs.Count));
             FanCurveConf curveCfg = cfg.FanCurveConfs[cfg.CurveSel];
 
-            for (int j = 0; j < curveCfg.TempThresholds.Length; j++)
+            for (int j = 0; j < curveCfg.TempThresholds.Count; j++)
             {
                 if (!LogECWriteByte(cfg.FanCurveRegs[j], curveCfg.TempThresholds[j].FanSpeed))
                 {
@@ -704,14 +702,15 @@ internal sealed class FanControlService : ServiceBase
                 Config.Model = pcModel.Trim();
             }
 
-            for (int i = 0; i < Config.FanConfs.Length; i++)
+            for (int i = 0; i < Config.FanConfs.Count; i++)
             {
-                Log.Info(Strings.GetString("svcReadProfs", i + 1, Config.FanConfs.Length));
+                Log.Info(Strings.GetString("svcReadProfs", i + 1, Config.FanConfs.Count));
 
                 FanConf cfg = Config.FanConfs[i];
 
+                // look for an already existing Default fan profile
                 FanCurveConf curveCfg = null;
-                for (int j = 0; j < cfg.FanCurveConfs.Length; j++)
+                for (int j = 0; j < cfg.FanCurveConfs.Count; j++)
                 {
                     if (cfg.FanCurveConfs[j].Name == "Default")
                     {
@@ -725,16 +724,14 @@ internal sealed class FanControlService : ServiceBase
                 {
                     curveCfg = new()
                     {
-                        TempThresholds = new TempThreshold[cfg.FanCurveRegs.Length]
+                        Name = "Default",
+                        TempThresholds = new List<TempThreshold>(cfg.FanCurveRegs.Length),
                     };
-                    List<FanCurveConf> curveCfgList = [.. cfg.FanCurveConfs];
-                    curveCfgList.Insert(0, curveCfg);
-                    cfg.FanCurveConfs = [.. curveCfgList];
+                    cfg.FanCurveConfs.Insert(0, curveCfg);
                     cfg.CurveSel++;
                 }
 
-                // reset first fan curve config name and description
-                curveCfg.Name = "Default";
+                // reset first fan curve config description
                 curveCfg.Desc = Strings.GetString("DefaultDesc");
 
                 for (int j = 0; j < cfg.FanCurveRegs.Length; j++)

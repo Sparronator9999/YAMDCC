@@ -37,14 +37,7 @@ public sealed partial class CrashDialog : Form
     private void btnCopy_Click(object sender, EventArgs e)
     {
         Clipboard.SetText(txtReport.Text);
-
-        // should never fail, but better safe than sorry
-        // (this is the crash handling dialog after all)
-        if (sender is Button b)
-        {
-            // give confirmation that the crash report has been copied
-            b.Text = "Copied!";
-        }
+        ((Button)sender).Text = "Copied!";
     }
 
     private void btnExit_Click(object sender, EventArgs e)

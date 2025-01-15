@@ -16,7 +16,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
@@ -29,8 +28,6 @@ namespace YAMDCC.ConfigEditor;
 
 internal static class Program
 {
-    private const int SW_RESTORE = 9;
-
     /// <summary>
     /// The main entry point for the application.
     /// </summary>
@@ -40,19 +37,8 @@ internal static class Program
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
 
-        #region Global exception handlers
-        Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
-        Application.ThreadException += static (sender, e) =>
-            new CrashDialog(e.Exception).ShowDialog();
-
-        AppDomain.CurrentDomain.UnhandledException += static (sender, e) =>
-        {
-            if (e.ExceptionObject is Exception ex)
-            {
-                new CrashDialog(ex).ShowDialog();
-            }
-        };
-        #endregion
+        Application.ThreadException += new ThreadExceptionEventHandler(ThreadException);
+        AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(UnhandledException);
 
         if (!Utils.IsAdmin())
         {
@@ -103,7 +89,7 @@ internal static class Program
                             });
                             dlg.ShowDialog();
 
-                            if (dlg.Result is bool b && b)
+                            if ((bool)dlg.Result)
                             {
                                 // Start the program when the service finishes starting:
                                 Start();
@@ -119,8 +105,7 @@ internal static class Program
                 }
 
                 // Check if the service is stopped:
-                ServiceController yamdccSvc = new("yamdccsvc");
-                try
+                using (ServiceController yamdccSvc = new("yamdccsvc"))
                 {
                     ServiceControllerStatus status = yamdccSvc.Status;
                     if (status == ServiceControllerStatus.Stopped)
@@ -130,20 +115,20 @@ internal static class Program
                             MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
                             ProgressDialog dlg = new(Strings.GetString("dlgSvcStarting"), (e) =>
+                        {
+                            if (Utils.StartService("yamdccsvc"))
                             {
-                                if (Utils.StartService("yamdccsvc"))
-                                {
-                                    e.Result = false;
-                                }
-                                else
-                                {
-                                    Utils.ShowError(Strings.GetString("dlgSvcStartCrash"));
-                                    e.Result = true;
-                                }
-                            });
+                                e.Result = false;
+                            }
+                            else
+                            {
+                                Utils.ShowError(Strings.GetString("dlgSvcStartCrash"));
+                                e.Result = true;
+                            }
+                        });
                             dlg.ShowDialog();
 
-                            if (dlg.Result is bool b && b)
+                            if ((bool)dlg.Result)
                             {
                                 return;
                             }
@@ -153,10 +138,6 @@ internal static class Program
                             return;
                         }
                     }
-                }
-                finally
-                {
-                    yamdccSvc?.Close();
                 }
 
                 // Start the program when the service finishes starting:
@@ -173,7 +154,7 @@ internal static class Program
                     {
                         if (process.MainWindowHandle != IntPtr.Zero)
                         {
-                            ShowWindow(process.MainWindowHandle, SW_RESTORE);
+                            ShowWindow(process.MainWindowHandle, 9);    // SW_RESTORE
                             SetForegroundWindow(process.MainWindowHandle);
                         }
                         break;
@@ -206,4 +187,14 @@ internal static class Program
 
     [DllImport("user32.dll")]
     private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+    private static void ThreadException(object sender, ThreadExceptionEventArgs e)
+    {
+        new CrashDialog(e.Exception).ShowDialog();
+    }
+
+    private static void UnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+        new CrashDialog((Exception)e.ExceptionObject).ShowDialog();
+    }
 }

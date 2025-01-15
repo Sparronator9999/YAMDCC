@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace YAMDCC.Config;
@@ -41,5 +42,5 @@ public sealed class FanModeConf
     /// An array of possible fan modes for the laptop.
     /// </summary>
     [XmlArray]
-    public FanMode[] FanModes { get; set; }
+    public List<FanMode> FanModes { get; set; }
 }

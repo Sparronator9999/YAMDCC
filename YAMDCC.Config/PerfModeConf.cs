@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace YAMDCC.Config;
@@ -41,5 +42,5 @@ public sealed class PerfModeConf
     /// An array of possible performance modes for the laptop.
     /// </summary>
     [XmlArray]
-    public PerfMode[] PerfModes { get; set; }
+    public List<PerfMode> PerfModes { get; set; }
 }

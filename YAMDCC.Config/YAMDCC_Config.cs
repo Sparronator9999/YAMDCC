@@ -15,6 +15,7 @@
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
@@ -69,7 +70,7 @@ public sealed class YAMDCC_Config
     /// The list of <see cref="FanConf"/>s associated with the laptop.
     /// </summary>
     [XmlArray]
-    public FanConf[] FanConfs { get; set; }
+    public List<FanConf> FanConfs { get; set; }
 
     /// <summary>
     /// The laptop's Full Blast config.
@@ -132,7 +133,7 @@ public sealed class YAMDCC_Config
     /// May be <c>null</c> or empty if not needed.
     /// </remarks>
     [XmlArray]
-    public RegConf[] RegConfs { get; set; }
+    public List<RegConf> RegConfs { get; set; }
 
     /// <summary>
     /// Parses a YAMDCC config XML and returns a
@@ -209,12 +210,12 @@ public sealed class YAMDCC_Config
 
         // 1. Check if FanConfigs is not null
         // 2. Check if there's at least 1 FanConfig
-        if (FanConfs?.Length < 1)
+        if (FanConfs?.Count < 1)
         {
             return false;
         }
 
-        for (int i = 0; i < FanConfs.Length; i++)
+        for (int i = 0; i < FanConfs.Count; i++)
         {
             FanConf cfg = FanConfs[i];
 
@@ -232,7 +233,7 @@ public sealed class YAMDCC_Config
 
             // the selected fan curve shouldn't be higher than
             // the number of fan curves in the config.
-            if (cfg.CurveSel >= FanConfs[i].FanCurveConfs.Length ||
+            if (cfg.CurveSel >= FanConfs[i].FanCurveConfs.Count ||
                 cfg.CurveSel < 0)
             {
                 // if the fan profile selection is out of range,
@@ -251,24 +252,24 @@ public sealed class YAMDCC_Config
             if (cfg.UpThresholdRegs?.Length < 1 ||
                 cfg.UpThresholdRegs?.Length != cfg.DownThresholdRegs?.Length ||
                 cfg.FanCurveRegs?.Length != cfg.UpThresholdRegs?.Length + 1 ||
-                cfg.FanCurveConfs?.Length < 1)
+                cfg.FanCurveConfs?.Count < 1)
             {
                 return false;
             }
 
-            for (int j = 0; j < cfg.FanCurveConfs.Length; j++)
+            for (int j = 0; j < cfg.FanCurveConfs.Count; j++)
             {
                 FanCurveConf curveCfg = cfg.FanCurveConfs[j];
                 if (string.IsNullOrEmpty(curveCfg.Name) ||
                     string.IsNullOrEmpty(curveCfg.Desc) ||
                     // there should be exactly one temperature threshold
                     // per fan curve register; if there isn't, return false
-                    curveCfg.TempThresholds?.Length != cfg.FanCurveRegs.Length)
+                    curveCfg.TempThresholds?.Count != cfg.FanCurveRegs.Length)
                 {
                     return false;
                 }
 
-                for (int k = 0; k < curveCfg.TempThresholds.Length; k++)
+                for (int k = 0; k < curveCfg.TempThresholds.Count; k++)
                 {
                     if (curveCfg.TempThresholds[k] is null)
                     {
@@ -311,14 +312,14 @@ public sealed class YAMDCC_Config
 
         if (PerfModeConf is not null)
         {
-            if (PerfModeConf.PerfModes?.Length < 1)
+            if (PerfModeConf.PerfModes?.Count < 1)
             {
                 return false;
             }
 
             // the selected performance mode shouldn't be higher than
             // the number of performance modes in the config
-            if (PerfModeConf.ModeSel >= PerfModeConf.PerfModes.Length ||
+            if (PerfModeConf.ModeSel >= PerfModeConf.PerfModes.Count ||
                 PerfModeConf.ModeSel < 0)
             {
                 // same as fan profile selection, set the performance
@@ -326,7 +327,7 @@ public sealed class YAMDCC_Config
                 PerfModeConf.ModeSel = 0;
             }
 
-            for (int i = 0; i < PerfModeConf.PerfModes.Length; i++)
+            for (int i = 0; i < PerfModeConf.PerfModes.Count; i++)
             {
                 PerfMode perfMode = PerfModeConf.PerfModes[i];
 
@@ -340,19 +341,19 @@ public sealed class YAMDCC_Config
 
         if (FanModeConf is not null)
         {
-            if (FanModeConf.FanModes?.Length < 1)
+            if (FanModeConf.FanModes?.Count < 1)
             {
                 return false;
             }
 
             // you know the drill by now
-            if (FanModeConf.ModeSel >= FanModeConf.FanModes.Length ||
+            if (FanModeConf.ModeSel >= FanModeConf.FanModes.Count ||
                 FanModeConf.ModeSel < 0)
             {
                 FanModeConf.ModeSel = 0;
             }
 
-            for (int i = 0; i < FanModeConf.FanModes.Length; i++)
+            for (int i = 0; i < FanModeConf.FanModes.Count; i++)
             {
                 FanMode fanMode = FanModeConf.FanModes[i];
 
@@ -374,9 +375,9 @@ public sealed class YAMDCC_Config
             return false;
         }
 
-        if (RegConfs?.Length > 0)
+        if (RegConfs?.Count > 0)
         {
-            for (int i = 0; i < RegConfs.Length; i++)
+            for (int i = 0; i < RegConfs.Count; i++)
             {
                 if (string.IsNullOrEmpty(RegConfs[i].Name) ||
                     string.IsNullOrEmpty(RegConfs[i].Desc))

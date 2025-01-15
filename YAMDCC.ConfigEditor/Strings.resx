@@ -245,11 +245,11 @@ using "Load Config", or saved using "Save Config", whichever came last.</value>
   <data name="ttSource" xml:space="preserve">
     <value>Click to go to this project's GitHub page.</value>
   </data>
-  <data name="ttSvcStop" xml:space="preserve">
+  <data name="ttStopSvc" xml:space="preserve">
     <value>Click to stop the YAMDCC service.
 This will also quit the YAMDCC config editor (this program).</value>
   </data>
-  <data name="ttSvcUninstall" xml:space="preserve">
+  <data name="ttUninstall" xml:space="preserve">
     <value>Click to uninstall the YAMDCC service (and quit the YAMDCC config editor).
 Only do this if you want to uninstall YAMDCC or move its program files to another location.</value>
   </data>

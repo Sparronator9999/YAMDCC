@@ -79,7 +79,7 @@ namespace YAMDCC.ConfigEditor
             this.tsiOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiProfAdd = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiProfEdit = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsiProfRename = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsiProfRen = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiProfChangeDesc = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiProfDel = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiSwitchAll = new System.Windows.Forms.ToolStripMenuItem();
@@ -226,7 +226,7 @@ namespace YAMDCC.ConfigEditor
             this.tsiApply.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
             this.tsiApply.Size = new System.Drawing.Size(207, 22);
             this.tsiApply.Text = "&Apply changes";
-            this.tsiApply.Click += new System.EventHandler(this.tsiApply_Click);
+            this.tsiApply.Click += new System.EventHandler(this.ApplyConf);
             // 
             // tsiRevert
             // 
@@ -234,7 +234,7 @@ namespace YAMDCC.ConfigEditor
             this.tsiRevert.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
             this.tsiRevert.Size = new System.Drawing.Size(207, 22);
             this.tsiRevert.Text = "&Revert changes";
-            this.tsiRevert.Click += new System.EventHandler(this.tsiRevert_Click);
+            this.tsiRevert.Click += new System.EventHandler(this.RevertConf);
             // 
             // sep2
             // 
@@ -273,12 +273,12 @@ namespace YAMDCC.ConfigEditor
             this.tsiProfAdd.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
             this.tsiProfAdd.Size = new System.Drawing.Size(257, 22);
             this.tsiProfAdd.Text = "&New fan profile...";
-            this.tsiProfAdd.Click += new System.EventHandler(this.tsiProfAdd_Click);
+            this.tsiProfAdd.Click += new System.EventHandler(this.ProfAdd);
             // 
             // tsiProfEdit
             // 
             this.tsiProfEdit.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsiProfRename,
+            this.tsiProfRen,
             this.tsiProfChangeDesc,
             sep3,
             this.tsiProfDel});
@@ -288,17 +288,17 @@ namespace YAMDCC.ConfigEditor
             // 
             // tsiProfRename
             // 
-            this.tsiProfRename.Name = "tsiProfRename";
-            this.tsiProfRename.Size = new System.Drawing.Size(180, 22);
-            this.tsiProfRename.Text = "Change Name";
-            this.tsiProfRename.Click += new System.EventHandler(this.tsiProfRename_Click);
+            this.tsiProfRen.Name = "tsiProfRename";
+            this.tsiProfRen.Size = new System.Drawing.Size(180, 22);
+            this.tsiProfRen.Text = "Change Name";
+            this.tsiProfRen.Click += new System.EventHandler(this.ProfRename);
             // 
             // tsiProfChangeDesc
             // 
             this.tsiProfChangeDesc.Name = "tsiProfChangeDesc";
             this.tsiProfChangeDesc.Size = new System.Drawing.Size(180, 22);
             this.tsiProfChangeDesc.Text = "Change Description";
-            this.tsiProfChangeDesc.Click += new System.EventHandler(this.tsiProfChangeDesc_Click);
+            this.tsiProfChangeDesc.Click += new System.EventHandler(this.ProfChangeDesc);
             // 
             // sep3
             // 
@@ -311,21 +311,21 @@ namespace YAMDCC.ConfigEditor
             this.tsiProfDel.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Delete)));
             this.tsiProfDel.Size = new System.Drawing.Size(180, 22);
             this.tsiProfDel.Text = "Delete";
-            this.tsiProfDel.Click += new System.EventHandler(this.tsiProfDel_Click);
+            this.tsiProfDel.Click += new System.EventHandler(this.ProfDel);
             // 
             // tsiSwitchAll
             // 
             this.tsiSwitchAll.Name = "tsiSwitchAll";
             this.tsiSwitchAll.Size = new System.Drawing.Size(257, 22);
             this.tsiSwitchAll.Text = "Switch all fan profiles";
-            this.tsiSwitchAll.Click += new System.EventHandler(this.tsiSwitchAll_Click);
+            this.tsiSwitchAll.Click += new System.EventHandler(this.SwitchAllToggle);
             // 
             // tsiECtoConf
             // 
             this.tsiECtoConf.Name = "tsiECtoConf";
             this.tsiECtoConf.Size = new System.Drawing.Size(257, 22);
             this.tsiECtoConf.Text = "Get &default fan profile from EC...";
-            this.tsiECtoConf.Click += new System.EventHandler(this.tsiECtoConf_Click);
+            this.tsiECtoConf.Click += new System.EventHandler(this.ECtoConf);
             // 
             // sep4
             // 
@@ -339,14 +339,14 @@ namespace YAMDCC.ConfigEditor
             this.tsiECMon.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.M)));
             this.tsiECMon.Size = new System.Drawing.Size(257, 22);
             this.tsiECMon.Text = "Enable EC &monitoring";
-            this.tsiECMon.Click += new System.EventHandler(this.tsiECMon_Click);
+            this.tsiECMon.Click += new System.EventHandler(this.ECMonToggle);
             // 
             // tsiAdvanced
             // 
             this.tsiAdvanced.Name = "tsiAdvanced";
             this.tsiAdvanced.Size = new System.Drawing.Size(257, 22);
             this.tsiAdvanced.Text = "Show advanced settings";
-            this.tsiAdvanced.Click += new System.EventHandler(this.tsiAdvanced_Click);
+            this.tsiAdvanced.Click += new System.EventHandler(this.AdvancedToggle);
             // 
             // sep5
             // 
@@ -548,7 +548,7 @@ namespace YAMDCC.ConfigEditor
             this.cboFanSel.Name = "cboFanSel";
             this.cboFanSel.Size = new System.Drawing.Size(119, 23);
             this.cboFanSel.TabIndex = 1;
-            this.cboFanSel.SelectedIndexChanged += new System.EventHandler(this.cboFanSel_IndexChanged);
+            this.cboFanSel.SelectedIndexChanged += new System.EventHandler(this.FanSelChanged);
             // 
             // lblProfSel
             // 
@@ -570,7 +570,7 @@ namespace YAMDCC.ConfigEditor
             this.cboProfSel.Name = "cboProfSel";
             this.cboProfSel.Size = new System.Drawing.Size(119, 23);
             this.cboProfSel.TabIndex = 3;
-            this.cboProfSel.SelectedIndexChanged += new System.EventHandler(this.cboProfSel_IndexChanged);
+            this.cboProfSel.SelectedIndexChanged += new System.EventHandler(this.ProfSelChanged);
             // 
             // btnProfAdd
             // 
@@ -581,7 +581,7 @@ namespace YAMDCC.ConfigEditor
             this.btnProfAdd.TabIndex = 4;
             this.btnProfAdd.Text = "+";
             this.btnProfAdd.UseVisualStyleBackColor = true;
-            this.btnProfAdd.Click += new System.EventHandler(this.btnProfAdd_Click);
+            this.btnProfAdd.Click += new System.EventHandler(this.ProfAdd);
             this.btnProfAdd.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.btnProfAdd_KeyPress);
             // 
             // btnProfDel
@@ -593,7 +593,7 @@ namespace YAMDCC.ConfigEditor
             this.btnProfDel.TabIndex = 5;
             this.btnProfDel.Text = "-";
             this.btnProfDel.UseVisualStyleBackColor = true;
-            this.btnProfDel.Click += new System.EventHandler(this.btnProfDel_Click);
+            this.btnProfDel.Click += new System.EventHandler(this.ProfDel);
             // 
             // tabExtra
             // 
@@ -643,7 +643,7 @@ namespace YAMDCC.ConfigEditor
             this.cboFanMode.Name = "cboFanMode";
             this.cboFanMode.Size = new System.Drawing.Size(150, 23);
             this.cboFanMode.TabIndex = 9;
-            this.cboFanMode.SelectedIndexChanged += new System.EventHandler(this.cboFanMode_IndexChanged);
+            this.cboFanMode.SelectedIndexChanged += new System.EventHandler(this.FanModeChange);
             // 
             // lblFanMode
             // 
@@ -688,7 +688,7 @@ namespace YAMDCC.ConfigEditor
             this.cboPerfMode.Name = "cboPerfMode";
             this.cboPerfMode.Size = new System.Drawing.Size(150, 23);
             this.cboPerfMode.TabIndex = 3;
-            this.cboPerfMode.SelectedIndexChanged += new System.EventHandler(this.cboPerfMode_IndexChanged);
+            this.cboPerfMode.SelectedIndexChanged += new System.EventHandler(this.PerfModeChange);
             // 
             // lblWinFnSwap
             // 
@@ -712,7 +712,7 @@ namespace YAMDCC.ConfigEditor
             this.chkWinFnSwap.TabIndex = 5;
             this.chkWinFnSwap.Text = "Enabled";
             this.chkWinFnSwap.UseVisualStyleBackColor = true;
-            this.chkWinFnSwap.CheckedChanged += new System.EventHandler(this.chkWinFnSwap_Toggled);
+            this.chkWinFnSwap.CheckedChanged += new System.EventHandler(this.WinFnSwapToggle);
             // 
             // lblKeyLight
             // 
@@ -756,7 +756,7 @@ namespace YAMDCC.ConfigEditor
             this.tbKeyLight.Size = new System.Drawing.Size(150, 45);
             this.tbKeyLight.TabIndex = 1;
             this.tbKeyLight.TickStyle = System.Windows.Forms.TickStyle.Both;
-            this.tbKeyLight.Scroll += new System.EventHandler(this.tbKeyLight_Scroll);
+            this.tbKeyLight.Scroll += new System.EventHandler(this.KeyLightChange);
             // 
             // lblKeyLightHigh
             // 
@@ -790,7 +790,7 @@ namespace YAMDCC.ConfigEditor
             this.chkChgLim.TabIndex = 0;
             this.chkChgLim.Text = "Enabled";
             this.chkChgLim.UseVisualStyleBackColor = true;
-            this.chkChgLim.CheckedChanged += new System.EventHandler(this.chkChgLim_CheckedChanged);
+            this.chkChgLim.CheckedChanged += new System.EventHandler(this.ChgLimToggle);
             // 
             // numChgLim
             // 
@@ -799,7 +799,7 @@ namespace YAMDCC.ConfigEditor
             this.numChgLim.Name = "numChgLim";
             this.numChgLim.Size = new System.Drawing.Size(50, 23);
             this.numChgLim.TabIndex = 1;
-            this.numChgLim.ValueChanged += new System.EventHandler(this.numChgLim_Changed);
+            this.numChgLim.ValueChanged += new System.EventHandler(this.ChgLimChange);
             // 
             // tabInfo
             // 
@@ -935,7 +935,7 @@ namespace YAMDCC.ConfigEditor
             this.chkFullBlast.TabIndex = 0;
             this.chkFullBlast.Text = "Full Blast";
             this.chkFullBlast.UseVisualStyleBackColor = true;
-            this.chkFullBlast.CheckedChanged += new System.EventHandler(this.chkFullBlast_Toggled);
+            this.chkFullBlast.CheckedChanged += new System.EventHandler(this.FullBlastToggle);
             // 
             // btnRevert
             // 
@@ -947,7 +947,7 @@ namespace YAMDCC.ConfigEditor
             this.btnRevert.TabIndex = 1;
             this.btnRevert.Text = "Revert";
             this.btnRevert.UseVisualStyleBackColor = true;
-            this.btnRevert.Click += new System.EventHandler(this.btnRevert_Click);
+            this.btnRevert.Click += new System.EventHandler(this.RevertConf);
             // 
             // btnApply
             // 
@@ -958,7 +958,7 @@ namespace YAMDCC.ConfigEditor
             this.btnApply.TabIndex = 2;
             this.btnApply.Text = "Apply";
             this.btnApply.UseVisualStyleBackColor = true;
-            this.btnApply.Click += new System.EventHandler(this.btnApply_Click);
+            this.btnApply.Click += new System.EventHandler(this.ApplyConf);
             // 
             // flwStats
             // 
@@ -1091,7 +1091,7 @@ namespace YAMDCC.ConfigEditor
         private System.Windows.Forms.ToolStripMenuItem tsiOptions;
         private System.Windows.Forms.ToolStripMenuItem tsiProfAdd;
         private System.Windows.Forms.ToolStripMenuItem tsiProfEdit;
-        private System.Windows.Forms.ToolStripMenuItem tsiProfRename;
+        private System.Windows.Forms.ToolStripMenuItem tsiProfRen;
         private System.Windows.Forms.ToolStripMenuItem tsiProfChangeDesc;
         private System.Windows.Forms.ToolStripMenuItem tsiProfDel;
         private System.Windows.Forms.ToolStripMenuItem tsiECtoConf;

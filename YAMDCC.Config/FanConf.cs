@@ -14,6 +14,7 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace YAMDCC.Config;
@@ -95,5 +96,5 @@ public sealed class FanConf
     /// otherwise at least one fan curve (the "default" curve) must exist.
     /// </remarks>
     [XmlArray]
-    public FanCurveConf[] FanCurveConfs { get; set; }
+    public List<FanCurveConf> FanCurveConfs { get; set; }
 }
