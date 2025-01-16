@@ -68,14 +68,13 @@ internal static class Program
                             Strings.GetString("dlgSvcNotInstalled"), "Service not installed",
                             MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
-                            ProgressDialog dlg = new(Strings.GetString("dlgSvcInstalling"), (e) =>
+                            ProgressDialog<bool> dlg = new(Strings.GetString("dlgSvcInstalling"), () =>
                             {
-                                e.Result = false;
                                 if (Utils.InstallService("yamdccsvc"))
                                 {
                                     if (Utils.StartService("yamdccsvc"))
                                     {
-                                        e.Result = true;
+                                        return true;
                                     }
                                     else
                                     {
@@ -86,10 +85,11 @@ internal static class Program
                                 {
                                     Utils.ShowError(Strings.GetString("dlgSvcInstallFail"));
                                 }
+                                return false;
                             });
                             dlg.ShowDialog();
 
-                            if ((bool)dlg.Result)
+                            if (dlg.Result)
                             {
                                 // Start the program when the service finishes starting:
                                 Start();
@@ -114,16 +114,16 @@ internal static class Program
                             Strings.GetString("dlgSvcStopped"), "Service not running",
                             MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
-                            ProgressDialog dlg = new(Strings.GetString("dlgSvcStarting"), (e) =>
+                            ProgressDialog<bool> dlg = new(Strings.GetString("dlgSvcStarting"), () =>
                         {
                             if (Utils.StartService("yamdccsvc"))
                             {
-                                e.Result = false;
+                                return false;
                             }
                             else
                             {
                                 Utils.ShowError(Strings.GetString("dlgSvcStartCrash"));
-                                e.Result = true;
+                                return true;
                             }
                         });
                             dlg.ShowDialog();

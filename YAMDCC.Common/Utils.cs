@@ -444,7 +444,7 @@ public static class Utils
     /// </summary>
     /// <returns>
     /// The computer model if the function succeeds,
-    /// otherwise <c>null</c>.
+    /// otherwise <see cref="string.Empty"/>.'
     /// </returns>
     public static string GetPCModel()
     {
@@ -456,7 +456,7 @@ public static class Utils
     /// </summary>
     /// <returns>
     /// The computer manufacturer if the function succeeds,
-    /// otherwise <c>null</c>.
+    /// otherwise <see cref="string.Empty"/>.
     /// </returns>
     public static string GetPCManufacturer()
     {
@@ -467,8 +467,7 @@ public static class Utils
     {
         using (RegistryKey biosKey = Registry.LocalMachine.OpenSubKey(@"HARDWARE\DESCRIPTION\System\BIOS"))
         {
-            return (string)biosKey?.GetValue(name, null);
+            return ((string)biosKey?.GetValue(name, string.Empty)).Trim();
         }
     }
-
 }

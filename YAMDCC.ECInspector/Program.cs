@@ -15,6 +15,7 @@
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Diagnostics;
 using System.ServiceProcess;
 using System.Threading;
 using YAMDCC.Common;
@@ -40,23 +41,21 @@ internal sealed class Program
         }
 
         // check that YAMDCC service is running
-        ServiceController yamdccSvc = new("yamdccsvc");
-        try
+        using (ServiceController yamdccSvc = new("yamdccsvc"))
         {
-            if (yamdccSvc.Status == ServiceControllerStatus.Stopped)
+            try
             {
-                Console.WriteLine(Strings.GetString("SvcStopped"));
+                if (yamdccSvc.Status == ServiceControllerStatus.Stopped)
+                {
+                    Console.WriteLine(Strings.GetString("SvcStopped"));
+                    return 1;
+                }
+            }
+            catch
+            {
+                Console.WriteLine(Strings.GetString("SvcNotFound"));
                 return 1;
             }
-        }
-        catch
-        {
-            Console.WriteLine(Strings.GetString("SvcNotFound"));
-            return 1;
-        }
-        finally
-        {
-            yamdccSvc?.Close();
         }
 
         if (args.Length == 0)
@@ -158,10 +157,15 @@ internal sealed class Program
             {
                 break;
             }
-            for (int i = 0; i <= byte.MaxValue; i++)
+
+            byte i = byte.MaxValue;
+            do
             {
-                IPCClient.PushMessage(new ServiceCommand(Command.ReadECByte, $"{i}"));
+                i++;
+                IPCClient.PushMessage(new ServiceCommand(Command.ReadECByte, i));
             }
+            while (i < byte.MaxValue);
+
             Thread.Sleep(interval);
             j++;
         }
@@ -182,33 +186,34 @@ internal sealed class Program
         {
             try
             {
+                object[] args = e.Message.Value;
                 if (e.Message.Response == Response.ReadResult &&
-                    ParseArgs(e.Message.Value, out int[] args) && args.Length == 2)
+                    args.Length == 2 && args[0] is byte reg && args[1] is byte value)
                 {
-                    int lowBits = args[0] & 0x0F,
-                        hiBits = (args[0] & 0xF0) >> 4;
+                    int lowBits = reg & 0x0F,
+                        hiBits = (reg & 0xF0) >> 4;
                     Console.SetCursorPosition(6 + lowBits * 3, 4 + hiBits);
 
                     ConsoleColor original = Console.ForegroundColor;
 
 
-                    if (ECValues[args[0]].Value == args[1])
+                    if (ECValues[reg].Value == value)
                     {
-                        ECValues[args[0]].Age++;
+                        ECValues[reg].Age++;
                         Console.ForegroundColor = ConsoleColor.DarkRed;
                     }
                     else
                     {
-                        ECValues[args[0]].Value = args[1];
-                        ECValues[args[0]].Age = 0;
+                        ECValues[reg].Value = value;
+                        ECValues[reg].Age = 0;
                         Console.ForegroundColor = ConsoleColor.Green;
                     }
 
-                    if (args[1] == 0)
+                    if (value == 0)
                     {
                         Console.ForegroundColor = ConsoleColor.DarkGray;
                     }
-                    Console.Write($"{args[1]:X2}");
+                    Console.Write($"{value:X2}");
                     Console.ForegroundColor = original;
                     Console.SetCursorPosition(0, 20);
                 }
@@ -223,27 +228,5 @@ internal sealed class Program
     private static void IPCError(object sender, PipeErrorEventArgs<ServiceResponse, ServiceCommand> e)
     {
         throw e.Exception;
-    }
-
-    private static bool ParseArgs(string argsIn, out int[] argsOut)
-    {
-        if (string.IsNullOrEmpty(argsIn))
-        {
-            argsOut = [];
-        }
-        else
-        {
-            string[] args_str = argsIn.Split(' ');
-            argsOut = new int[args_str.Length];
-
-            for (int i = 0; i < args_str.Length; i++)
-            {
-                if (!int.TryParse(args_str[i], out argsOut[i]))
-                {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 }

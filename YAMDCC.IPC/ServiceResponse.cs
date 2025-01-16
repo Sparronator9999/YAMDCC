@@ -10,38 +10,98 @@ public enum Response
     /// <summary>
     /// Fallback value if empty (zero-length) message received by client.
     /// </summary>
-    Nothing = 0,
+    Nothing,
     /// <summary>
     /// Sent when any command that doesn't return data finishes successfully.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This response's <see cref="ServiceResponse.Value"/> field includes
+    /// the following data as an <see langword="int"/>:<br/>
+    /// • Command: The command that sent this response.
+    /// </para>
+    /// </remarks>
     Success,
     /// <summary>
     /// Sent when any command encounters an error.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This response's <see cref="ServiceResponse.Value"/> field includes
+    /// the following data as an <see langword="int"/>:<br/>
+    /// • Command: The command that sent this response.
+    /// </para>
+    /// </remarks>
     Error,
     /// <summary>
     /// The result of a <see cref="Command.GetVersion"/> command.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This response's <see cref="ServiceResponse.Value"/> field includes
+    /// the following data as a <see langword="string"/>:<br/>
+    /// • Revison: The current YAMDCC service version, as a Git revision/hash.
+    /// </para>
+    /// </remarks>
     Version,
     /// <summary>
-    /// The result of a <see cref="Command.GetTemp"/> command.
+    /// The result of a <see cref="Command.ReadECByte"/> command.
     /// </summary>
-    Temp,
+    /// <remarks>
+    /// <para>
+    /// This response's <see cref="ServiceResponse.Value"/> field includes
+    /// the following data as an <see langword="int"/> array:<br/>
+    /// • Register: The EC register that was read from.<br/>
+    /// • Value: The value that was stored in the EC register.
+    /// </para>
+    /// </remarks>
+    ReadResult,
     /// <summary>
     /// The result of a <see cref="Command.GetFanSpeed"/> command.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This response's <see cref="ServiceResponse.Value"/> field includes
+    /// the following data as an <see langword="int"/> array:<br/>
+    /// • Fan: The zero-indexed fan in the loaded config that the fan speed was read from.<br/>
+    /// • Temp: The speed of the fan, as a percentage.
+    /// </para>
+    /// </remarks>
     FanSpeed,
     /// <summary>
     /// The result of a <see cref="Command.GetFanRPM"/> command.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This response's <see cref="ServiceResponse.Value"/> field includes
+    /// the following data as an <see langword="int"/> array:<br/>
+    /// • Fan: The zero-indexed fan in the loaded config that the fan RPM was read from.<br/>
+    /// • Temp: The fan RPM.
+    /// </para>
+    /// </remarks>
     FanRPM,
     /// <summary>
-    /// The result of a <see cref="Command.ReadECByte"/> command.
+    /// The result of a <see cref="Command.GetTemp"/> command.
     /// </summary>
-    ReadResult,
+    /// <remarks>
+    /// <para>
+    /// This response's <see cref="ServiceResponse.Value"/> field includes
+    /// the following data as an <see langword="int"/> array:<br/>
+    /// • Fan: The zero-indexed fan in the loaded config that the component temperature was read from.<br/>
+    /// • Temp: The temperature of the component being cooled by the fan.
+    /// </para>
+    /// </remarks>
+    Temp,
     /// <summary>
     /// The result of a <see cref="Command.GetKeyLightBright"/> command.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This response's <see cref="ServiceResponse.Value"/> field includes
+    /// the following data as a <see langword="byte"/><br/>
+    /// • Brightness: The keyboard backlight brightness.
+    /// </para>
+    /// </remarks>
     KeyLightBright,
 }
 
@@ -61,7 +121,7 @@ public class ServiceResponse
     /// The value associated with the <see cref="IPC.Response"/>.
     /// </summary>
     [Key(1)]
-    public string Value { get; set; } = string.Empty;
+    public object[] Value { get; set; }
 
     /// <summary>
     /// Initialises a new instance of the <see cref="ServiceResponse"/>
@@ -69,7 +129,7 @@ public class ServiceResponse
     /// </summary>
     /// <param name="response"></param>
     /// <param name="value"></param>
-    public ServiceResponse(Response response, string value)
+    public ServiceResponse(Response response, params object[] value)
     {
         Response = response;
         Value = value;

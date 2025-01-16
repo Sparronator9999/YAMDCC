@@ -45,11 +45,12 @@ internal static class Strings
     /// </returns>
     public static string GetString(string name, params object[] args)
     {
+        CultureInfo ci = CultureInfo.InvariantCulture;
         resMan ??= new ResourceManager(typeof(Strings));
-        string temp = resMan.GetString(name, CultureInfo.InvariantCulture);
 
+        string temp = resMan.GetString(name, ci);
         return temp is null
             ? null
-            : string.Format(CultureInfo.InvariantCulture, temp, args);
+            : string.Format(ci, temp, args);
     }
 }

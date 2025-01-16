@@ -43,15 +43,10 @@ public sealed class Logger : IDisposable
     /// </summary>
     private static readonly char[] NewLine = ['\r', '\n'];
 
-    private static string LogString(string str, LogLevel level, bool date)
-    {
-        return $"{(date ? $"[{DateTime.Now:dd/MM/yyyy HH:mm:ss.fff}] " : "")}{$"[{level}]",-8} {str}";
-    }
-
     /// <summary>
     /// The directory in which log files are saved.
     /// </summary>
-    public string LogDir { get; set; } = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+    public string LogDir { get; set; }
 
     /// <summary>
     /// The base name of the log file.
@@ -65,7 +60,7 @@ public sealed class Logger : IDisposable
     /// extension, with higher numbers indicating older logs.
     /// </para>
     /// </remarks>
-    public string LogName { get; set; } = Path.GetFileName(Assembly.GetEntryAssembly().Location);
+    public string LogName { get; set; }
 
     private string LogPath => Path.Combine(LogDir, LogName);
 
@@ -93,6 +88,14 @@ public sealed class Logger : IDisposable
     /// Should the log time be shown in logs written to disk?
     /// </summary>
     public bool TimeToFile { get; set; } = true;
+
+    public Logger()
+    {
+        string exePath = Assembly.GetEntryAssembly().Location;
+
+        LogDir = Path.GetDirectoryName(exePath);
+        LogName = Path.GetFileName(exePath);
+    }
 
     /// <summary>
     /// Writes a Debug event to the <see cref="Logger"/>.
@@ -188,6 +191,11 @@ public sealed class Logger : IDisposable
         {
             LogConsole(msg, LogLevel.Fatal);
         }
+    }
+
+    private static string LogString(string str, LogLevel level, bool date)
+    {
+        return $"{(date ? $"[{DateTime.Now:dd/MM/yyyy HH:mm:ss.fff}] " : "")}{$"[{level}]",-8} {str}";
     }
 
     /// <summary>

@@ -16,7 +16,7 @@
 
 namespace YAMDCC.Common.Dialogs
 {
-    partial class ProgressDialog
+    partial class ProgressDialog<TResult>
     {
         /// <summary>
         /// Required designer variable.
@@ -45,14 +45,10 @@ namespace YAMDCC.Common.Dialogs
         private void InitializeComponent()
         {
             System.Windows.Forms.TableLayoutPanel tblMain;
-            System.Windows.Forms.FlowLayoutPanel flwButtons;
-            this.btnCancel = new System.Windows.Forms.Button();
             this.pbProgress = new System.Windows.Forms.ProgressBar();
             this.lblCaption = new System.Windows.Forms.Label();
             tblMain = new System.Windows.Forms.TableLayoutPanel();
-            flwButtons = new System.Windows.Forms.FlowLayoutPanel();
             tblMain.SuspendLayout();
-            flwButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // tblMain
@@ -60,43 +56,18 @@ namespace YAMDCC.Common.Dialogs
             tblMain.AutoSize = true;
             tblMain.ColumnCount = 1;
             tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            tblMain.Controls.Add(flwButtons, 0, 2);
             tblMain.Controls.Add(this.pbProgress, 0, 1);
             tblMain.Controls.Add(this.lblCaption, 0, 0);
             tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
             tblMain.Location = new System.Drawing.Point(0, 0);
             tblMain.Name = "tblMain";
             tblMain.Padding = new System.Windows.Forms.Padding(6);
-            tblMain.RowCount = 3;
+            tblMain.RowCount = 2;
             tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            tblMain.Size = new System.Drawing.Size(300, 92);
+            tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            tblMain.Size = new System.Drawing.Size(300, 65);
             tblMain.TabIndex = 0;
-            // 
-            // flwButtons
-            // 
-            flwButtons.AutoSize = true;
-            flwButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            flwButtons.Controls.Add(this.btnCancel);
-            flwButtons.Dock = System.Windows.Forms.DockStyle.Fill;
-            flwButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            flwButtons.Location = new System.Drawing.Point(6, 57);
-            flwButtons.Margin = new System.Windows.Forms.Padding(0);
-            flwButtons.Name = "flwButtons";
-            flwButtons.Size = new System.Drawing.Size(288, 29);
-            flwButtons.TabIndex = 0;
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(210, 3);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 0;
-            this.btnCancel.Text = "&Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // pbProgress
             // 
@@ -104,7 +75,7 @@ namespace YAMDCC.Common.Dialogs
             this.pbProgress.Location = new System.Drawing.Point(9, 29);
             this.pbProgress.MarqueeAnimationSpeed = 20;
             this.pbProgress.Name = "pbProgress";
-            this.pbProgress.Size = new System.Drawing.Size(282, 25);
+            this.pbProgress.Size = new System.Drawing.Size(282, 27);
             this.pbProgress.TabIndex = 2;
             // 
             // lblCaption
@@ -122,8 +93,7 @@ namespace YAMDCC.Common.Dialogs
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(300, 92);
+            this.ClientSize = new System.Drawing.Size(300, 65);
             this.Controls.Add(tblMain);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -132,10 +102,9 @@ namespace YAMDCC.Common.Dialogs
             this.Name = "ProgressDialog";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Load += new System.EventHandler(this.ProgressDialog_Load);
+            this.Load += new System.EventHandler(this.OnLoad);
             tblMain.ResumeLayout(false);
             tblMain.PerformLayout();
-            flwButtons.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -144,7 +113,6 @@ namespace YAMDCC.Common.Dialogs
         #endregion
 
         private System.Windows.Forms.ProgressBar pbProgress;
-        private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Label lblCaption;
     }
 }

@@ -42,7 +42,6 @@ internal static class Kernel32
     /// </returns>
     [DllImport("kernel32.dll",
         ExactSpelling = true, SetLastError = true)]
-    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     internal static extern bool CloseHandle(IntPtr hObject);
 
     /// <summary>
@@ -65,7 +64,6 @@ internal static class Kernel32
     [DllImport("kernel32.dll",
         CharSet = CharSet.Unicode, ExactSpelling = true,
         EntryPoint = "CreateFileW", SetLastError = true)]
-    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     internal static extern IntPtr CreateFile(
         string lpFileName,
         [MarshalAs(UnmanagedType.U4)] GenericAccessRights dwDesiredAccess,
@@ -87,7 +85,6 @@ internal static class Kernel32
     /// </returns>
     [DllImport("kernel32.dll",
         ExactSpelling = true, SetLastError = true)]
-    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern unsafe bool DeviceIoControl(
         IntPtr hDevice,

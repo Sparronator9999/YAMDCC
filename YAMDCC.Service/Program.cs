@@ -18,6 +18,7 @@ using System;
 using System.ServiceProcess;
 using System.Windows.Forms;
 using YAMDCC.Common;
+using YAMDCC.Common.Dialogs;
 using YAMDCC.Logs;
 
 namespace YAMDCC.Service;
@@ -39,8 +40,8 @@ internal static class Program
     /// </summary>
     private static void Main()
     {
-        AppDomain.CurrentDomain.UnhandledException += static (sender, e) =>
-            Log.Fatal(Strings.GetString("svcException", e.ExceptionObject));
+        AppDomain.CurrentDomain.UnhandledException +=
+            new UnhandledExceptionEventHandler(UnhandledException);
 
         if (Environment.UserInteractive)
         {
@@ -56,5 +57,10 @@ internal static class Program
             Log.Debug("Log level is set to debug mode.");
             ServiceBase.Run(new FanControlService(Log));
         }
+    }
+
+    private static void UnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+        new CrashDialog((Exception)e.ExceptionObject).ShowDialog();
     }
 }

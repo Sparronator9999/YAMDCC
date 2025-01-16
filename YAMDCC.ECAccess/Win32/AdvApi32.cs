@@ -41,7 +41,6 @@ internal static class AdvApi32
     [DllImport("advapi32.dll",
         CharSet = CharSet.Unicode, ExactSpelling = true,
         EntryPoint = "OpenSCManagerW", SetLastError = true)]
-    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     internal static extern IntPtr OpenSCManager(
         string lpMachineName,
         string lpDatabaseName,
@@ -62,7 +61,6 @@ internal static class AdvApi32
     [DllImport("advapi32.dll",
     CharSet = CharSet.Unicode, ExactSpelling = true,
         EntryPoint = "CreateServiceW", SetLastError = true)]
-    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     internal static extern IntPtr CreateService(
         IntPtr hSCManager,
         string lpServiceName,
@@ -93,7 +91,6 @@ internal static class AdvApi32
     [DllImport("advapi32.dll",
     CharSet = CharSet.Unicode, ExactSpelling = true,
         EntryPoint = "OpenServiceW", SetLastError = true)]
-    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     internal static extern IntPtr OpenService(
         IntPtr hSCManager,
         string lpServiceName,
@@ -113,7 +110,6 @@ internal static class AdvApi32
     [DllImport("advapi32.dll",
         CharSet = CharSet.Unicode, ExactSpelling = true,
         EntryPoint = "StartServiceW", SetLastError = true)]
-    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern bool StartService(
         IntPtr hService,
@@ -133,7 +129,6 @@ internal static class AdvApi32
     /// </returns>
     [DllImport("advapi32.dll",
         ExactSpelling = true, SetLastError = true)]
-    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern bool ControlService(
         IntPtr hService,
@@ -143,7 +138,6 @@ internal static class AdvApi32
     /// <inheritdoc cref="ControlService(IntPtr, uint, out ServiceStatus)"/>
     [DllImport("advapi32.dll",
         ExactSpelling = true, SetLastError = true)]
-    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [return: MarshalAs(UnmanagedType.Bool)]
     internal static extern bool ControlService(
         IntPtr hService,
@@ -163,7 +157,6 @@ internal static class AdvApi32
     /// </returns>
     [DllImport("advapi32.dll",
         ExactSpelling = true, SetLastError = true)]
-    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     internal static extern bool DeleteService(IntPtr hService);
 
     /// <summary>
@@ -179,7 +172,6 @@ internal static class AdvApi32
     /// </returns>
     [DllImport("advapi32.dll",
         ExactSpelling = true, SetLastError = true)]
-    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     internal static extern bool CloseServiceHandle(IntPtr hSCObject);
 
     [StructLayout(LayoutKind.Sequential)]

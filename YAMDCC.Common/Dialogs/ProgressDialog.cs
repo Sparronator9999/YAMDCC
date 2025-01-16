@@ -15,46 +15,31 @@
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.ComponentModel;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace YAMDCC.Common.Dialogs;
 
-public sealed partial class ProgressDialog : Form
+public sealed partial class ProgressDialog<TResult> : Form
 {
     #region Disable close button
-    private const int CP_NOCLOSE_BUTTON = 0x200;
-
     protected override CreateParams CreateParams
     {
         get
         {
-            CreateParams myCp = base.CreateParams;
-            myCp.ClassStyle |= CP_NOCLOSE_BUTTON;
-            return myCp;
+            CreateParams cParams = base.CreateParams;
+            cParams.ClassStyle |= 0x200;   // CP_NOCLOSE_BUTTON
+            return cParams;
         }
     }
     #endregion
 
-    public bool Cancelled { get; set; }
-    public object Result { get; set; }
+    public TResult Result { get; set; }
 
-    private readonly object Argument;
-    private readonly string Caption;
-    private readonly Action<DoWorkEventArgs> DoWork;
+    private readonly Func<TResult> DoWork;
 
-    private readonly BackgroundWorker Worker = new();
     private readonly Timer DisplayTimer = new();
-
-    /// <inheritdoc cref="ProgressDialog(string, Action{DoWorkEventArgs}, object, bool, bool)"/>
-    public ProgressDialog(
-        string caption,
-        Action<DoWorkEventArgs> doWork,
-        bool reportsProgress = false,
-        bool canCancel = false)
-        : this(caption, doWork, null, reportsProgress, canCancel)
-    { }
 
     /// <summary>
     /// Initialises a new instance of the <see cref="ProgressDialog"/> class.
@@ -63,29 +48,12 @@ public sealed partial class ProgressDialog : Form
     /// The window caption to use.
     /// </param>
     /// <param name="doWork">
-    /// The <see cref="Action"/> to run when showing this window.
-    /// </param>
-    /// <param name="argument">
-    /// The argument to pass to <paramref name="doWork"/>.
-    /// </param>
-    /// <param name="reportsProgress">
-    /// Set to <see langword="true"/> if <paramref name="doWork"/>
-    /// reports progress, otherwise <see langword="false"/>.
-    /// </param>
-    /// <param name="canCancel">
-    /// Set to <see langword="true"/> if <paramref name="doWork"/>
-    /// supports cancellation, otherwise <see langword="false"/>.
+    /// The <see cref="Func{T}"/> to run when showing this window.
     /// </param>
     /// <exception cref="ArgumentNullException"/>
-    public ProgressDialog(
-        string caption,
-        Action<DoWorkEventArgs> doWork,
-        object argument,
-        bool reportsProgress = false,
-        bool canCancel = false)
+    public ProgressDialog(string caption, Func<TResult> doWork)
     {
         Opacity = 0;
-        Argument = argument;
         InitializeComponent();
 
         // sanity check
@@ -96,96 +64,24 @@ public sealed partial class ProgressDialog : Form
         DoWork = doWork;
 
         // set title text
-        Caption = caption ?? "Please wait...";
-        if (reportsProgress && caption is null)
-        {
-            Caption += " ({0}% complete)";
-        }
-        SetTitle(Caption);
+        lblCaption.Text = string.Format(CultureInfo.InvariantCulture, caption ?? "Please wait...", pbProgress.Value);
 
-        // event setup
-        Worker.DoWork += new DoWorkEventHandler(Worker_DoWork);
-        Worker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(Worker_RunWorkerCompleted);
-        if (reportsProgress)
-        {
-            Worker.ProgressChanged += new ProgressChangedEventHandler(Worker_ProgressChanged);
-        }
-        else
-        {
-            pbProgress.Style = ProgressBarStyle.Marquee;
-        }
-
-        // cancel support stuff
-        if (canCancel)
-        {
-            Worker.WorkerSupportsCancellation = true;
-        }
-        else
-        {
-            btnCancel.Enabled = false;
-            btnCancel.Visible = false;
-        }
+        pbProgress.Style = ProgressBarStyle.Marquee;
 
         DisplayTimer.Interval = 1000;
-        DisplayTimer.Tick += new EventHandler(DisplayTimer_Tick);
+        DisplayTimer.Tick += new EventHandler(ShowProgress);
     }
 
-    private void ProgressDialog_Load(object sender, EventArgs e)
+    private async void OnLoad(object sender, EventArgs e)
     {
         DisplayTimer.Start();
-        Worker.RunWorkerAsync(Argument);
-    }
-
-    private void DisplayTimer_Tick(object sender, EventArgs e)
-    {
-        Opacity = 1;
-        DisplayTimer.Stop();
-    }
-
-    private void Worker_DoWork(object sender, DoWorkEventArgs e)
-    {
-        DoWork?.Invoke(e);
-    }
-
-    private void Worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-    {
-        if (e.ProgressPercentage < 0)
-        {
-            pbProgress.Style = ProgressBarStyle.Marquee;
-        }
-        else
-        {
-            pbProgress.Style = ProgressBarStyle.Blocks;
-            pbProgress.Value = e.ProgressPercentage;
-        }
-        SetTitle(Caption);
-    }
-
-    private void Worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-    {
-        if (e.Error is not null)
-        {
-            throw e.Error;
-        }
-        Cancelled = e.Cancelled;
-        Result = e.Result;
-        Worker.Dispose();
+        Result = await Task.Run(DoWork);
         Close();
     }
 
-    private void btnCancel_Click(object sender, EventArgs e)
+    private void ShowProgress(object sender, EventArgs e)
     {
-        if (Worker.WorkerSupportsCancellation && Worker.IsBusy && !Worker.CancellationPending)
-        {
-            btnCancel.Enabled = false;
-            Worker.CancelAsync();
-            Text = "Cancelling...";
-            pbProgress.Style = ProgressBarStyle.Marquee;
-        }
-    }
-
-    private void SetTitle(string title)
-    {
-        lblCaption.Text = string.Format(CultureInfo.InvariantCulture, title, pbProgress.Value);
+        Opacity = 1;
+        DisplayTimer.Stop();
     }
 }

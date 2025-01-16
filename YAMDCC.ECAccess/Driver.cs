@@ -20,6 +20,8 @@ using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using YAMDCC.ECAccess.Win32;
 
+[assembly: DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+
 namespace YAMDCC.ECAccess;
 
 /// <summary>

@@ -47,12 +47,7 @@ internal sealed class FanControlService : ServiceBase
 
     private readonly EC _EC;
 
-    private volatile bool Cooldown;
-    private readonly Timer CooldownTimer = new()
-    {
-        AutoReset = false,
-        Interval = 1000,
-    };
+    private readonly Timer CooldownTimer = new(1000);
     #endregion
 
     /// <summary>
@@ -77,7 +72,12 @@ internal sealed class FanControlService : ServiceBase
         //     "Administrators", PipeAccessRights.ReadWrite, AccessControlType.Allow));
         security.SetSecurityDescriptorSddlForm("O:BAG:SYD:(A;;GA;;;SY)(A;;GRGW;;;BA)");
 
+        CooldownTimer.Elapsed += new ElapsedEventHandler(CooldownElapsed);
+
         IPCServer = new NamedPipeServer<ServiceCommand, ServiceResponse>("YAMDCC-Server", security);
+        IPCServer.ClientConnected += new EventHandler<PipeConnectionEventArgs<ServiceCommand, ServiceResponse>>(IPCClientConnect);
+        IPCServer.ClientDisconnected += new EventHandler<PipeConnectionEventArgs<ServiceCommand, ServiceResponse>>(IPCClientDisconnect);
+        IPCServer.Error += new EventHandler<PipeErrorEventArgs<ServiceCommand, ServiceResponse>>(IPCServerError);
     }
 
     #region Events
@@ -106,13 +106,8 @@ internal sealed class FanControlService : ServiceBase
         }
         Log.Info(Strings.GetString("drvLoadSuccess"));
 
-        CooldownTimer.Elapsed += CooldownElapsed;
-
         // Set up IPC server
         Log.Info("Starting IPC server...");
-        IPCServer.ClientConnected += IPCClientConnect;
-        IPCServer.ClientDisconnected += IPCClientDisconnect;
-        IPCServer.Error += IPCServerError;
         IPCServer.Start();
 
         Log.Info(Strings.GetString("svcStarted"));
@@ -133,7 +128,6 @@ internal sealed class FanControlService : ServiceBase
     private void CooldownElapsed(object sender, ElapsedEventArgs e)
     {
         CooldownTimer.Stop();
-        Cooldown = false;
     }
 
     protected override void OnStop()
@@ -152,25 +146,17 @@ internal sealed class FanControlService : ServiceBase
 
     private void StopSvc()
     {
-        if (ExitCode == 0)
-        {
-            Log.Info(Strings.GetString("svcStopping"));
+        Log.Info(Strings.GetString("svcStopping"));
 
-            // Stop the IPC server:
-            Log.Info("Stopping IPC server...");
-            IPCServer.Stop();
-            IPCServer.ClientConnected -= IPCClientConnect;
-            IPCServer.ClientDisconnected -= IPCClientDisconnect;
-            IPCServer.Error -= IPCServerError;
+        // Stop the IPC server:
+        Log.Info("Stopping IPC server...");
+        IPCServer.Stop();
 
-            CooldownTimer.Elapsed -= CooldownElapsed;
+        // Uninstall WinRing0 to keep things clean
+        Log.Info(Strings.GetString("drvUnload"));
+        _EC.UnloadDriver();
 
-            // Uninstall WinRing0 to keep things clean
-            Log.Info(Strings.GetString("drvUnload"));
-            _EC.UnloadDriver();
-
-            Log.Info(Strings.GetString("svcStopped"));
-        }
+        Log.Info(Strings.GetString("svcStopped"));
     }
 
     protected override bool OnPowerEvent(PowerBroadcastStatus powerStatus)
@@ -180,12 +166,11 @@ internal sealed class FanControlService : ServiceBase
             case PowerBroadcastStatus.ResumeCritical:
             case PowerBroadcastStatus.ResumeSuspend:
             case PowerBroadcastStatus.ResumeAutomatic:
-                if (!Cooldown)
+                if (!CooldownTimer.Enabled)
                 {
                     // Re-apply the fan curve after waking up from sleep:
                     Log.Info(Strings.GetString("svcWake"));
                     ApplyConf();
-                    Cooldown = true;
                     CooldownTimer.Start();
                 }
                 break;
@@ -195,13 +180,13 @@ internal sealed class FanControlService : ServiceBase
 
     private void IPCClientConnect(object sender, PipeConnectionEventArgs<ServiceCommand, ServiceResponse> e)
     {
-        e.Connection.ReceiveMessage += IPCClientMessage;
+        e.Connection.ReceiveMessage += new EventHandler<PipeMessageEventArgs<ServiceCommand, ServiceResponse>>(IPCClientMessage);
         Log.Info(Strings.GetString("ipcConnect", e.Connection.ID));
     }
 
     private void IPCClientDisconnect(object sender, PipeConnectionEventArgs<ServiceCommand, ServiceResponse> e)
     {
-        e.Connection.ReceiveMessage -= IPCClientMessage;
+        e.Connection.ReceiveMessage -= new EventHandler<PipeMessageEventArgs<ServiceCommand, ServiceResponse>>(IPCClientMessage);
         Log.Info(Strings.GetString("ipcDC", e.Connection.ID));
     }
 
@@ -216,109 +201,118 @@ internal sealed class FanControlService : ServiceBase
             cmdSuccess = false,
             sendSuccessMsg = true;
 
-        if (ParseArgs(e.Message.Arguments, out int[] args))
+        Command cmd = e.Message.Command;
+        object[] args = e.Message.Arguments;
+        int id = e.Connection.ID;
+
+        switch (cmd)
         {
-            switch (e.Message.Command)
+            case Command.Nothing:
+                Log.Warn("Empty command received!");
+                return;
+            case Command.GetVersion:
+                IPCServer.PushMessage(new ServiceResponse(
+                    Response.Version, Utils.GetRevision()), id);
+                return;
+            case Command.ReadECByte:
             {
-                case Command.Nothing:
-                    Log.Warn("Empty command received!");
-                    return;
-                case Command.GetVersion:
-                    IPCServer.PushMessage(new ServiceResponse(
-                        Response.Version, Utils.GetRevision()), e.Connection.ID);
-                    return;
-                case Command.ReadECByte:
-                    if (args.Length == 1)
-                    {
-                        parseSuccess = true;
-                        sendSuccessMsg = false;
-                        cmdSuccess = LogECReadByte((byte)args[0], out byte value);
-                        if (cmdSuccess)
-                        {
-                            IPCServer.PushMessage(new ServiceResponse(
-                                Response.ReadResult, $"{args[0]} {value}"), e.Connection.ID);
-                        }
-                    }
-                    break;
-                case Command.WriteECByte:
-                    if (args.Length == 2)
-                    {
-                        parseSuccess = true;
-                        cmdSuccess = LogECWriteByte((byte)args[0], (byte)args[1]);
-                    }
-                    break;
-                case Command.GetFanSpeed:
-                    if (args.Length == 1)
-                    {
-                        parseSuccess = true;
-                        sendSuccessMsg = false;
-                        cmdSuccess = GetFanSpeed(e.Connection.ID, args[0]);
-                    }
-                    break;
-                case Command.GetFanRPM:
-                    if (args.Length == 1)
-                    {
-                        parseSuccess = true;
-                        sendSuccessMsg = false;
-                        cmdSuccess = GetFanRPM(e.Connection.ID, args[0]);
-                    }
-                    break;
-                case Command.GetTemp:
-                    if (args.Length == 1)
-                    {
-                        parseSuccess = true;
-                        sendSuccessMsg = false;
-                        cmdSuccess = GetTemp(e.Connection.ID, args[0]);
-                    }
-                    break;
-                case Command.ApplyConfig:
-                    parseSuccess = true;
-                    cmdSuccess = LoadConf() && ApplyConf();
-                    break;
-                case Command.FullBlast:
-                    if (args.Length == 1)
-                    {
-                        parseSuccess = true;
-                        cmdSuccess = SetFullBlast(args[0] == 1);
-                    }
-                    break;
-                case Command.GetKeyLightBright:
+                if (args.Length == 1 && args[0] is byte reg)
+                {
                     parseSuccess = true;
                     sendSuccessMsg = false;
-                    cmdSuccess = GetKeyLight(e.Connection.ID);
-                    break;
-                case Command.SetKeyLightBright:
-                    if (args.Length == 1)
+                    cmdSuccess = LogECReadByte(reg, out byte value);
+                    if (cmdSuccess)
                     {
-                        parseSuccess = true;
-                        cmdSuccess = SetKeyLight((byte)args[0]);
+                        IPCServer.PushMessage(new ServiceResponse(
+                            Response.ReadResult, reg, value), id);
                     }
-                    break;
-                default:    // Unknown command
-                    Log.Error(Strings.GetString("errBadCmd", e.Message));
-                    return;
+                }
+                break;
             }
-        }
-        else
-        {
-            Log.Error(Strings.GetString("errArgsBadType"));
-            Log.Error(Strings.GetString("errOffendingCmd", e.Message.Command, e.Message.Arguments));
+            case Command.WriteECByte:
+            {
+                if (args.Length == 2 && args[0] is byte reg && args[1] is byte value)
+                {
+                    parseSuccess = true;
+                    cmdSuccess = LogECWriteByte(reg, value);
+                }
+                break;
+            }
+            case Command.GetFanSpeed:
+            {
+                if (args.Length == 1 && args[0] is int fan)
+                {
+                    parseSuccess = true;
+                    sendSuccessMsg = false;
+                    cmdSuccess = GetFanSpeed(id, fan);
+                }
+                break;
+            }
+            case Command.GetFanRPM:
+            {
+                if (args.Length == 1 && args[0] is int fan)
+                {
+                    parseSuccess = true;
+                    sendSuccessMsg = false;
+                    cmdSuccess = GetFanRPM(id, fan);
+                }
+                break;
+            }
+            case Command.GetTemp:
+            {
+                if (args.Length == 1 && args[0] is int fan)
+                {
+                    parseSuccess = true;
+                    sendSuccessMsg = false;
+                    cmdSuccess = GetTemp(id, fan);
+                }
+                break;
+            }
+            case Command.ApplyConfig:
+                parseSuccess = true;
+                cmdSuccess = LoadConf() && ApplyConf();
+                break;
+            case Command.FullBlast:
+            {
+                if (args.Length == 1 && args[0] is bool enable)
+                {
+                    parseSuccess = true;
+                    cmdSuccess = SetFullBlast(enable);
+                }
+                break;
+            }
+            case Command.GetKeyLightBright:
+                parseSuccess = true;
+                sendSuccessMsg = false;
+                cmdSuccess = GetKeyLight(id);
+                break;
+            case Command.SetKeyLightBright:
+            {
+                if (args.Length == 1 && args[0] is byte brightness)
+                {
+                    parseSuccess = true;
+                    cmdSuccess = SetKeyLight(brightness);
+                }
+                break;
+            }
+            default:    // Unknown command
+                Log.Error(Strings.GetString("errBadCmd", cmd));
+                break;
         }
 
         if (!cmdSuccess)
         {
             if (!parseSuccess)
             {
-                Log.Error(Strings.GetString("errArgsBadLen"));
-                Log.Error(Strings.GetString("errOffendingCmd", e.Message.Command, e.Message.Arguments));
+                Log.Error(Strings.GetString("errBadArgs", cmd, args));
             }
             IPCServer.PushMessage(new ServiceResponse(
-                Response.Error, $"{(int)e.Message.Command}"), e.Connection.ID);
+                Response.Error, (int)cmd), id);
         }
         else if (sendSuccessMsg)
         {
             IPCServer.PushMessage(new ServiceResponse(
-                Response.Success, $"{(int)e.Message.Command}"), e.Connection.ID);
+                Response.Success, (int)cmd), id);
         }
     }
     #endregion
@@ -372,6 +366,8 @@ internal sealed class FanControlService : ServiceBase
         try
         {
             Config = YAMDCC_Config.Load(Paths.CurrentConf);
+            Log.Info(Strings.GetString("cfgLoaded"));
+            return true;
         }
         catch (Exception ex)
         {
@@ -390,9 +386,6 @@ internal sealed class FanControlService : ServiceBase
             Config = null;
             return false;
         }
-
-        Log.Info(Strings.GetString("cfgLoaded"));
-        return true;
     }
 
     private bool ApplyConf()
@@ -408,10 +401,11 @@ internal sealed class FanControlService : ServiceBase
         // Write custom register values, if configured:
         if (Config.RegConfs?.Count > 0)
         {
-            for (int i = 0; i < Config.RegConfs.Count; i++)
+            int numRegConfs = Config.RegConfs.Count;
+            for (int i = 0; i < numRegConfs; i++)
             {
                 RegConf cfg = Config.RegConfs[i];
-                Log.Info(Strings.GetString("svcWriteRegConfs", i + 1, Config.RegConfs.Count));
+                Log.Info(Strings.GetString("svcWriteRegConfs", i + 1, numRegConfs));
                 if (!LogECWriteByte(cfg.Reg, cfg.Enabled ? cfg.OnVal : cfg.OffVal))
                 {
                     success = false;
@@ -420,26 +414,27 @@ internal sealed class FanControlService : ServiceBase
         }
 
         // Write the fan curve to the appropriate registers for each fan:
-        for (int i = 0; i < Config.FanConfs.Count; i++)
+        int numFanConfs = Config.FanConfs.Count;
+        for (int i = 0; i < numFanConfs; i++)
         {
             FanConf cfg = Config.FanConfs[i];
-            Log.Info(Strings.GetString("svcWriteFanConfs", cfg.Name, i + 1, Config.FanConfs.Count));
-            FanCurveConf curveCfg = cfg.FanCurveConfs[cfg.CurveSel];
+            Log.Info(Strings.GetString("svcWriteFanConfs", cfg.Name, i + 1, numFanConfs));
 
+            FanCurveConf curveCfg = cfg.FanCurveConfs[cfg.CurveSel];
             for (int j = 0; j < curveCfg.TempThresholds.Count; j++)
             {
-                if (!LogECWriteByte(cfg.FanCurveRegs[j], curveCfg.TempThresholds[j].FanSpeed))
+                TempThreshold t = curveCfg.TempThresholds[j];
+                if (!LogECWriteByte(cfg.FanCurveRegs[j], t.FanSpeed))
                 {
                     success = false;
                 }
                 if (j > 0)
                 {
-                    if (!LogECWriteByte(cfg.UpThresholdRegs[j - 1], curveCfg.TempThresholds[j].UpThreshold))
+                    if (!LogECWriteByte(cfg.UpThresholdRegs[j - 1], t.UpThreshold))
                     {
                         success = false;
                     }
-                    byte downT = (byte)(curveCfg.TempThresholds[j].UpThreshold - curveCfg.TempThresholds[j].DownThreshold);
-                    if (!LogECWriteByte(cfg.DownThresholdRegs[j - 1], downT))
+                    if (!LogECWriteByte(cfg.DownThresholdRegs[j - 1], (byte)(t.UpThreshold - t.DownThreshold)))
                     {
                         success = false;
                     }
@@ -448,87 +443,54 @@ internal sealed class FanControlService : ServiceBase
         }
 
         // Write the charge threshold:
-        if (Config.ChargeLimitConf is not null)
+        ChargeLimitConf chgLimCfg = Config.ChargeLimitConf;
+        if (chgLimCfg is not null)
         {
             Log.Info(Strings.GetString("svcWriteChgLim"));
-            byte value = (byte)(Config.ChargeLimitConf.MinVal + Config.ChargeLimitConf.CurVal);
-            if (!LogECWriteByte(Config.ChargeLimitConf.Reg, value))
+            byte value = (byte)(chgLimCfg.MinVal + chgLimCfg.CurVal);
+            if (!LogECWriteByte(chgLimCfg.Reg, value))
             {
                 success = false;
             }
         }
 
         // Write the performance mode
-        if (Config.PerfModeConf is not null)
+        PerfModeConf pModeCfg = Config.PerfModeConf;
+        if (pModeCfg is not null)
         {
             Log.Info(Strings.GetString("svcWritePerfMode"));
-            byte value = Config.PerfModeConf.PerfModes[Config.PerfModeConf.ModeSel].Value;
-            if (!LogECWriteByte(Config.PerfModeConf.Reg, value))
+            byte value = pModeCfg.PerfModes[pModeCfg.ModeSel].Value;
+            if (!LogECWriteByte(pModeCfg.Reg, value))
             {
                 success = false;
             }
         }
 
         // Write the fan mode
-        if (Config.FanModeConf is not null)
+        FanModeConf fModeCfg = Config.FanModeConf;
+        if (fModeCfg is not null)
         {
             Log.Info(Strings.GetString("svcWriteFanMode"));
-            byte value = Config.FanModeConf.FanModes[Config.FanModeConf.ModeSel].Value;
-            if (!LogECWriteByte(Config.FanModeConf.Reg, value))
+            byte value = fModeCfg.FanModes[fModeCfg.ModeSel].Value;
+            if (!LogECWriteByte(fModeCfg.Reg, value))
             {
                 success = false;
             }
         }
 
         // Write the Win/Fn key swap setting
-        if (Config.KeySwapConf is not null)
+        KeySwapConf keySwapCfg = Config.KeySwapConf;
+        if (keySwapCfg is not null)
         {
             Log.Info(Strings.GetString("svcWriteKeySwap"));
-            byte value = Config.KeySwapConf.Enabled
-                ? Config.KeySwapConf.OnVal
-                : Config.KeySwapConf.OffVal;
-
-            if (!LogECWriteByte(Config.KeySwapConf.Reg, value))
+            if (!LogECWriteByte(keySwapCfg.Reg, keySwapCfg.Enabled
+                ? keySwapCfg.OnVal
+                : keySwapCfg.OffVal))
             {
                 success = false;
             }
         }
         return success;
-    }
-
-    /// <summary>
-    /// Parse arguments from a given string.
-    /// </summary>
-    /// <param name="argsIn">
-    /// The string containing the space-delimited arguments.
-    /// </param>
-    /// <param name="argsOut">
-    /// The parsed arguments. Will be empty if parsing fails.
-    /// </param>
-    /// <returns>
-    /// <see langword="true"/> if the arguments were
-    /// parsed successfully, otherise <see langword="false"/>.
-    /// </returns>
-    private static bool ParseArgs(string argsIn, out int[] argsOut)
-    {
-        if (string.IsNullOrEmpty(argsIn))
-        {
-            argsOut = [];
-        }
-        else
-        {
-            string[] args_str = argsIn.Split(' ');
-            argsOut = new int[args_str.Length];
-
-            for (int i = 0; i < args_str.Length; i++)
-            {
-                if (!int.TryParse(args_str[i], out argsOut[i]))
-                {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     private bool GetFanSpeed(int clientId, int fan)
@@ -543,7 +505,7 @@ internal sealed class FanControlService : ServiceBase
         if (LogECReadByte(cfg.SpeedReadReg, out byte speed))
         {
             IPCServer.PushMessage(new ServiceResponse(
-                Response.FanSpeed, $"{speed}"), clientId);
+                Response.FanSpeed, fan, (int)speed), clientId);
             return true;
         }
         return false;
@@ -557,16 +519,17 @@ internal sealed class FanControlService : ServiceBase
         }
 
         FanConf cfg = Config.FanConfs[fan];
-
+        FanRPMConf rpmCfg = cfg.RPMConf;
         bool success;
         ushort rpmValue;
-        if (cfg.RPMConf.Is16Bit)
+
+        if (rpmCfg.Is16Bit)
         {
-            success = LogECReadWord(cfg.RPMConf.ReadReg, out rpmValue, cfg.RPMConf.IsBigEndian);
+            success = LogECReadWord(rpmCfg.ReadReg, out rpmValue, rpmCfg.IsBigEndian);
         }
         else
         {
-            success = LogECReadByte(cfg.RPMConf.ReadReg, out byte rpmValByte);
+            success = LogECReadByte(rpmCfg.ReadReg, out byte rpmValByte);
             rpmValue = rpmValByte;
         }
 
@@ -575,17 +538,17 @@ internal sealed class FanControlService : ServiceBase
             float rpm = 0;
             if (rpmValue > 0)
             {
-                rpm = cfg.RPMConf.DivideByMult
-                    ? (float)rpmValue / cfg.RPMConf.RPMMult
-                    : (float)rpmValue * cfg.RPMConf.RPMMult;
+                rpm = rpmCfg.DivideByMult
+                    ? (float)rpmValue / rpmCfg.RPMMult
+                    : (float)rpmValue * rpmCfg.RPMMult;
 
-                if (cfg.RPMConf.Invert)
+                if (rpmCfg.Invert)
                 {
                     rpm = 1 / rpm;
                 }
             }
             IPCServer.PushMessage(new ServiceResponse(
-                Response.FanRPM, $"{(int)rpm}"), clientId);
+                Response.FanRPM, fan, (int)rpm), clientId);
             return true;
         }
         return false;
@@ -603,7 +566,7 @@ internal sealed class FanControlService : ServiceBase
         if (LogECReadByte(cfg.TempReadReg, out byte temp))
         {
             IPCServer.PushMessage(new ServiceResponse(
-                Response.Temp, $"{temp}"), clientId);
+                Response.Temp, fan, (int)temp), clientId);
             return true;
         }
         return false;
@@ -616,20 +579,21 @@ internal sealed class FanControlService : ServiceBase
             return false;
         }
 
-        if (LogECReadByte(Config.FullBlastConf.Reg, out byte value))
+        FullBlastConf fbCfg = Config.FullBlastConf;
+        if (LogECReadByte(fbCfg.Reg, out byte value))
         {
             if (enable)
             {
                 Log.Debug("Enabling Full Blast...");
-                value |= Config.FullBlastConf.Mask;
+                value |= fbCfg.Mask;
             }
             else
             {
                 Log.Debug("Disabling Full Blast...");
-                value &= (byte)~Config.FullBlastConf.Mask;
+                value &= (byte)~fbCfg.Mask;
             }
 
-            if (LogECWriteByte(Config.FullBlastConf.Reg, value))
+            if (LogECWriteByte(fbCfg.Reg, value))
             {
                 return true;
             }
@@ -646,13 +610,14 @@ internal sealed class FanControlService : ServiceBase
 
         Log.Debug(Strings.GetString("svcGetKeyLight"));
 
-        if (LogECReadByte(Config.KeyLightConf.Reg, out byte value) &&
-            value >= Config.KeyLightConf.MinVal && value <= Config.KeyLightConf.MaxVal)
+        KeyLightConf klCfg = Config.KeyLightConf;
+        if (LogECReadByte(klCfg.Reg, out byte value) &&
+            value >= klCfg.MinVal && value <= klCfg.MaxVal)
         {
-            int brightness = value - Config.KeyLightConf.MinVal;
+            int brightness = value - klCfg.MinVal;
 
             IPCServer.PushMessage(new ServiceResponse(
-                Response.KeyLightBright, $"{brightness}"), clientId);
+                Response.KeyLightBright, brightness), clientId);
             return true;
         }
         return false;
@@ -667,7 +632,8 @@ internal sealed class FanControlService : ServiceBase
 
         Log.Debug(Strings.GetString("svcSetKeyLight", brightness));
 
-        return LogECWriteByte(Config.KeyLightConf.Reg, (byte)(brightness + Config.KeyLightConf.MinVal));
+        KeyLightConf klCfg = Config.KeyLightConf;
+        return LogECWriteByte(klCfg.Reg, (byte)(brightness + klCfg.MinVal));
     }
 
     private bool ECtoConf()
@@ -690,7 +656,7 @@ internal sealed class FanControlService : ServiceBase
             }
             else
             {
-                Config.Manufacturer = pcManufacturer.Trim();
+                Config.Manufacturer = pcManufacturer;
             }
 
             if (string.IsNullOrEmpty(pcModel))
@@ -699,7 +665,7 @@ internal sealed class FanControlService : ServiceBase
             }
             else
             {
-                Config.Model = pcModel.Trim();
+                Config.Model = pcModel;
             }
 
             for (int i = 0; i < Config.FanConfs.Count; i++)
@@ -734,32 +700,30 @@ internal sealed class FanControlService : ServiceBase
                 // reset first fan curve config description
                 curveCfg.Desc = Strings.GetString("DefaultDesc");
 
-                for (int j = 0; j < cfg.FanCurveRegs.Length; j++)
+                for (int j = 0; j < curveCfg.TempThresholds.Count; j++)
                 {
-                    if (curveCfg.TempThresholds[j] is null)
-                    {
-                        curveCfg.TempThresholds[j] = new();
-                    }
+                    curveCfg.TempThresholds[j] ??= new();
+                    TempThreshold t = curveCfg.TempThresholds[j];
 
                     if (LogECReadByte(cfg.FanCurveRegs[j], out byte value))
                     {
-                        curveCfg.TempThresholds[j].FanSpeed = value;
+                        t.FanSpeed = value;
                     }
 
                     if (j == 0)
                     {
-                        curveCfg.TempThresholds[j].UpThreshold = 0;
-                        curveCfg.TempThresholds[j].DownThreshold = 0;
+                        t.UpThreshold = 0;
+                        t.DownThreshold = 0;
                     }
                     else
                     {
                         if (LogECReadByte(cfg.UpThresholdRegs[j - 1], out value))
                         {
-                            curveCfg.TempThresholds[j].UpThreshold = value;
+                            t.UpThreshold = value;
                         }
                         if (LogECReadByte(cfg.DownThresholdRegs[j - 1], out value))
                         {
-                            curveCfg.TempThresholds[j].DownThreshold = (byte)(curveCfg.TempThresholds[j].UpThreshold - value);
+                            t.DownThreshold = (byte)(t.UpThreshold - value);
                         }
                     }
                 }

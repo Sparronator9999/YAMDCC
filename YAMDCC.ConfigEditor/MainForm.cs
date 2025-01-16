@@ -15,6 +15,7 @@
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -174,11 +175,11 @@ internal sealed partial class MainForm : Form
         IPCClient.Error += new EventHandler<PipeErrorEventArgs<ServiceResponse, ServiceCommand>>(IPCError);
         IPCClient.Start();
 
-        ProgressDialog dlg = new("Connecting to YAMDCC service...",
-            (e) => e.Result = !IPCClient.WaitForConnection(5000));
+        ProgressDialog<bool> dlg = new("Connecting to YAMDCC service...",
+            () => !IPCClient.WaitForConnection(5000));
         dlg.ShowDialog();
 
-        if ((bool)dlg.Result)
+        if (dlg.Result)
         {
             throw new TimeoutException(Strings.GetString("exSvcTimeout"));
         }
@@ -186,16 +187,13 @@ internal sealed partial class MainForm : Form
 
         LoadConf(Paths.CurrentConf);
 
-        if (Config is not null)
+        if (Config?.KeyLightConf is null)
         {
-            if (Config?.KeyLightConf is null)
-            {
-                ttMain.SetToolTip(tbKeyLight, Strings.GetString("ttNotSupported"));
-            }
-            else
-            {
-                SendSvcMessage(new ServiceCommand(Command.GetKeyLightBright, string.Empty));
-            }
+            ttMain.SetToolTip(tbKeyLight, Strings.GetString("ttNotSupported"));
+        }
+        else
+        {
+            SendSvcMessage(new ServiceCommand(Command.GetKeyLightBright));
         }
 
         switch (CommonConfig.GetECtoConfState())
@@ -216,7 +214,7 @@ internal sealed partial class MainForm : Form
         // Disable Full Blast if it was enabled while the program was running:
         if (chkFullBlast.Checked)
         {
-            SendSvcMessage(new ServiceCommand(Command.FullBlast, "0"));
+            SendSvcMessage(new ServiceCommand(Command.FullBlast, false));
         }
     }
 
@@ -231,14 +229,9 @@ internal sealed partial class MainForm : Form
     private void IPCMessage(object sender, PipeMessageEventArgs<ServiceResponse, ServiceCommand> e)
     {
         tmrSvcTimeout.Stop();
-        string[] args = e.Message.Value.Split(' ');
-        if (args.Length != 1)
-        {
-            return;
-        }
-
         Invoke(() =>
         {
+            object[] args = e.Message.Value;
             switch (e.Message.Response)
             {
                 case Response.Nothing:
@@ -248,18 +241,18 @@ internal sealed partial class MainForm : Form
                 }
                 case Response.Success:
                 {
-                    if (!int.TryParse(args[0], out int value))
+                    if (args.Length != 1 || args[0] is not int cmd)
                     {
                         break;
                     }
-                    switch ((Command)value)
+                    switch ((Command)cmd)
                     {
                         case Command.ApplyConfig:
                             ToggleSvcCmds(true);
                             UpdateStatus(StatusCode.ConfApplied);
                             if (Config.KeyLightConf is not null)
                             {
-                                SendSvcMessage(new ServiceCommand(Command.GetKeyLightBright, ""));
+                                SendSvcMessage(new ServiceCommand(Command.GetKeyLightBright));
                             }
                             break;
                         case Command.FullBlast:
@@ -271,54 +264,61 @@ internal sealed partial class MainForm : Form
                 }
                 case Response.Error:
                 {
-                    if (int.TryParse(args[0], out int value))
+                    if (args.Length == 1 && args[0] is int cmd)
                     {
-                        UpdateStatus(StatusCode.ServiceCommandFail, value);
+                        UpdateStatus(StatusCode.ServiceCommandFail, cmd);
                     }
                     break;
                 }
                 case Response.Temp:
                 {
-                    if (int.TryParse(args[0], out int value))
+                    if (args.Length == 2 && args[0] is int fan && args[1] is int temp)
                     {
-                        lblTemp.Text = $"Temp: {value}°C";
+                        if (fan == cboFanSel.SelectedIndex)
+                        {
+                            lblTemp.Text = $"Temp: {temp}°C";
+                        }
                     }
                     break;
                 }
                 case Response.FanSpeed:
                 {
-                    if (int.TryParse(args[0], out int value))
+                    if (args.Length == 2 && args[0] is int fan && args[1] is int speed && fan == cboFanSel.SelectedIndex)
                     {
-                        lblFanSpd.Text = $"Fan speed: {value}%";
+                        lblFanSpd.Text = $"Fan speed: {speed}%";
                     }
                     break;
                 }
                 case Response.FanRPM:
                 {
-                    if (int.TryParse(args[0], out int value))
+                    if (args.Length == 2 && args[0] is int fan && args[1] is int rpm && fan == cboFanSel.SelectedIndex)
                     {
-                        lblFanRPM.Text = value == -1
+                        lblFanRPM.Text = rpm == -1
                             ? "RPM: 0"
-                            : $"RPM: {value}";
+                            : $"RPM: {rpm}";
                     }
                     break;
                 }
                 case Response.KeyLightBright:
                 {
-                    if (int.TryParse(args[0], out int value))
+                    if (args.Length == 1 && args[0] is int brightness)
                     {
                         // value received from service should be valid,
                         // but let's check anyway to avoid potential crashes
                         // from non-official YAMDCC services
-                        if (value < 0 || value > Config.KeyLightConf.MaxVal - Config.KeyLightConf.MinVal)
+                        int max = Config.KeyLightConf.MaxVal - Config.KeyLightConf.MinVal;
+                        if (brightness < 0 || brightness > max)
                         {
                             break;
                         }
 
-                        tbKeyLight.Maximum = Config.KeyLightConf.MaxVal - Config.KeyLightConf.MinVal;
-                        tbKeyLight.Value = value;
-                        tbKeyLight.Enabled = lblKeyLightLow.Enabled = lblKeyLightHigh.Enabled = true;
+                        tbKeyLight.Maximum = max;
+                        tbKeyLight.Value = brightness;
                         ttMain.SetToolTip(tbKeyLight, Strings.GetString("ttKeyLight"));
+
+                        tbKeyLight.Enabled = true;
+                        lblKeyLightLow.Enabled = true;
+                        lblKeyLightHigh.Enabled = true;
                     }
                     break;
                 }
@@ -328,8 +328,7 @@ internal sealed partial class MainForm : Form
 
     private void IPCError(object sender, PipeErrorEventArgs<ServiceResponse, ServiceCommand> e)
     {
-        CrashDialog dlg = new(e.Exception);
-        dlg.ShowDialog();
+        new CrashDialog(e.Exception).ShowDialog();
     }
 
     #region Tool strip menu items
@@ -443,8 +442,8 @@ internal sealed partial class MainForm : Form
     {
         if (tsiECMon.Checked)
         {
-            tmrPoll.Start();
             PollEC();
+            tmrPoll.Start();
             lblFanSpd.Visible = true;
             lblFanRPM.Visible = true;
             lblTemp.Visible = true;
@@ -548,13 +547,15 @@ internal sealed partial class MainForm : Form
             IPCClient.Stop();
             Hide();
 
-            ProgressDialog dlg = new(Strings.GetString("dlgSvcStopping"),
-                static (e) =>
+            ProgressDialog<bool> dlg = new(Strings.GetString("dlgSvcStopping"),
+                static () =>
                 {
                     if (!Utils.StopService("yamdccsvc"))
                     {
                         Utils.ShowError(Strings.GetString("dlgSvcStopErr"));
+                        return false;
                     }
+                    return true;
                 });
             dlg.ShowDialog();
 
@@ -576,7 +577,7 @@ internal sealed partial class MainForm : Form
             IPCClient.Stop();
             Hide();
 
-            ProgressDialog dlg = new(Strings.GetString("dlgSvcUninstalling"), (e) =>
+            ProgressDialog<bool> dlg = new(Strings.GetString("dlgSvcUninstalling"), () =>
             {
                 // Apparently this fixes the YAMDCC service not uninstalling
                 // when YAMDCC is launched by certain means
@@ -593,16 +594,13 @@ internal sealed partial class MainForm : Form
                         {
                             Directory.Delete(Paths.Data, true);
                         }
+                        return true;
                     }
-                    else
-                    {
-                        Utils.ShowError(Strings.GetString("dlgUninstallErr"));
-                    }
+                    Utils.ShowError(Strings.GetString("dlgUninstallErr"));
+                    return false;
                 }
-                else
-                {
-                    Utils.ShowError(Strings.GetString("dlgSvcStopErr"));
-                }
+                Utils.ShowError(Strings.GetString("dlgSvcStopErr"));
+                return false;
             });
             dlg.ShowDialog();
             Close();
@@ -753,24 +751,27 @@ internal sealed partial class MainForm : Form
         ttMain.SetToolTip(cboProfSel, Strings.GetString(
             "ttProfSel", cfg.FanCurveConfs[cfg.CurveSel].Desc));
 
+        bool enable = curveCfg.Name != "Default";
         for (int i = 0; i < numFanSpds.Length; i++)
         {
             // Fan curve
-            numFanSpds[i].Value = tbFanSpds[i].Value
-                = curveCfg.TempThresholds[i].FanSpeed;
-
-            numFanSpds[i].Enabled = tbFanSpds[i].Enabled = curveCfg.Name != "Default";
+            TempThreshold t = curveCfg.TempThresholds[i];
+            numFanSpds[i].Value = tbFanSpds[i].Value = t.FanSpeed;
+            numFanSpds[i].Enabled = enable;
+            tbFanSpds[i].Enabled = enable;
 
             // Temp thresholds
             if (i < cfg.UpThresholdRegs.Length)
             {
-                TempThreshold t = curveCfg.TempThresholds[i + 1];
+                t = curveCfg.TempThresholds[i + 1];
                 numUpTs[i].Value = t.UpThreshold;
                 numDownTs[i].Value = t.DownThreshold;
-                numUpTs[i].Enabled = numDownTs[i].Enabled = curveCfg.Name != "Default";
+                numUpTs[i].Enabled = enable;
+                numDownTs[i].Enabled = enable;
             }
         }
-        btnProfDel.Enabled = tsiProfDel.Enabled = curveCfg.Name != "Default";
+        btnProfDel.Enabled = enable;
+        tsiProfDel.Enabled = enable;
     }
 
     private void ProfAdd(object sender, EventArgs e)
@@ -796,11 +797,10 @@ internal sealed partial class MainForm : Form
     private void ProfAdd(int start, int end)
     {
         FanConf cfg = Config.FanConfs[cboFanSel.SelectedIndex];
-        string oldProfName = cfg.FanCurveConfs[cboProfSel.SelectedIndex].Name;
 
         TextInputDialog dlg = new(
-            Strings.GetString("dlgProfAdd"),
-            "New Profile", $"Copy of {oldProfName}");
+            Strings.GetString("dlgProfAdd"), "New Profile",
+            $"Copy of {cfg.FanCurveConfs[cboProfSel.SelectedIndex].Name}");
 
         if (dlg.ShowDialog() == DialogResult.OK)
         {
@@ -920,7 +920,7 @@ internal sealed partial class MainForm : Form
 
         Config.FanConfs[cboFanSel.SelectedIndex]
             .FanCurveConfs[cboProfSel.SelectedIndex]
-            .TempThresholds[i].FanSpeed = (byte)numFanSpds[i].Value;
+            .TempThresholds[i].FanSpeed = (byte)tbFanSpds[i].Value;
     }
 
     private void UpTChange(object sender, EventArgs e)
@@ -955,10 +955,10 @@ internal sealed partial class MainForm : Form
 
     private void PerfModeChange(object sender, EventArgs e)
     {
-        int idx = cboPerfMode.SelectedIndex;
-        Config.PerfModeConf.ModeSel = idx;
+        int i = cboPerfMode.SelectedIndex;
+        Config.PerfModeConf.ModeSel = i;
         ttMain.SetToolTip(cboPerfMode,
-            Strings.GetString("ttPerfMode", Config.PerfModeConf.PerfModes[idx].Desc));
+            Strings.GetString("ttPerfMode", Config.PerfModeConf.PerfModes[i].Desc));
     }
 
     private void WinFnSwapToggle(object sender, EventArgs e)
@@ -968,15 +968,15 @@ internal sealed partial class MainForm : Form
 
     private void KeyLightChange(object sender, EventArgs e)
     {
-        SendSvcMessage(new ServiceCommand(Command.SetKeyLightBright, $"{tbKeyLight.Value}"));
+        SendSvcMessage(new ServiceCommand(Command.SetKeyLightBright, (byte)tbKeyLight.Value));
     }
 
     private void FanModeChange(object sender, EventArgs e)
     {
-        int idx = cboFanMode.SelectedIndex;
-        Config.FanModeConf.ModeSel = idx;
+        int i = cboFanMode.SelectedIndex;
+        Config.FanModeConf.ModeSel = i;
         ttMain.SetToolTip(cboFanMode,
-            Strings.GetString("ttFanMode", Config.FanModeConf.FanModes[idx].Desc));
+            Strings.GetString("ttFanMode", Config.FanModeConf.FanModes[i].Desc));
 }
 
     private void txtAuthor_Validating(object sender, CancelEventArgs e)
@@ -996,22 +996,24 @@ internal sealed partial class MainForm : Form
     private void btnGetModel_Click(object sender, EventArgs e)
     {
         string pcManufacturer = Utils.GetPCManufacturer(),
-                pcModel = Utils.GetPCModel();
+            pcModel = Utils.GetPCModel();
 
         if (!string.IsNullOrEmpty(pcManufacturer))
         {
-            txtManufacturer.Text = Config.Manufacturer = pcManufacturer.Trim();
+            txtManufacturer.Text = pcManufacturer;
+            Config.Manufacturer = pcManufacturer;
         }
         if (!string.IsNullOrEmpty(pcModel))
         {
-            txtModel.Text = Config.Model = pcModel.Trim();
+            txtModel.Text = pcModel;
+            Config.Model = pcModel;
         }
     }
 
     private void FullBlastToggle(object sender, EventArgs e)
     {
         ToggleSvcCmds(false);
-        SendSvcMessage(new ServiceCommand(Command.FullBlast, chkFullBlast.Checked ? "1" : "0"));
+        SendSvcMessage(new ServiceCommand(Command.FullBlast, chkFullBlast.Checked));
     }
 
     private void RevertConf(object sender, EventArgs e)
@@ -1052,7 +1054,7 @@ internal sealed partial class MainForm : Form
         Config.Save(Paths.CurrentConf);
 
         // Tell the service to reload and apply the updated config
-        SendSvcMessage(new ServiceCommand(Command.ApplyConfig, null));
+        SendSvcMessage(new ServiceCommand(Command.ApplyConfig));
     }
 
     private void tmrPoll_Tick(object sender, EventArgs e)
@@ -1105,10 +1107,12 @@ internal sealed partial class MainForm : Form
 
         tsiSaveConf.Enabled = true;
 
-        txtAuthor.Enabled = txtManufacturer.Enabled = txtModel.Enabled = true;
         txtAuthor.Text = cfg.Author;
         txtManufacturer.Text = cfg.Manufacturer;
         txtModel.Text = cfg.Model;
+        txtAuthor.Enabled = true;
+        txtManufacturer.Enabled = true;
+        txtModel.Enabled = true;
         btnGetModel.Enabled = true;
 
         if (cfg.FullBlastConf is null)
@@ -1129,7 +1133,8 @@ internal sealed partial class MainForm : Form
         {
             ttMain.SetToolTip(numChgLim, Strings.GetString("ttChgLim"));
             ChargeLimitConf chgLimConf = cfg.ChargeLimitConf;
-            chkChgLim.Enabled = numChgLim.Enabled = true;
+            chkChgLim.Enabled = true;
+            numChgLim.Enabled = true;
             numChgLim.Maximum = Math.Abs(chgLimConf.MaxVal - chgLimConf.MinVal);
             if (chgLimConf.CurVal == 0)
             {
@@ -1195,7 +1200,8 @@ internal sealed partial class MainForm : Form
         }
 
         btnProfAdd.Enabled = true;
-        tsiProfAdd.Enabled = tsiProfEdit.Enabled = true;
+        tsiProfAdd.Enabled = true;
+        tsiProfEdit.Enabled = true;
         tsiECtoConf.Enabled = true;
         cboFanSel.Enabled = true;
         cboFanSel.SelectedIndex = 0;
@@ -1207,9 +1213,9 @@ internal sealed partial class MainForm : Form
 
     private void PollEC()
     {
-        SendSvcMessage(new ServiceCommand(Command.GetTemp, $"{cboFanSel.SelectedIndex}"));
-        SendSvcMessage(new ServiceCommand(Command.GetFanSpeed, $"{cboFanSel.SelectedIndex}"));
-        SendSvcMessage(new ServiceCommand(Command.GetFanRPM, $"{cboFanSel.SelectedIndex}"));
+        SendSvcMessage(new ServiceCommand(Command.GetTemp, cboFanSel.SelectedIndex));
+        SendSvcMessage(new ServiceCommand(Command.GetFanSpeed, cboFanSel.SelectedIndex));
+        SendSvcMessage(new ServiceCommand(Command.GetFanRPM, cboFanSel.SelectedIndex));
     }
 
     private static Label FanCurveLabel(string text, float scale, ContentAlignment align = ContentAlignment.MiddleRight)
@@ -1290,10 +1296,10 @@ internal sealed partial class MainForm : Form
 
     private bool FansHaveSameProfCount()
     {
-        for (int i = 0; i < Config.FanConfs.Count - 1; i++)
+        List<FanConf> cfgs = Config.FanConfs;
+        for (int i = 0; i < cfgs.Count - 1; i++)
         {
-            if (Config.FanConfs[i].FanCurveConfs.Count !=
-                Config.FanConfs[i + 1].FanCurveConfs.Count)
+            if (cfgs[i].FanCurveConfs.Count != cfgs[i + 1].FanCurveConfs.Count)
             {
                 return false;
             }

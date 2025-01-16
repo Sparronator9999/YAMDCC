@@ -41,7 +41,7 @@ public class ProjectInstaller : Installer
         Installers.AddRange(
         [
             svcPInstaller,
-            svcInstaller
+            svcInstaller,
         ]);
     }
 }

@@ -33,8 +33,8 @@ public enum Command
     /// <see cref="Response.ReadResult"/> message.
     /// </para>
     /// <para>
-    /// This command expects the following arguments as
-    /// a space-seperated string:<br/>
+    /// This command expects the following argument as
+    /// a <see langword="byte"/>:<br/>
     /// • Register: The EC register to read.
     /// </para>
     /// </remarks>
@@ -45,20 +45,33 @@ public enum Command
     /// <remarks>
     /// <para>
     /// This command expects the following arguments as
-    /// a space-seperated string:<br/>
+    /// a <see langword="byte"/> array:<br/>
     /// • Register: The EC register to write to.<br/>
     /// • Value: The value to write.
     /// </para>
     /// </remarks>
     WriteECByte,
     /// <summary>
+    /// Reload and apply a YAMDCC config.
+    /// </summary>
+    ApplyConfig,
+    /// <summary>
+    /// Enable or disable Full Blast on the system.
+    /// </summary>
+    /// <remarks>
+    /// This command expects the following argument as
+    /// a <see langword="bool"/>:<br/>
+    /// • Enable: 1 to enable Full Blast, 0 to disable.
+    /// </remarks>
+    FullBlast,
+    /// <summary>
     /// Get the target speed of a specified system fan in the
     /// currently loaded YAMDCC config.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This command expects the following arguments as
-    /// a space-seperated string:<br/>
+    /// This command expects the following argument as
+    /// an <see langword="int"/>:<br/>
     /// • Fan: The index of the fan to read the target speed from.
     /// </para>
     /// <para>
@@ -73,8 +86,8 @@ public enum Command
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This command expects the following arguments as
-    /// a space-seperated string:<br/>
+    /// This command expects the following argument as
+    /// an <see langword="int"/>:<br/>
     /// • Fan: The index of the fan to read the RPM from.
     /// </para>
     /// <para>
@@ -89,8 +102,8 @@ public enum Command
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This command expects the following arguments as
-    /// a space-seperated string:<br/>
+    /// This command expects the following argument as
+    /// an <see langword="int"/>:<br/>
     /// • Fan: The index of the fan to read the associated component's temperature from.
     /// </para>
     /// <para>
@@ -99,19 +112,6 @@ public enum Command
     /// </para>
     /// </remarks>
     GetTemp,
-    /// <summary>
-    /// Reload and apply a YAMDCC config.
-    /// </summary>
-    ApplyConfig,
-    /// <summary>
-    /// Enable or disable Full Blast on the system.
-    /// </summary>
-    /// <remarks>
-    /// This command expects the following arguments as
-    /// a space-seperated string:<br/>
-    /// • Enable: 1 to enable Full Blast, 0 to disable.
-    /// </remarks>
-    FullBlast,
     /// <summary>
     /// Gets the brightness of the keyboard backlight,
     /// and sends a <see cref="Response.KeyLightBright"/>
@@ -122,8 +122,8 @@ public enum Command
     /// Sets the keyboard backlight to the specified value.
     /// </summary>
     /// <remarks>
-    /// This command expects the following arguments as
-    /// a space-seperated string:<br/>
+    /// This command expects the following argument as
+    /// a <see langword="byte"/>:<br/>
     /// • Brightness: A value between the minimum and
     /// maximum brightness value (minus offset).
     /// </remarks>
@@ -148,9 +148,9 @@ public class ServiceCommand
     /// specific command sent to the service.
     /// </summary>
     [Key(1)]
-    public string Arguments { get; set; } = string.Empty;
+    public object[] Arguments { get; set; }
 
-    public ServiceCommand(Command command, string args)
+    public ServiceCommand(Command command, params object[] args)
     {
         Command = command;
         Arguments = args;

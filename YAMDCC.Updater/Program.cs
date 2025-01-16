@@ -84,7 +84,7 @@ internal static class Program
     private static void InstallUpdate(
         string oldPath, string updatePath, string destPath)
     {
-        ProgressDialog dlg = new("Installing YAMDCC update...", (e) =>
+        ProgressDialog<bool> dlg = new("Installing YAMDCC update...", () =>
         {
             bool svcRunning = Utils.ServiceRunning("yamdccsvc");
 
@@ -129,6 +129,8 @@ internal static class Program
             // cleanup :)
             // (note: does not delete "Old" folder that we should be running from)
             Directory.Delete(updatePath);
+
+            return true;
         });
         dlg.ShowDialog();
 

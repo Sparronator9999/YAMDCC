@@ -131,7 +131,7 @@ Make sure YAMDCC is up to date, then run the YAMDCC config editor and apply an u
     <value>Config loaded successfully!</value>
   </data>
   <data name="cfgNotFound" xml:space="preserve">
-    <value>A config hasn't been applied yet (CurrentConfig.xml not found in program data directory).
+    <value>No config has been applied yet..
 Please run the YAMDCC config editor and apply a config at least once.</value>
   </data>
   <data name="drvLoad" xml:space="preserve">
@@ -148,11 +148,10 @@ If the issue still occurs, open a bug report with this log attached.</value>
   <data name="drvUnload" xml:space="preserve">
     <value>Unloading WinRing0 driver...</value>
   </data>
-  <data name="errArgsBadLen" xml:space="preserve">
-    <value>Received a command with incorrect number of arguments.</value>
-  </data>
-  <data name="errArgsBadType" xml:space="preserve">
-    <value>Received a command with incorrect type of arguments.</value>
+  <data name="errBadArgs" xml:space="preserve">
+    <value>Received a command with incorrect number/type of arguments.
+Offending command: {0}
+Args: {1}</value>
   </data>
   <data name="errBadCmd" xml:space="preserve">
     <value>Unknown command received: {0}</value>
@@ -162,10 +161,6 @@ If the issue still occurs, open a bug report with this log attached.</value>
   </data>
   <data name="errECWrite" xml:space="preserve">
     <value>Failed to write to EC register 0x{0:X2}: {1}</value>
-  </data>
-  <data name="errOffendingCmd" xml:space="preserve">
-    <value>Offending command: {0}
-Args: {1}</value>
   </data>
   <data name="ipcConnect" xml:space="preserve">
     <value>Client connected to service (ID: {0})</value>
