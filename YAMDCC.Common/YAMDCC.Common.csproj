@@ -13,7 +13,7 @@
         <TargetFramework>net48</TargetFramework>
         <Title>YAMDCC common code library</Title>
         <VersionPrefix>1.0.0</VersionPrefix>
-        <VersionSuffix>beta.8</VersionSuffix>
+        <VersionSuffix>beta.8-hotfix.1</VersionSuffix>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>none</DebugType>

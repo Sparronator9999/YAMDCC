@@ -147,7 +147,19 @@ internal static class Program
     {
         try
         {
-            Release release = Updater.GetLatestReleaseAsync(CommonConfig.GetPreRelease()).GetAwaiter().GetResult();
+            bool preRelease = CommonConfig.GetPreRelease();
+            Release release = Updater.GetLatestReleaseAsync(preRelease).GetAwaiter().GetResult();
+
+            if (release is null && !preRelease)
+            {
+                // there's no non-prerelease version yet, try to get latest pre-release
+                release = Updater.GetLatestReleaseAsync(true).GetAwaiter().GetResult();
+                if (release is null)
+                {
+                    Utils.ShowError("Failed to get latest YAMDCC release info!");
+                    return false;
+                }
+            }
 
             if (Utils.GetCurrentVersion() < Utils.GetVersion(release.TagName.Remove(0, 1)))
             {

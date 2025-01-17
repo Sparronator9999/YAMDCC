@@ -113,9 +113,10 @@ public static class Utils
         // expected version format: X.Y.Z-SUFFIX[.W]+REVISION,
         switch (suffix)
         {
-            // releases: X.Y.Z
+            // releases: X.Y.Z.250
+            // (ensures that beta/RC versions get updated to releases)
             case "release":
-                verString = verString.Remove(verString.IndexOf('-'));
+                verString = $"{verString.Remove(verString.IndexOf('-'))}.250";
                 break;
             // dev versions: X.Y.Z.255
             // (ensures that dev versions don't get updated)

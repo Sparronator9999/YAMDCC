@@ -74,7 +74,7 @@ public class CommonConfig
     /// to pre-releases, otherwise <see langword="false"/>.
     /// </summary>
     [XmlElement]
-    public bool PreRelease { get; set; } = true;
+    public bool PreRelease { get; set; }
 
     public static string GetLastConf()
     {

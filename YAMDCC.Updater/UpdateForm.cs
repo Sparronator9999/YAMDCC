@@ -189,7 +189,7 @@ internal sealed partial class UpdateForm : Form
 
     private void tsiPreRelease_Click(object sender, EventArgs e)
     {
-        if (SetAdminSetting("setprerelease", tsiPreRelease.Checked))
+        if (SetAdminSetting("setprerelease", !tsiPreRelease.Checked))
         {
             tsiPreRelease.Checked = !tsiPreRelease.Checked;
             if (btnUpdate.Tag is null)
@@ -212,6 +212,11 @@ internal sealed partial class UpdateForm : Form
         try
         {
             Release = await Updater.GetLatestReleaseAsync(tsiPreRelease.Checked);
+            if (Release is null && !tsiPreRelease.Checked)
+            {
+                // there's no non-prerelease version yet, try to get latest pre-release
+                Release = await Updater.GetLatestReleaseAsync(true);
+            }
         }
         catch (HttpRequestException ex)
         {
