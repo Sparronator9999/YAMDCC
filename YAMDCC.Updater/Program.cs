@@ -161,7 +161,7 @@ internal static class Program
                 }
             }
 
-            if (Utils.GetCurrentVersion() < Utils.GetVersion(release.TagName.Remove(0, 1)))
+            if (!Updater.IsDevVersion(release) && Updater.IsUpdateAvailable(release))
             {
                 Application.Run(new UpdateForm(release, autoUpdate));
             }

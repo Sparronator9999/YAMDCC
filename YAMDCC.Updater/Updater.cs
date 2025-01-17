@@ -36,6 +36,54 @@ internal static class Updater
     private static readonly string BuildConfig = Assembly.GetCallingAssembly()
         .GetCustomAttribute<AssemblyConfigurationAttribute>().Configuration;
 
+    public static bool IsDevVersion(Release release)
+    {
+        return Utils.GetCurrentVersion() > Utils.GetVersion(release.TagName.Remove(0, 1)) ||
+            Utils.GetCurrentVerSuffix() == "dev";
+    }
+
+    public static bool IsUpdateAvailable(Release release)
+    {
+        string tag = release.TagName.Remove(0, 1),
+                latestSuffix = Utils.GetCurrentVerSuffix(),
+                currentSuffix = Utils.GetVerSuffix(tag);
+
+        Version current = Utils.GetCurrentVersion(),
+                latest = Utils.GetVersion(tag);
+
+        if (current == latest)
+        {
+            // check if current version is a beta/RC/hotfix
+            // but latest is a full release with same base version
+            if (currentSuffix != "release" && latestSuffix == string.Empty)
+            {
+                return true;
+            }
+            else
+            {
+                // check if pre-release version is out of date
+                int latestSuffixVer = Utils.GetSuffixVer(tag),
+                        currentSuffixVer = Utils.GetCurrentSuffixVer(),
+                        i = 0;
+                while (currentSuffixVer != -1 || latestSuffixVer != -1)
+                {
+                    // this works even if current version
+                    // doesn't have extra suffixes :)
+                    if (currentSuffixVer < latestSuffixVer)
+                    {
+                        return true;
+                    }
+                    i++;
+                    latestSuffixVer = Utils.GetSuffixVer(tag, i);
+                    currentSuffixVer = Utils.GetCurrentSuffixVer(i);
+                }
+
+                return false;
+            }
+        }
+        return true;
+    }
+
     /// <summary>
     /// Gets the latest YAMDCC release
     /// (or pre-release if <paramref name="preRelease"/> is <see langword="true"/>).

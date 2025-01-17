@@ -109,46 +109,69 @@ public static class Utils
 
     public static Version GetVersion(string verString)
     {
-        string suffix = GetVerSuffix(verString, true);
         // expected version format: X.Y.Z-SUFFIX[.W]+REVISION,
-        switch (suffix)
+        if (verString.Contains("-"))
         {
-            // releases: X.Y.Z.250
-            // (ensures that beta/RC versions get updated to releases)
-            case "release":
-                verString = $"{verString.Remove(verString.IndexOf('-'))}.250";
-                break;
-            // dev versions: X.Y.Z.255
-            // (ensures that dev versions don't get updated)
-            case "dev":
-                verString = $"{verString.Remove(verString.IndexOf('-'))}.255";
-                break;
-            // betas/hotfixes/RCs: X.Y.Z.W (where W is suffix version number),
-            // e.g. 1.0.0-beta.4 becomes 1.0.0.4
-            // NOTE: apps with multiple suffixes aren't handled
-            // (e.g. v1.0.0-beta.4-hotfix.1 will also become 1.0.0.4 with this parser)
-            case "beta":
-            case "hotfix":
-            case "rc":
-                char[] numbers = "0123456789".ToCharArray();
-                // X.Y.Z-SUFFIX.W
-                if (verString.Contains("+"))
-                {
-                    verString = verString.Remove(verString.IndexOf('+'));
-                }
-                // X.Y.Z.W
-                string[] verParts = verString.Split('-');
-                verString = $"{verParts[0]}.{verParts[1].Remove(0, verParts[1].IndexOfAny(numbers))}";
-                break;
-            // version number is in unrecognised format,
-            // just try to parse the version number as is
-            default:
-                break;
-        };
+            // remove suffix and revision
+            verString = verString.Remove(verString.IndexOf('-'));
+        }
+        else if (verString.Contains("+"))
+        {
+            // remove revision if suffix doesn't exist for some reason
+            verString = verString.Remove(verString.IndexOf('+'));
+        }
 
-        return Version.TryParse(verString, out Version ver)
-            ? ver
-            : null;
+        return Version.TryParse(verString, out Version ver) ? ver : null;
+    }
+    public static int GetCurrentSuffixVer(int suffixNum = 0)
+    {
+        return GetSuffixVer(Application.ProductVersion, suffixNum);
+    }
+
+    public static int GetSuffixVer(string verString, int suffixNum = 0)
+    {
+        // format: X.Y.Z-SUFFIX[.W]+REVISION,
+        // where W is a beta/release candidate version if applicable
+        if (verString.Contains("-"))
+        {
+            verString = verString.Remove(0, verString.IndexOf('-') + 1);
+        }
+
+        if (verString.Contains("."))
+        {
+            suffixNum++;
+            int index;
+            do
+            {
+                // SUFFIX[.W][-SUFFIX2[.V]...]+REVISION
+                index = verString.IndexOf('.');
+                if (index == -1)
+                {
+                    return -1;
+                }
+                verString = verString.Remove(0, index + 1);
+                suffixNum--;
+            }
+            while (suffixNum > 0);
+
+            if (verString.Contains("-"))
+            {
+                // remove other suffixes
+                verString = verString.Remove(verString.IndexOf('-'));
+            }
+            else if (verString.Contains("+"))
+            {
+                // remove Git hash, if it exists (for "dev" detection)
+                verString = verString.Remove(verString.IndexOf('+'));
+            }
+        }
+        else
+        {
+            // suffix with version probably doesn't exist...
+            return -1;
+        }
+
+        return int.TryParse(verString, out int version) ? version : -1;
     }
 
     public static string GetCurrentVerSuffix()
@@ -156,32 +179,43 @@ public static class Utils
         return GetVerSuffix(Application.ProductVersion);
     }
 
-    public static string GetVerSuffix(string verString, bool noNum = false)
+    public static string GetVerSuffix(string verString, int suffixNum = 0)
     {
         // format: X.Y.Z-SUFFIX[.W]+REVISION,
         // where W is a beta/release candidate version if applicable
-        string suffix;
-        if (verString.Contains("-"))
-        {
-            // remove the version number (SUFFIX[.W]+REVISION at this point):
-            suffix = verString.Remove(0, verString.IndexOf('-') + 1);
+        string verSuffix = verString;
 
-            if (noNum && suffix.Contains("."))
+        if (verSuffix.Contains("-"))
+        {
+            suffixNum++;
+            int index;
+            do
             {
-                suffix = suffix.Remove(suffix.IndexOf('.'));
+                // SUFFIX[.W][-SUFFIX2[.V]...]+REVISION
+                index = verSuffix.IndexOf('-');
+                verSuffix = verSuffix.Remove(0, index + 1);
+                suffixNum--;
             }
-            else if (suffix.Contains("+"))
+            while (index != -1 && suffixNum > 0);
+
+            if (verSuffix.Contains("."))
+            {
+                // remove suffix version number
+                verSuffix = verSuffix.Remove(verSuffix.IndexOf('.'));
+            }
+            else if (verSuffix.Contains("+"))
             {
                 // remove Git hash, if it exists (for "dev" detection)
-                suffix = suffix.Remove(suffix.IndexOf('+'));
+                verSuffix = verSuffix.Remove(verSuffix.IndexOf('+'));
             }
         }
         else
         {
             // suffix probably doesn't exist...
-            suffix = string.Empty;
+            verSuffix = string.Empty;
         }
-        return suffix.ToLowerInvariant();
+
+        return verSuffix.ToLowerInvariant();
     }
 
     public static string GetVerString()

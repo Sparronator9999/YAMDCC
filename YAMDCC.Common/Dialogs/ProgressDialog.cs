@@ -41,6 +41,14 @@ public sealed partial class ProgressDialog<TResult> : Form
 
     private readonly Timer DisplayTimer = new();
 
+    public string Caption
+    {
+        get => lblCaption.Text;
+        set => lblCaption.Text = string.IsNullOrEmpty(value)
+            ? "Please wait..."
+            : value;
+    }
+
     /// <summary>
     /// Initialises a new instance of the <see cref="ProgressDialog"/> class.
     /// </summary>
@@ -64,7 +72,7 @@ public sealed partial class ProgressDialog<TResult> : Form
         DoWork = doWork;
 
         // set title text
-        lblCaption.Text = string.Format(CultureInfo.InvariantCulture, caption ?? "Please wait...", pbProgress.Value);
+        Caption = caption;
 
         pbProgress.Style = ProgressBarStyle.Marquee;
 

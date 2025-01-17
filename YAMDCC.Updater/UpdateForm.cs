@@ -233,27 +233,24 @@ internal sealed partial class UpdateForm : Form
         }
         else
         {
-            Version current = Utils.GetCurrentVersion(),
-                latest = Utils.GetVersion(Release.TagName.Remove(0, 1));
-
-            if (current == latest)
+            if (Updater.IsDevVersion(Release))
+            {
+                SetProgress(100, "Current YAMDCC version > Latest YAMDCC version???");
+                SetTitleText("Dev version detected");
+                wbChangelog.DocumentText = GetHtml(
+                    "You appear to be running a development version of YAMDCC.\n\n" +
+                    "[Update/downgrade to latest public release anyway?](yamdcc:reinstall)");
+            }
+            else if (Updater.IsUpdateAvailable(Release))
+            {
+                UpdateAvailable();
+            }
+            else
             {
                 SetProgress(100, "YAMDCC is up to date.");
                 SetTitleText("Up to date");
                 wbChangelog.DocumentText = GetHtml("YAMDCC is up to date.\n\n" +
                     "[Force-reinstall latest release?](yamdcc:reinstall)");
-            }
-            else if (current > latest)
-            {
-                SetProgress(100, "Current YAMDCC version > Latest YAMDCC version???");
-                SetTitleText("Dev version detected");
-                wbChangelog.DocumentText = GetHtml(
-                    "You appear to be running a unreleased/development version of YAMDCC.\n\n" +
-                    "[Update/downgrade to latest public release anyway?](yamdcc:reinstall)");
-            }
-            else
-            {
-                UpdateAvailable();
             }
         }
         btnUpdate.Enabled = true;
