@@ -86,6 +86,27 @@ internal static class Program
     {
         ProgressDialog<bool> dlg = new("Installing YAMDCC update...", () =>
         {
+            // kill all running instances of YAMDCC
+            string[] names =
+            [
+                "ConfigEditor",
+                "ec-inspect",
+                // yamdccsvc is stopped in next section
+            ];
+
+            foreach (string name in names)
+            {
+                foreach (Process process in Process.GetProcessesByName(name))
+                {
+                    // try to close the main window.
+                    // If that doesn't work, kill the process instead
+                    if (!process.CloseMainWindow() || !process.WaitForExit(3000))
+                    {
+                        process.Kill();
+                    }
+                }
+            }
+
             bool svcRunning = Utils.ServiceRunning("yamdccsvc");
 
             // stop the YAMDCC service if it's running
