@@ -625,9 +625,16 @@ internal sealed partial class MainForm : Form
         {
             Process.Start("updater", "--checkupdate");
         }
-        catch (FileNotFoundException)
+        catch (Exception ex)
         {
-            Utils.ShowError("Updater.exe not found!");
+            if (ex is Win32Exception or FileNotFoundException)
+            {
+                Utils.ShowError("Updater.exe not found!");
+            }
+            else
+            {
+                throw;
+            }
         }
     }
     #endregion
@@ -977,7 +984,7 @@ internal sealed partial class MainForm : Form
         Config.FanModeConf.ModeSel = i;
         ttMain.SetToolTip(cboFanMode,
             Strings.GetString("ttFanMode", Config.FanModeConf.FanModes[i].Desc));
-}
+    }
 
     private void txtAuthor_Validating(object sender, CancelEventArgs e)
     {

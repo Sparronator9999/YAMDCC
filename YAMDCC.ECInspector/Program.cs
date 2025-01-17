@@ -15,7 +15,6 @@
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Diagnostics;
 using System.ServiceProcess;
 using System.Threading;
 using YAMDCC.Common;
