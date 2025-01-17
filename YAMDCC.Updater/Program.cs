@@ -67,10 +67,10 @@ internal static class Program
                     Utils.ShowError("Could not set pre-release setting!");
                     return 1;
                 case "--install":
-                    // args: --install <oldPath> <updatePath> <destPath>
-                    if (args.Length >= 4)
+                    // args: --install <oldPath> <updatePath> <destPath> <confPath>
+                    if (args.Length >= 5)
                     {
-                        InstallUpdate(args[1], args[2], args[3]);
+                        InstallUpdate(args[1], args[2], args[3], args[4]);
                     }
                     return 0;
             }
@@ -82,7 +82,7 @@ internal static class Program
     }
 
     private static void InstallUpdate(
-        string oldPath, string updatePath, string destPath)
+        string oldPath, string updatePath, string destPath, string confPath)
     {
         ProgressDialog<bool> dlg = new("Installing YAMDCC update...", () =>
         {
@@ -123,7 +123,8 @@ internal static class Program
             }
             foreach (DirectoryInfo dir in di.GetDirectories())
             {
-                if (dir.FullName != oldPath &&
+                if (dir.FullName != confPath &&
+                    dir.FullName != oldPath &&
                     dir.FullName != updatePath)
                 {
                     dir.Delete(true);
@@ -138,7 +139,19 @@ internal static class Program
             }
             foreach (DirectoryInfo dir in di.GetDirectories())
             {
-                dir.MoveTo(Path.Combine(destPath, dir.Name));
+                if (dir.Name == "Configs")
+                {
+                    // copy new configs individually since we can't
+                    // merge directories without extra work
+                    foreach (FileInfo fi in dir.GetFiles())
+                    {
+                        fi.MoveTo(Path.Combine(confPath, fi.Name));
+                    }
+                }
+                else
+                {
+                    dir.MoveTo(Path.Combine(destPath, dir.Name));
+                }
             }
 
             // restart the YAMDCC service if it was running before the update
@@ -149,7 +162,7 @@ internal static class Program
 
             // cleanup :)
             // (note: does not delete "Old" folder that we should be running from)
-            Directory.Delete(updatePath);
+            Directory.Delete(updatePath, true);
 
             return true;
         });

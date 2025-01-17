@@ -49,6 +49,7 @@ internal sealed partial class UpdateForm : Form
     private static readonly string DownloadPath = Path.GetFullPath("YAMDCC-Update.zip");
     private static readonly string UpdatePath = Path.GetFullPath("Update");
     private static readonly string OldPath = Path.GetFullPath("Old");
+    private static readonly string ConfPath = Path.GetFullPath("Configs");
 
     public UpdateForm(Release release = null, bool autoUpdate = false)
     {
@@ -145,6 +146,25 @@ internal sealed partial class UpdateForm : Form
 
             // make a copy of the old YAMDCC installation
             CopyDir(new DirectoryInfo(TargetPath), new DirectoryInfo(OldPath));
+
+            // backup existing YAMDCC configs so they don't
+            // get deleted when installing the new update
+            DirectoryInfo confDI = new(ConfPath);
+            foreach (FileInfo fi in confDI.GetFiles())
+            {
+                string name = Path.GetFileNameWithoutExtension(fi.Name);
+
+                // config is a backup from previous update; ignore
+                if (name.Contains("-backup-"))
+                {
+                    continue;
+                }
+
+                // backup the config, just in case :)
+                string path = Path.Combine(fi.DirectoryName, name);
+                string date = $"{DateTime.Now:s}".Replace(':', '-');
+                fi.MoveTo($"{path}-backup-{date}{fi.Extension}");
+            }
 
             // actually install the update
             InstallUpdate();
@@ -320,7 +340,7 @@ internal sealed partial class UpdateForm : Form
             // run the installer from a different location so we can
             // clean the old directory
             Utils.RunCmd(Path.Combine(OldPath, ExeName),
-                $"--install \"{OldPath}\" \"{UpdatePath}\" \"{TargetPath}\"", false);
+                $"--install \"{OldPath}\" \"{UpdatePath}\" \"{TargetPath}\" \"{ConfPath}\"", false);
             Close();
         }
         catch (Win32Exception ex)
@@ -385,7 +405,8 @@ internal sealed partial class UpdateForm : Form
         // Copy each subdirectory using recursion.
         foreach (DirectoryInfo diSourceSubDir in src.GetDirectories())
         {
-            if (diSourceSubDir.FullName != OldPath &&
+            if (diSourceSubDir.FullName != ConfPath &&
+                diSourceSubDir.FullName != OldPath &&
                 diSourceSubDir.FullName != UpdatePath)
             {
                 DirectoryInfo nextTargetSubDir =
