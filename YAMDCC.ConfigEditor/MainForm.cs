@@ -555,6 +555,7 @@ internal sealed partial class MainForm : Form
                         Utils.ShowError(Strings.GetString("dlgSvcStopErr"));
                         return false;
                     }
+                    Utils.ShowInfo(Strings.GetString("dlgSvcStopped"), "Success");
                     return true;
                 });
             dlg.ShowDialog();
@@ -594,6 +595,7 @@ internal sealed partial class MainForm : Form
                         {
                             Directory.Delete(Paths.Data, true);
                         }
+                        Utils.ShowInfo(Strings.GetString("dlgSvcUninstalled"), "Success");
                         return true;
                     }
                     Utils.ShowError(Strings.GetString("dlgUninstallErr"));

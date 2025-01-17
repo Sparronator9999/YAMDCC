@@ -111,7 +111,7 @@ internal static class Program
                     if (status == ServiceControllerStatus.Stopped)
                     {
                         if (Utils.ShowInfo(
-                            Strings.GetString("dlgSvcStopped"), "Service not running",
+                            Strings.GetString("dlgSvcNotRunning"), "Service not running",
                             MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
                             ProgressDialog<bool> dlg = new(Strings.GetString("dlgSvcStarting"), () =>

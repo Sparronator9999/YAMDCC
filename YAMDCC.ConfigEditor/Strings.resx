@@ -174,7 +174,7 @@ Re-download/re-install YAMDCC to fix this.</value>
 Would you like to install it now?
 (Clicking "No" will quit the program.)</value>
   </data>
-  <data name="dlgSvcStopped" xml:space="preserve">
+  <data name="dlgSvcNotRunning" xml:space="preserve">
     <value>The YAMDCC service is currently not running.
 Would you like to start it now?
 (Clicking "No" will quit the program.)</value>
@@ -416,5 +416,11 @@ Enable advanced settings anyway?</value>
   <data name="ttAdvanced" xml:space="preserve">
     <value>Click to toggle whether advanced settings can be adjusted.
 NOTE: these settings should be left on the default value unless you know what you're doing.</value>
+  </data>
+  <data name="dlgSvcStopped" xml:space="preserve">
+    <value>The YAMDCC service was stopped sucessfully.</value>
+  </data>
+  <data name="dlgSvcUninstalled" xml:space="preserve">
+    <value>The YAMDCC service was uninstalled sucessfully.</value>
   </data>
 </root>
