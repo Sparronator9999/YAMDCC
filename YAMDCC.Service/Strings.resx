@@ -131,7 +131,7 @@ Make sure YAMDCC is up to date, then run the YAMDCC config editor and apply an u
     <value>Config loaded successfully!</value>
   </data>
   <data name="cfgNotFound" xml:space="preserve">
-    <value>No config has been applied yet..
+    <value>No config has been applied yet.
 Please run the YAMDCC config editor and apply a config at least once.</value>
   </data>
   <data name="drvLoad" xml:space="preserve">
