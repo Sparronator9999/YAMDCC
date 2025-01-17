@@ -323,7 +323,7 @@ internal sealed partial class UpdateForm : Form
             // run the installer from a different location so we can
             // clean the old directory
             Utils.RunCmd(Path.Combine(OldPath, ExeName),
-                $"--install {OldPath} {UpdatePath} {TargetPath}", false);
+                $"--install \"{OldPath}\" \"{UpdatePath}\" \"{TargetPath}\"", false);
             Close();
         }
         catch (Win32Exception ex)
