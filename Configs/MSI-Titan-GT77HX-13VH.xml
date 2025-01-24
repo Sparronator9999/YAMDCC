@@ -326,10 +326,4 @@ If set to default fan curve, uses an alternative fan curve.</Desc>
 		<OnVal>16</OnVal>
 		<OffVal>0</OffVal>
 	</KeySwapConf>
-	<KeyLightConf>
-		<Reg>211</Reg>
-		<MinVal>128</MinVal>
-		<MaxVal>131</MaxVal>
-	</KeyLightConf>
-	<RegConfs />
 </YAMDCC_Config>
