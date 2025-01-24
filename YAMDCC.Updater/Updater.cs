@@ -45,38 +45,39 @@ internal static class Updater
     public static bool IsUpdateAvailable(Release release)
     {
         string tag = release.TagName.Remove(0, 1),
-                latestSuffix = Utils.GetCurrentVerSuffix(),
-                currentSuffix = Utils.GetVerSuffix(tag);
+            currentSuffix = Utils.GetCurrentVerSuffix(),
+            latestSuffix = Utils.GetVerSuffix(tag);
 
-        Version current = Utils.GetCurrentVersion(),
-                latest = Utils.GetVersion(tag);
+        Version currentVer = Utils.GetCurrentVersion(),
+            latestVer = Utils.GetVersion(tag);
 
-        // check if version suffixes are different
+        // check if version suffixes are different,
         // if they are, we probably need to update
-        if (latestSuffix != currentSuffix)
+        if (latestSuffix != string.Empty && latestSuffix != currentSuffix ||
+            latestSuffix == string.Empty && currentSuffix != "release")
         {
             return true;
         }
 
-        if (current == latest)
+        if (currentVer == latestVer)
         {
             // check if pre-release version is out of date
-            int latestSuffixVer = Utils.GetSuffixVer(tag),
-                currentSuffixVer = Utils.GetCurrentSuffixVer(),
-                i = 0;
-
-            while (currentSuffixVer != -1 || latestSuffixVer != -1)
+            int i = 0, currentSuffixVer, latestSuffixVer;
+            do
             {
+                currentSuffixVer = Utils.GetCurrentSuffixVer(i);
+                latestSuffixVer = Utils.GetSuffixVer(tag, i);
+
                 // this works even if current version
                 // doesn't have extra suffixes :)
                 if (currentSuffixVer < latestSuffixVer)
                 {
                     return true;
                 }
-                i++;
-                latestSuffixVer = Utils.GetSuffixVer(tag, i);
-                currentSuffixVer = Utils.GetCurrentSuffixVer(i);
             }
+            while (currentSuffixVer != -1 || latestSuffixVer != -1);
+
+            // YAMDCC is up to date if we pass all these checks
             return false;
         }
         return true;
