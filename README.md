@@ -62,6 +62,7 @@ Currently, there are configs for the following laptops:
   - MSI GF63 Thin 11SC
   - MSI Modern 15 A5M (thanks @tedomi2705)
   - MSI Katana GF66 12UG (thanks @porkmanager)
+  - MSI Crosshair 17 B12UGZ (thanks @ios7jbpro)
   - MSI Titan GT77HX 13VH (thanks @noteMASTER11)
 
 There are also generic configs that should work with most MSI laptops, but with an incorrect default
