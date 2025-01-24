@@ -51,35 +51,33 @@ internal static class Updater
         Version current = Utils.GetCurrentVersion(),
                 latest = Utils.GetVersion(tag);
 
+        // check if version suffixes are different
+        // if they are, we probably need to update
+        if (latestSuffix != currentSuffix)
+        {
+            return true;
+        }
+
         if (current == latest)
         {
-            // check if current version is a beta/RC/hotfix
-            // but latest is a full release with same base version
-            if (currentSuffix != "release" && latestSuffix == string.Empty)
-            {
-                return true;
-            }
-            else
-            {
-                // check if pre-release version is out of date
-                int latestSuffixVer = Utils.GetSuffixVer(tag),
-                        currentSuffixVer = Utils.GetCurrentSuffixVer(),
-                        i = 0;
-                while (currentSuffixVer != -1 || latestSuffixVer != -1)
-                {
-                    // this works even if current version
-                    // doesn't have extra suffixes :)
-                    if (currentSuffixVer < latestSuffixVer)
-                    {
-                        return true;
-                    }
-                    i++;
-                    latestSuffixVer = Utils.GetSuffixVer(tag, i);
-                    currentSuffixVer = Utils.GetCurrentSuffixVer(i);
-                }
+            // check if pre-release version is out of date
+            int latestSuffixVer = Utils.GetSuffixVer(tag),
+                currentSuffixVer = Utils.GetCurrentSuffixVer(),
+                i = 0;
 
-                return false;
+            while (currentSuffixVer != -1 || latestSuffixVer != -1)
+            {
+                // this works even if current version
+                // doesn't have extra suffixes :)
+                if (currentSuffixVer < latestSuffixVer)
+                {
+                    return true;
+                }
+                i++;
+                latestSuffixVer = Utils.GetSuffixVer(tag, i);
+                currentSuffixVer = Utils.GetCurrentSuffixVer(i);
             }
+            return false;
         }
         return true;
     }
