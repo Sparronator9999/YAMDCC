@@ -317,6 +317,8 @@ Shut down the laptop if it's on (force shut down if needed), then find the EC re
 and press it with the end of a paperclip, SIM ejector, or similarly small tool for at least 5 seconds,
 then try rebooting.
 
+You can also try holding the power button for 60 seconds. The power LED will flash, and the EC/BIOS should reset.
+
 If the issue persists, try disconnecting all power sources, including the laptop's CMOS/clock
 battery and "main" battery (requires disassembly of laptop). Leave disconnected for a few seconds,
 then re-connect everything, re-assemble and attempt a reboot. This will reset your BIOS settings.
