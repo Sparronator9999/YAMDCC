@@ -59,10 +59,10 @@ A fast, lightweight MSI Center alternative and fan control utility for MSI lapto
 
 Currently, there are configs for the following laptops:
 
+  - MSI Crosshair 17 B12UGZ (thanks @ios7jbpro)
   - MSI GF63 Thin 11SC
   - MSI Modern 15 A5M (thanks @tedomi2705)
   - MSI Katana GF66 12UG (thanks @porkmanager)
-  - MSI Crosshair 17 B12UGZ (thanks @ios7jbpro)
   - MSI Titan GT77HX 13VH (thanks @noteMASTER11)
 
 There are also generic configs that should work with most MSI laptops, but with an incorrect default
@@ -79,9 +79,9 @@ but chances are you're looking for [NoteBook FanControl](https://github.com/Uran
 The following laptops have been tested by the community and are confirmed to be working, but don't
 have their own public YAMDCC configs. A suggested generic config is provided below:
 
-- MSI Vector GP78 HX 13V (thanks @Twisted6): `MSI-10th-gen-or-newer-dualfan.xml`
 - MSI Raider GE66 12UGS (thanks @grimy400): `MSI-10th-gen-or-newer-dualfan.xml`
 - MSI Vector 17 HX A14VHG (thanks @injitools): `MSI-10th-gen-or-newer-dualfan-nokeylight.xml`
+- MSI Vector GP78 HX 13V (thanks @Twisted6): `MSI-10th-gen-or-newer-dualfan.xml`
 
 To test your laptop, go to the [config tutorial](https://github.com/Sparronator9999/YAMDCC/wiki/How-to-make-a-config-for-YAMDCC)
 wiki page and follow the instructions to get a config for your laptop.
