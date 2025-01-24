@@ -18,7 +18,6 @@ using Microsoft.Win32.TaskScheduler;
 using Newtonsoft.Json;
 using System;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
@@ -98,7 +97,7 @@ internal static class Updater
     {
         using (HttpClient client = new())
         {
-            client.BaseAddress = new Uri(Paths.GitHubApiUrl);
+            client.BaseAddress = new Uri("https://api.github.com");
             client.DefaultRequestHeaders.Add("User-Agent", $"YAMDCC.Updater/{Utils.GetVerString()}");
 
             // get latest release directly if we want non-prerelease,
@@ -124,8 +123,14 @@ internal static class Updater
                 string respBody = await response.Content.ReadAsStringAsync();
                 if (preRelease)
                 {
-                    Release[] releases = JsonConvert.DeserializeObject<Release[]>(respBody);
-                    return releases.FirstOrDefault((release) => !release.Draft);
+                    foreach (Release release in JsonConvert.DeserializeObject<Release[]>(respBody))
+                    {
+                        if (!release.Draft)
+                        {
+                            return release;
+                        }
+                    }
+                    return null;
                 }
                 else
                 {
@@ -174,8 +179,14 @@ internal static class Updater
 
         // download the first YAMDCC version that
         // matches the current build configuration
-        string url = release.Assets.FirstOrDefault((asset) =>
-            asset.Name.Contains(BuildConfig))?.Url;
+        string url = string.Empty;
+        foreach (ReleaseAsset asset in release.Assets)
+        {
+            if (asset.Name.Contains(BuildConfig))
+            {
+                url = asset.Url;
+            }
+        }
 
         using (HttpClient client = new())
         {

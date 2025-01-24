@@ -15,7 +15,6 @@
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 

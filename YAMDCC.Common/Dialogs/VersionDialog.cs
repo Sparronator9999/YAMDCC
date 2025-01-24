@@ -53,7 +53,7 @@ public sealed partial class VersionDialog : Form
 
     private void btnFAQ_Click(object sender, EventArgs e)
     {
-        Process.Start($"{Paths.GitHubPage}#faq");
+        Process.Start($"{Paths.GitHubPage}/wiki/FAQ");
     }
 
     private void btnIssues_Click(object sender, EventArgs e)

@@ -27,11 +27,6 @@ public static class Paths
     public static readonly string GitHubUrl = "https://github.com";
 
     /// <summary>
-    /// The GitHub API URL.
-    /// </summary>
-    public static readonly string GitHubApiUrl = "https://api.github.com";
-
-    /// <summary>
     /// The project repository.
     /// </summary>
     public static readonly string ProjectRepo = "Sparronator9999/YAMDCC";
@@ -59,8 +54,14 @@ public static class Paths
     /// </remarks>
     public static readonly string Logs = Path.Combine(Data, "Logs");
 
+    /// <summary>
+    /// The path where the config containing common settings
+    /// across all YAMDCC applications is saved.
+    /// </summary>
+    /// <remarks>
+    /// (C:\ProgramData\Sparronator9999\YAMDCC\GlobalConfig.xml on Windows)
+    /// </remarks>
     public static readonly string GlobalConf = Path.Combine(Data, "GlobalConfig.xml");
-
 
     /// <summary>
     /// The path where the currently applied YAMDCC config is saved.
@@ -69,13 +70,4 @@ public static class Paths
     /// (C:\ProgramData\Sparronator9999\YAMDCC\CurrentConfig.xml on Windows)
     /// </remarks>
     public static readonly string CurrentConf = Path.Combine(Data, "CurrentConfig.xml");
-
-    /// <summary>
-    /// The path where the path to the last saved YAMDCC config is saved.
-    /// </summary>
-    /// <remarks>
-    /// (C:\ProgramData\Sparronator9999\YAMDCC\LastConfig on Windows)
-    /// </remarks>
-    // TODO: remove legacy LastConfig after upgrade to CommonConfig
-    public static readonly string LastConf = Path.Combine(Data, "LastConfig");
 }

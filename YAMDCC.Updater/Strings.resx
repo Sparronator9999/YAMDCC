@@ -192,4 +192,20 @@ Error details:
 {0}
 ```</value>
   </data>
+  <data name="dlgAdminSetting" xml:space="preserve">
+    <value>Admin is required to change this setting.</value>
+  </data>
+  <data name="dlgAdminInstall" xml:space="preserve">
+    <value>Admin is required to finish installing the update.</value>
+  </data>
+  <data name="UpToDate" xml:space="preserve">
+    <value>YAMDCC is up to date.
+
+[Force-reinstall latest release?](yamdcc:reinstall)</value>
+  </data>
+  <data name="DevVer" xml:space="preserve">
+    <value>You appear to be running a development version of YAMDCC.
+
+[Update/downgrade to latest public release anyway?](yamdcc:reinstall)</value>
+  </data>
 </root>

@@ -153,18 +153,6 @@ internal sealed partial class MainForm : Form
             }
             CommonConfig.SetAutoUpdateAsked(true);
         }
-
-        try
-        {
-            using (StreamReader sr = new(Paths.LastConf, Encoding.UTF8))
-            {
-                CommonConfig.SetLastConf(sr.ReadLine());
-            }
-            File.Delete(Paths.LastConf);
-        }
-        // legacy LastConf file doesn't exist
-        catch (FileNotFoundException) { }
-
         DisableAll();
     }
 

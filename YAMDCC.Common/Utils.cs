@@ -20,7 +20,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
@@ -381,7 +380,14 @@ public static class Utils
     /// </returns>
     public static bool ServiceExists(string svcName)
     {
-        return ServiceController.GetServices().Any(s => s.ServiceName == svcName);
+        foreach (ServiceController service in ServiceController.GetServices())
+        {
+            if (service.ServiceName == svcName)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     /// <summary>

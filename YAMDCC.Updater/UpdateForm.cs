@@ -257,9 +257,7 @@ internal sealed partial class UpdateForm : Form
             {
                 SetProgress(100, "Current YAMDCC version > Latest YAMDCC version???");
                 SetTitleText("Dev version detected");
-                wbChangelog.DocumentText = GetHtml(
-                    "You appear to be running a development version of YAMDCC.\n\n" +
-                    "[Update/downgrade to latest public release anyway?](yamdcc:reinstall)");
+                wbChangelog.DocumentText = GetHtml(Strings.GetString("DevVer"));
             }
             else if (Updater.IsUpdateAvailable(Release))
             {
@@ -269,8 +267,7 @@ internal sealed partial class UpdateForm : Form
             {
                 SetProgress(100, "YAMDCC is up to date.");
                 SetTitleText("Up to date");
-                wbChangelog.DocumentText = GetHtml("YAMDCC is up to date.\n\n" +
-                    "[Force-reinstall latest release?](yamdcc:reinstall)");
+                wbChangelog.DocumentText = GetHtml(Strings.GetString("UpToDate"));
             }
         }
         btnUpdate.Enabled = true;
@@ -348,7 +345,7 @@ internal sealed partial class UpdateForm : Form
             if (ex.ErrorCode == -2147467259) // 0x80004005 - operation cancelled by user
             {
                 SetProgress(100, Strings.GetString("InstallPrompt"));
-                Utils.ShowError("Admin is required to finish update install.");
+                Utils.ShowError(Strings.GetString("dlgAdminInstall"));
                 btnUpdate.Tag = "install";
                 btnUpdate.Text = "Install update";
                 btnUpdate.Enabled = true;
@@ -442,7 +439,7 @@ internal sealed partial class UpdateForm : Form
         {
             if (ex.ErrorCode == -2147467259) // 0x80004005 - operation cancelled by user
             {
-                Utils.ShowError("Admin is required to change this setting.");
+                Utils.ShowError(Strings.GetString("dlgAdminSetting"));
                 return false;
             }
             throw;
