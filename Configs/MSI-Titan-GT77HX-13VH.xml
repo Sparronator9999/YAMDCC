@@ -47,32 +47,32 @@
 			<FanCurveConfs>
 				<FanCurveConf>
 					<Name>Default</Name>
-					<Desc>The manufacturer default CPU fan curve.</Desc>
+					<Desc>The default CPU fan profile for your computer.</Desc>
 					<TempThresholds>
 						<TempThreshold>
 							<UpThreshold>0</UpThreshold>
 							<DownThreshold>0</DownThreshold>
-							<FanSpeed>38</FanSpeed>
+							<FanSpeed>25</FanSpeed>
 						</TempThreshold>
 						<TempThreshold>
 							<UpThreshold>55</UpThreshold>
-							<DownThreshold>47</DownThreshold>
-							<FanSpeed>43</FanSpeed>
+							<DownThreshold>45</DownThreshold>
+							<FanSpeed>25</FanSpeed>
 						</TempThreshold>
 						<TempThreshold>
 							<UpThreshold>64</UpThreshold>
 							<DownThreshold>61</DownThreshold>
-							<FanSpeed>48</FanSpeed>
+							<FanSpeed>35</FanSpeed>
 						</TempThreshold>
 						<TempThreshold>
-							<UpThreshold>73</UpThreshold>
-							<DownThreshold>70</DownThreshold>
-							<FanSpeed>54</FanSpeed>
+							<UpThreshold>70</UpThreshold>
+							<DownThreshold>67</DownThreshold>
+							<FanSpeed>55</FanSpeed>
 						</TempThreshold>
 						<TempThreshold>
 							<UpThreshold>76</UpThreshold>
 							<DownThreshold>73</DownThreshold>
-							<FanSpeed>60</FanSpeed>
+							<FanSpeed>65</FanSpeed>
 						</TempThreshold>
 						<TempThreshold>
 							<UpThreshold>82</UpThreshold>
@@ -82,13 +82,13 @@
 						<TempThreshold>
 							<UpThreshold>88</UpThreshold>
 							<DownThreshold>85</DownThreshold>
-							<FanSpeed>85</FanSpeed>
+							<FanSpeed>80</FanSpeed>
 						</TempThreshold>
 					</TempThresholds>
 				</FanCurveConf>
 				<FanCurveConf>
 					<Name>Aggressive</Name>
-					<Desc>A more aggressive CPU fan curve.</Desc>
+					<Desc>A more aggressive CPU fan profile.</Desc>
 					<TempThresholds>
 						<TempThreshold>
 							<UpThreshold>0</UpThreshold>
@@ -172,48 +172,48 @@
 			<FanCurveConfs>
 				<FanCurveConf>
 					<Name>Default</Name>
-					<Desc>The manufacturer default GPU fan curve.</Desc>
+					<Desc>The default GPU fan profile for your computer.</Desc>
 					<TempThresholds>
 						<TempThreshold>
 							<UpThreshold>0</UpThreshold>
 							<DownThreshold>0</DownThreshold>
-							<FanSpeed>38</FanSpeed>
+							<FanSpeed>0</FanSpeed>
 						</TempThreshold>
 						<TempThreshold>
-							<UpThreshold>55</UpThreshold>
-							<DownThreshold>47</DownThreshold>
-							<FanSpeed>43</FanSpeed>
+							<UpThreshold>52</UpThreshold>
+							<DownThreshold>45</DownThreshold>
+							<FanSpeed>30</FanSpeed>
 						</TempThreshold>
 						<TempThreshold>
-							<UpThreshold>61</UpThreshold>
-							<DownThreshold>58</DownThreshold>
-							<FanSpeed>48</FanSpeed>
+							<UpThreshold>58</UpThreshold>
+							<DownThreshold>55</DownThreshold>
+							<FanSpeed>40</FanSpeed>
 						</TempThreshold>
 						<TempThreshold>
-							<UpThreshold>67</UpThreshold>
-							<DownThreshold>64</DownThreshold>
-							<FanSpeed>54</FanSpeed>
+							<UpThreshold>64</UpThreshold>
+							<DownThreshold>61</DownThreshold>
+							<FanSpeed>55</FanSpeed>
 						</TempThreshold>
 						<TempThreshold>
-							<UpThreshold>73</UpThreshold>
-							<DownThreshold>70</DownThreshold>
+							<UpThreshold>70</UpThreshold>
+							<DownThreshold>67</DownThreshold>
 							<FanSpeed>60</FanSpeed>
 						</TempThreshold>
 						<TempThreshold>
-							<UpThreshold>79</UpThreshold>
-							<DownThreshold>76</DownThreshold>
+							<UpThreshold>76</UpThreshold>
+							<DownThreshold>73</DownThreshold>
 							<FanSpeed>70</FanSpeed>
 						</TempThreshold>
 						<TempThreshold>
-							<UpThreshold>85</UpThreshold>
-							<DownThreshold>82</DownThreshold>
-							<FanSpeed>85</FanSpeed>
+							<UpThreshold>82</UpThreshold>
+							<DownThreshold>79</DownThreshold>
+							<FanSpeed>80</FanSpeed>
 						</TempThreshold>
 					</TempThresholds>
 				</FanCurveConf>
 				<FanCurveConf>
 					<Name>Aggressive</Name>
-					<Desc>A more aggressive GPU fan curve.</Desc>
+					<Desc>A more aggressive GPU fan profile.</Desc>
 					<TempThresholds>
 						<TempThreshold>
 							<UpThreshold>0</UpThreshold>
@@ -273,7 +273,7 @@
 				<Name>Maximum battery life</Name>
 				<Desc>Optimises your laptop for maximum battery life.
 Limits CPU power draw to 10W.
-If set to default fan curve, uses an alternative fan curve.</Desc>
+If set to default fan profile, uses an alternative fan profile.</Desc>
 				<Value>194</Value>
 			</PerfMode>
 			<PerfMode>
@@ -299,7 +299,7 @@ If set to default fan curve, uses an alternative fan curve.</Desc>
 		<FanModes>
 			<FanMode>
 				<Name>Automatic</Name>
-				<Desc>Uses the default laptop fan curve.</Desc>
+				<Desc>Uses the default laptop fan profile.</Desc>
 				<Value>13</Value>
 			</FanMode>
 			<FanMode>
