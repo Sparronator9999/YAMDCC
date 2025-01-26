@@ -191,10 +191,10 @@ internal sealed class Program
                 {
                     int lowBits = reg & 0x0F,
                         hiBits = (reg & 0xF0) >> 4;
-                    Console.SetCursorPosition(6 + lowBits * 3, 4 + hiBits);
-
                     ConsoleColor original = Console.ForegroundColor;
 
+                    // write hex value
+                    Console.SetCursorPosition(6 + lowBits * 3, 4 + hiBits);
 
                     if (ECValues[reg].Value == value)
                     {
@@ -213,6 +213,20 @@ internal sealed class Program
                         Console.ForegroundColor = ConsoleColor.DarkGray;
                     }
                     Console.Write($"{value:X2}");
+
+                    // write string representation
+                    Console.SetCursorPosition(55 + lowBits, 4 + hiBits);
+                    if (value is < 32 or > 126)
+                    {
+                        // unprintable non-extended ASCII char
+                        Console.Write('.');
+                    }
+                    else
+                    {
+                        Console.Write((char)value);
+                    }
+
+                    // restore console colour and cursor position
                     Console.ForegroundColor = original;
                     Console.SetCursorPosition(0, 20);
                 }
