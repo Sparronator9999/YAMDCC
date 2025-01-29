@@ -89,13 +89,13 @@
       "yamdcc.common": {
         "type": "Project",
         "dependencies": {
-          "YAMDCC.Logs": "[1.0.0-dev, )"
+          "YAMDCC.Logs": "[1.0.0-release, )"
         }
       },
       "yamdcc.config": {
         "type": "Project",
         "dependencies": {
-          "YAMDCC.Common": "[1.0.0-dev, )"
+          "YAMDCC.Common": "[1.0.0-release, )"
         }
       },
       "yamdcc.ecaccess": {

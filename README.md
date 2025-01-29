@@ -2,7 +2,8 @@
 
 A fast, lightweight MSI Center alternative and fan control utility for MSI laptops.
 
-**Please read the whole README (or at least the [Supported Laptops](#supported-laptops) and [FAQ](#faq) sections) before downloading.**
+**Please read the whole README (or at least the [Supported Laptops](#supported-laptops)**
+**and [FAQ](#faq) sections) before downloading.**
 
 <details><summary>Table of contents <i>(click to expand</i>)</summary>
 
@@ -24,36 +25,43 @@ A fast, lightweight MSI Center alternative and fan control utility for MSI lapto
 
 ## Disclaimers
 
-- This program requires low-level access to some of your computer hardware to apply settings. While
-  no issues should arise from this, **I (Sparronator9999) and any other contributers**
-  **shall not be held responsible if this program fries your computer.**
-- Additionally, if you do something silly with the program like turn off all your fans while
-  running under full load, **we *will not* be held responsible for *any* damage you cause to your**
-  **own hardware from your use of this program.**
-- Linux is not yet supported. Please don't beg me for Linux support, it will come when I can be
-  bothered (and when I figure out how to run background services/daemons on Linux).
-- This program, repository and its authors are not affiliated with Micro-Star International Co., Ltd. in any way, shape, or form.
+- This program requires low-level access to some of your computer hardware to
+  apply settings. While no issues should arise from this, **I (Sparronator9999)**
+  **and any other contributers shall not be held responsible if this program**
+  **fries your computer.**
+- Additionally, if you do something silly with the program like turn off all
+  your fans while running under full load, **we *will not* be held responsible**
+  **for *any* damage you cause to your own hardware from your use of this program.**
+- Linux is not yet supported. Please don't beg me for Linux support, it will
+  come when I can be bothered (and when I figure out how to run background
+  services/daemons on Linux).
+- This program, repository and its authors are not affiliated with Micro-Star
+  International Co., Ltd. in any way, shape, or form.
 
 ## Features
 
-- **Fan control:** Change the fan curves for your CPU and GPU fans, including fan speeds,
-  temperature thresholds, and Full Blast (a.k.a. Cooler Boost in MSI Center). This allows you to
-  fix a curve that is not aggressive enough under full load, or to turn your fans off when your
-  computer is idle.
-- **Performance mode:** MSI laptops have their own performance mode setting (not to be confused
-  with Windows' built-in power plans). You can change it here.
-- **Charging threshold:** This program can limit how much your laptop's battery charges to, which
-  can help reduce battery degradation, especially if you leave your laptop plugged in all the time.
-- **Lightweight:** YAMDCC takes up less than two megabytes of disk space when installed, and is
-  designed to be light on your laptop's CPU.
-- **Configurable:** Almost all settings (including those not accessible through the config editor)
-  can be changed with the power of XML.
+- **Fan control:** Change the fan curves for your CPU and GPU fans, including
+  fan speeds, temperature thresholds, and Full Blast (a.k.a. Cooler Boost in
+  MSI Center). This allows you to fix a curve that is not aggressive enough
+  under full load, turn your fans off when your computer is idle, or just give
+  them a boost during CPU-heavy tasks.
+- **Performance mode:** MSI laptops have their own performance mode setting
+  (not to be confused with Windows' built-in power plans). You can change it here.
+- **Charging threshold:** This program can limit how much your laptop's battery
+  charges to, which can help reduce battery degradation, especially if you
+  leave your laptop plugged in all the time.
+- **Lightweight:** YAMDCC takes up less than two megabytes of disk space when
+  installed, and is designed to be light on your laptop's CPU.
+- **Configurable:** Almost all settings (including those not accessible through
+  the config editor) can be changed with the power of XML.
 
 ## Screenshots
 
 ![Screenshot of the config editor's fan control tab](Media/YAMDCC-FanControlTab.png)
 
 ![Screenshot of the config editor's extra options tab](Media/YAMDCC-ExtrasTab.png)
+
+![Screenshot of the config editor's config information tab](Media/YAMDCC-InfoTab.png)
 
 ## Supported Laptops
 
@@ -65,10 +73,10 @@ Currently, there are configs for the following laptops:
   - MSI Katana GF66 12UG (thanks @porkmanager)
   - MSI Titan GT77HX 13VH (thanks @noteMASTER11)
 
-There are also generic configs that should work with most MSI laptops, but with an incorrect default
-config. You can use the EC-to-config feature to get the proper fan curves for your laptop, then
-[create a pull request](https://github.com/Sparronator9999/YAMDCC/pulls) to get your laptop's
-config added to the project.
+There are also generic configs that should work with most MSI laptops, but with
+an incorrect default config. You can use the EC-to-config feature to get the
+proper fan curves for your laptop, then [create a pull request](https://github.com/Sparronator9999/YAMDCC/pulls)
+to get your laptop's config added to the project.
 
 Other laptop brands are not officially supported. You can still try and
 [make your own config](https://github.com/Sparronator9999/YAMDCC/wiki/How-to-make-a-config-for-YAMDCC#manually-from-scratch),
@@ -76,8 +84,9 @@ but chances are you're looking for [NoteBook FanControl](https://github.com/Uran
 
 ### Community-tested laptops
 
-The following laptops have been tested by the community and are confirmed to be working, but don't
-have their own public YAMDCC configs. A suggested generic config is provided below:
+The following laptops have been tested by the community and are confirmed to be
+working, but don't have their own public YAMDCC configs. A suggested generic
+config is provided below:
 
 - MSI Raider GE66 12UGS (thanks @grimy400): `MSI-10th-gen-or-newer-dualfan.xml`
 - MSI Vector 17 HX A14VHG (thanks @injitools): `MSI-10th-gen-or-newer-dualfan-nokeylight.xml`
@@ -103,42 +112,42 @@ wiki page and follow the instructions to get a config for your laptop.
 | Other MSI Center features       | ✔          | ❌           |
 | Open source                     | ❌          | ✔           |
 
-1: Support for this feature depends on the specific MSI laptop model and YAMDCC support.
+1: Support for this feature depends on the specific MSI laptop model and YAMDCC
+support.
 
-2: As of v2.0.38, MSI Center takes about 950 MB of storage space when counting the UWP app (749 MB)
-and the files installed on first launch to `C:\Program Files (x86)\MSI` (205 MB). YAMDCC's installed
-size is based on the Release build of [v1.0 Beta 7](https://github.com/Sparronator9999/YAMDCC/releases/tag/v1.0.0-beta.7),
+2: As of v2.0.38, MSI Center takes about 950 MB of storage space when counting
+the UWP app (749 MB) and the files installed on first launch to
+`C:\Program Files (x86)\MSI` (205 MB). YAMDCC's installed size is based on the
+Release build of [v1.0](https://github.com/Sparronator9999/YAMDCC/releases/tag/v1.0.0),
 and includes all unzipped program files and included config XMLs.
 
-3: MSI Center only supports setting the charge threshold to 60%, 80%, or 100%, while YAMDCC can set
-this to anything between 0 and 100% (with 0 meaning charge to 100% always).
+3: MSI Center only supports setting the charge threshold to 60%, 80%, or 100%,
+while YAMDCC can set this to anything between 0 and 100% (with 0 meaning charge
+to 100% always).
 
 4: YAMDCC only supports monitoring the CPU/GPU temperatures and fan speeds via EC.
 
 ## Roadmap
 
-Below are some changes I would like to make before a 1.0 release of YAMDCC:
-
-- [ ] Fix any remaining bugs before the 1.0 release.
-  - Beta releases are currently available for v1.0. Please download them from
-    [Releases](https://github.com/Sparronator9999/YAMDCC/releases) and report any problems to
-    [the issue tracker](https://github.com/Sparronator9999/YAMDCC/issues)
-
 The following features are currently planned for v1.1:
 
 - [ ] Hotkey support (requested by @grimy400)
-  - This will most likely be implemented as a separate background program that listens to keyboard shortcuts,
-    since Windows services (or at least those running as Local System) can't "see" keyboard input.
-- [ ] Switch fan profiles on performance mode setting adjustment ([#37](https://github.com/Sparronator9999/YAMDCC/issues/37))
+  - This will most likely be implemented as a separate background program that
+    listens to keyboard shortcuts,
+    since Windows services (or at least those running as Local System) can't
+    "see" keyboard input.
+- [ ] Switch fan profiles on performance mode setting adjustment
+      ([#37](https://github.com/Sparronator9999/YAMDCC/issues/37))
 
 Below are some planned features for potential future releases:
 
 - [ ] CLI support
   - Development of a CLI application for YAMDCC has started, but isn't publicly available yet
     - The CLI is missing a *lot* of features, and could do with a rewrite.
+- [ ] GPU switch support *(currently being researched)*
 - [ ] Support for editing laptop config registers using the GUI/CLI
   - This would allow for creating configs for other laptop brands from the config UI
-  - Currently, the only way to do this is to edit the XML directly or use the EC-to-config feature.
+  - Currently, the only way to do this is to edit the XML directly.
 - [ ] Plugin system for additional optional features *(needs research)*
 - [ ] .NET support
   - Mandatory for Linux support
@@ -174,23 +183,24 @@ See also the [wiki page](https://github.com/Sparronator9999/YAMDCC/wiki/Building
 3.  Extract the downloaded code, if needed.
 4.  Open `YAMDCC.sln` in Visual Studio.
 5.  Click `Build` > `Build Solution` to build everything.
-6.  Your output, assuming default build settings, is located in `YAMDCC.GUI\bin\Debug\net48\`.
+6.  Your output, assuming default build settings, is located in `YAMDCC.ConfigEditor\bin\Debug\net48\`.
 7.  ???
 8.  Profit!
 
-Make sure to only use matching `yamdccsvc.exe` and `YAMDCC.exe` together, otherwise you
-may encounter issues (that means `net stop yamdccsvc` first, then compile).
+Make sure to only use matching `yamdccsvc.exe` and `ConfigEditor.exe` together,
+otherwise you may encounter issues (that means `net stop yamdccsvc` first, then
+compile).
 
 ### From the command line
 
 1.  Follow steps 1-3 above to install Visual Studio and download the code.
 2.  Open `Developer Command Prompt for VS 2022` and `cd` to your project directory.
 3.  Run `msbuild /t:restore` to restore the solution, including NuGet packages.
-4.  Run `msbuild YAMDCC.sln /p:platform="Any CPU" /p:configuration="Debug"` to build
-    the project, substituting `Debug` with `Release` (or `Any CPU` with `x86` or `x64`)
-    if you want a release build instead.
-5.  Your output should be located in `YAMDCC.GUI\bin\Debug\net48\`, assuming you built
-    with the above unmodified command.
+4.  Run `msbuild YAMDCC.sln /p:platform="Any CPU" /p:configuration="Debug"` to
+    build the project, substituting `Debug` with `Release` if you want a
+    release build instead.
+5.  Your output should be located in `YAMDCC.ConfigEditor\bin\Debug\net48\`,
+    assuming you built with the above unmodified command.
 6.  ???
 7.  Profit!
 
@@ -234,10 +244,13 @@ details.
 
 This project makes use of the following third-party libraries:
 
-- [Json.NET (Newtonsoft.Json)](https://www.newtonsoft.com/json) to parse obtained release manifests from GitHub.
+- [Json.NET (Newtonsoft.Json)](https://www.newtonsoft.com/json) to parse
+  obtained release manifests from GitHub.
 - [Marked .NET](https://github.com/tomlm/MarkedNet) to parse release changelogs.
-- [My fork of Named Pipe Wrapper](https://github.com/Sparronator9999/NamedPipeWrapper) for
-  communication between the service and UI program (called `YAMDCC.IPC` in the source files).
-- [Task Scheduler Managed Wrapper](https://github.com/dahall/taskscheduler) to schedule automatic update checks.
-- [WinRing0](https://github.com/QCute/WinRing0) for low-level hardware access required to
-  read/write the EC.
+- [My fork of Named Pipe Wrapper](https://github.com/Sparronator9999/NamedPipeWrapper)
+  for communication between the service and UI program (called `YAMDCC.IPC` in
+  the source files).
+- [Task Scheduler Managed Wrapper](https://github.com/dahall/taskscheduler) to
+  schedule automatic update checks.
+- [WinRing0](https://github.com/QCute/WinRing0) for low-level hardware access
+  required to read/write the EC.

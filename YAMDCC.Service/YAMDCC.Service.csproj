@@ -4,7 +4,7 @@
         <ApplicationIcon>ec.ico</ApplicationIcon>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AssemblyName>yamdccsvc</AssemblyName>
-        <AssemblyTitle>YAMDCC helper service</AssemblyTitle>
+        <AssemblyTitle>YAMDCC service</AssemblyTitle>
         <Authors>Sparronator9999</Authors>
         <Copyright>Copyright © 2023-2025 Sparronator9999 (and Contributors)</Copyright>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
@@ -14,9 +14,9 @@
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <RuntimeIdentifiers>win7-x64;win7-x86;win-x64;win-x86</RuntimeIdentifiers>
         <TargetFramework>net48</TargetFramework>
-        <Title>YAMDCC helper service</Title>
+        <Title>YAMDCC service</Title>
         <VersionPrefix>1.0.0</VersionPrefix>
-        <VersionSuffix>dev</VersionSuffix>
+        <VersionSuffix>release</VersionSuffix>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>none</DebugType>
