@@ -68,7 +68,8 @@ public sealed class EC
     /// <summary>
     /// Used to synchronise EC access.
     /// </summary>
-    private static readonly Mutex EcMutex = new();
+    private static readonly Mutex EcMutex = new(false,
+        "EcMutex-{B39C3216-FB5D-431C-8F7B-C94EA01AB855}");
 
     /// <summary>
     /// The underlying driver interface object.
