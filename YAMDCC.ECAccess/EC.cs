@@ -18,6 +18,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 
 namespace YAMDCC.ECAccess;
@@ -139,6 +140,65 @@ public sealed class EC
             // otherwise, just close the handle to the driver
             _Driver.Close();
         }
+    }
+
+    /// <summary>
+    /// Reads a series of bytes from the EC as a text string.
+    /// </summary>
+    /// <param name="reg">
+    /// The EC register to start reading the string from.
+    /// </param>
+    /// <param name="len">
+    /// The maximum length of the string to read.
+    /// </param>
+    /// <param name="value">
+    /// If successful, contains the string value read
+    /// from the EC, otherwise <see langword="null"/>.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> if the operation was
+    /// successful, otherwise <see langword="false"/>.
+    /// </returns>
+    /// <exception cref="ArgumentException"/>
+    public bool ReadString(byte reg, byte len, out string value)
+    {
+        if (len <= 0)
+        {
+            throw new ArgumentException("`len` must not be zero or negative.");
+        }
+        if (reg + len > 0xFF)
+        {
+            throw new ArgumentException("`reg` + `len` must not be over 0xFF (255).");
+        }
+
+        value = null;
+
+        if (_Driver.IsOpen)
+        {
+            byte[] buffer = new byte[len];
+            for (int i = 0; i < len; i++)
+            {
+                if (ReadByte((byte)(reg + i), out buffer[i]))
+                {
+                    if (buffer[i] == 0) // null byte
+                    {
+                        value = Encoding.UTF8.GetString(buffer, 0, i);
+                        return true;
+                    }
+                    if (buffer[i] is < 32 or > 126)
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            value = Encoding.UTF8.GetString(buffer);
+            return true;
+        }
+        return false;
     }
 
     /// <summary>

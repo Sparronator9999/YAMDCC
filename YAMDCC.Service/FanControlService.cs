@@ -106,6 +106,20 @@ internal sealed class FanControlService : ServiceBase
         }
         Log.Info(Strings.GetString("drvLoadSuccess"));
 
+        if (Log.FileLevel == LogLevel.Debug)
+        {
+            if (_EC.ReadString(0xA0, 0xC, out string ecVer) && ecVer.Length == 0xC)
+            {
+                Log.Debug($"EC firmware version: {ecVer}");
+            }
+            if (_EC.ReadString(0xAC, 0x10, out string ecDate) && ecDate.Length == 0x10)
+            {
+                Log.Debug("EC firmware date: " +
+                    $"{ecDate.Substring(2, 2)}/{ecDate.Substring(0, 2)}/{ecDate.Substring(4, 4)} " +
+                    $"{ecDate.Substring(8, 2)}:{ecDate.Substring(11, 2)}:{ecDate.Substring(14, 2)}");
+            }
+        }
+
         // Set up IPC server
         Log.Info("Starting IPC server...");
         IPCServer.Start();

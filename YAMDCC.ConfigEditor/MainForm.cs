@@ -20,7 +20,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 using YAMDCC.Common;
 using YAMDCC.Common.Dialogs;
