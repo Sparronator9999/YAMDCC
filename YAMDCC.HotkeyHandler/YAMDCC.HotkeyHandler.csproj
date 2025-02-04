@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net48</TargetFramework>
+        <OutputType>WinExe</OutputType>
+        <UseWindowsForms>true</UseWindowsForms>
+        <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+        <AssemblyName>HotkeyHandler</AssemblyName>
+        <ApplicationIcon>hkey.ico</ApplicationIcon>
+        <LangVersion>13.0</LangVersion>
+        <EnableNETAnalyzers>True</EnableNETAnalyzers>
+        <LangVersion>13.0</LangVersion>
+        <VersionPrefix>1.0.1</VersionPrefix>
+        <VersionSuffix>dev</VersionSuffix>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+    </PropertyGroup>
+    <ItemGroup>
+      <EmbeddedResource Remove="MainForm.resx" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="hkey.ico" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Include="MainForm.resx" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\YAMDCC.Common\YAMDCC.Common.csproj" />
+    </ItemGroup>
+</Project>
