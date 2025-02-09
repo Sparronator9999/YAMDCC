@@ -1,0 +1,247 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<YAMDCC_Config xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Ver="1">
+	<Manufacturer>Micro-Star International Co., Ltd.</Manufacturer>
+	<Model>Alpha 17 C7VF</Model>
+	<Author>Sparronator9999/SethCodingInc</Author>
+	<FanConfs>
+		<FanConf>
+			<Name>CPU Fan</Name>
+			<MinSpeed>0</MinSpeed>
+			<MaxSpeed>150</MaxSpeed>
+			<CurveSel>0</CurveSel>
+			<SpeedReadReg>113</SpeedReadReg>
+			<TempReadReg>104</TempReadReg>
+			<RPMConf>
+				<ReadReg>200</ReadReg>
+				<Is16Bit>true</Is16Bit>
+				<IsBigEndian>true</IsBigEndian>
+				<RPMMult>478000</RPMMult>
+				<DivideByMult>true</DivideByMult>
+				<Invert>true</Invert>
+			</RPMConf>
+			<UpThresholdRegs>
+				<unsignedByte>106</unsignedByte>
+				<unsignedByte>107</unsignedByte>
+				<unsignedByte>108</unsignedByte>
+				<unsignedByte>109</unsignedByte>
+				<unsignedByte>110</unsignedByte>
+				<unsignedByte>111</unsignedByte>
+			</UpThresholdRegs>
+			<DownThresholdRegs>
+				<unsignedByte>122</unsignedByte>
+				<unsignedByte>123</unsignedByte>
+				<unsignedByte>124</unsignedByte>
+				<unsignedByte>125</unsignedByte>
+				<unsignedByte>126</unsignedByte>
+				<unsignedByte>127</unsignedByte>
+			</DownThresholdRegs>
+			<FanCurveRegs>
+				<unsignedByte>114</unsignedByte>
+				<unsignedByte>115</unsignedByte>
+				<unsignedByte>116</unsignedByte>
+				<unsignedByte>117</unsignedByte>
+				<unsignedByte>118</unsignedByte>
+				<unsignedByte>119</unsignedByte>
+				<unsignedByte>120</unsignedByte>
+			</FanCurveRegs>
+			<FanCurveConfs>
+				<FanCurveConf>
+					<Name>Default</Name>
+					<Desc>The default CPU fan curve for your computer.</Desc>
+					<TempThresholds>
+						<TempThreshold>
+							<UpThreshold>0</UpThreshold>
+							<DownThreshold>0</DownThreshold>
+							<FanSpeed>0</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>50</UpThreshold>
+							<DownThreshold>46</DownThreshold>
+							<FanSpeed>40</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>57</UpThreshold>
+							<DownThreshold>53</DownThreshold>
+							<FanSpeed>45</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>64</UpThreshold>
+							<DownThreshold>60</DownThreshold>
+							<FanSpeed>50</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>71</UpThreshold>
+							<DownThreshold>67</DownThreshold>
+							<FanSpeed>57</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>78</UpThreshold>
+							<DownThreshold>74</DownThreshold>
+							<FanSpeed>65</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>85</UpThreshold>
+							<DownThreshold>76</DownThreshold>
+							<FanSpeed>80</FanSpeed>
+						</TempThreshold>
+					</TempThresholds>
+				</FanCurveConf>
+			</FanCurveConfs>
+		</FanConf>
+		<FanConf>
+			<Name>GPU Fan</Name>
+			<MinSpeed>0</MinSpeed>
+			<MaxSpeed>150</MaxSpeed>
+			<CurveSel>0</CurveSel>
+			<SpeedReadReg>137</SpeedReadReg>
+			<TempReadReg>128</TempReadReg>
+			<RPMConf>
+				<ReadReg>202</ReadReg>
+				<Is16Bit>true</Is16Bit>
+				<IsBigEndian>true</IsBigEndian>
+				<RPMMult>478000</RPMMult>
+				<DivideByMult>true</DivideByMult>
+				<Invert>true</Invert>
+			</RPMConf>
+			<UpThresholdRegs>
+				<unsignedByte>130</unsignedByte>
+				<unsignedByte>131</unsignedByte>
+				<unsignedByte>132</unsignedByte>
+				<unsignedByte>133</unsignedByte>
+				<unsignedByte>134</unsignedByte>
+				<unsignedByte>135</unsignedByte>
+			</UpThresholdRegs>
+			<DownThresholdRegs>
+				<unsignedByte>146</unsignedByte>
+				<unsignedByte>147</unsignedByte>
+				<unsignedByte>148</unsignedByte>
+				<unsignedByte>149</unsignedByte>
+				<unsignedByte>150</unsignedByte>
+				<unsignedByte>151</unsignedByte>
+			</DownThresholdRegs>
+			<FanCurveRegs>
+				<unsignedByte>138</unsignedByte>
+				<unsignedByte>139</unsignedByte>
+				<unsignedByte>140</unsignedByte>
+				<unsignedByte>141</unsignedByte>
+				<unsignedByte>142</unsignedByte>
+				<unsignedByte>143</unsignedByte>
+				<unsignedByte>144</unsignedByte>
+			</FanCurveRegs>
+			<FanCurveConfs>
+				<FanCurveConf>
+					<Name>Default</Name>
+					<Desc>The default GPU fan curve for your computer.</Desc>
+					<TempThresholds>
+						<TempThreshold>
+							<UpThreshold>0</UpThreshold>
+							<DownThreshold>0</DownThreshold>
+							<FanSpeed>0</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>55</UpThreshold>
+							<DownThreshold>51</DownThreshold>
+							<FanSpeed>48</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>60</UpThreshold>
+							<DownThreshold>56</DownThreshold>
+							<FanSpeed>55</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>65</UpThreshold>
+							<DownThreshold>61</DownThreshold>
+							<FanSpeed>62</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>70</UpThreshold>
+							<DownThreshold>66</DownThreshold>
+							<FanSpeed>68</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>75</UpThreshold>
+							<DownThreshold>71</DownThreshold>
+							<FanSpeed>77</FanSpeed>
+						</TempThreshold>
+						<TempThreshold>
+							<UpThreshold>80</UpThreshold>
+							<DownThreshold>76</DownThreshold>
+							<FanSpeed>85</FanSpeed>
+						</TempThreshold>
+					</TempThresholds>
+				</FanCurveConf>
+			</FanCurveConfs>
+		</FanConf>
+	</FanConfs>
+	<FullBlastConf>
+		<Reg>152</Reg>
+		<Mask>128</Mask>
+	</FullBlastConf>
+	<ChargeLimitConf>
+		<Reg>215</Reg>
+		<MinVal>128</MinVal>
+		<MaxVal>228</MaxVal>
+		<CurVal>0</CurVal>
+	</ChargeLimitConf>
+	<PerfModeConf>
+		<Reg>210</Reg>
+		<ModeSel>1</ModeSel>
+		<PerfModes>
+			<PerfMode>
+				<Name>Maximum battery life</Name>
+				<Desc>Optimises your laptop for maximum battery life.
+Limits CPU power draw to 10W.
+If set to default fan curve, uses an alternative fan curve.</Desc>
+				<Value>194</Value>
+			</PerfMode>
+			<PerfMode>
+				<Name>Silent</Name>
+				<Desc>Reduces the maximum fan speed to 60%.</Desc>
+				<Value>193</Value>
+			</PerfMode>
+			<PerfMode>
+				<Name>Balanced</Name>
+				<Desc>Balances battery life and performance.</Desc>
+				<Value>192</Value>
+			</PerfMode>
+			<PerfMode>
+				<Name>High performance</Name>
+				<Desc>Optimises your laptop for maximum performance.</Desc>
+				<Value>196</Value>
+			</PerfMode>
+		</PerfModes>
+	</PerfModeConf>
+	<FanModeConf>
+		<Reg>212</Reg>
+		<ModeSel>0</ModeSel>
+		<FanModes>
+			<FanMode>
+				<Name>Automatic</Name>
+				<Desc>Uses the default laptop fan curve.</Desc>
+				<Value>13</Value>
+			</FanMode>
+			<FanMode>
+				<Name>Silent</Name>
+				<Desc>Reduces the maximum fan speed from Automatic.</Desc>
+				<Value>29</Value>
+			</FanMode>
+			<FanMode>
+				<Name>Basic</Name>
+				<Desc>The fan profiles can be manually edited using a single offset from the default (automatic) fan profile.</Desc>
+				<Value>77</Value>
+			</FanMode>
+			<FanMode>
+				<Name>Advanced (default)</Name>
+				<Desc>The fan profiles can be manually edited using a series of fan/temperature points.
+**If unsure, use this setting.**</Desc>
+				<Value>141</Value>
+			</FanMode>
+		</FanModes>
+	</FanModeConf>
+	<KeySwapConf>
+		<Reg>232</Reg>
+		<Enabled>false</Enabled>
+		<OnVal>16</OnVal>
+		<OffVal>0</OffVal>
+	</KeySwapConf>
+</YAMDCC_Config>
