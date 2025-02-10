@@ -142,13 +142,22 @@ The following features are currently planned for v1.1:
 Below are some planned features for potential future releases:
 
 - [ ] CLI support
-  - Development of a CLI application for YAMDCC has started, but isn't publicly available yet
+  - Development of a CLI application for YAMDCC has started, but isn't publicly
+    available yet
     - The CLI is missing a *lot* of features, and could do with a rewrite.
 - [ ] GPU switch support *(currently being researched)*
 - [ ] Support for editing laptop config registers using the GUI/CLI
-  - This would allow for creating configs for other laptop brands from the config UI
+  - This would allow for creating configs for other laptop brands from the
+    config UI
   - Currently, the only way to do this is to edit the XML directly.
 - [ ] Plugin system for additional optional features *(needs research)*
+- [ ] Re-work install experience
+  - Currently the Config Editor handles managing service installation, but this
+    should probably be done in an installer/separate application.
+- [ ] Support for keyboard mic/speaker mute LEDs
+  - Apparently this isn't handled by hardware/Windows, but after reverse-engineering
+    Apple's Boot Camp to get keyboard shortcuts working without it, I really
+    shouldn't be surprised anymore.
 - [ ] .NET support
   - Mandatory for Linux support
   - The GUI *should* compile on .NET 8 (and in fact *has* been compiled on .NET 8 before).
