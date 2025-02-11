@@ -128,6 +128,17 @@ public enum Command
     /// maximum brightness value (minus offset).
     /// </remarks>
     SetKeyLightBright,
+    /// <summary>
+    /// Gets the EC firmware version and date for the current laptop.
+    /// </summary>
+    /// <remarks>
+    /// <para>This command does not take any data.</para>
+    /// <para>
+    /// The result is sent to the caller as a
+    /// <see cref="Response.FirmVer"/> message.
+    /// </para>
+    /// </remarks>
+    GetFirmVer,
 }
 
 /// <summary>

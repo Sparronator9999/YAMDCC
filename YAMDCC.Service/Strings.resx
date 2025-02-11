@@ -243,4 +243,7 @@ Please run 'YAMDCC.exe' instead.</value>
   <data name="svcWriteFanMode" xml:space="preserve">
     <value>Writing fan mode setting...</value>
   </data>
+  <data name="svcGetFirmVer" xml:space="preserve">
+    <value>Sending firmware version to client {0}...</value>
+  </data>
 </root>

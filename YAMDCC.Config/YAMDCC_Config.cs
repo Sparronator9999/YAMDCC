@@ -67,6 +67,29 @@ public sealed class YAMDCC_Config
     public string Author { get; set; }
 
     /// <summary>
+    /// Set to <see langword="true"/> if the EC supports reading
+    /// firmware version from registers <c>0xA0</c>-<c>0xBB</c>.
+    /// </summary>
+    /// <remarks>
+    /// If <see langword="false"/>, the <see cref="FirmVer"/>
+    /// and <see cref="FirmDate"/> properties are ignored.
+    /// </remarks>
+    [XmlElement]
+    public bool FirmVerSupported { get; set; }
+
+    /// <summary>
+    /// The EC firmware version of the laptop this config was made for.
+    /// </summary>
+    [XmlElement]
+    public string FirmVer { get; set; }
+
+    /// <summary>
+    /// The EC firmware date of the laptop this config was made for.
+    /// </summary>
+    [XmlElement]
+    public DateTime? FirmDate { get; set; }
+
+    /// <summary>
     /// The list of <see cref="FanConf"/>s associated with the laptop.
     /// </summary>
     [XmlArray]

@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.IO.Pipes;
 using System.ServiceProcess;
@@ -48,6 +49,8 @@ internal sealed class FanControlService : ServiceBase
     private readonly EC _EC;
 
     private readonly Timer CooldownTimer = new(1000);
+
+    private EcInfo EcInfo;
     #endregion
 
     /// <summary>
@@ -106,17 +109,21 @@ internal sealed class FanControlService : ServiceBase
         }
         Log.Info(Strings.GetString("drvLoadSuccess"));
 
-        if (Log.FileLevel == LogLevel.Debug)
+
+        if (confLoaded && Config.FirmVerSupported)
         {
+            EcInfo = new();
             if (_EC.ReadString(0xA0, 0xC, out string ecVer) && ecVer.Length == 0xC)
             {
+                EcInfo.Version = ecVer;
                 Log.Debug($"EC firmware version: {ecVer}");
             }
             if (_EC.ReadString(0xAC, 0x10, out string ecDate) && ecDate.Length == 0x10)
             {
-                Log.Debug("EC firmware date: " +
-                    $"{ecDate.Substring(2, 2)}/{ecDate.Substring(0, 2)}/{ecDate.Substring(4, 4)} " +
-                    $"{ecDate.Substring(8, 2)}:{ecDate.Substring(11, 2)}:{ecDate.Substring(14, 2)}");
+                string temp = $"{ecDate.Substring(4, 4)}-{ecDate.Substring(0, 2)}-{ecDate.Substring(2, 2)}" +
+                    $"T{ecDate.Substring(8, 2)}:{ecDate.Substring(11, 2)}:{ecDate.Substring(14, 2)}";
+                EcInfo.Date = DateTime.ParseExact(temp, "s", CultureInfo.InvariantCulture);
+                Log.Debug($"EC firmware date: {EcInfo.Date:G}");
             }
         }
 
@@ -307,6 +314,13 @@ internal sealed class FanControlService : ServiceBase
                     parseSuccess = true;
                     cmdSuccess = SetKeyLight(brightness);
                 }
+                break;
+            }
+            case Command.GetFirmVer:
+            {
+                parseSuccess = true;
+                sendSuccessMsg = false;
+                cmdSuccess = GetFirmVer(id);
                 break;
             }
             default:    // Unknown command
@@ -650,6 +664,18 @@ internal sealed class FanControlService : ServiceBase
         return LogECWriteByte(klCfg.Reg, (byte)(brightness + klCfg.MinVal));
     }
 
+    private bool GetFirmVer(int clientId)
+    {
+        if (Config is null || !Config.FirmVerSupported)
+        {
+            return false;
+        }
+
+        Log.Debug(Strings.GetString("svcGerFirmVer", clientId));
+        IPCServer.PushMessage(new ServiceResponse(Response.FirmVer, EcInfo), clientId);
+        return true;
+    }
+
     private bool ECtoConf()
     {
         if (Config is null)
@@ -680,6 +706,17 @@ internal sealed class FanControlService : ServiceBase
             else
             {
                 Config.Model = pcModel;
+            }
+
+            if (Config.FirmVerSupported)
+            {
+                Config.FirmVer = EcInfo.Version;
+                Config.FirmDate = EcInfo.Date;
+            }
+            else
+            {
+                Config.FirmVer = null;
+                Config.FirmDate = null;
             }
 
             for (int i = 0; i < Config.FanConfs.Count; i++)

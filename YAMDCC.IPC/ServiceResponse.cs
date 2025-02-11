@@ -103,6 +103,15 @@ public enum Response
     /// </para>
     /// </remarks>
     KeyLightBright,
+    /// <summary>
+    /// The result of a <see cref="Command.GetFirmVer"/> command.
+    /// </summary>
+    /// <remarks>
+    /// This response's <see cref="ServiceResponse.Value"/> field
+    /// includes an <see cref="EcInfo"/> instance containing the
+    /// firmware version and date.
+    /// </remarks>
+    FirmVer,
 }
 
 /// <summary>

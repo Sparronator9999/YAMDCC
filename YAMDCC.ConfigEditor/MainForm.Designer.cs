@@ -70,6 +70,8 @@ namespace YAMDCC.ConfigEditor
             System.Windows.Forms.Label lblAuthor;
             System.Windows.Forms.TableLayoutPanel tblApply;
             System.Windows.Forms.FlowLayoutPanel flwStats;
+            System.Windows.Forms.Label lblFirmVer;
+            System.Windows.Forms.Label lblFirmDate;
             this.tsiFile = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiLoadConf = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiSaveConf = new System.Windows.Forms.ToolStripMenuItem();
@@ -126,6 +128,8 @@ namespace YAMDCC.ConfigEditor
             this.lblFanRPM = new System.Windows.Forms.Label();
             this.lblTemp = new System.Windows.Forms.Label();
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
+            this.txtFirmVer = new System.Windows.Forms.TextBox();
+            this.txtFirmDate = new System.Windows.Forms.TextBox();
             menuStrip = new System.Windows.Forms.MenuStrip();
             sep1 = new System.Windows.Forms.ToolStripSeparator();
             sep2 = new System.Windows.Forms.ToolStripSeparator();
@@ -152,6 +156,8 @@ namespace YAMDCC.ConfigEditor
             lblAuthor = new System.Windows.Forms.Label();
             tblApply = new System.Windows.Forms.TableLayoutPanel();
             flwStats = new System.Windows.Forms.FlowLayoutPanel();
+            lblFirmVer = new System.Windows.Forms.Label();
+            lblFirmDate = new System.Windows.Forms.Label();
             menuStrip.SuspendLayout();
             tcMain.SuspendLayout();
             tabFanControl.SuspendLayout();
@@ -816,18 +822,24 @@ namespace YAMDCC.ConfigEditor
             tblInfo.ColumnCount = 2;
             tblInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             tblInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tblInfo.Controls.Add(this.txtFirmDate, 1, 4);
             tblInfo.Controls.Add(this.txtModel, 1, 2);
             tblInfo.Controls.Add(this.txtManufacturer, 1, 1);
             tblInfo.Controls.Add(lblModel, 0, 2);
             tblInfo.Controls.Add(lblManufacturer, 0, 1);
             tblInfo.Controls.Add(lblAuthor, 0, 0);
             tblInfo.Controls.Add(this.txtAuthor, 1, 0);
-            tblInfo.Controls.Add(this.btnGetModel, 1, 3);
+            tblInfo.Controls.Add(this.btnGetModel, 1, 5);
+            tblInfo.Controls.Add(lblFirmVer, 0, 3);
+            tblInfo.Controls.Add(lblFirmDate, 0, 4);
+            tblInfo.Controls.Add(this.txtFirmVer, 1, 3);
             tblInfo.Dock = System.Windows.Forms.DockStyle.Fill;
             tblInfo.Location = new System.Drawing.Point(3, 3);
             tblInfo.Margin = new System.Windows.Forms.Padding(0);
             tblInfo.Name = "tblInfo";
-            tblInfo.RowCount = 4;
+            tblInfo.RowCount = 6;
+            tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -897,7 +909,7 @@ namespace YAMDCC.ConfigEditor
             // 
             // btnGetModel
             // 
-            this.btnGetModel.Location = new System.Drawing.Point(131, 90);
+            this.btnGetModel.Location = new System.Drawing.Point(131, 148);
             this.btnGetModel.Name = "btnGetModel";
             this.btnGetModel.Size = new System.Drawing.Size(175, 25);
             this.btnGetModel.TabIndex = 6;
@@ -1031,6 +1043,44 @@ namespace YAMDCC.ConfigEditor
             this.tblMain.Size = new System.Drawing.Size(540, 416);
             this.tblMain.TabIndex = 1;
             // 
+            // lblFirmVer
+            // 
+            lblFirmVer.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblFirmVer.AutoSize = true;
+            lblFirmVer.Location = new System.Drawing.Point(10, 94);
+            lblFirmVer.Name = "lblFirmVer";
+            lblFirmVer.Size = new System.Drawing.Size(115, 15);
+            lblFirmVer.TabIndex = 7;
+            lblFirmVer.Text = "EC firmware version:";
+            // 
+            // lblFirmDate
+            // 
+            lblFirmDate.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblFirmDate.AutoSize = true;
+            lblFirmDate.Location = new System.Drawing.Point(25, 123);
+            lblFirmDate.Name = "lblFirmDate";
+            lblFirmDate.Size = new System.Drawing.Size(100, 15);
+            lblFirmDate.TabIndex = 8;
+            lblFirmDate.Text = "EC firmware date:";
+            // 
+            // txtFirmVer
+            // 
+            this.txtFirmVer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtFirmVer.Location = new System.Drawing.Point(131, 90);
+            this.txtFirmVer.Name = "txtFirmVer";
+            this.txtFirmVer.ReadOnly = true;
+            this.txtFirmVer.Size = new System.Drawing.Size(386, 23);
+            this.txtFirmVer.TabIndex = 9;
+            // 
+            // txtFirmDate
+            // 
+            this.txtFirmDate.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtFirmDate.Location = new System.Drawing.Point(131, 119);
+            this.txtFirmDate.Name = "txtFirmDate";
+            this.txtFirmDate.ReadOnly = true;
+            this.txtFirmDate.Size = new System.Drawing.Size(386, 23);
+            this.txtFirmDate.TabIndex = 10;
+            // 
             // MainForm
             // 
             this.AcceptButton = this.btnApply;
@@ -1137,5 +1187,7 @@ namespace YAMDCC.ConfigEditor
         private System.Windows.Forms.TextBox txtManufacturer;
         private System.Windows.Forms.TextBox txtAuthor;
         private System.Windows.Forms.Button btnGetModel;
+        private System.Windows.Forms.TextBox txtFirmDate;
+        private System.Windows.Forms.TextBox txtFirmVer;
     }
 }

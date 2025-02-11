@@ -309,6 +309,20 @@ internal sealed partial class MainForm : Form
                     }
                     break;
                 }
+                case Response.FirmVer:
+                {
+                    // no idea how the EcVer struct became a nested
+                    // object array, but this works so keeping it
+                    if (args[0] is object[] obj && obj.Length == 2 &&
+                        obj[0] is string ver && obj[1] is DateTime date)
+                    {
+                        Config.FirmVer = ver;
+                        Config.FirmDate = date;
+                        txtFirmVer.Text = Config.FirmVer;
+                        txtFirmDate.Text = $"{Config.FirmDate:G}";
+                    }
+                    break;
+                }
             }
         });
     }
@@ -1004,6 +1018,11 @@ internal sealed partial class MainForm : Form
             txtModel.Text = pcModel;
             Config.Model = pcModel;
         }
+
+        if (Config.FirmVerSupported)
+        {
+            SendSvcMessage(new ServiceCommand(Command.GetFirmVer));
+        }
     }
 
     private void FullBlastToggle(object sender, EventArgs e)
@@ -1106,9 +1125,17 @@ internal sealed partial class MainForm : Form
         txtAuthor.Text = cfg.Author;
         txtManufacturer.Text = cfg.Manufacturer;
         txtModel.Text = cfg.Model;
+        if (cfg.FirmVerSupported)
+        {
+            txtFirmVer.Text = cfg.FirmVer;
+            txtFirmDate.Text = $"{cfg.FirmDate:G}";
+        }
+        else
+        {
+            txtFirmVer.Text = "(unknown)";
+            txtFirmDate.Text = "(unknown)";
+        }
         txtAuthor.Enabled = true;
-        txtManufacturer.Enabled = true;
-        txtModel.Enabled = true;
         btnGetModel.Enabled = true;
 
         if (cfg.FullBlastConf is null)
@@ -1276,8 +1303,6 @@ internal sealed partial class MainForm : Form
         tbKeyLight.Enabled = false;
 
         txtAuthor.Enabled = false;
-        txtManufacturer.Enabled = false;
-        txtModel.Enabled = false;
         btnGetModel.Enabled = false;
     }
 
