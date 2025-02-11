@@ -129,7 +129,6 @@ namespace YAMDCC.HotkeyHandler
             tsiHelp});
             menuStrip.Location = new System.Drawing.Point(0, 0);
             menuStrip.Name = "menuStrip";
-            menuStrip.Padding = new System.Windows.Forms.Padding(6, 2, 0, 2);
             menuStrip.Size = new System.Drawing.Size(780, 28);
             menuStrip.TabIndex = 1;
             menuStrip.Text = "menuStrip1";
@@ -371,7 +370,7 @@ namespace YAMDCC.HotkeyHandler
             btnProf1Clear.Enabled = false;
             btnProf1Clear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             btnProf1Clear.Location = new System.Drawing.Point(739, 4);
-            btnProf1Clear.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            btnProf1Clear.Margin = new System.Windows.Forms.Padding(4);
             btnProf1Clear.Name = "btnProf1Clear";
             btnProf1Clear.Size = new System.Drawing.Size(29, 29);
             btnProf1Clear.TabIndex = 15;
@@ -383,7 +382,7 @@ namespace YAMDCC.HotkeyHandler
             btnProf2Clear.Enabled = false;
             btnProf2Clear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             btnProf2Clear.Location = new System.Drawing.Point(739, 41);
-            btnProf2Clear.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            btnProf2Clear.Margin = new System.Windows.Forms.Padding(4);
             btnProf2Clear.Name = "btnProf2Clear";
             btnProf2Clear.Size = new System.Drawing.Size(29, 29);
             btnProf2Clear.TabIndex = 16;
@@ -395,7 +394,7 @@ namespace YAMDCC.HotkeyHandler
             btnProf3Clear.Enabled = false;
             btnProf3Clear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             btnProf3Clear.Location = new System.Drawing.Point(739, 78);
-            btnProf3Clear.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            btnProf3Clear.Margin = new System.Windows.Forms.Padding(4);
             btnProf3Clear.Name = "btnProf3Clear";
             btnProf3Clear.Size = new System.Drawing.Size(29, 29);
             btnProf3Clear.TabIndex = 17;
@@ -407,7 +406,7 @@ namespace YAMDCC.HotkeyHandler
             btnConfEditorClear.Enabled = false;
             btnConfEditorClear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             btnConfEditorClear.Location = new System.Drawing.Point(739, 4);
-            btnConfEditorClear.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            btnConfEditorClear.Margin = new System.Windows.Forms.Padding(4);
             btnConfEditorClear.Name = "btnConfEditorClear";
             btnConfEditorClear.Size = new System.Drawing.Size(29, 29);
             btnConfEditorClear.TabIndex = 16;
@@ -419,7 +418,7 @@ namespace YAMDCC.HotkeyHandler
             btnFullBlastClear.Enabled = false;
             btnFullBlastClear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             btnFullBlastClear.Location = new System.Drawing.Point(739, 41);
-            btnFullBlastClear.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            btnFullBlastClear.Margin = new System.Windows.Forms.Padding(4);
             btnFullBlastClear.Name = "btnFullBlastClear";
             btnFullBlastClear.Size = new System.Drawing.Size(29, 29);
             btnFullBlastClear.TabIndex = 17;
@@ -431,7 +430,7 @@ namespace YAMDCC.HotkeyHandler
             btnWinFnClear.Enabled = false;
             btnWinFnClear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             btnWinFnClear.Location = new System.Drawing.Point(739, 78);
-            btnWinFnClear.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            btnWinFnClear.Margin = new System.Windows.Forms.Padding(4);
             btnWinFnClear.Name = "btnWinFnClear";
             btnWinFnClear.Size = new System.Drawing.Size(29, 29);
             btnWinFnClear.TabIndex = 18;
@@ -443,7 +442,7 @@ namespace YAMDCC.HotkeyHandler
             btnKeyLightUpClear.Enabled = false;
             btnKeyLightUpClear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             btnKeyLightUpClear.Location = new System.Drawing.Point(739, 115);
-            btnKeyLightUpClear.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            btnKeyLightUpClear.Margin = new System.Windows.Forms.Padding(4);
             btnKeyLightUpClear.Name = "btnKeyLightUpClear";
             btnKeyLightUpClear.Size = new System.Drawing.Size(29, 29);
             btnKeyLightUpClear.TabIndex = 19;
@@ -455,7 +454,7 @@ namespace YAMDCC.HotkeyHandler
             btnKeyLightDownClear.Enabled = false;
             btnKeyLightDownClear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             btnKeyLightDownClear.Location = new System.Drawing.Point(739, 152);
-            btnKeyLightDownClear.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            btnKeyLightDownClear.Margin = new System.Windows.Forms.Padding(4);
             btnKeyLightDownClear.Name = "btnKeyLightDownClear";
             btnKeyLightDownClear.Size = new System.Drawing.Size(29, 29);
             btnKeyLightDownClear.TabIndex = 20;
@@ -475,7 +474,7 @@ namespace YAMDCC.HotkeyHandler
             this.tcHotkeys.Controls.Add(this.tabFanProfs);
             this.tcHotkeys.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tcHotkeys.Location = new System.Drawing.Point(0, 28);
-            this.tcHotkeys.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tcHotkeys.Margin = new System.Windows.Forms.Padding(4);
             this.tcHotkeys.Name = "tcHotkeys";
             this.tcHotkeys.SelectedIndex = 0;
             this.tcHotkeys.Size = new System.Drawing.Size(780, 448);
@@ -485,7 +484,7 @@ namespace YAMDCC.HotkeyHandler
             // 
             this.tabGeneral.Controls.Add(this.tblGeneral);
             this.tabGeneral.Location = new System.Drawing.Point(4, 29);
-            this.tabGeneral.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabGeneral.Margin = new System.Windows.Forms.Padding(4);
             this.tabGeneral.Name = "tabGeneral";
             this.tabGeneral.Size = new System.Drawing.Size(772, 415);
             this.tabGeneral.TabIndex = 1;
@@ -516,7 +515,7 @@ namespace YAMDCC.HotkeyHandler
             this.tblGeneral.Controls.Add(label1, 0, 5);
             this.tblGeneral.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblGeneral.Location = new System.Drawing.Point(0, 0);
-            this.tblGeneral.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tblGeneral.Margin = new System.Windows.Forms.Padding(4);
             this.tblGeneral.Name = "tblGeneral";
             this.tblGeneral.RowCount = 6;
             this.tblGeneral.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -533,7 +532,7 @@ namespace YAMDCC.HotkeyHandler
             this.txtKeyLightDown.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtKeyLightDown.Enabled = false;
             this.txtKeyLightDown.Location = new System.Drawing.Point(216, 152);
-            this.txtKeyLightDown.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtKeyLightDown.Margin = new System.Windows.Forms.Padding(4);
             this.txtKeyLightDown.Name = "txtKeyLightDown";
             this.txtKeyLightDown.Size = new System.Drawing.Size(515, 27);
             this.txtKeyLightDown.TabIndex = 12;
@@ -543,7 +542,7 @@ namespace YAMDCC.HotkeyHandler
             this.txtKeyLightUp.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtKeyLightUp.Enabled = false;
             this.txtKeyLightUp.Location = new System.Drawing.Point(216, 115);
-            this.txtKeyLightUp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtKeyLightUp.Margin = new System.Windows.Forms.Padding(4);
             this.txtKeyLightUp.Name = "txtKeyLightUp";
             this.txtKeyLightUp.Size = new System.Drawing.Size(515, 27);
             this.txtKeyLightUp.TabIndex = 11;
@@ -553,7 +552,7 @@ namespace YAMDCC.HotkeyHandler
             this.txtConfEditor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtConfEditor.Enabled = false;
             this.txtConfEditor.Location = new System.Drawing.Point(216, 4);
-            this.txtConfEditor.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtConfEditor.Margin = new System.Windows.Forms.Padding(4);
             this.txtConfEditor.Name = "txtConfEditor";
             this.txtConfEditor.Size = new System.Drawing.Size(515, 27);
             this.txtConfEditor.TabIndex = 6;
@@ -563,7 +562,7 @@ namespace YAMDCC.HotkeyHandler
             this.txtFullBlast.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtFullBlast.Enabled = false;
             this.txtFullBlast.Location = new System.Drawing.Point(216, 41);
-            this.txtFullBlast.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtFullBlast.Margin = new System.Windows.Forms.Padding(4);
             this.txtFullBlast.Name = "txtFullBlast";
             this.txtFullBlast.Size = new System.Drawing.Size(515, 27);
             this.txtFullBlast.TabIndex = 7;
@@ -573,7 +572,7 @@ namespace YAMDCC.HotkeyHandler
             this.txtWinFn.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtWinFn.Enabled = false;
             this.txtWinFn.Location = new System.Drawing.Point(216, 78);
-            this.txtWinFn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtWinFn.Margin = new System.Windows.Forms.Padding(4);
             this.txtWinFn.Name = "txtWinFn";
             this.txtWinFn.Size = new System.Drawing.Size(515, 27);
             this.txtWinFn.TabIndex = 8;
@@ -582,9 +581,9 @@ namespace YAMDCC.HotkeyHandler
             // 
             this.tabFanProfs.Controls.Add(this.tblFanProfs);
             this.tabFanProfs.Location = new System.Drawing.Point(4, 29);
-            this.tabFanProfs.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabFanProfs.Margin = new System.Windows.Forms.Padding(4);
             this.tabFanProfs.Name = "tabFanProfs";
-            this.tabFanProfs.Size = new System.Drawing.Size(772, 413);
+            this.tabFanProfs.Size = new System.Drawing.Size(772, 415);
             this.tabFanProfs.TabIndex = 2;
             this.tabFanProfs.Text = "Fan profiles";
             this.tabFanProfs.UseVisualStyleBackColor = true;
@@ -607,14 +606,14 @@ namespace YAMDCC.HotkeyHandler
             this.tblFanProfs.Controls.Add(btnProf1Clear, 2, 0);
             this.tblFanProfs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblFanProfs.Location = new System.Drawing.Point(0, 0);
-            this.tblFanProfs.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tblFanProfs.Margin = new System.Windows.Forms.Padding(4);
             this.tblFanProfs.Name = "tblFanProfs";
             this.tblFanProfs.RowCount = 4;
             this.tblFanProfs.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblFanProfs.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblFanProfs.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblFanProfs.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblFanProfs.Size = new System.Drawing.Size(772, 413);
+            this.tblFanProfs.Size = new System.Drawing.Size(772, 415);
             this.tblFanProfs.TabIndex = 8;
             // 
             // txtProf1
@@ -622,7 +621,7 @@ namespace YAMDCC.HotkeyHandler
             this.txtProf1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtProf1.Enabled = false;
             this.txtProf1.Location = new System.Drawing.Point(169, 4);
-            this.txtProf1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtProf1.Margin = new System.Windows.Forms.Padding(4);
             this.txtProf1.Name = "txtProf1";
             this.txtProf1.Size = new System.Drawing.Size(562, 27);
             this.txtProf1.TabIndex = 6;
@@ -632,7 +631,7 @@ namespace YAMDCC.HotkeyHandler
             this.txtProf2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtProf2.Enabled = false;
             this.txtProf2.Location = new System.Drawing.Point(169, 41);
-            this.txtProf2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtProf2.Margin = new System.Windows.Forms.Padding(4);
             this.txtProf2.Name = "txtProf2";
             this.txtProf2.Size = new System.Drawing.Size(562, 27);
             this.txtProf2.TabIndex = 7;
@@ -642,7 +641,7 @@ namespace YAMDCC.HotkeyHandler
             this.txtProf3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtProf3.Enabled = false;
             this.txtProf3.Location = new System.Drawing.Point(169, 78);
-            this.txtProf3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtProf3.Margin = new System.Windows.Forms.Padding(4);
             this.txtProf3.Name = "txtProf3";
             this.txtProf3.Size = new System.Drawing.Size(562, 27);
             this.txtProf3.TabIndex = 8;
@@ -689,7 +688,7 @@ namespace YAMDCC.HotkeyHandler
             this.Controls.Add(menuStrip);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MainMenuStrip = menuStrip;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
