@@ -3,6 +3,7 @@
 	<Manufacturer>Micro-Star International Co., Ltd.</Manufacturer>
 	<Model>Titan GT77HX 13VH</Model>
 	<Author>noteMASTER11</Author>
+	<FirmVerSupported>true</FirmVerSupported>
 	<FanConfs>
 		<FanConf>
 			<Name>CPU Fan</Name>

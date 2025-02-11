@@ -3,6 +3,7 @@
 	<Manufacturer>Micro-Star International Co., Ltd.</Manufacturer>
 	<Model>Bravo 15 B7ED</Model>
 	<Author>VisionCrizzal</Author>
+	<FirmVerSupported>true</FirmVerSupported>
 	<FanConfs>
 		<FanConf>
 			<Name>CPU Fan</Name>

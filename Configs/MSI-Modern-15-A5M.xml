@@ -3,6 +3,7 @@
 	<Manufacturer>Micro-Star International Co., Ltd.</Manufacturer>
 	<Model>Modern 15 A5M</Model>
 	<Author>tedomi2705</Author>
+	<FirmVerSupported>true</FirmVerSupported>
 	<FanConfs>
 		<FanConf>
 			<Name>CPU Fans</Name>

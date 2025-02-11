@@ -3,6 +3,7 @@
 	<Manufacturer>Micro-Star International Co., Ltd.</Manufacturer>
 	<Model>~Generic: 10th-gen Intel (or newer) - Single-fan models (no keyboard backlight support)</Model>
 	<Author>Sparronator9999</Author>
+	<FirmVerSupported>true</FirmVerSupported>
 	<FanConfs>
 		<FanConf>
 			<Name>CPU Fan</Name>

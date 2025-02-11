@@ -3,6 +3,7 @@
 	<Manufacturer>Micro-Star International Co., Ltd.</Manufacturer>
 	<Model>Katana GF66 12UG</Model>
 	<Author>porkmanager</Author>
+	<FirmVerSupported>true</FirmVerSupported>
 	<FanConfs>
 		<FanConf>
 			<Name>CPU Fan</Name>
