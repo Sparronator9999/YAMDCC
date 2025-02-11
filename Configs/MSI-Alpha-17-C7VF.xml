@@ -2,7 +2,7 @@
 <YAMDCC_Config xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Ver="1">
 	<Manufacturer>Micro-Star International Co., Ltd.</Manufacturer>
 	<Model>Alpha 17 C7VF</Model>
-	<Author>Sparronator9999/SethCodingInc</Author>
+	<Author>Sparronator9999, SethCodingInc</Author>
 	<FanConfs>
 		<FanConf>
 			<Name>CPU Fan</Name>
@@ -47,7 +47,7 @@
 			<FanCurveConfs>
 				<FanCurveConf>
 					<Name>Default</Name>
-					<Desc>The default CPU fan curve for your computer.</Desc>
+					<Desc>The default CPU fan profile for your computer.</Desc>
 					<TempThresholds>
 						<TempThreshold>
 							<UpThreshold>0</UpThreshold>
@@ -131,7 +131,7 @@
 			<FanCurveConfs>
 				<FanCurveConf>
 					<Name>Default</Name>
-					<Desc>The default GPU fan curve for your computer.</Desc>
+					<Desc>The default GPU fan profile for your computer.</Desc>
 					<TempThresholds>
 						<TempThreshold>
 							<UpThreshold>0</UpThreshold>

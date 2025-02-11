@@ -47,7 +47,7 @@
 			<FanCurveConfs>
 				<FanCurveConf>
 					<Name>Default</Name>
-					<Desc>The default fan curve of your computer.</Desc>
+					<Desc>The default CPU fan profile for your computer.</Desc>
 					<TempThresholds>
 						<TempThreshold>
 							<UpThreshold>0</UpThreshold>

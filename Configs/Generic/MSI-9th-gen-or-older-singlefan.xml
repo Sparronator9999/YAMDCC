@@ -47,7 +47,9 @@
 			<FanCurveConfs>
 				<FanCurveConf>
 					<Name>Default</Name>
-					<Desc>Generic CPU fan curve for MSI laptops.</Desc>
+					<Desc>A generic CPU fan profile for MSI laptops.
+To replace this with the true default fan profile for your
+computer, click `Options` > `Get default fan profile from EC...`</Desc>
 					<TempThresholds>
 						<TempThreshold>
 							<UpThreshold>0</UpThreshold>
@@ -131,7 +133,9 @@
 			<FanCurveConfs>
 				<FanCurveConf>
 					<Name>Default</Name>
-					<Desc>Generic GPU fan curve for MSI laptops.</Desc>
+					<Desc>A generic GPU fan profile for MSI laptops.
+To replace this with the true default fan profile for your
+computer, click `Options` > `Get default fan profile from EC...`</Desc>
 					<TempThresholds>
 						<TempThreshold>
 							<UpThreshold>0</UpThreshold>
