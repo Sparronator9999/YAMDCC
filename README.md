@@ -67,10 +67,12 @@ A fast, lightweight MSI Center alternative and fan control utility for MSI lapto
 
 Currently, there are configs for the following laptops:
 
+  - MSI Alpha 17 C7VF (thanks @SethCodingInc)
+  - MSI Bravo 15 B7ED (thanks @VisionCrizzal)
   - MSI Crosshair 17 B12UGZ (thanks @ios7jbpro)
   - MSI GF63 Thin 11SC
-  - MSI Modern 15 A5M (thanks @tedomi2705)
   - MSI Katana GF66 12UG (thanks @porkmanager)
+  - MSI Modern 15 A5M (thanks @tedomi2705)
   - MSI Titan GT77HX 13VH (thanks @noteMASTER11)
 
 There are also generic configs that should work with most MSI laptops, but with
