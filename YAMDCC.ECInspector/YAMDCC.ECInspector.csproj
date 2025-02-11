@@ -19,7 +19,7 @@
         <Title>YAMDCC EC inspector</Title>
         <UseWindowsForms>true</UseWindowsForms>
         <VersionPrefix>1.0.1</VersionPrefix>
-        <VersionSuffix>dev</VersionSuffix>
+        <VersionSuffix>release</VersionSuffix>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>none</DebugType>
