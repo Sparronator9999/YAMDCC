@@ -156,8 +156,11 @@ YAMDCC will close once the uninstall is complete.</value>
     <value>Failed to connect to the YAMDCC service (connection timed out).</value>
   </data>
   <data name="dlgSvcStartCrash" xml:space="preserve">
-    <value>The YAMDCC service crashed while starting.
-Check the Event viewer and service log for crash details.</value>
+    <value>The YAMDCC service failed to start.
+
+This could be due to a service crash on startup, or the system couldn't find the YAMDCC service (due to being moved or deleted since it was installed).
+
+See the FAQ for more information: https://github.com/Sparronator9999/YAMDCC/wiki/FAQ</value>
   </data>
   <data name="dlgSvcInstallFail" xml:space="preserve">
     <value>The service failed to install.
