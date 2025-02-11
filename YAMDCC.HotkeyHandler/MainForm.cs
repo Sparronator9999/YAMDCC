@@ -1,7 +1,8 @@
+using Microsoft.Win32;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using YAMDCC.Common;
@@ -89,26 +90,65 @@ public partial class MainForm : Form
 
     private void KeyHook_KeyDown(object sender, KeyHookEventArgs e)
     {
-        // corresponds to the MSI Center key (Fn+F7) on my laptop (GF63 Thin 11SC)
-        if (e.KeyCode == (Keys)255 && e.ScanCode == 10 && e.ExtendedKey)
+        // only handle shortcuts if hotkeys are
+        // enabled and the config window isn't open
+        if (!tsiEnabled.Checked || Visible)
         {
-            try
-            {
-                Process p = Process.Start("ConfigEditor.exe");
-            }
-            catch (Exception ex)
-            {
-                if (ex is FileNotFoundException)
+            return;
+        }
+
+        switch (e.KeyCode)
+        {
+            case (Keys)255:
+                // corresponds to the MSI Center key (Fn+F7) on my laptop (GF63 Thin 11SC)
+                if (e.ExtendedKey && e.ScanCode == 10)
                 {
-                    Utils.ShowError("Could not find ConfigEditor.exe!");
+                    if (tsiAppBtnDefaultDisable.Checked)
+                    {
+                        e.SuppressKeyPress = true;
+                    }
+
+                    if (!tsiAppBtnConfEditor.Checked)
+                    {
+                        break;
+                    }
+
+                    try
+                    {
+                        Process p = Process.Start(@".\ConfigEditor.exe");
+                    }
+                    catch (Win32Exception ex)
+                    {
+                        if (ex.NativeErrorCode == 2)    // ERROR_FILE_NOT_FOUND
+                        {
+                            Utils.ShowError("Could not find ConfigEditor.exe!");
+                        }
+                        // Ignore exception if user cancelled UAC
+                        // (should not be the case since we get run with admin permissons)
+                        else if (ex.NativeErrorCode != 1223)    // ERROR_CANCELLED
+                        {
+                            throw;
+                        }
+                    }
                 }
-                // If UAC is denied, a Win32Exception is thrown.
-                // Ignore and throw all other exceptions.
-                else if (ex is not Win32Exception)
-                {
-                    throw;
-                }
-            }
+                break;
+        }
+    }
+
+    private void tsiSysStart_Click(object sender, EventArgs e)
+    {
+        ToolStripMenuItem tsi = (ToolStripMenuItem)sender;
+
+        RegistryKey key = Registry.LocalMachine.OpenSubKey(
+            @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run", true);
+
+        if (tsi.Checked)
+        {
+            key.SetValue("YAMDCC hotkey handler", $"\"{Assembly.GetEntryAssembly().Location}\" --startup");
+        }
+        else
+        {
+            key.DeleteValue("YAMDCC hotkey handler", false);
         }
     }
 }

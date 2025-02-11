@@ -33,9 +33,7 @@ namespace YAMDCC.HotkeyHandler
             System.Windows.Forms.ToolStripMenuItem tsiFile;
             System.Windows.Forms.ToolStripMenuItem tsiExit;
             System.Windows.Forms.ToolStripMenuItem tsiOptions;
-            System.Windows.Forms.ToolStripMenuItem tsiEnabled;
             System.Windows.Forms.ToolStripMenuItem tsiAppBtn;
-            System.Windows.Forms.ToolStripMenuItem tsiAppBtnAction;
             System.Windows.Forms.ToolStripSeparator sep3;
             System.Windows.Forms.ToolStripSeparator sep1;
             System.Windows.Forms.ToolStripMenuItem tsiSysStart;
@@ -61,7 +59,7 @@ namespace YAMDCC.HotkeyHandler
             System.Windows.Forms.Button btnWinFnClear;
             System.Windows.Forms.Button btnKeyLightUpClear;
             System.Windows.Forms.Button btnKeyLightDownClear;
-            this.tsiAppBtnDisabled = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsiEnabled = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiAppBtnConfEditor = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiAppBtnDefaultDisable = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiTrayMin = new System.Windows.Forms.ToolStripMenuItem();
@@ -87,9 +85,7 @@ namespace YAMDCC.HotkeyHandler
             tsiFile = new System.Windows.Forms.ToolStripMenuItem();
             tsiExit = new System.Windows.Forms.ToolStripMenuItem();
             tsiOptions = new System.Windows.Forms.ToolStripMenuItem();
-            tsiEnabled = new System.Windows.Forms.ToolStripMenuItem();
             tsiAppBtn = new System.Windows.Forms.ToolStripMenuItem();
-            tsiAppBtnAction = new System.Windows.Forms.ToolStripMenuItem();
             sep3 = new System.Windows.Forms.ToolStripSeparator();
             sep1 = new System.Windows.Forms.ToolStripSeparator();
             tsiSysStart = new System.Windows.Forms.ToolStripMenuItem();
@@ -133,8 +129,8 @@ namespace YAMDCC.HotkeyHandler
             tsiHelp});
             menuStrip.Location = new System.Drawing.Point(0, 0);
             menuStrip.Name = "menuStrip";
-            menuStrip.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
-            menuStrip.Size = new System.Drawing.Size(624, 24);
+            menuStrip.Padding = new System.Windows.Forms.Padding(6, 2, 0, 2);
+            menuStrip.Size = new System.Drawing.Size(780, 28);
             menuStrip.TabIndex = 1;
             menuStrip.Text = "menuStrip1";
             // 
@@ -143,20 +139,20 @@ namespace YAMDCC.HotkeyHandler
             tsiFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             tsiExit});
             tsiFile.Name = "tsiFile";
-            tsiFile.Size = new System.Drawing.Size(37, 20);
+            tsiFile.Size = new System.Drawing.Size(46, 24);
             tsiFile.Text = "&File";
             // 
             // tsiExit
             // 
             tsiExit.Name = "tsiExit";
-            tsiExit.Size = new System.Drawing.Size(180, 22);
+            tsiExit.Size = new System.Drawing.Size(116, 26);
             tsiExit.Text = "E&xit";
             tsiExit.Click += new System.EventHandler(this.Exit);
             // 
             // tsiOptions
             // 
             tsiOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            tsiEnabled,
+            this.tsiEnabled,
             tsiAppBtn,
             sep3,
             this.tsiTrayMin,
@@ -164,59 +160,47 @@ namespace YAMDCC.HotkeyHandler
             sep1,
             tsiSysStart});
             tsiOptions.Name = "tsiOptions";
-            tsiOptions.Size = new System.Drawing.Size(61, 20);
+            tsiOptions.Size = new System.Drawing.Size(75, 24);
             tsiOptions.Text = "&Options";
             // 
             // tsiEnabled
             // 
-            tsiEnabled.Checked = true;
-            tsiEnabled.CheckState = System.Windows.Forms.CheckState.Checked;
-            tsiEnabled.Enabled = false;
-            tsiEnabled.Name = "tsiEnabled";
-            tsiEnabled.Size = new System.Drawing.Size(244, 22);
-            tsiEnabled.Text = "Enable hotkeys";
+            this.tsiEnabled.Checked = true;
+            this.tsiEnabled.CheckOnClick = true;
+            this.tsiEnabled.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.tsiEnabled.Name = "tsiEnabled";
+            this.tsiEnabled.Size = new System.Drawing.Size(302, 26);
+            this.tsiEnabled.Text = "Enable hotkeys";
             // 
             // tsiAppBtn
             // 
             tsiAppBtn.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            tsiAppBtnAction,
+            this.tsiAppBtnConfEditor,
             this.tsiAppBtnDefaultDisable});
-            tsiAppBtn.Enabled = false;
             tsiAppBtn.Name = "tsiAppBtn";
-            tsiAppBtn.Size = new System.Drawing.Size(244, 22);
+            tsiAppBtn.Size = new System.Drawing.Size(302, 26);
             tsiAppBtn.Text = "MSI Center shortcut key settings";
-            // 
-            // tsiAppBtnAction
-            // 
-            tsiAppBtnAction.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsiAppBtnDisabled,
-            this.tsiAppBtnConfEditor});
-            tsiAppBtnAction.Name = "tsiAppBtnAction";
-            tsiAppBtnAction.Size = new System.Drawing.Size(222, 22);
-            tsiAppBtnAction.Text = "Shortcut key action";
-            // 
-            // tsiAppBtnDisabled
-            // 
-            this.tsiAppBtnDisabled.Name = "tsiAppBtnDisabled";
-            this.tsiAppBtnDisabled.Size = new System.Drawing.Size(226, 22);
-            this.tsiAppBtnDisabled.Text = "Do nothing";
             // 
             // tsiAppBtnConfEditor
             // 
+            this.tsiAppBtnConfEditor.Checked = true;
+            this.tsiAppBtnConfEditor.CheckOnClick = true;
+            this.tsiAppBtnConfEditor.CheckState = System.Windows.Forms.CheckState.Checked;
             this.tsiAppBtnConfEditor.Name = "tsiAppBtnConfEditor";
-            this.tsiAppBtnConfEditor.Size = new System.Drawing.Size(226, 22);
-            this.tsiAppBtnConfEditor.Text = "Open YAMDCC config editor";
+            this.tsiAppBtnConfEditor.Size = new System.Drawing.Size(312, 26);
+            this.tsiAppBtnConfEditor.Text = "Open config editor when pressed";
             // 
             // tsiAppBtnDefaultDisable
             // 
+            this.tsiAppBtnDefaultDisable.CheckOnClick = true;
             this.tsiAppBtnDefaultDisable.Name = "tsiAppBtnDefaultDisable";
-            this.tsiAppBtnDefaultDisable.Size = new System.Drawing.Size(222, 22);
+            this.tsiAppBtnDefaultDisable.Size = new System.Drawing.Size(312, 26);
             this.tsiAppBtnDefaultDisable.Text = "Try to prevent default action";
             // 
             // sep3
             // 
             sep3.Name = "sep3";
-            sep3.Size = new System.Drawing.Size(241, 6);
+            sep3.Size = new System.Drawing.Size(299, 6);
             // 
             // tsiTrayMin
             // 
@@ -224,27 +208,28 @@ namespace YAMDCC.HotkeyHandler
             this.tsiTrayMin.CheckOnClick = true;
             this.tsiTrayMin.CheckState = System.Windows.Forms.CheckState.Checked;
             this.tsiTrayMin.Name = "tsiTrayMin";
-            this.tsiTrayMin.Size = new System.Drawing.Size(244, 22);
+            this.tsiTrayMin.Size = new System.Drawing.Size(302, 26);
             this.tsiTrayMin.Text = "&Minimise to tray";
             // 
             // tsiTrayClose
             // 
             this.tsiTrayClose.CheckOnClick = true;
             this.tsiTrayClose.Name = "tsiTrayClose";
-            this.tsiTrayClose.Size = new System.Drawing.Size(244, 22);
+            this.tsiTrayClose.Size = new System.Drawing.Size(302, 26);
             this.tsiTrayClose.Text = "&Close to tray";
             // 
             // sep1
             // 
             sep1.Name = "sep1";
-            sep1.Size = new System.Drawing.Size(241, 6);
+            sep1.Size = new System.Drawing.Size(299, 6);
             // 
             // tsiSysStart
             // 
-            tsiSysStart.Enabled = false;
+            tsiSysStart.CheckOnClick = true;
             tsiSysStart.Name = "tsiSysStart";
-            tsiSysStart.Size = new System.Drawing.Size(244, 22);
-            tsiSysStart.Text = "&Start on boot";
+            tsiSysStart.Size = new System.Drawing.Size(302, 26);
+            tsiSysStart.Text = "&Start on boot (all users)";
+            tsiSysStart.Click += new System.EventHandler(this.tsiSysStart_Click);
             // 
             // tsiHelp
             // 
@@ -252,20 +237,20 @@ namespace YAMDCC.HotkeyHandler
             tsiAbout,
             tsiSource});
             tsiHelp.Name = "tsiHelp";
-            tsiHelp.Size = new System.Drawing.Size(44, 20);
+            tsiHelp.Size = new System.Drawing.Size(55, 24);
             tsiHelp.Text = "&Help";
             // 
             // tsiAbout
             // 
             tsiAbout.Name = "tsiAbout";
-            tsiAbout.Size = new System.Drawing.Size(180, 22);
+            tsiAbout.Size = new System.Drawing.Size(174, 26);
             tsiAbout.Text = "&About";
             tsiAbout.Click += new System.EventHandler(this.tsiAbout_Click);
             // 
             // tsiSource
             // 
             tsiSource.Name = "tsiSource";
-            tsiSource.Size = new System.Drawing.Size(180, 22);
+            tsiSource.Size = new System.Drawing.Size(174, 26);
             tsiSource.Text = "Source &code";
             tsiSource.Click += new System.EventHandler(this.tsiSource_Click);
             // 
@@ -275,9 +260,10 @@ namespace YAMDCC.HotkeyHandler
             this.tblGeneral.SetColumnSpan(label1, 2);
             label1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             label1.ForeColor = System.Drawing.Color.Red;
-            label1.Location = new System.Drawing.Point(3, 145);
+            label1.Location = new System.Drawing.Point(4, 185);
+            label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label1.Name = "label1";
-            label1.Size = new System.Drawing.Size(546, 30);
+            label1.Size = new System.Drawing.Size(695, 40);
             label1.TabIndex = 13;
             label1.Text = "Most of these options do not work yet.\r\nPlease do not open an issue regarding non" +
     "-functioning Hotkey Handler functionality; it is still WIP.";
@@ -288,19 +274,13 @@ namespace YAMDCC.HotkeyHandler
             this.tblFanProfs.SetColumnSpan(label2, 2);
             label2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             label2.ForeColor = System.Drawing.Color.Red;
-            label2.Location = new System.Drawing.Point(3, 87);
+            label2.Location = new System.Drawing.Point(4, 111);
+            label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             label2.Name = "label2";
-            label2.Size = new System.Drawing.Size(546, 30);
+            label2.Size = new System.Drawing.Size(695, 40);
             label2.TabIndex = 14;
             label2.Text = "Most of these options do not work yet.\r\nPlease do not open an issue regarding non" +
     "-functioning Hotkey Handler functionality; it is still WIP.";
-            // 
-            // TrayIcon
-            // 
-            this.TrayIcon.ContextMenuStrip = TrayMenu;
-            this.TrayIcon.Text = "YAMDCC hotkey handler";
-            this.TrayIcon.Visible = true;
-            this.TrayIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TrayIcon_MouseDoubleClick);
             // 
             // TrayMenu
             // 
@@ -310,44 +290,204 @@ namespace YAMDCC.HotkeyHandler
             sep2,
             tsiTrayExit});
             TrayMenu.Name = "TrayMenu";
-            TrayMenu.Size = new System.Drawing.Size(169, 54);
+            TrayMenu.Size = new System.Drawing.Size(192, 58);
             // 
             // tsiTrayAbout
             // 
             tsiTrayAbout.Name = "tsiTrayAbout";
-            tsiTrayAbout.Size = new System.Drawing.Size(168, 22);
+            tsiTrayAbout.Size = new System.Drawing.Size(191, 24);
             tsiTrayAbout.Text = "About YAMDCC...";
             tsiTrayAbout.Click += new System.EventHandler(this.tsiAbout_Click);
             // 
             // sep2
             // 
             sep2.Name = "sep2";
-            sep2.Size = new System.Drawing.Size(165, 6);
+            sep2.Size = new System.Drawing.Size(188, 6);
             // 
             // tsiTrayExit
             // 
             tsiTrayExit.Name = "tsiTrayExit";
-            tsiTrayExit.Size = new System.Drawing.Size(168, 22);
+            tsiTrayExit.Size = new System.Drawing.Size(191, 24);
             tsiTrayExit.Text = "Exit";
             tsiTrayExit.Click += new System.EventHandler(this.Exit);
+            // 
+            // lblKeyLightUp
+            // 
+            lblKeyLightUp.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblKeyLightUp.AutoSize = true;
+            lblKeyLightUp.Location = new System.Drawing.Point(11, 119);
+            lblKeyLightUp.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblKeyLightUp.Name = "lblKeyLightUp";
+            lblKeyLightUp.Size = new System.Drawing.Size(197, 20);
+            lblKeyLightUp.TabIndex = 9;
+            lblKeyLightUp.Text = "Increase keyboard backlight:";
+            // 
+            // lblConfEditor
+            // 
+            lblConfEditor.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblConfEditor.AutoSize = true;
+            lblConfEditor.Location = new System.Drawing.Point(70, 8);
+            lblConfEditor.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblConfEditor.Name = "lblConfEditor";
+            lblConfEditor.Size = new System.Drawing.Size(138, 20);
+            lblConfEditor.TabIndex = 3;
+            lblConfEditor.Text = "Open config editor:";
+            // 
+            // lblWinFn
+            // 
+            lblWinFn.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblWinFn.AutoSize = true;
+            lblWinFn.Location = new System.Drawing.Point(61, 82);
+            lblWinFn.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblWinFn.Name = "lblWinFn";
+            lblWinFn.Size = new System.Drawing.Size(147, 20);
+            lblWinFn.TabIndex = 5;
+            lblWinFn.Text = "Toggle Win/Fn swap:";
+            // 
+            // lblFullBlast
+            // 
+            lblFullBlast.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblFullBlast.AutoSize = true;
+            lblFullBlast.Location = new System.Drawing.Point(87, 45);
+            lblFullBlast.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblFullBlast.Name = "lblFullBlast";
+            lblFullBlast.Size = new System.Drawing.Size(121, 20);
+            lblFullBlast.TabIndex = 2;
+            lblFullBlast.Text = "Toggle Full Blast:";
+            // 
+            // lblKeyLightDown
+            // 
+            lblKeyLightDown.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblKeyLightDown.AutoSize = true;
+            lblKeyLightDown.Location = new System.Drawing.Point(4, 156);
+            lblKeyLightDown.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            lblKeyLightDown.Name = "lblKeyLightDown";
+            lblKeyLightDown.Size = new System.Drawing.Size(204, 20);
+            lblKeyLightDown.TabIndex = 10;
+            lblKeyLightDown.Text = "Decrease keyboard backlight:";
+            // 
+            // btnProf1Clear
+            // 
+            btnProf1Clear.Enabled = false;
+            btnProf1Clear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            btnProf1Clear.Location = new System.Drawing.Point(739, 4);
+            btnProf1Clear.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            btnProf1Clear.Name = "btnProf1Clear";
+            btnProf1Clear.Size = new System.Drawing.Size(29, 29);
+            btnProf1Clear.TabIndex = 15;
+            btnProf1Clear.Text = "X";
+            btnProf1Clear.UseVisualStyleBackColor = true;
+            // 
+            // btnProf2Clear
+            // 
+            btnProf2Clear.Enabled = false;
+            btnProf2Clear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            btnProf2Clear.Location = new System.Drawing.Point(739, 41);
+            btnProf2Clear.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            btnProf2Clear.Name = "btnProf2Clear";
+            btnProf2Clear.Size = new System.Drawing.Size(29, 29);
+            btnProf2Clear.TabIndex = 16;
+            btnProf2Clear.Text = "X";
+            btnProf2Clear.UseVisualStyleBackColor = true;
+            // 
+            // btnProf3Clear
+            // 
+            btnProf3Clear.Enabled = false;
+            btnProf3Clear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            btnProf3Clear.Location = new System.Drawing.Point(739, 78);
+            btnProf3Clear.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            btnProf3Clear.Name = "btnProf3Clear";
+            btnProf3Clear.Size = new System.Drawing.Size(29, 29);
+            btnProf3Clear.TabIndex = 17;
+            btnProf3Clear.Text = "X";
+            btnProf3Clear.UseVisualStyleBackColor = true;
+            // 
+            // btnConfEditorClear
+            // 
+            btnConfEditorClear.Enabled = false;
+            btnConfEditorClear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            btnConfEditorClear.Location = new System.Drawing.Point(739, 4);
+            btnConfEditorClear.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            btnConfEditorClear.Name = "btnConfEditorClear";
+            btnConfEditorClear.Size = new System.Drawing.Size(29, 29);
+            btnConfEditorClear.TabIndex = 16;
+            btnConfEditorClear.Text = "X";
+            btnConfEditorClear.UseVisualStyleBackColor = true;
+            // 
+            // btnFullBlastClear
+            // 
+            btnFullBlastClear.Enabled = false;
+            btnFullBlastClear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            btnFullBlastClear.Location = new System.Drawing.Point(739, 41);
+            btnFullBlastClear.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            btnFullBlastClear.Name = "btnFullBlastClear";
+            btnFullBlastClear.Size = new System.Drawing.Size(29, 29);
+            btnFullBlastClear.TabIndex = 17;
+            btnFullBlastClear.Text = "X";
+            btnFullBlastClear.UseVisualStyleBackColor = true;
+            // 
+            // btnWinFnClear
+            // 
+            btnWinFnClear.Enabled = false;
+            btnWinFnClear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            btnWinFnClear.Location = new System.Drawing.Point(739, 78);
+            btnWinFnClear.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            btnWinFnClear.Name = "btnWinFnClear";
+            btnWinFnClear.Size = new System.Drawing.Size(29, 29);
+            btnWinFnClear.TabIndex = 18;
+            btnWinFnClear.Text = "X";
+            btnWinFnClear.UseVisualStyleBackColor = true;
+            // 
+            // btnKeyLightUpClear
+            // 
+            btnKeyLightUpClear.Enabled = false;
+            btnKeyLightUpClear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            btnKeyLightUpClear.Location = new System.Drawing.Point(739, 115);
+            btnKeyLightUpClear.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            btnKeyLightUpClear.Name = "btnKeyLightUpClear";
+            btnKeyLightUpClear.Size = new System.Drawing.Size(29, 29);
+            btnKeyLightUpClear.TabIndex = 19;
+            btnKeyLightUpClear.Text = "X";
+            btnKeyLightUpClear.UseVisualStyleBackColor = true;
+            // 
+            // btnKeyLightDownClear
+            // 
+            btnKeyLightDownClear.Enabled = false;
+            btnKeyLightDownClear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            btnKeyLightDownClear.Location = new System.Drawing.Point(739, 152);
+            btnKeyLightDownClear.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            btnKeyLightDownClear.Name = "btnKeyLightDownClear";
+            btnKeyLightDownClear.Size = new System.Drawing.Size(29, 29);
+            btnKeyLightDownClear.TabIndex = 20;
+            btnKeyLightDownClear.Text = "X";
+            btnKeyLightDownClear.UseVisualStyleBackColor = true;
+            // 
+            // TrayIcon
+            // 
+            this.TrayIcon.ContextMenuStrip = TrayMenu;
+            this.TrayIcon.Text = "YAMDCC hotkey handler";
+            this.TrayIcon.Visible = true;
+            this.TrayIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TrayIcon_MouseDoubleClick);
             // 
             // tcHotkeys
             // 
             this.tcHotkeys.Controls.Add(this.tabGeneral);
             this.tcHotkeys.Controls.Add(this.tabFanProfs);
             this.tcHotkeys.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tcHotkeys.Location = new System.Drawing.Point(0, 24);
+            this.tcHotkeys.Location = new System.Drawing.Point(0, 28);
+            this.tcHotkeys.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tcHotkeys.Name = "tcHotkeys";
             this.tcHotkeys.SelectedIndex = 0;
-            this.tcHotkeys.Size = new System.Drawing.Size(624, 357);
+            this.tcHotkeys.Size = new System.Drawing.Size(780, 448);
             this.tcHotkeys.TabIndex = 2;
             // 
             // tabGeneral
             // 
             this.tabGeneral.Controls.Add(this.tblGeneral);
-            this.tabGeneral.Location = new System.Drawing.Point(4, 24);
+            this.tabGeneral.Location = new System.Drawing.Point(4, 29);
+            this.tabGeneral.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabGeneral.Name = "tabGeneral";
-            this.tabGeneral.Size = new System.Drawing.Size(616, 329);
+            this.tabGeneral.Size = new System.Drawing.Size(772, 415);
             this.tabGeneral.TabIndex = 1;
             this.tabGeneral.Text = "General";
             this.tabGeneral.UseVisualStyleBackColor = true;
@@ -376,6 +516,7 @@ namespace YAMDCC.HotkeyHandler
             this.tblGeneral.Controls.Add(label1, 0, 5);
             this.tblGeneral.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblGeneral.Location = new System.Drawing.Point(0, 0);
+            this.tblGeneral.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tblGeneral.Name = "tblGeneral";
             this.tblGeneral.RowCount = 6;
             this.tblGeneral.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -384,110 +525,66 @@ namespace YAMDCC.HotkeyHandler
             this.tblGeneral.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblGeneral.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblGeneral.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblGeneral.Size = new System.Drawing.Size(616, 329);
+            this.tblGeneral.Size = new System.Drawing.Size(772, 415);
             this.tblGeneral.TabIndex = 7;
             // 
             // txtKeyLightDown
             // 
             this.txtKeyLightDown.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtKeyLightDown.Enabled = false;
-            this.txtKeyLightDown.Location = new System.Drawing.Point(170, 119);
+            this.txtKeyLightDown.Location = new System.Drawing.Point(216, 152);
+            this.txtKeyLightDown.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtKeyLightDown.Name = "txtKeyLightDown";
-            this.txtKeyLightDown.Size = new System.Drawing.Size(414, 23);
+            this.txtKeyLightDown.Size = new System.Drawing.Size(515, 27);
             this.txtKeyLightDown.TabIndex = 12;
             // 
             // txtKeyLightUp
             // 
             this.txtKeyLightUp.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtKeyLightUp.Enabled = false;
-            this.txtKeyLightUp.Location = new System.Drawing.Point(170, 90);
+            this.txtKeyLightUp.Location = new System.Drawing.Point(216, 115);
+            this.txtKeyLightUp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtKeyLightUp.Name = "txtKeyLightUp";
-            this.txtKeyLightUp.Size = new System.Drawing.Size(414, 23);
+            this.txtKeyLightUp.Size = new System.Drawing.Size(515, 27);
             this.txtKeyLightUp.TabIndex = 11;
-            // 
-            // lblKeyLightUp
-            // 
-            lblKeyLightUp.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            lblKeyLightUp.AutoSize = true;
-            lblKeyLightUp.Location = new System.Drawing.Point(7, 94);
-            lblKeyLightUp.Name = "lblKeyLightUp";
-            lblKeyLightUp.Size = new System.Drawing.Size(157, 15);
-            lblKeyLightUp.TabIndex = 9;
-            lblKeyLightUp.Text = "Increase keyboard backlight:";
-            // 
-            // lblConfEditor
-            // 
-            lblConfEditor.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            lblConfEditor.AutoSize = true;
-            lblConfEditor.Location = new System.Drawing.Point(54, 7);
-            lblConfEditor.Name = "lblConfEditor";
-            lblConfEditor.Size = new System.Drawing.Size(110, 15);
-            lblConfEditor.TabIndex = 3;
-            lblConfEditor.Text = "Open config editor:";
-            // 
-            // lblWinFn
-            // 
-            lblWinFn.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            lblWinFn.AutoSize = true;
-            lblWinFn.Location = new System.Drawing.Point(47, 65);
-            lblWinFn.Name = "lblWinFn";
-            lblWinFn.Size = new System.Drawing.Size(117, 15);
-            lblWinFn.TabIndex = 5;
-            lblWinFn.Text = "Toggle Win/Fn swap:";
-            // 
-            // lblFullBlast
-            // 
-            lblFullBlast.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            lblFullBlast.AutoSize = true;
-            lblFullBlast.Location = new System.Drawing.Point(69, 36);
-            lblFullBlast.Name = "lblFullBlast";
-            lblFullBlast.Size = new System.Drawing.Size(95, 15);
-            lblFullBlast.TabIndex = 2;
-            lblFullBlast.Text = "Toggle Full Blast:";
             // 
             // txtConfEditor
             // 
             this.txtConfEditor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtConfEditor.Enabled = false;
-            this.txtConfEditor.Location = new System.Drawing.Point(170, 3);
+            this.txtConfEditor.Location = new System.Drawing.Point(216, 4);
+            this.txtConfEditor.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtConfEditor.Name = "txtConfEditor";
-            this.txtConfEditor.Size = new System.Drawing.Size(414, 23);
+            this.txtConfEditor.Size = new System.Drawing.Size(515, 27);
             this.txtConfEditor.TabIndex = 6;
             // 
             // txtFullBlast
             // 
             this.txtFullBlast.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtFullBlast.Enabled = false;
-            this.txtFullBlast.Location = new System.Drawing.Point(170, 32);
+            this.txtFullBlast.Location = new System.Drawing.Point(216, 41);
+            this.txtFullBlast.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtFullBlast.Name = "txtFullBlast";
-            this.txtFullBlast.Size = new System.Drawing.Size(414, 23);
+            this.txtFullBlast.Size = new System.Drawing.Size(515, 27);
             this.txtFullBlast.TabIndex = 7;
             // 
             // txtWinFn
             // 
             this.txtWinFn.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtWinFn.Enabled = false;
-            this.txtWinFn.Location = new System.Drawing.Point(170, 61);
+            this.txtWinFn.Location = new System.Drawing.Point(216, 78);
+            this.txtWinFn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtWinFn.Name = "txtWinFn";
-            this.txtWinFn.Size = new System.Drawing.Size(414, 23);
+            this.txtWinFn.Size = new System.Drawing.Size(515, 27);
             this.txtWinFn.TabIndex = 8;
-            // 
-            // lblKeyLightDown
-            // 
-            lblKeyLightDown.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            lblKeyLightDown.AutoSize = true;
-            lblKeyLightDown.Location = new System.Drawing.Point(3, 123);
-            lblKeyLightDown.Name = "lblKeyLightDown";
-            lblKeyLightDown.Size = new System.Drawing.Size(161, 15);
-            lblKeyLightDown.TabIndex = 10;
-            lblKeyLightDown.Text = "Decrease keyboard backlight:";
             // 
             // tabFanProfs
             // 
             this.tabFanProfs.Controls.Add(this.tblFanProfs);
-            this.tabFanProfs.Location = new System.Drawing.Point(4, 24);
+            this.tabFanProfs.Location = new System.Drawing.Point(4, 29);
+            this.tabFanProfs.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabFanProfs.Name = "tabFanProfs";
-            this.tabFanProfs.Size = new System.Drawing.Size(616, 329);
+            this.tabFanProfs.Size = new System.Drawing.Size(772, 413);
             this.tabFanProfs.TabIndex = 2;
             this.tabFanProfs.Text = "Fan profiles";
             this.tabFanProfs.UseVisualStyleBackColor = true;
@@ -510,49 +607,54 @@ namespace YAMDCC.HotkeyHandler
             this.tblFanProfs.Controls.Add(btnProf1Clear, 2, 0);
             this.tblFanProfs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblFanProfs.Location = new System.Drawing.Point(0, 0);
+            this.tblFanProfs.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tblFanProfs.Name = "tblFanProfs";
             this.tblFanProfs.RowCount = 4;
             this.tblFanProfs.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblFanProfs.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblFanProfs.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblFanProfs.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblFanProfs.Size = new System.Drawing.Size(616, 329);
+            this.tblFanProfs.Size = new System.Drawing.Size(772, 413);
             this.tblFanProfs.TabIndex = 8;
             // 
             // txtProf1
             // 
             this.txtProf1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtProf1.Enabled = false;
-            this.txtProf1.Location = new System.Drawing.Point(136, 3);
+            this.txtProf1.Location = new System.Drawing.Point(169, 4);
+            this.txtProf1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtProf1.Name = "txtProf1";
-            this.txtProf1.Size = new System.Drawing.Size(448, 23);
+            this.txtProf1.Size = new System.Drawing.Size(562, 27);
             this.txtProf1.TabIndex = 6;
             // 
             // txtProf2
             // 
             this.txtProf2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtProf2.Enabled = false;
-            this.txtProf2.Location = new System.Drawing.Point(136, 32);
+            this.txtProf2.Location = new System.Drawing.Point(169, 41);
+            this.txtProf2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtProf2.Name = "txtProf2";
-            this.txtProf2.Size = new System.Drawing.Size(448, 23);
+            this.txtProf2.Size = new System.Drawing.Size(562, 27);
             this.txtProf2.TabIndex = 7;
             // 
             // txtProf3
             // 
             this.txtProf3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtProf3.Enabled = false;
-            this.txtProf3.Location = new System.Drawing.Point(136, 61);
+            this.txtProf3.Location = new System.Drawing.Point(169, 78);
+            this.txtProf3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtProf3.Name = "txtProf3";
-            this.txtProf3.Size = new System.Drawing.Size(448, 23);
+            this.txtProf3.Size = new System.Drawing.Size(562, 27);
             this.txtProf3.TabIndex = 8;
             // 
             // lblProf1
             // 
             this.lblProf1.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblProf1.AutoSize = true;
-            this.lblProf1.Location = new System.Drawing.Point(33, 7);
+            this.lblProf1.Location = new System.Drawing.Point(38, 8);
+            this.lblProf1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblProf1.Name = "lblProf1";
-            this.lblProf1.Size = new System.Drawing.Size(97, 15);
+            this.lblProf1.Size = new System.Drawing.Size(123, 20);
             this.lblProf1.TabIndex = 5;
             this.lblProf1.Text = "Switch to Default";
             // 
@@ -560,9 +662,10 @@ namespace YAMDCC.HotkeyHandler
             // 
             this.lblProf3.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblProf3.AutoSize = true;
-            this.lblProf3.Location = new System.Drawing.Point(3, 65);
+            this.lblProf3.Location = new System.Drawing.Point(4, 82);
+            this.lblProf3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblProf3.Name = "lblProf3";
-            this.lblProf3.Size = new System.Drawing.Size(127, 15);
+            this.lblProf3.Size = new System.Drawing.Size(157, 20);
             this.lblProf3.TabIndex = 2;
             this.lblProf3.Text = "Switch to Performance";
             // 
@@ -570,109 +673,23 @@ namespace YAMDCC.HotkeyHandler
             // 
             this.lblProf2.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblProf2.AutoSize = true;
-            this.lblProf2.Location = new System.Drawing.Point(42, 36);
+            this.lblProf2.Location = new System.Drawing.Point(50, 45);
+            this.lblProf2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblProf2.Name = "lblProf2";
-            this.lblProf2.Size = new System.Drawing.Size(88, 15);
+            this.lblProf2.Size = new System.Drawing.Size(111, 20);
             this.lblProf2.TabIndex = 3;
             this.lblProf2.Text = "Switch to Silent";
             // 
-            // btnProf1Clear
-            // 
-            btnProf1Clear.Enabled = false;
-            btnProf1Clear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            btnProf1Clear.Location = new System.Drawing.Point(590, 3);
-            btnProf1Clear.Name = "btnProf1Clear";
-            btnProf1Clear.Size = new System.Drawing.Size(23, 23);
-            btnProf1Clear.TabIndex = 15;
-            btnProf1Clear.Text = "X";
-            btnProf1Clear.UseVisualStyleBackColor = true;
-            // 
-            // btnProf2Clear
-            // 
-            btnProf2Clear.Enabled = false;
-            btnProf2Clear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            btnProf2Clear.Location = new System.Drawing.Point(590, 32);
-            btnProf2Clear.Name = "btnProf2Clear";
-            btnProf2Clear.Size = new System.Drawing.Size(23, 23);
-            btnProf2Clear.TabIndex = 16;
-            btnProf2Clear.Text = "X";
-            btnProf2Clear.UseVisualStyleBackColor = true;
-            // 
-            // btnProf3Clear
-            // 
-            btnProf3Clear.Enabled = false;
-            btnProf3Clear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            btnProf3Clear.Location = new System.Drawing.Point(590, 61);
-            btnProf3Clear.Name = "btnProf3Clear";
-            btnProf3Clear.Size = new System.Drawing.Size(23, 23);
-            btnProf3Clear.TabIndex = 17;
-            btnProf3Clear.Text = "X";
-            btnProf3Clear.UseVisualStyleBackColor = true;
-            // 
-            // btnConfEditorClear
-            // 
-            btnConfEditorClear.Enabled = false;
-            btnConfEditorClear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            btnConfEditorClear.Location = new System.Drawing.Point(590, 3);
-            btnConfEditorClear.Name = "btnConfEditorClear";
-            btnConfEditorClear.Size = new System.Drawing.Size(23, 23);
-            btnConfEditorClear.TabIndex = 16;
-            btnConfEditorClear.Text = "X";
-            btnConfEditorClear.UseVisualStyleBackColor = true;
-            // 
-            // btnFullBlastClear
-            // 
-            btnFullBlastClear.Enabled = false;
-            btnFullBlastClear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            btnFullBlastClear.Location = new System.Drawing.Point(590, 32);
-            btnFullBlastClear.Name = "btnFullBlastClear";
-            btnFullBlastClear.Size = new System.Drawing.Size(23, 23);
-            btnFullBlastClear.TabIndex = 17;
-            btnFullBlastClear.Text = "X";
-            btnFullBlastClear.UseVisualStyleBackColor = true;
-            // 
-            // btnWinFnClear
-            // 
-            btnWinFnClear.Enabled = false;
-            btnWinFnClear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            btnWinFnClear.Location = new System.Drawing.Point(590, 61);
-            btnWinFnClear.Name = "btnWinFnClear";
-            btnWinFnClear.Size = new System.Drawing.Size(23, 23);
-            btnWinFnClear.TabIndex = 18;
-            btnWinFnClear.Text = "X";
-            btnWinFnClear.UseVisualStyleBackColor = true;
-            // 
-            // btnKeyLightUpClear
-            // 
-            btnKeyLightUpClear.Enabled = false;
-            btnKeyLightUpClear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            btnKeyLightUpClear.Location = new System.Drawing.Point(590, 90);
-            btnKeyLightUpClear.Name = "btnKeyLightUpClear";
-            btnKeyLightUpClear.Size = new System.Drawing.Size(23, 23);
-            btnKeyLightUpClear.TabIndex = 19;
-            btnKeyLightUpClear.Text = "X";
-            btnKeyLightUpClear.UseVisualStyleBackColor = true;
-            // 
-            // btnKeyLightDownClear
-            // 
-            btnKeyLightDownClear.Enabled = false;
-            btnKeyLightDownClear.Font = new System.Drawing.Font("Segoe UI Semibold", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            btnKeyLightDownClear.Location = new System.Drawing.Point(590, 119);
-            btnKeyLightDownClear.Name = "btnKeyLightDownClear";
-            btnKeyLightDownClear.Size = new System.Drawing.Size(23, 23);
-            btnKeyLightDownClear.TabIndex = 20;
-            btnKeyLightDownClear.Text = "X";
-            btnKeyLightDownClear.UseVisualStyleBackColor = true;
-            // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(120F, 120F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(624, 381);
+            this.ClientSize = new System.Drawing.Size(780, 476);
             this.Controls.Add(this.tcHotkeys);
             this.Controls.Add(menuStrip);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MainMenuStrip = menuStrip;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
@@ -700,9 +717,6 @@ namespace YAMDCC.HotkeyHandler
         private System.Windows.Forms.TextBox txtConfEditor;
         private System.Windows.Forms.TextBox txtFullBlast;
         private System.Windows.Forms.TextBox txtWinFn;
-        private System.Windows.Forms.ToolStripMenuItem tsiAppBtnDisabled;
-        private System.Windows.Forms.ToolStripMenuItem tsiAppBtnConfEditor;
-        private System.Windows.Forms.ToolStripMenuItem tsiAppBtnDefaultDisable;
         private System.Windows.Forms.TextBox txtKeyLightDown;
         private System.Windows.Forms.TextBox txtKeyLightUp;
         private System.Windows.Forms.TabPage tabFanProfs;
@@ -715,5 +729,8 @@ namespace YAMDCC.HotkeyHandler
         private System.Windows.Forms.TextBox txtProf3;
         private System.Windows.Forms.ToolStripMenuItem tsiTrayMin;
         private System.Windows.Forms.ToolStripMenuItem tsiTrayClose;
+        private System.Windows.Forms.ToolStripMenuItem tsiEnabled;
+        private System.Windows.Forms.ToolStripMenuItem tsiAppBtnDefaultDisable;
+        private System.Windows.Forms.ToolStripMenuItem tsiAppBtnConfEditor;
     }
 }
