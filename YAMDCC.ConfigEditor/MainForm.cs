@@ -733,9 +733,12 @@ internal sealed partial class MainForm : Form
         ttMain.SetToolTip(cboProfSel, Strings.GetString(
             "ttProfSel", cfg.FanCurveConfs[cfg.CurveSel].Desc));
 
-        cboProfPerfMode.SelectedIndex = Config.FanConfs[0]
-            .FanCurveConfs[cboProfSel.SelectedIndex].PerfModeSel + 1;
-        cboProfPerfMode.Enabled = true;
+        if (Config.PerfModeConf is not null)
+        {
+            cboProfPerfMode.SelectedIndex = Config.FanConfs[0]
+                .FanCurveConfs[cboProfSel.SelectedIndex].PerfModeSel + 1;
+            cboProfPerfMode.Enabled = true;
+        }
 
         bool enable = curveCfg.Name != "Default";
         for (int i = 0; i < numFanSpds.Length; i++)
@@ -763,9 +766,19 @@ internal sealed partial class MainForm : Form
     private void ProfPerfModeChanged(object sender, EventArgs e)
     {
         int i = cboProfPerfMode.SelectedIndex;
+        PerfModeConf pModeCfg = Config.PerfModeConf;
         Config.FanConfs[0].FanCurveConfs[cboProfSel.SelectedIndex].PerfModeSel = i - 1;
-        //ttMain.SetToolTip(cboPerfMode,
-        //    Strings.GetString("ttPerfMode", Config.PerfModeConf.PerfModes[i].Desc));
+
+        if (i > 0)
+        {
+            ttMain.SetToolTip(cboProfPerfMode,
+                Strings.GetString("ttProfPerfMode", pModeCfg.PerfModes[i - 1].Desc));
+        }
+        else    // use default performance mode description
+        {
+            ttMain.SetToolTip(cboProfPerfMode,
+                Strings.GetString("ttProfPerfMode", pModeCfg.PerfModes[pModeCfg.ModeSel].Desc));
+        }
     }
 
     private void ProfAdd(object sender, EventArgs e)

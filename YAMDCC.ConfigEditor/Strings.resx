@@ -351,8 +351,17 @@ increasing to 100% for the highest setting (or lower, if you want a quieter fan 
 brightness, or drag left to decrease it (or turn it off).</value>
   </data>
   <data name="ttPerfMode" xml:space="preserve">
-    <value>Click or scroll to select the performance mode of your laptop.
+    <value>Click or scroll to select the default performance mode of your laptop.
 Note that this is different from Windows' power plans.
+This value will be overridden by the per-profile performance mode
+(you can find it on the "Fan control" tab).
+
+Performance mode description:
+{0}</value>
+  </data>
+  <data name="ttProfPerfMode" xml:space="preserve">
+    <value>Click or scroll to select the performance mode to be applied with this fan profile.
+Set to "Default" to use the value set by "Default performance mode" (on the "Extras" tab).
 
 Performance mode description:
 {0}</value>
