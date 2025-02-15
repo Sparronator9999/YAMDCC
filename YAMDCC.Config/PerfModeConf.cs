@@ -32,8 +32,8 @@ public sealed class PerfModeConf
     public byte Reg { get; set; }
 
     /// <summary>
-    /// The currently selected performance mode, as
-    /// an index of the available performance modes.
+    /// The default performance mode, as an index of the available
+    /// performance modes, when not overriden by a <see cref="FanCurveConf"/>.
     /// </summary>
     [XmlElement]
     public int ModeSel { get; set; }

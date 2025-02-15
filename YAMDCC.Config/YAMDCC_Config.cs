@@ -247,6 +247,12 @@ public sealed class YAMDCC_Config
                 return false;
             }
 
+            // all fans must have same number of fan profiles now
+            if (!FansHaveSameProfCount())
+            {
+                return false;
+            }
+
             // YAMDCC doesn't handle MinSpeed lower than MaxSpeed,
             // so return false if MinSpeed is lower or equal to MaxSpeed:
             if (cfg.MinSpeed >= cfg.MaxSpeed)
@@ -270,7 +276,7 @@ public sealed class YAMDCC_Config
             //   and fan curve registers
             // - there are the same amount of up threshold registers
             //   as down threshold registers
-            // - there is one more fan curve register than up/down threshold registers
+            // - there is one more fan profile register than up/down threshold registers
             // - there is at least one fan profile to apply (first should be Default)
             if (cfg.UpThresholdRegs?.Length < 1 ||
                 cfg.UpThresholdRegs?.Length != cfg.DownThresholdRegs?.Length ||
@@ -286,7 +292,7 @@ public sealed class YAMDCC_Config
                 if (string.IsNullOrEmpty(curveCfg.Name) ||
                     string.IsNullOrEmpty(curveCfg.Desc) ||
                     // there should be exactly one temperature threshold
-                    // per fan curve register; if there isn't, return false
+                    // per fan proffile register; if there isn't, return false
                     curveCfg.TempThresholds?.Count != cfg.FanCurveRegs.Length)
                 {
                     return false;
@@ -413,6 +419,18 @@ public sealed class YAMDCC_Config
         // All other values are considered to be valid; return true.
         // Note that registers aren't checked and are (almost) always
         // expected to be nonzero.
+        return true;
+    }
+
+    private bool FansHaveSameProfCount()
+    {
+        for (int i = 0; i < FanConfs.Count - 1; i++)
+        {
+            if (FanConfs[i].FanCurveConfs.Count != FanConfs[i + 1].FanCurveConfs.Count)
+            {
+                return false;
+            }
+        }
         return true;
     }
 }

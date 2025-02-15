@@ -441,7 +441,7 @@ internal sealed class FanControlService : ServiceBase
             }
         }
 
-        // Write the fan curve to the appropriate registers for each fan:
+        // Write the fan profile to the appropriate registers for each fan:
         int numFanConfs = Config.FanConfs.Count;
         for (int i = 0; i < numFanConfs; i++)
         {
@@ -468,6 +468,24 @@ internal sealed class FanControlService : ServiceBase
                     }
                 }
             }
+
+            // Write the performance mode
+            if (i == 0)
+            {
+                PerfModeConf pModeCfg = Config.PerfModeConf;
+                if (pModeCfg is not null)
+                {
+                    Log.Info(Strings.GetString("svcWritePerfMode"));
+                    int idx = curveCfg.PerfModeSel < 0
+                        ? pModeCfg.ModeSel
+                        : curveCfg.PerfModeSel;
+
+                    if (!LogECWriteByte(pModeCfg.Reg, pModeCfg.PerfModes[idx].Value))
+                    {
+                        success = false;
+                    }
+                }
+            }
         }
 
         // Write the charge threshold:
@@ -475,20 +493,7 @@ internal sealed class FanControlService : ServiceBase
         if (chgLimCfg is not null)
         {
             Log.Info(Strings.GetString("svcWriteChgLim"));
-            byte value = (byte)(chgLimCfg.MinVal + chgLimCfg.CurVal);
-            if (!LogECWriteByte(chgLimCfg.Reg, value))
-            {
-                success = false;
-            }
-        }
-
-        // Write the performance mode
-        PerfModeConf pModeCfg = Config.PerfModeConf;
-        if (pModeCfg is not null)
-        {
-            Log.Info(Strings.GetString("svcWritePerfMode"));
-            byte value = pModeCfg.PerfModes[pModeCfg.ModeSel].Value;
-            if (!LogECWriteByte(pModeCfg.Reg, value))
+            if (!LogECWriteByte(chgLimCfg.Reg, (byte)(chgLimCfg.MinVal + chgLimCfg.CurVal)))
             {
                 success = false;
             }
@@ -499,8 +504,7 @@ internal sealed class FanControlService : ServiceBase
         if (fModeCfg is not null)
         {
             Log.Info(Strings.GetString("svcWriteFanMode"));
-            byte value = fModeCfg.FanModes[fModeCfg.ModeSel].Value;
-            if (!LogECWriteByte(fModeCfg.Reg, value))
+            if (!LogECWriteByte(fModeCfg.Reg, fModeCfg.FanModes[fModeCfg.ModeSel].Value))
             {
                 success = false;
             }

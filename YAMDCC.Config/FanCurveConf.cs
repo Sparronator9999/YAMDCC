@@ -37,6 +37,23 @@ public sealed class FanCurveConf
     public string Desc { get; set; }
 
     /// <summary>
+    /// The <see cref="PerfMode"/> to use with this fan profile,
+    /// as an index of the available performance modes.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This setting is ignored if this <see cref="FanCurveConf"/>
+    /// is not for the first fan in the computer.
+    /// </para>
+    /// <para>
+    /// Set to -1 to use the default performance mode
+    /// (as set by <see cref="PerfModeConf.ModeSel"/>).
+    /// </para>
+    /// </remarks>
+    [XmlElement]
+    public int PerfModeSel { get; set; } = -1;
+
+    /// <summary>
     /// The fan speeds and associated up and down thresholds.
     /// </summary>
     [XmlArray]

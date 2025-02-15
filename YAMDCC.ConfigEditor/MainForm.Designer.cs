@@ -54,7 +54,6 @@ namespace YAMDCC.ConfigEditor
             System.Windows.Forms.ToolStripMenuItem tsiCheckUpdate;
             System.Windows.Forms.TabControl tcMain;
             System.Windows.Forms.TabPage tabFanControl;
-            System.Windows.Forms.FlowLayoutPanel flwFanSelect;
             System.Windows.Forms.TabPage tabExtra;
             System.Windows.Forms.TableLayoutPanel tblExtra;
             System.Windows.Forms.Label lblFanMode;
@@ -68,10 +67,10 @@ namespace YAMDCC.ConfigEditor
             System.Windows.Forms.Label lblModel;
             System.Windows.Forms.Label lblManufacturer;
             System.Windows.Forms.Label lblAuthor;
-            System.Windows.Forms.TableLayoutPanel tblApply;
-            System.Windows.Forms.FlowLayoutPanel flwStats;
             System.Windows.Forms.Label lblFirmVer;
             System.Windows.Forms.Label lblFirmDate;
+            System.Windows.Forms.TableLayoutPanel tblApply;
+            System.Windows.Forms.FlowLayoutPanel flwStats;
             this.tsiFile = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiLoadConf = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiSaveConf = new System.Windows.Forms.ToolStripMenuItem();
@@ -84,7 +83,6 @@ namespace YAMDCC.ConfigEditor
             this.tsiProfRen = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiProfChangeDesc = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiProfDel = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsiSwitchAll = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiECtoConf = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiECMon = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiAdvanced = new System.Windows.Forms.ToolStripMenuItem();
@@ -100,13 +98,15 @@ namespace YAMDCC.ConfigEditor
             this.tsiAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiSource = new System.Windows.Forms.ToolStripMenuItem();
             this.tblFanControl = new System.Windows.Forms.TableLayoutPanel();
-            this.tblCurve = new System.Windows.Forms.TableLayoutPanel();
-            this.lblFanSel = new System.Windows.Forms.Label();
-            this.cboFanSel = new System.Windows.Forms.ComboBox();
-            this.lblProfSel = new System.Windows.Forms.Label();
-            this.cboProfSel = new System.Windows.Forms.ComboBox();
-            this.btnProfAdd = new System.Windows.Forms.Button();
+            this.cboProfPerfMode = new System.Windows.Forms.ComboBox();
+            this.lblProfPerfMode = new System.Windows.Forms.Label();
             this.btnProfDel = new System.Windows.Forms.Button();
+            this.btnProfAdd = new System.Windows.Forms.Button();
+            this.cboProfSel = new System.Windows.Forms.ComboBox();
+            this.lblProfSel = new System.Windows.Forms.Label();
+            this.cboFanSel = new System.Windows.Forms.ComboBox();
+            this.lblFanSel = new System.Windows.Forms.Label();
+            this.tblCurve = new System.Windows.Forms.TableLayoutPanel();
             this.cboFanMode = new System.Windows.Forms.ComboBox();
             this.cboPerfMode = new System.Windows.Forms.ComboBox();
             this.chkWinFnSwap = new System.Windows.Forms.CheckBox();
@@ -116,10 +116,12 @@ namespace YAMDCC.ConfigEditor
             this.chkChgLim = new System.Windows.Forms.CheckBox();
             this.numChgLim = new System.Windows.Forms.NumericUpDown();
             this.tabInfo = new System.Windows.Forms.TabPage();
+            this.txtFirmDate = new System.Windows.Forms.TextBox();
             this.txtModel = new System.Windows.Forms.TextBox();
             this.txtManufacturer = new System.Windows.Forms.TextBox();
             this.txtAuthor = new System.Windows.Forms.TextBox();
             this.btnGetModel = new System.Windows.Forms.Button();
+            this.txtFirmVer = new System.Windows.Forms.TextBox();
             this.chkFullBlast = new System.Windows.Forms.CheckBox();
             this.btnRevert = new System.Windows.Forms.Button();
             this.btnApply = new System.Windows.Forms.Button();
@@ -128,8 +130,6 @@ namespace YAMDCC.ConfigEditor
             this.lblFanRPM = new System.Windows.Forms.Label();
             this.lblTemp = new System.Windows.Forms.Label();
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
-            this.txtFirmVer = new System.Windows.Forms.TextBox();
-            this.txtFirmDate = new System.Windows.Forms.TextBox();
             menuStrip = new System.Windows.Forms.MenuStrip();
             sep1 = new System.Windows.Forms.ToolStripSeparator();
             sep2 = new System.Windows.Forms.ToolStripSeparator();
@@ -140,7 +140,6 @@ namespace YAMDCC.ConfigEditor
             tsiCheckUpdate = new System.Windows.Forms.ToolStripMenuItem();
             tcMain = new System.Windows.Forms.TabControl();
             tabFanControl = new System.Windows.Forms.TabPage();
-            flwFanSelect = new System.Windows.Forms.FlowLayoutPanel();
             tabExtra = new System.Windows.Forms.TabPage();
             tblExtra = new System.Windows.Forms.TableLayoutPanel();
             lblFanMode = new System.Windows.Forms.Label();
@@ -154,15 +153,14 @@ namespace YAMDCC.ConfigEditor
             lblModel = new System.Windows.Forms.Label();
             lblManufacturer = new System.Windows.Forms.Label();
             lblAuthor = new System.Windows.Forms.Label();
-            tblApply = new System.Windows.Forms.TableLayoutPanel();
-            flwStats = new System.Windows.Forms.FlowLayoutPanel();
             lblFirmVer = new System.Windows.Forms.Label();
             lblFirmDate = new System.Windows.Forms.Label();
+            tblApply = new System.Windows.Forms.TableLayoutPanel();
+            flwStats = new System.Windows.Forms.FlowLayoutPanel();
             menuStrip.SuspendLayout();
             tcMain.SuspendLayout();
             tabFanControl.SuspendLayout();
             this.tblFanControl.SuspendLayout();
-            flwFanSelect.SuspendLayout();
             tabExtra.SuspendLayout();
             tblExtra.SuspendLayout();
             flwKeyLight.SuspendLayout();
@@ -260,7 +258,6 @@ namespace YAMDCC.ConfigEditor
             this.tsiOptions.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsiProfAdd,
             this.tsiProfEdit,
-            this.tsiSwitchAll,
             this.tsiECtoConf,
             sep4,
             this.tsiECMon,
@@ -295,36 +292,29 @@ namespace YAMDCC.ConfigEditor
             // tsiProfRen
             // 
             this.tsiProfRen.Name = "tsiProfRen";
-            this.tsiProfRen.Size = new System.Drawing.Size(178, 22);
+            this.tsiProfRen.Size = new System.Drawing.Size(180, 22);
             this.tsiProfRen.Text = "Change Name";
             this.tsiProfRen.Click += new System.EventHandler(this.ProfRename);
             // 
             // tsiProfChangeDesc
             // 
             this.tsiProfChangeDesc.Name = "tsiProfChangeDesc";
-            this.tsiProfChangeDesc.Size = new System.Drawing.Size(178, 22);
+            this.tsiProfChangeDesc.Size = new System.Drawing.Size(180, 22);
             this.tsiProfChangeDesc.Text = "Change Description";
             this.tsiProfChangeDesc.Click += new System.EventHandler(this.ProfChangeDesc);
             // 
             // sep3
             // 
             sep3.Name = "sep3";
-            sep3.Size = new System.Drawing.Size(175, 6);
+            sep3.Size = new System.Drawing.Size(177, 6);
             // 
             // tsiProfDel
             // 
             this.tsiProfDel.Name = "tsiProfDel";
             this.tsiProfDel.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Delete)));
-            this.tsiProfDel.Size = new System.Drawing.Size(178, 22);
+            this.tsiProfDel.Size = new System.Drawing.Size(180, 22);
             this.tsiProfDel.Text = "Delete";
             this.tsiProfDel.Click += new System.EventHandler(this.ProfDel);
-            // 
-            // tsiSwitchAll
-            // 
-            this.tsiSwitchAll.Name = "tsiSwitchAll";
-            this.tsiSwitchAll.Size = new System.Drawing.Size(257, 22);
-            this.tsiSwitchAll.Text = "Switch all fan profiles";
-            this.tsiSwitchAll.Click += new System.EventHandler(this.SwitchAllToggle);
             // 
             // tsiECtoConf
             // 
@@ -486,10 +476,24 @@ namespace YAMDCC.ConfigEditor
             // 
             // tblFanControl
             // 
-            this.tblFanControl.ColumnCount = 1;
-            this.tblFanControl.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblFanControl.ColumnCount = 8;
+            this.tblFanControl.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tblFanControl.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tblFanControl.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tblFanControl.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tblFanControl.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tblFanControl.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tblFanControl.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tblFanControl.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tblFanControl.Controls.Add(this.cboProfPerfMode, 7, 0);
+            this.tblFanControl.Controls.Add(this.lblProfPerfMode, 6, 0);
+            this.tblFanControl.Controls.Add(this.btnProfDel, 5, 0);
+            this.tblFanControl.Controls.Add(this.btnProfAdd, 4, 0);
+            this.tblFanControl.Controls.Add(this.cboProfSel, 3, 0);
+            this.tblFanControl.Controls.Add(this.lblProfSel, 2, 0);
+            this.tblFanControl.Controls.Add(this.cboFanSel, 1, 0);
+            this.tblFanControl.Controls.Add(this.lblFanSel, 0, 0);
             this.tblFanControl.Controls.Add(this.tblCurve, 0, 1);
-            this.tblFanControl.Controls.Add(flwFanSelect, 0, 0);
             this.tblFanControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblFanControl.Location = new System.Drawing.Point(0, 0);
             this.tblFanControl.Margin = new System.Windows.Forms.Padding(0);
@@ -500,39 +504,86 @@ namespace YAMDCC.ConfigEditor
             this.tblFanControl.Size = new System.Drawing.Size(526, 336);
             this.tblFanControl.TabIndex = 0;
             // 
-            // tblCurve
+            // cboProfPerfMode
             // 
-            this.tblCurve.AutoSize = true;
-            this.tblCurve.ColumnCount = 1;
-            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tblCurve.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblCurve.Location = new System.Drawing.Point(0, 29);
-            this.tblCurve.Margin = new System.Windows.Forms.Padding(0);
-            this.tblCurve.Name = "tblCurve";
-            this.tblCurve.RowCount = 4;
-            this.tblCurve.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblCurve.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblCurve.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblCurve.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblCurve.Size = new System.Drawing.Size(526, 307);
-            this.tblCurve.TabIndex = 2;
+            this.cboProfPerfMode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cboProfPerfMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboProfPerfMode.DropDownWidth = 200;
+            this.cboProfPerfMode.FormattingEnabled = true;
+            this.cboProfPerfMode.Location = new System.Drawing.Point(419, 3);
+            this.cboProfPerfMode.Name = "cboProfPerfMode";
+            this.cboProfPerfMode.Size = new System.Drawing.Size(104, 23);
+            this.cboProfPerfMode.TabIndex = 7;
+            this.cboProfPerfMode.SelectedIndexChanged += new System.EventHandler(this.ProfPerfModeChanged);
             // 
-            // flwFanSelect
+            // lblProfPerfMode
             // 
-            flwFanSelect.AutoSize = true;
-            flwFanSelect.Controls.Add(this.lblFanSel);
-            flwFanSelect.Controls.Add(this.cboFanSel);
-            flwFanSelect.Controls.Add(this.lblProfSel);
-            flwFanSelect.Controls.Add(this.cboProfSel);
-            flwFanSelect.Controls.Add(this.btnProfAdd);
-            flwFanSelect.Controls.Add(this.btnProfDel);
-            flwFanSelect.Dock = System.Windows.Forms.DockStyle.Fill;
-            flwFanSelect.Location = new System.Drawing.Point(0, 0);
-            flwFanSelect.Margin = new System.Windows.Forms.Padding(0);
-            flwFanSelect.Name = "flwFanSelect";
-            flwFanSelect.Size = new System.Drawing.Size(526, 29);
-            flwFanSelect.TabIndex = 1;
+            this.lblProfPerfMode.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblProfPerfMode.AutoSize = true;
+            this.lblProfPerfMode.Location = new System.Drawing.Point(348, 6);
+            this.lblProfPerfMode.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
+            this.lblProfPerfMode.Name = "lblProfPerfMode";
+            this.lblProfPerfMode.Padding = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            this.lblProfPerfMode.Size = new System.Drawing.Size(68, 17);
+            this.lblProfPerfMode.TabIndex = 6;
+            this.lblProfPerfMode.Text = "Perf. mode:";
+            // 
+            // btnProfDel
+            // 
+            this.btnProfDel.Location = new System.Drawing.Point(322, 3);
+            this.btnProfDel.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            this.btnProfDel.Name = "btnProfDel";
+            this.btnProfDel.Size = new System.Drawing.Size(23, 23);
+            this.btnProfDel.TabIndex = 5;
+            this.btnProfDel.Text = "-";
+            this.btnProfDel.UseVisualStyleBackColor = true;
+            this.btnProfDel.Click += new System.EventHandler(this.ProfDel);
+            // 
+            // btnProfAdd
+            // 
+            this.btnProfAdd.Location = new System.Drawing.Point(299, 3);
+            this.btnProfAdd.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            this.btnProfAdd.Name = "btnProfAdd";
+            this.btnProfAdd.Size = new System.Drawing.Size(23, 23);
+            this.btnProfAdd.TabIndex = 4;
+            this.btnProfAdd.Text = "+";
+            this.btnProfAdd.UseVisualStyleBackColor = true;
+            this.btnProfAdd.Click += new System.EventHandler(this.ProfAdd);
+            this.btnProfAdd.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.btnProfAdd_KeyPress);
+            // 
+            // cboProfSel
+            // 
+            this.cboProfSel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cboProfSel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboProfSel.FormattingEnabled = true;
+            this.cboProfSel.Location = new System.Drawing.Point(192, 3);
+            this.cboProfSel.Name = "cboProfSel";
+            this.cboProfSel.Size = new System.Drawing.Size(104, 23);
+            this.cboProfSel.TabIndex = 3;
+            this.cboProfSel.SelectedIndexChanged += new System.EventHandler(this.ProfSelChanged);
+            // 
+            // lblProfSel
+            // 
+            this.lblProfSel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblProfSel.AutoSize = true;
+            this.lblProfSel.Location = new System.Drawing.Point(145, 6);
+            this.lblProfSel.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
+            this.lblProfSel.Name = "lblProfSel";
+            this.lblProfSel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            this.lblProfSel.Size = new System.Drawing.Size(44, 17);
+            this.lblProfSel.TabIndex = 2;
+            this.lblProfSel.Text = "Profile:";
+            // 
+            // cboFanSel
+            // 
+            this.cboFanSel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cboFanSel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboFanSel.FormattingEnabled = true;
+            this.cboFanSel.Location = new System.Drawing.Point(35, 3);
+            this.cboFanSel.Name = "cboFanSel";
+            this.cboFanSel.Size = new System.Drawing.Size(104, 23);
+            this.cboFanSel.TabIndex = 1;
+            this.cboFanSel.SelectedIndexChanged += new System.EventHandler(this.FanSelChanged);
             // 
             // lblFanSel
             // 
@@ -546,60 +597,24 @@ namespace YAMDCC.ConfigEditor
             this.lblFanSel.TabIndex = 0;
             this.lblFanSel.Text = "Fan:";
             // 
-            // cboFanSel
+            // tblCurve
             // 
-            this.cboFanSel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboFanSel.FormattingEnabled = true;
-            this.cboFanSel.Location = new System.Drawing.Point(35, 3);
-            this.cboFanSel.Name = "cboFanSel";
-            this.cboFanSel.Size = new System.Drawing.Size(119, 23);
-            this.cboFanSel.TabIndex = 1;
-            this.cboFanSel.SelectedIndexChanged += new System.EventHandler(this.FanSelChanged);
-            // 
-            // lblProfSel
-            // 
-            this.lblProfSel.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblProfSel.AutoSize = true;
-            this.lblProfSel.Location = new System.Drawing.Point(160, 6);
-            this.lblProfSel.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
-            this.lblProfSel.Name = "lblProfSel";
-            this.lblProfSel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 2);
-            this.lblProfSel.Size = new System.Drawing.Size(44, 17);
-            this.lblProfSel.TabIndex = 2;
-            this.lblProfSel.Text = "Profile:";
-            // 
-            // cboProfSel
-            // 
-            this.cboProfSel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboProfSel.FormattingEnabled = true;
-            this.cboProfSel.Location = new System.Drawing.Point(207, 3);
-            this.cboProfSel.Name = "cboProfSel";
-            this.cboProfSel.Size = new System.Drawing.Size(119, 23);
-            this.cboProfSel.TabIndex = 3;
-            this.cboProfSel.SelectedIndexChanged += new System.EventHandler(this.ProfSelChanged);
-            // 
-            // btnProfAdd
-            // 
-            this.btnProfAdd.Location = new System.Drawing.Point(332, 3);
-            this.btnProfAdd.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
-            this.btnProfAdd.Name = "btnProfAdd";
-            this.btnProfAdd.Size = new System.Drawing.Size(23, 23);
-            this.btnProfAdd.TabIndex = 4;
-            this.btnProfAdd.Text = "+";
-            this.btnProfAdd.UseVisualStyleBackColor = true;
-            this.btnProfAdd.Click += new System.EventHandler(this.ProfAdd);
-            this.btnProfAdd.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.btnProfAdd_KeyPress);
-            // 
-            // btnProfDel
-            // 
-            this.btnProfDel.Location = new System.Drawing.Point(355, 3);
-            this.btnProfDel.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
-            this.btnProfDel.Name = "btnProfDel";
-            this.btnProfDel.Size = new System.Drawing.Size(23, 23);
-            this.btnProfDel.TabIndex = 5;
-            this.btnProfDel.Text = "-";
-            this.btnProfDel.UseVisualStyleBackColor = true;
-            this.btnProfDel.Click += new System.EventHandler(this.ProfDel);
+            this.tblCurve.AutoSize = true;
+            this.tblCurve.ColumnCount = 1;
+            this.tblFanControl.SetColumnSpan(this.tblCurve, 8);
+            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tblCurve.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tblCurve.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tblCurve.Location = new System.Drawing.Point(0, 29);
+            this.tblCurve.Margin = new System.Windows.Forms.Padding(0);
+            this.tblCurve.Name = "tblCurve";
+            this.tblCurve.RowCount = 4;
+            this.tblCurve.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tblCurve.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblCurve.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tblCurve.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tblCurve.Size = new System.Drawing.Size(526, 307);
+            this.tblCurve.TabIndex = 2;
             // 
             // tabExtra
             // 
@@ -847,6 +862,15 @@ namespace YAMDCC.ConfigEditor
             tblInfo.Size = new System.Drawing.Size(520, 330);
             tblInfo.TabIndex = 1;
             // 
+            // txtFirmDate
+            // 
+            this.txtFirmDate.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtFirmDate.Location = new System.Drawing.Point(131, 119);
+            this.txtFirmDate.Name = "txtFirmDate";
+            this.txtFirmDate.ReadOnly = true;
+            this.txtFirmDate.Size = new System.Drawing.Size(386, 23);
+            this.txtFirmDate.TabIndex = 10;
+            // 
             // txtModel
             // 
             this.txtModel.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -916,6 +940,35 @@ namespace YAMDCC.ConfigEditor
             this.btnGetModel.Text = "Get model and manufacturer";
             this.btnGetModel.UseVisualStyleBackColor = true;
             this.btnGetModel.Click += new System.EventHandler(this.btnGetModel_Click);
+            // 
+            // lblFirmVer
+            // 
+            lblFirmVer.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblFirmVer.AutoSize = true;
+            lblFirmVer.Location = new System.Drawing.Point(10, 94);
+            lblFirmVer.Name = "lblFirmVer";
+            lblFirmVer.Size = new System.Drawing.Size(115, 15);
+            lblFirmVer.TabIndex = 7;
+            lblFirmVer.Text = "EC firmware version:";
+            // 
+            // lblFirmDate
+            // 
+            lblFirmDate.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            lblFirmDate.AutoSize = true;
+            lblFirmDate.Location = new System.Drawing.Point(25, 123);
+            lblFirmDate.Name = "lblFirmDate";
+            lblFirmDate.Size = new System.Drawing.Size(100, 15);
+            lblFirmDate.TabIndex = 8;
+            lblFirmDate.Text = "EC firmware date:";
+            // 
+            // txtFirmVer
+            // 
+            this.txtFirmVer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtFirmVer.Location = new System.Drawing.Point(131, 90);
+            this.txtFirmVer.Name = "txtFirmVer";
+            this.txtFirmVer.ReadOnly = true;
+            this.txtFirmVer.Size = new System.Drawing.Size(386, 23);
+            this.txtFirmVer.TabIndex = 9;
             // 
             // tblApply
             // 
@@ -1043,44 +1096,6 @@ namespace YAMDCC.ConfigEditor
             this.tblMain.Size = new System.Drawing.Size(540, 416);
             this.tblMain.TabIndex = 1;
             // 
-            // lblFirmVer
-            // 
-            lblFirmVer.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            lblFirmVer.AutoSize = true;
-            lblFirmVer.Location = new System.Drawing.Point(10, 94);
-            lblFirmVer.Name = "lblFirmVer";
-            lblFirmVer.Size = new System.Drawing.Size(115, 15);
-            lblFirmVer.TabIndex = 7;
-            lblFirmVer.Text = "EC firmware version:";
-            // 
-            // lblFirmDate
-            // 
-            lblFirmDate.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            lblFirmDate.AutoSize = true;
-            lblFirmDate.Location = new System.Drawing.Point(25, 123);
-            lblFirmDate.Name = "lblFirmDate";
-            lblFirmDate.Size = new System.Drawing.Size(100, 15);
-            lblFirmDate.TabIndex = 8;
-            lblFirmDate.Text = "EC firmware date:";
-            // 
-            // txtFirmVer
-            // 
-            this.txtFirmVer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtFirmVer.Location = new System.Drawing.Point(131, 90);
-            this.txtFirmVer.Name = "txtFirmVer";
-            this.txtFirmVer.ReadOnly = true;
-            this.txtFirmVer.Size = new System.Drawing.Size(386, 23);
-            this.txtFirmVer.TabIndex = 9;
-            // 
-            // txtFirmDate
-            // 
-            this.txtFirmDate.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtFirmDate.Location = new System.Drawing.Point(131, 119);
-            this.txtFirmDate.Name = "txtFirmDate";
-            this.txtFirmDate.ReadOnly = true;
-            this.txtFirmDate.Size = new System.Drawing.Size(386, 23);
-            this.txtFirmDate.TabIndex = 10;
-            // 
             // MainForm
             // 
             this.AcceptButton = this.btnApply;
@@ -1104,8 +1119,6 @@ namespace YAMDCC.ConfigEditor
             tabFanControl.ResumeLayout(false);
             this.tblFanControl.ResumeLayout(false);
             this.tblFanControl.PerformLayout();
-            flwFanSelect.ResumeLayout(false);
-            flwFanSelect.PerformLayout();
             tabExtra.ResumeLayout(false);
             tblExtra.ResumeLayout(false);
             tblExtra.PerformLayout();
@@ -1179,7 +1192,6 @@ namespace YAMDCC.ConfigEditor
         private System.Windows.Forms.ToolStripMenuItem tsiLogWarn;
         private System.Windows.Forms.ToolStripMenuItem tsiLogError;
         private System.Windows.Forms.ToolStripMenuItem tsiLogFatal;
-        private System.Windows.Forms.ToolStripMenuItem tsiSwitchAll;
         private System.Windows.Forms.ToolStripMenuItem tsiAdvanced;
         private System.Windows.Forms.ComboBox cboFanMode;
         private System.Windows.Forms.TabPage tabInfo;
@@ -1189,5 +1201,7 @@ namespace YAMDCC.ConfigEditor
         private System.Windows.Forms.Button btnGetModel;
         private System.Windows.Forms.TextBox txtFirmDate;
         private System.Windows.Forms.TextBox txtFirmVer;
+        private System.Windows.Forms.ComboBox cboProfPerfMode;
+        private System.Windows.Forms.Label lblProfPerfMode;
     }
 }

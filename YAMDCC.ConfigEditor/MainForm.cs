@@ -75,7 +75,6 @@ internal sealed partial class MainForm : Form
         tsiProfAdd.ToolTipText = Strings.GetString("ttProfAdd");
         tsiProfRen.ToolTipText = Strings.GetString("ttProfRen");
         tsiProfChangeDesc.ToolTipText = Strings.GetString("ttProfChangeDesc");
-        tsiSwitchAll.ToolTipText = Strings.GetString("ttSwitchAll");
         tsiECtoConf.ToolTipText = Strings.GetString("ttECtoConf");
         tsiProfDel.ToolTipText = Strings.GetString("ttProfDel");
         tsiECMon.ToolTipText = Strings.GetString("ttECMon");
@@ -409,26 +408,6 @@ internal sealed partial class MainForm : Form
         }
     }
 
-    private void SwitchAllToggle(object sender, EventArgs e)
-    {
-        if (!tsiSwitchAll.Checked)
-        {
-            if (FansHaveSameProfCount())
-            {
-                tsiSwitchAll.Checked = true;
-            }
-            else
-            {
-                Utils.ShowError("All fans must have the same number of fan profiles.");
-            }
-        }
-        else
-        {
-            tsiSwitchAll.Checked = false;
-        }
-
-    }
-
     private void ECtoConf(object sender, EventArgs e)
     {
         if (Utils.ShowInfo(Strings.GetString("dlgECtoConfStart"),
@@ -746,20 +725,17 @@ internal sealed partial class MainForm : Form
         FanConf cfg = Config.FanConfs[cboFanSel.SelectedIndex];
         FanCurveConf curveCfg = cfg.FanCurveConfs[cboProfSel.SelectedIndex];
 
-        if (tsiSwitchAll.Checked)
+        for (int i = 0; i < Config.FanConfs.Count; i++)
         {
-            for (int i = 0; i < Config.FanConfs.Count; i++)
-            {
-                Config.FanConfs[i].CurveSel = cboProfSel.SelectedIndex;
-            }
-        }
-        else
-        {
-            cfg.CurveSel = cboProfSel.SelectedIndex;
+            Config.FanConfs[i].CurveSel = cboProfSel.SelectedIndex;
         }
 
         ttMain.SetToolTip(cboProfSel, Strings.GetString(
             "ttProfSel", cfg.FanCurveConfs[cfg.CurveSel].Desc));
+
+        cboProfPerfMode.SelectedIndex = Config.FanConfs[0]
+            .FanCurveConfs[cboProfSel.SelectedIndex].PerfModeSel + 1;
+        cboProfPerfMode.Enabled = true;
 
         bool enable = curveCfg.Name != "Default";
         for (int i = 0; i < numFanSpds.Length; i++)
@@ -784,27 +760,15 @@ internal sealed partial class MainForm : Form
         tsiProfDel.Enabled = enable;
     }
 
-    private void ProfAdd(object sender, EventArgs e)
+    private void ProfPerfModeChanged(object sender, EventArgs e)
     {
-        if (tsiSwitchAll.Checked)
-        {
-            bool switchAll = tsiSwitchAll.Checked;
-            tsiSwitchAll.Checked = false;
-            ProfAdd(0, cboFanSel.Items.Count);
-            tsiSwitchAll.Checked = switchAll;
-        }
-        else
-        {
-            ProfAdd(cboFanSel.SelectedIndex, cboFanSel.SelectedIndex + 1);
-        }
-
-        if (!FansHaveSameProfCount())
-        {
-            tsiSwitchAll.Checked = false;
-        }
+        int i = cboProfPerfMode.SelectedIndex;
+        Config.FanConfs[0].FanCurveConfs[cboProfSel.SelectedIndex].PerfModeSel = i - 1;
+        //ttMain.SetToolTip(cboPerfMode,
+        //    Strings.GetString("ttPerfMode", Config.PerfModeConf.PerfModes[i].Desc));
     }
 
-    private void ProfAdd(int start, int end)
+    private void ProfAdd(object sender, EventArgs e)
     {
         FanConf cfg = Config.FanConfs[cboFanSel.SelectedIndex];
 
@@ -814,7 +778,7 @@ internal sealed partial class MainForm : Form
 
         if (dlg.ShowDialog() == DialogResult.OK)
         {
-            for (int i = start; i < end; i++)
+            for (int i = 0; i < cboFanSel.Items.Count; i++)
             {
                 cfg = Config.FanConfs[i];
 
@@ -874,32 +838,17 @@ internal sealed partial class MainForm : Form
 
     private void ProfDel(object sender, EventArgs e)
     {
-        if (tsiSwitchAll.Checked)
-        {
-            ProfDel(0, cboFanSel.Items.Count);
-        }
-        else
-        {
-            ProfDel(cboFanSel.SelectedIndex, cboFanSel.SelectedIndex + 1);
-        }
+        FanConf cfg = Config.FanConfs[cboFanSel.SelectedIndex];
+        FanCurveConf curveCfg = cfg.FanCurveConfs[cfg.CurveSel];
 
-        if (!FansHaveSameProfCount())
+        if (curveCfg.Name != "Default" && Utils.ShowWarning(
+            Strings.GetString("dlgProfDel", curveCfg.Name),
+            $"Delete fan profile? ({cfg.Name})") == DialogResult.Yes)
         {
-            tsiSwitchAll.Checked = false;
-        }
-    }
-
-    private void ProfDel(int start, int end)
-    {
-        for (int i = start; i < end; i++)
-        {
-            FanConf cfg = Config.FanConfs[i];
-            FanCurveConf curveCfg = cfg.FanCurveConfs[cfg.CurveSel];
-
-            if (curveCfg.Name != "Default" && Utils.ShowWarning(
-                Strings.GetString("dlgProfDel", curveCfg.Name),
-                $"Delete fan profile? ({cfg.Name})") == DialogResult.Yes)
+            for (int i = 0; i < cboFanSel.Items.Count; i++)
             {
+                cfg = Config.FanConfs[i];
+
                 // Remove the fan profile from the config's list
                 cfg.FanCurveConfs.RemoveAt(cfg.CurveSel);
                 cfg.CurveSel -= 1;
@@ -969,6 +918,9 @@ internal sealed partial class MainForm : Form
         Config.PerfModeConf.ModeSel = i;
         ttMain.SetToolTip(cboPerfMode,
             Strings.GetString("ttPerfMode", Config.PerfModeConf.PerfModes[i].Desc));
+
+        PerfModeConf pCfg = Config.PerfModeConf;
+        cboProfPerfMode.Items[0] = $"Default ({pCfg.PerfModes[pCfg.ModeSel].Name})";
     }
 
     private void WinFnSwapToggle(object sender, EventArgs e)
@@ -1118,7 +1070,6 @@ internal sealed partial class MainForm : Form
     private void LoadConf(YAMDCC_Config cfg)
     {
         DisableAll();
-        tsiSwitchAll.Checked = FansHaveSameProfCount();
 
         tsiSaveConf.Enabled = true;
 
@@ -1172,6 +1123,8 @@ internal sealed partial class MainForm : Form
         }
 
         cboPerfMode.Items.Clear();
+        cboProfPerfMode.Items.Clear();
+
         if (cfg.PerfModeConf is null)
         {
             ttMain.SetToolTip(cboPerfMode, Strings.GetString("ttNotSupported"));
@@ -1179,9 +1132,11 @@ internal sealed partial class MainForm : Form
         else
         {
             PerfModeConf perfModeConf = cfg.PerfModeConf;
+            cboProfPerfMode.Items.Add($"Default ({perfModeConf.PerfModes[perfModeConf.ModeSel].Name})");
             for (int i = 0; i < perfModeConf.PerfModes.Count; i++)
             {
                 cboPerfMode.Items.Add(perfModeConf.PerfModes[i].Name);
+                cboProfPerfMode.Items.Add(perfModeConf.PerfModes[i].Name);
             }
 
             cboPerfMode.SelectedIndex = perfModeConf.ModeSel;
@@ -1279,6 +1234,7 @@ internal sealed partial class MainForm : Form
         btnProfDel.Enabled = false;
         cboFanSel.Enabled = false;
         cboProfSel.Enabled = false;
+        cboProfPerfMode.Enabled = false;
         if (tbFanSpds is not null)
         {
             for (int i = 0; i < tbFanSpds.Length; i++)
@@ -1313,19 +1269,6 @@ internal sealed partial class MainForm : Form
         chkFullBlast.Enabled = enable;
         btnApply.Enabled = enable;
         btnRevert.Enabled = enable;
-    }
-
-    private bool FansHaveSameProfCount()
-    {
-        List<FanConf> cfgs = Config.FanConfs;
-        for (int i = 0; i < cfgs.Count - 1; i++)
-        {
-            if (cfgs[i].FanCurveConfs.Count != cfgs[i + 1].FanCurveConfs.Count)
-            {
-                return false;
-            }
-        }
-        return true;
     }
 
     private void UpdateStatus(StatusCode status, int data = 0)
