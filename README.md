@@ -133,12 +133,12 @@ to 100% always).
 
 The following features are currently planned for v1.1:
 
-- [ ] Hotkey support (requested by @grimy400)
+- [ ] Hotkey support ([#22](https://github.com/Sparronator9999/YAMDCC/issues/22)) *(in progress)*
   - This will most likely be implemented as a separate background program that
     listens to keyboard shortcuts,
     since Windows services (or at least those running as Local System) can't
     "see" keyboard input.
-- [ ] Switch fan profiles on performance mode setting adjustment
+- [x] Switch fan profiles on performance mode setting adjustment
       ([#37](https://github.com/Sparronator9999/YAMDCC/issues/37))
 
 Below are some planned features for potential future releases:
