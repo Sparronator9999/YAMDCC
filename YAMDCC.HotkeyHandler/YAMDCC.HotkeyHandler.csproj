@@ -9,7 +9,7 @@
         <LangVersion>13.0</LangVersion>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
         <LangVersion>13.0</LangVersion>
-        <VersionPrefix>1.0.1</VersionPrefix>
+        <VersionPrefix>1.0.2</VersionPrefix>
         <VersionSuffix>dev</VersionSuffix>
         <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>

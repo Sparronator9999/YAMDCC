@@ -13,8 +13,8 @@
         <RuntimeIdentifiers>win7-x64;win7-x86;win-x64;win-x86</RuntimeIdentifiers>
         <TargetFramework>net48</TargetFramework>
         <Title>YAMDCC EC library</Title>
-        <VersionPrefix>1.0.1</VersionPrefix>
-        <VersionSuffix>release</VersionSuffix>
+        <VersionPrefix>1.0.2</VersionPrefix>
+        <VersionSuffix>dev</VersionSuffix>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>none</DebugType>

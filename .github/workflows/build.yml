@@ -49,6 +49,9 @@ jobs:
     - name: Copy fan configs to build path
       run: mkdir YAMDCC.ConfigEditor\bin\${{ matrix.config }}\net48\Configs && copy Configs\* YAMDCC.ConfigEditor\bin\${{ matrix.config }}\net48\Configs
 
+    - name: Copy LICENSE to build path
+      run: copy LICENSE.md YAMDCC.ConfigEditor\bin\${{ matrix.config }}\net48
+
     - name: Upload build artifact
       uses: actions/upload-artifact@v4
       with:
