@@ -134,10 +134,8 @@ to 100% always).
 The following features are currently planned for v1.1:
 
 - [ ] Hotkey support ([#22](https://github.com/Sparronator9999/YAMDCC/issues/22)) *(in progress)*
-  - This will most likely be implemented as a separate background program that
-    listens to keyboard shortcuts,
-    since Windows services (or at least those running as Local System) can't
-    "see" keyboard input.
+  - This will be a separate background program that stays in the system tray
+    and listens to keyboard shortcuts.
 - [x] Switch fan profiles on performance mode setting adjustment
       ([#37](https://github.com/Sparronator9999/YAMDCC/issues/37))
 
@@ -157,9 +155,10 @@ Below are some planned features for potential future releases:
   - Currently the Config Editor handles managing service installation, but this
     should probably be done in an installer/separate application.
 - [ ] Support for keyboard mic/speaker mute LEDs
-  - Apparently this isn't handled by hardware/Windows, but after reverse-engineering
-    Apple's Boot Camp to get keyboard shortcuts working without it, I really
-    shouldn't be surprised anymore.
+  - Apparently this isn't handled by hardware/Windows, but after
+    [reverse-engineering Apple's Boot Camp](https://github.com/Sparronator9999/OpenBootCamp)
+    to get keyboard shortcuts working without it, I really shouldn't be
+    surprised anymore.
 - [ ] .NET support
   - Mandatory for Linux support
   - The GUI *should* compile on .NET 8 (and in fact *has* been compiled on .NET 8 before).
