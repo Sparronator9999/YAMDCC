@@ -120,10 +120,18 @@ internal sealed class FanControlService : ServiceBase
             }
             if (_EC.ReadString(0xAC, 0x10, out string ecDate) && ecDate.Length == 0x10)
             {
-                string temp = $"{ecDate.Substring(4, 4)}-{ecDate.Substring(0, 2)}-{ecDate.Substring(2, 2)}" +
+                try
+                {
+                    string temp = $"{ecDate.Substring(4, 4)}-{ecDate.Substring(0, 2)}-{ecDate.Substring(2, 2)}" +
                     $"T{ecDate.Substring(8, 2)}:{ecDate.Substring(11, 2)}:{ecDate.Substring(14, 2)}";
-                EcInfo.Date = DateTime.ParseExact(temp, "s", CultureInfo.InvariantCulture);
-                Log.Debug($"EC firmware date: {EcInfo.Date:G}");
+                    EcInfo.Date = DateTime.ParseExact(temp, "s", CultureInfo.InvariantCulture);
+                    Log.Debug($"EC firmware date: {EcInfo.Date:G}");
+                }
+                catch (FormatException ex)
+                {
+                    Log.Error($"Failed to parse EC firmware date: {ex.Message}");
+                    Log.Debug($"EC firmware date (raw): {ecDate}");
+                }
             }
         }
 
