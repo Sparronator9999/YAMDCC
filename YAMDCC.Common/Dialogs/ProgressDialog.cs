@@ -89,6 +89,7 @@ public sealed partial class ProgressDialog<TResult> : Form
     private void ShowProgress(object sender, EventArgs e)
     {
         Opacity = 1;
+        ShowInTaskbar = true;
         DisplayTimer.Stop();
     }
 }
