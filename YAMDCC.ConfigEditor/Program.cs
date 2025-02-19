@@ -68,25 +68,29 @@ internal static class Program
                             Strings.GetString("dlgSvcNotInstalled"), "Service not installed",
                             MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
-                            ProgressDialog<bool> dlg = new(Strings.GetString("dlgSvcInstalling"), () =>
+                            ProgressDialog<bool> dlg = new()
                             {
-                                if (Utils.InstallService("yamdccsvc"))
+                                Caption = Strings.GetString("dlgSvcInstalling"),
+                                DoWork = () =>
                                 {
-                                    if (Utils.StartService("yamdccsvc"))
+                                    if (Utils.InstallService("yamdccsvc"))
                                     {
-                                        return true;
+                                        if (Utils.StartService("yamdccsvc"))
+                                        {
+                                            return true;
+                                        }
+                                        else
+                                        {
+                                            Utils.ShowError(Strings.GetString("dlgSvcStartCrash"));
+                                        }
                                     }
                                     else
                                     {
-                                        Utils.ShowError(Strings.GetString("dlgSvcStartCrash"));
+                                        Utils.ShowError(Strings.GetString("dlgSvcInstallFail"));
                                     }
+                                    return false;
                                 }
-                                else
-                                {
-                                    Utils.ShowError(Strings.GetString("dlgSvcInstallFail"));
-                                }
-                                return false;
-                            });
+                            };
                             dlg.ShowDialog();
 
                             if (dlg.Result)
@@ -114,21 +118,25 @@ internal static class Program
                             Strings.GetString("dlgSvcNotRunning"), "Service not running",
                             MessageBoxButtons.YesNo) == DialogResult.Yes)
                         {
-                            ProgressDialog<bool> dlg = new(Strings.GetString("dlgSvcStarting"), () =>
-                        {
-                            if (Utils.StartService("yamdccsvc"))
+                            ProgressDialog<bool> dlg = new()
                             {
-                                return false;
-                            }
-                            else
-                            {
-                                Utils.ShowError(Strings.GetString("dlgSvcStartCrash"));
-                                return true;
-                            }
-                        });
+                                Caption = Strings.GetString("dlgSvcStarting"),
+                                DoWork = () =>
+                                {
+                                    if (Utils.StartService("yamdccsvc"))
+                                    {
+                                        return false;
+                                    }
+                                    else
+                                    {
+                                        Utils.ShowError(Strings.GetString("dlgSvcStartCrash"));
+                                        return true;
+                                    }
+                                }
+                            };
                             dlg.ShowDialog();
 
-                            if ((bool)dlg.Result)
+                            if (dlg.Result)
                             {
                                 return;
                             }

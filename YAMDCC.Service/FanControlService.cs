@@ -86,45 +86,53 @@ internal sealed class FanControlService : ServiceBase
     #region Events
     protected override void OnStart(string[] args)
     {
-        Log.Info(Strings.GetString("svcStarting"));
-
-        // Install WinRing0 to get EC access
         try
         {
-            Log.Info(Strings.GetString("drvLoad"));
-            if (!_EC.LoadDriver())
+            Log.Info(Strings.GetString("svcStarting"));
+
+            // Install WinRing0 to get EC access
+            try
             {
-                throw new Win32Exception(_EC.GetDriverError());
+                Log.Info(Strings.GetString("drvLoad"));
+                if (!_EC.LoadDriver())
+                {
+                    throw new Win32Exception(_EC.GetDriverError());
+                }
+            }
+            catch (Win32Exception)
+            {
+                Log.Fatal(Strings.GetString("drvLoadFail"));
+                _EC.UnloadDriver();
+                ExitCode = 1;
+                throw;
+            }
+            Log.Info(Strings.GetString("drvLoadSuccess"));
+
+            // Load the last applied YAMDCC config.
+            bool confLoaded = LoadConf();
+
+            // Set up IPC server
+            Log.Info("Starting IPC server...");
+            IPCServer.Start();
+
+            Log.Info(Strings.GetString("svcStarted"));
+
+            // Attempt to read default fan curve if it's pending:
+            if (CommonConfig.GetECtoConfState() == ECtoConfState.PostReboot)
+            {
+                ECtoConf();
+            }
+
+            // Apply the fan curve and charging threshold:
+            if (confLoaded)
+            {
+                ApplyConf();
             }
         }
-        catch (Win32Exception)
+        catch (Exception ex)
         {
-            Log.Fatal(Strings.GetString("drvLoadFail"));
-            _EC.UnloadDriver();
-            ExitCode = 1;
+            Log.Fatal(Strings.GetString("svcException", ex));
             throw;
-        }
-        Log.Info(Strings.GetString("drvLoadSuccess"));
-
-        // Load the last applied YAMDCC config.
-        bool confLoaded = LoadConf();
-
-        // Set up IPC server
-        Log.Info("Starting IPC server...");
-        IPCServer.Start();
-
-        Log.Info(Strings.GetString("svcStarted"));
-
-        // Attempt to read default fan curve if it's pending:
-        if (CommonConfig.GetECtoConfState() == ECtoConfState.PostReboot)
-        {
-            ECtoConf();
-        }
-
-        // Apply the fan curve and charging threshold:
-        if (confLoaded)
-        {
-            ApplyConf();
         }
     }
 

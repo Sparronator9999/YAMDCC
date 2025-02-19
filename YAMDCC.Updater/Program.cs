@@ -84,9 +84,12 @@ internal static class Program
     private static void InstallUpdate(
         string oldPath, string updatePath, string destPath, string confPath)
     {
-        ProgressDialog<bool> dlg = new("Installing YAMDCC update...", () =>
+        ProgressDialog<bool> dlg = new();
+
+        dlg.DoWork = () =>
         {
             // kill all running instances of YAMDCC
+            dlg.Caption = "Closing all YAMDCC instances...";
             string[] names =
             [
                 "ConfigEditor",
@@ -94,15 +97,18 @@ internal static class Program
                 // yamdccsvc is stopped in next section
             ];
 
-            foreach (string name in names)
+            foreach (Process p in Process.GetProcesses())
             {
-                foreach (Process process in Process.GetProcessesByName(name))
+                foreach (string name in names)
                 {
-                    // try to close the main window.
-                    // If that doesn't work, kill the process instead
-                    if (!process.CloseMainWindow() || !process.WaitForExit(3000))
+                    if (p.ProcessName == name)
                     {
-                        process.Kill();
+                        // try to close the main window.
+                        // If that doesn't work, kill the process instead
+                        if (!p.CloseMainWindow() || !p.WaitForExit(3000))
+                        {
+                            p.Kill();
+                        }
                     }
                 }
             }
@@ -110,12 +116,17 @@ internal static class Program
             bool svcRunning = Utils.ServiceRunning("yamdccsvc");
 
             // stop the YAMDCC service if it's running
-            if (svcRunning && !Utils.StopService("yamdccsvc"))
+            if (svcRunning)
             {
-                Utils.ShowError("Failed to stop YAMDCC service!");
+                dlg.Caption = "Stopping YAMDCC service...";
+                if (!Utils.StopService("yamdccsvc"))
+                {
+                    Utils.ShowError("Failed to stop YAMDCC service!");
+                }
             }
 
             // delete the old YAMDCC installation
+            dlg.Caption = "Installing YAMDCC update...";
             DirectoryInfo di = new(destPath);
             foreach (FileInfo fi in di.GetFiles())
             {
@@ -157,15 +168,17 @@ internal static class Program
             // restart the YAMDCC service if it was running before the update
             if (svcRunning)
             {
+                dlg.Caption = "Starting YAMDCC service...";
                 Utils.StartService("yamdccsvc");
             }
 
             // cleanup :)
             // (note: does not delete "Old" folder that we should be running from)
+            dlg.Caption = "Cleaning up...";
             Directory.Delete(updatePath, true);
 
             return true;
-        });
+        };
         dlg.ShowDialog();
 
         if (Utils.ShowInfo(

@@ -113,7 +113,7 @@ internal sealed class Driver
             AdvApi32.ServiceType.KernelDriver,
             AdvApi32.ServiceStartType.DemandStart,
             AdvApi32.ServiceError.Normal,
-            DriverPath, null, null, null, null, null);
+            fullPath, null, null, null, null, null);
 
         if (hSvc == IntPtr.Zero)
         {

@@ -149,21 +149,33 @@ internal sealed partial class UpdateForm : Form
 
             // backup existing YAMDCC configs so they don't
             // get deleted when installing the new update
-            DirectoryInfo confDI = new(ConfPath);
-            foreach (FileInfo fi in confDI.GetFiles())
+            try
             {
-                string name = Path.GetFileNameWithoutExtension(fi.Name);
-
-                // config is a backup from previous update; ignore
-                if (name.Contains("-backup-"))
+                DirectoryInfo confDI = new(ConfPath);
+                foreach (FileInfo fi in confDI.GetFiles())
                 {
-                    continue;
-                }
+                    string name = Path.GetFileNameWithoutExtension(fi.Name);
 
-                // backup the config, just in case :)
-                string path = Path.Combine(fi.DirectoryName, name);
-                string date = $"{DateTime.Now:s}".Replace(':', '-');
-                fi.MoveTo($"{path}-backup-{date}{fi.Extension}");
+                    // config is a backup from previous update; ignore
+                    if (name.Contains("-backup-"))
+                    {
+                        continue;
+                    }
+
+                    // backup the config, just in case :)
+                    string path = Path.Combine(fi.DirectoryName, name);
+                    string date = $"{DateTime.Now:s}".Replace(':', '-');
+                    fi.MoveTo($"{path}-backup-{date}{fi.Extension}");
+                }
+            }
+            catch (Exception ex)
+            {
+                // catch exception that occurs if there is no Configs
+                // folder in the same location as YAMDCC's executables
+                if (ex is not FileNotFoundException and not DirectoryNotFoundException)
+                {
+                    throw;
+                }
             }
 
             // actually install the update

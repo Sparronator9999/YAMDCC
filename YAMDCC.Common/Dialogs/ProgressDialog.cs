@@ -34,11 +34,11 @@ public sealed partial class ProgressDialog<TResult> : Form
     }
     #endregion
 
+    private readonly Timer DisplayTimer = new();
+
     public TResult Result { get; set; }
 
-    private readonly Func<TResult> DoWork;
-
-    private readonly Timer DisplayTimer = new();
+    public Func<TResult> DoWork { get; set; }
 
     public string Caption
     {
@@ -49,29 +49,12 @@ public sealed partial class ProgressDialog<TResult> : Form
     }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="ProgressDialog"/> class.
+    /// Initialises a new instance of the <see cref="ProgressDialog{TResult}"/> class.
     /// </summary>
-    /// <param name="caption">
-    /// The window caption to use.
-    /// </param>
-    /// <param name="doWork">
-    /// The <see cref="Func{T}"/> to run when showing this window.
-    /// </param>
-    /// <exception cref="ArgumentNullException"/>
-    public ProgressDialog(string caption, Func<TResult> doWork)
+    public ProgressDialog()
     {
         Opacity = 0;
         InitializeComponent();
-
-        // sanity check
-        if (doWork is null)
-        {
-            throw new ArgumentNullException(nameof(doWork), "The doWork parameter was null.");
-        }
-        DoWork = doWork;
-
-        // set title text
-        Caption = caption;
 
         pbProgress.Style = ProgressBarStyle.Marquee;
 
@@ -81,6 +64,11 @@ public sealed partial class ProgressDialog<TResult> : Form
 
     private async void OnLoad(object sender, EventArgs e)
     {
+        // sanity check
+        if (DoWork is null)
+        {
+            throw new InvalidOperationException("The DoWork property is null.");
+        }
         DisplayTimer.Start();
         Result = await Task.Run(DoWork);
         Close();

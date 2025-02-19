@@ -20,6 +20,9 @@
         <DebugType>none</DebugType>
     </PropertyGroup>
     <ItemGroup>
+      <Reference Include="System.ServiceProcess" />
+    </ItemGroup>
+    <ItemGroup>
         <None Update="WinRing0.sys">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </None>

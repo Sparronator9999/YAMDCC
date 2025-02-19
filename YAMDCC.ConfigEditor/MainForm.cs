@@ -161,8 +161,11 @@ internal sealed partial class MainForm : Form
         IPCClient.Error += new EventHandler<PipeErrorEventArgs<ServiceResponse, ServiceCommand>>(IPCError);
         IPCClient.Start();
 
-        ProgressDialog<bool> dlg = new("Connecting to YAMDCC service...",
-            () => !IPCClient.WaitForConnection(5000));
+        ProgressDialog<bool> dlg = new()
+        {
+            Caption = "Connecting to YAMDCC service...",
+            DoWork = () => !IPCClient.WaitForConnection(5000)
+        };
         dlg.ShowDialog();
 
         if (dlg.Result)
@@ -527,8 +530,10 @@ internal sealed partial class MainForm : Form
             IPCClient.Stop();
             Hide();
 
-            ProgressDialog<bool> dlg = new(Strings.GetString("dlgSvcStopping"),
-                static () =>
+            ProgressDialog<bool> dlg = new()
+            {
+                Caption = Strings.GetString("dlgSvcStopping"),
+                DoWork = static () =>
                 {
                     if (!Utils.StopService("yamdccsvc"))
                     {
@@ -537,7 +542,8 @@ internal sealed partial class MainForm : Form
                     }
                     Utils.ShowInfo(Strings.GetString("dlgSvcStopped"), "Success");
                     return true;
-                });
+                }
+            };
             dlg.ShowDialog();
 
             Close();
@@ -558,32 +564,36 @@ internal sealed partial class MainForm : Form
             IPCClient.Stop();
             Hide();
 
-            ProgressDialog<bool> dlg = new(Strings.GetString("dlgSvcUninstalling"), () =>
+            ProgressDialog<bool> dlg = new()
             {
-                // Apparently this fixes the YAMDCC service not uninstalling
-                // when YAMDCC is launched by certain means
-                if (Utils.StopService("yamdccsvc"))
+                Caption = Strings.GetString("dlgSvcUninstalling"),
+                DoWork = () =>
                 {
-                    if (Utils.UninstallService("yamdccsvc"))
+                    // Apparently this fixes the YAMDCC service not uninstalling
+                    // when YAMDCC is launched by certain means
+                    if (Utils.StopService("yamdccsvc"))
                     {
-                        // Delete the auto-update scheduled task
-                        Utils.RunCmd("updater", "--setautoupdate false");
-
-                        // Only delete service data if the
-                        // service uninstalled successfully
-                        if (delData)
+                        if (Utils.UninstallService("yamdccsvc"))
                         {
-                            Directory.Delete(Paths.Data, true);
+                            // Delete the auto-update scheduled task
+                            Utils.RunCmd("updater", "--setautoupdate false");
+
+                            // Only delete service data if the
+                            // service uninstalled successfully
+                            if (delData)
+                            {
+                                Directory.Delete(Paths.Data, true);
+                            }
+                            Utils.ShowInfo(Strings.GetString("dlgSvcUninstalled"), "Success");
+                            return true;
                         }
-                        Utils.ShowInfo(Strings.GetString("dlgSvcUninstalled"), "Success");
-                        return true;
+                        Utils.ShowError(Strings.GetString("dlgUninstallErr"));
+                        return false;
                     }
-                    Utils.ShowError(Strings.GetString("dlgUninstallErr"));
+                    Utils.ShowError(Strings.GetString("dlgSvcStopErr"));
                     return false;
                 }
-                Utils.ShowError(Strings.GetString("dlgSvcStopErr"));
-                return false;
-            });
+            };
             dlg.ShowDialog();
             Close();
         }
