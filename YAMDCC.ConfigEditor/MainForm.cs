@@ -15,7 +15,6 @@
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -814,14 +813,11 @@ internal sealed partial class MainForm : Form
                 // Name it according to what the user specified
                 cfg.FanCurveConfs[cfg.CurveSel].Name = dlg.Result;
                 cfg.FanCurveConfs[cfg.CurveSel].Desc = $"(Copy of {oldCurveCfg.Name})\n{oldCurveCfg.Desc}";
-
-                // Add the new fan profile to the UI's profile list and select it:
-                if (i == cboFanSel.SelectedIndex)
-                {
-                    cboProfSel.Items.Add(dlg.Result);
-                    cboProfSel.SelectedIndex = cfg.CurveSel;
-                }
             }
+
+            // Add the new fan profile to the UI's profile list and select it:
+            cboProfSel.Items.Add(dlg.Result);
+            cboProfSel.SelectedIndex = Config.FanConfs[cboFanSel.SelectedIndex].CurveSel;
         }
     }
 
@@ -868,21 +864,17 @@ internal sealed partial class MainForm : Form
             Strings.GetString("dlgProfDel", curveCfg.Name),
             $"Delete fan profile? ({cfg.Name})") == DialogResult.Yes)
         {
+            // Remove each equivalent fan profile from the config's list
             for (int i = 0; i < cboFanSel.Items.Count; i++)
             {
                 cfg = Config.FanConfs[i];
-
-                // Remove the fan profile from the config's list
                 cfg.FanCurveConfs.RemoveAt(cfg.CurveSel);
                 cfg.CurveSel -= 1;
-
-                // Remove from the list client-side, and select a different fan profile
-                if (i == cboFanSel.SelectedIndex)
-                {
-                    cboProfSel.Items.RemoveAt(cboProfSel.SelectedIndex);
-                    cboProfSel.SelectedIndex = cfg.CurveSel;
-                }
             }
+
+            // Remove from the list client-side, and select a different fan profile
+            cboProfSel.Items.RemoveAt(cboProfSel.SelectedIndex);
+            cboProfSel.SelectedIndex = Config.FanConfs[cboFanSel.SelectedIndex].CurveSel;
         }
     }
 
