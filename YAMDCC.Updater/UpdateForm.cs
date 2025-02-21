@@ -46,10 +46,10 @@ internal sealed partial class UpdateForm : Form
 
     private static readonly string ExeName = Path.GetFileName(Assembly.GetEntryAssembly().Location);
     private static readonly string TargetPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-    private static readonly string DownloadPath = Path.GetFullPath("YAMDCC-Update.zip");
-    private static readonly string UpdatePath = Path.GetFullPath("Update");
-    private static readonly string OldPath = Path.GetFullPath("Old");
-    private static readonly string ConfPath = Path.GetFullPath("Configs");
+    private static readonly string DownloadPath = Path.GetFullPath(@".\YAMDCC-Update.zip");
+    private static readonly string UpdatePath = Path.GetFullPath(@".\Update");
+    private static readonly string OldPath = Path.GetFullPath(@".\Old");
+    private static readonly string ConfPath = Path.GetFullPath(@".\Configs");
 
     public UpdateForm(Release release = null, bool autoUpdate = false)
     {

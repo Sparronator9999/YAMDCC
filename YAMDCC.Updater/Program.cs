@@ -154,6 +154,7 @@ internal static class Program
                 {
                     // copy new configs individually since we can't
                     // merge directories without extra work
+                    Directory.CreateDirectory(confPath);
                     foreach (FileInfo fi in dir.GetFiles())
                     {
                         fi.MoveTo(Path.Combine(confPath, fi.Name));

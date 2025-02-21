@@ -21,7 +21,7 @@ namespace YAMDCC.Updater.GitHubApi;
 // suppress warning about default values never getting overwritten
 // since they get populated when deserialising JSON to these classes
 #pragma warning disable CS0649
-internal class ApiError
+internal sealed class ApiError
 {
     [JsonProperty("message")]
     public string Message;

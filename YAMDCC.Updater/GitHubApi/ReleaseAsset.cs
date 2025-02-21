@@ -22,7 +22,7 @@ namespace YAMDCC.Updater.GitHubApi;
 // suppress warning about default values never getting overwritten
 // since they get populated when deserialising JSON to these classes
 #pragma warning disable CS0649
-internal class ReleaseAsset
+internal sealed class ReleaseAsset
 {
     [JsonProperty("url")]
     public string Url;
