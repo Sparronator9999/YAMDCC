@@ -16,30 +16,27 @@
 
 using System.Xml.Serialization;
 
-namespace YAMDCC.Config;
+namespace YAMDCC.Common.Configs;
 
 /// <summary>
-/// Represents a configuration for the keyboard backlight in a laptop.
+/// Represents a Full Blast configuration.
 /// </summary>
-public sealed class KeyLightConf
+public sealed class FullBlastConf
 {
     /// <summary>
-    /// The register that controls the keyboard backlight.
+    /// The register that controls the Full Blast function.
     /// </summary>
     [XmlElement]
     public byte Reg { get; set; }
 
     /// <summary>
-    /// The value that turns off the backlight
-    /// (or reduces it to its minimum brightness).
+    /// A bitmask that controls which EC register
+    /// bits to toggle when toggling Full Blast.
     /// </summary>
+    /// <remarks>
+    /// For example, 128 (0x80, or 10000000b) would
+    /// toggle the MSB of the Full Blast register.
+    /// </remarks>
     [XmlElement]
-    public byte MinVal { get; set; }
-
-    /// <summary>
-    /// The value that sets the keyboard
-    /// backlight to the maximum brightness.
-    /// </summary>
-    [XmlElement]
-    public byte MaxVal { get; set; }
+    public byte Mask { get; set; }
 }

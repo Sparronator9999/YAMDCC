@@ -19,9 +19,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
-using YAMDCC.Common;
 
-namespace YAMDCC.Config;
+namespace YAMDCC.Common.Configs;
 
 // IDE0079: Remove unnecessary suppression (even though it *is* necessary)
 #pragma warning disable IDE0079

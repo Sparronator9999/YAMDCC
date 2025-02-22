@@ -16,7 +16,7 @@
 
 using System.Xml.Serialization;
 
-namespace YAMDCC.Config;
+namespace YAMDCC.Common.Configs;
 
 /// <summary>
 /// Represents a fan speed/temperature threshold setting for a fan curve.

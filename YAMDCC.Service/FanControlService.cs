@@ -23,10 +23,10 @@ using System.IO.Pipes;
 using System.ServiceProcess;
 using System.Timers;
 using YAMDCC.Common;
-using YAMDCC.Config;
+using YAMDCC.Common.Configs;
+using YAMDCC.Common.Logs;
 using YAMDCC.ECAccess;
 using YAMDCC.IPC;
-using YAMDCC.Logs;
 
 namespace YAMDCC.Service;
 

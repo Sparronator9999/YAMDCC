@@ -14,33 +14,40 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
-using System.Collections.Generic;
-using System.Xml.Serialization;
-
-namespace YAMDCC.Config;
+namespace YAMDCC.Common.Logs;
 
 /// <summary>
-/// Contains an MSI laptop's various fan modes
-/// (i.e. Default, Silent, Basic, and Advanced).
+/// The verbosity of logs
 /// </summary>
-public sealed class FanModeConf
+public enum LogLevel
 {
     /// <summary>
-    /// The register that controls the fan mode.
+    /// Do not log anything.
     /// </summary>
-    [XmlElement]
-    public byte Reg { get; set; }
+    None = 0,
 
     /// <summary>
-    /// The currently selected fan mode, as
-    /// an index of the available fan modes.
+    /// Only log Fatal events.
     /// </summary>
-    [XmlElement]
-    public int ModeSel { get; set; }
+    Fatal = 1,
 
     /// <summary>
-    /// An array of possible fan modes for the laptop.
+    /// Log Errors and Fatal events.
     /// </summary>
-    [XmlArray]
-    public List<FanMode> FanModes { get; set; }
+    Error = 2,
+
+    /// <summary>
+    /// Log Warnings, Errors, and Fatal events.
+    /// </summary>
+    Warn = 3,
+
+    /// <summary>
+    /// Log all events, except for Debug events.
+    /// </summary>
+    Info = 4,
+
+    /// <summary>
+    /// Log all events.
+    /// </summary>
+    Debug = 5,
 }

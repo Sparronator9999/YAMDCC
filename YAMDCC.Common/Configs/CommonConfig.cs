@@ -18,9 +18,9 @@ using System;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
-using YAMDCC.Logs;
+using YAMDCC.Common.Logs;
 
-namespace YAMDCC.Common;
+namespace YAMDCC.Common.Configs;
 
 public class CommonConfig
 {

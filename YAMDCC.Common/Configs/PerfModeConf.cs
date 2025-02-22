@@ -14,29 +14,33 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace YAMDCC.Config;
+namespace YAMDCC.Common.Configs;
 
 /// <summary>
-/// Represents a Full Blast configuration.
+/// Represents a configuration for the performance modes of a laptop
+/// (separate from the Windows power plans).
 /// </summary>
-public sealed class FullBlastConf
+public sealed class PerfModeConf
 {
     /// <summary>
-    /// The register that controls the Full Blast function.
+    /// The register that controls the performance mode.
     /// </summary>
     [XmlElement]
     public byte Reg { get; set; }
 
     /// <summary>
-    /// A bitmask that controls which EC register
-    /// bits to toggle when toggling Full Blast.
+    /// The default performance mode, as an index of the available
+    /// performance modes, when not overriden by a <see cref="FanCurveConf"/>.
     /// </summary>
-    /// <remarks>
-    /// For example, 128 (0x80, or 10000000b) would
-    /// toggle the MSB of the Full Blast register.
-    /// </remarks>
     [XmlElement]
-    public byte Mask { get; set; }
+    public int ModeSel { get; set; }
+
+    /// <summary>
+    /// An array of possible performance modes for the laptop.
+    /// </summary>
+    [XmlArray]
+    public List<PerfMode> PerfModes { get; set; }
 }

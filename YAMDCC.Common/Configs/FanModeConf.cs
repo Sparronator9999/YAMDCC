@@ -14,32 +14,33 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
+using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace YAMDCC.Config;
+namespace YAMDCC.Common.Configs;
 
 /// <summary>
-/// Represents a configuration for an
-/// individual fan mode of an MSI laptop.
+/// Contains an MSI laptop's various fan modes
+/// (i.e. Default, Silent, Basic, and Advanced).
 /// </summary>
-public sealed class FanMode
+public sealed class FanModeConf
 {
     /// <summary>
-    /// The name of the fan mode.
+    /// The register that controls the fan mode.
     /// </summary>
     [XmlElement]
-    public string Name { get; set; }
+    public byte Reg { get; set; }
 
     /// <summary>
-    /// The description of the fan mode.
+    /// The currently selected fan mode, as
+    /// an index of the available fan modes.
     /// </summary>
     [XmlElement]
-    public string Desc { get; set; }
+    public int ModeSel { get; set; }
 
     /// <summary>
-    /// The value to write to the EC register
-    /// when this performance mode is selected.
+    /// An array of possible fan modes for the laptop.
     /// </summary>
-    [XmlElement]
-    public byte Value { get; set; }
+    [XmlArray]
+    public List<FanMode> FanModes { get; set; }
 }

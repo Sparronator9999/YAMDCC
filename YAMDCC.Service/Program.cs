@@ -18,8 +18,9 @@ using System;
 using System.ServiceProcess;
 using System.Windows.Forms;
 using YAMDCC.Common;
+using YAMDCC.Common.Configs;
 using YAMDCC.Common.Dialogs;
-using YAMDCC.Logs;
+using YAMDCC.Common.Logs;
 
 namespace YAMDCC.Service;
 

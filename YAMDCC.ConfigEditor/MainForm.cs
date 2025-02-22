@@ -21,10 +21,10 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using YAMDCC.Common;
+using YAMDCC.Common.Configs;
 using YAMDCC.Common.Dialogs;
-using YAMDCC.Config;
+using YAMDCC.Common.Logs;
 using YAMDCC.IPC;
-using YAMDCC.Logs;
 
 namespace YAMDCC.ConfigEditor;
 
@@ -154,8 +154,9 @@ internal sealed partial class MainForm : Form
     }
 
     #region Events
-    private void MainWindow_Load(object sender, EventArgs e)
+    protected override void OnLoad(EventArgs e)
     {
+        base.OnLoad(e);
         IPCClient.ServerMessage += new EventHandler<PipeMessageEventArgs<ServiceResponse, ServiceCommand>>(IPCMessage);
         IPCClient.Error += new EventHandler<PipeErrorEventArgs<ServiceResponse, ServiceCommand>>(IPCError);
         IPCClient.Start();
@@ -197,8 +198,9 @@ internal sealed partial class MainForm : Form
         }
     }
 
-    private void MainWindow_Closing(object sender, FormClosingEventArgs e)
+    protected override void OnFormClosing(FormClosingEventArgs e)
     {
+        base.OnFormClosing(e);
         // Disable Full Blast if it was enabled while the program was running:
         if (chkFullBlast.Checked)
         {
@@ -645,7 +647,7 @@ internal sealed partial class MainForm : Form
         if (numFanSpds is null || numFanSpds.Length != cfg.FanCurveRegs.Length)
         {
             tblCurve.SuspendLayout();
-            float scale = CurrentAutoScaleDimensions.Height / 72;
+            float scale = CurrentAutoScaleDimensions.Height / 96;
 
             tblCurve.Controls.Clear();
             numUpTs = new NumericUpDown[cfg.UpThresholdRegs.Length];
@@ -675,7 +677,7 @@ internal sealed partial class MainForm : Form
                 {
                     Dock = DockStyle.Fill,
                     LargeChange = 10,
-                    Margin = new Padding((int)(10 * scale), 0, (int)(10 * scale), 0),
+                    Margin = new Padding((int)(12 * scale), 0, (int)(12 * scale), 0),
                     Orientation = Orientation.Vertical,
                     Tag = i,
                     TickFrequency = 5,
@@ -1217,7 +1219,7 @@ internal sealed partial class MainForm : Form
         {
             AutoSize = true,
             Dock = DockStyle.Fill,
-            Margin = new Padding((int)(2 * scale)),
+            Margin = new Padding((int)(3 * scale)),
             Padding = new Padding(0, 0, 0, (int)(3 * scale)),
             Text = text,
             TextAlign = align,
@@ -1230,7 +1232,7 @@ internal sealed partial class MainForm : Form
         {
             Dock = DockStyle.Fill,
             Height = (int)(23 * scale),
-            Margin = new Padding((int)(2 * scale)),
+            Margin = new Padding((int)(3 * scale)),
             Tag = tag,
         };
     }

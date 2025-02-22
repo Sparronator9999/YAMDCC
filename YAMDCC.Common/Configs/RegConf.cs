@@ -16,7 +16,7 @@
 
 using System.Xml.Serialization;
 
-namespace YAMDCC.Config;
+namespace YAMDCC.Common.Configs;
 
 /// <summary>
 /// Represents miscellaneous EC register configurations for the target

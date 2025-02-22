@@ -26,6 +26,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using YAMDCC.Common;
+using YAMDCC.Common.Configs;
 using YAMDCC.Updater.GitHubApi;
 
 namespace YAMDCC.Updater;

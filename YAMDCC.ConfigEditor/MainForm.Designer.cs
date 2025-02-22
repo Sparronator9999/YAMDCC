@@ -766,8 +766,8 @@ namespace YAMDCC.ConfigEditor
             // 
             this.lblKeyLightLow.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKeyLightLow.AutoSize = true;
-            this.lblKeyLightLow.Location = new System.Drawing.Point(3, 18);
-            this.lblKeyLightLow.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
+            this.lblKeyLightLow.Location = new System.Drawing.Point(3, 16);
+            this.lblKeyLightLow.Margin = new System.Windows.Forms.Padding(3, 0, 0, 3);
             this.lblKeyLightLow.Name = "lblKeyLightLow";
             this.lblKeyLightLow.Size = new System.Drawing.Size(24, 15);
             this.lblKeyLightLow.TabIndex = 0;
@@ -787,8 +787,8 @@ namespace YAMDCC.ConfigEditor
             // 
             this.lblKeyLightHigh.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKeyLightHigh.AutoSize = true;
-            this.lblKeyLightHigh.Location = new System.Drawing.Point(183, 18);
-            this.lblKeyLightHigh.Margin = new System.Windows.Forms.Padding(0, 3, 3, 3);
+            this.lblKeyLightHigh.Location = new System.Drawing.Point(183, 16);
+            this.lblKeyLightHigh.Margin = new System.Windows.Forms.Padding(0, 0, 3, 3);
             this.lblKeyLightHigh.Name = "lblKeyLightHigh";
             this.lblKeyLightHigh.Size = new System.Drawing.Size(39, 15);
             this.lblKeyLightHigh.TabIndex = 2;
@@ -1115,8 +1115,6 @@ namespace YAMDCC.ConfigEditor
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_Closing);
-            this.Load += new System.EventHandler(this.MainWindow_Load);
             menuStrip.ResumeLayout(false);
             menuStrip.PerformLayout();
             tcMain.ResumeLayout(false);

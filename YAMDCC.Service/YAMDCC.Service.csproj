@@ -15,8 +15,8 @@
         <RuntimeIdentifiers>win7-x64;win7-x86;win-x64;win-x86</RuntimeIdentifiers>
         <TargetFramework>net48</TargetFramework>
         <Title>YAMDCC service</Title>
-        <VersionPrefix>1.0.3</VersionPrefix>
-        <VersionSuffix>release</VersionSuffix>
+        <VersionPrefix>1.0.4</VersionPrefix>
+        <VersionSuffix>dev</VersionSuffix>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>none</DebugType>
@@ -41,10 +41,8 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\YAMDCC.Common\YAMDCC.Common.csproj" />
-        <ProjectReference Include="..\YAMDCC.Config\YAMDCC.Config.csproj" />
         <ProjectReference Include="..\YAMDCC.ECAccess\YAMDCC.ECAccess.csproj" />
         <ProjectReference Include="..\YAMDCC.IPC\YAMDCC.IPC.csproj" />
-        <ProjectReference Include="..\YAMDCC.Logs\YAMDCC.Logs.csproj" />
     </ItemGroup>
     <ItemGroup>
         <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">

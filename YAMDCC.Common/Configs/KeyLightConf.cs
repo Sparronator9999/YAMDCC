@@ -16,30 +16,30 @@
 
 using System.Xml.Serialization;
 
-namespace YAMDCC.Config;
+namespace YAMDCC.Common.Configs;
 
 /// <summary>
-/// Represents a configuration for an
-/// individual performance mode of a laptop.
+/// Represents a configuration for the keyboard backlight in a laptop.
 /// </summary>
-public sealed class PerfMode
+public sealed class KeyLightConf
 {
     /// <summary>
-    /// The name of the performance mode.
+    /// The register that controls the keyboard backlight.
     /// </summary>
     [XmlElement]
-    public string Name { get; set; }
+    public byte Reg { get; set; }
 
     /// <summary>
-    /// The description of the performance mode.
+    /// The value that turns off the backlight
+    /// (or reduces it to its minimum brightness).
     /// </summary>
     [XmlElement]
-    public string Desc { get; set; }
+    public byte MinVal { get; set; }
 
     /// <summary>
-    /// The value to write to the EC register
-    /// when this performance mode is selected.
+    /// The value that sets the keyboard
+    /// backlight to the maximum brightness.
     /// </summary>
     [XmlElement]
-    public byte Value { get; set; }
+    public byte MaxVal { get; set; }
 }

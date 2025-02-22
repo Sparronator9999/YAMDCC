@@ -21,12 +21,6 @@
         "contentHash": "p9wH58XSNIyUtO7PIFAEldaKUzpYmlj+YWAfnUqBKnGxIZRY51I9BrsBGJijUVwlxrgmLLPUigRIv2ZTD4uPJA=="
       },
       "yamdcc.common": {
-        "type": "Project",
-        "dependencies": {
-          "YAMDCC.Logs": "[1.0.0-release, )"
-        }
-      },
-      "yamdcc.logs": {
         "type": "Project"
       }
     },

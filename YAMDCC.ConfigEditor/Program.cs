@@ -22,6 +22,7 @@ using System.ServiceProcess;
 using System.Threading;
 using System.Windows.Forms;
 using YAMDCC.Common;
+using YAMDCC.Common.Configs;
 using YAMDCC.Common.Dialogs;
 
 namespace YAMDCC.ConfigEditor;

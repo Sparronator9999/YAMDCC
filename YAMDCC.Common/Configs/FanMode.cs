@@ -14,40 +14,32 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
-namespace YAMDCC.Logs;
+using System.Xml.Serialization;
+
+namespace YAMDCC.Common.Configs;
 
 /// <summary>
-/// The verbosity of logs
+/// Represents a configuration for an
+/// individual fan mode of an MSI laptop.
 /// </summary>
-public enum LogLevel
+public sealed class FanMode
 {
     /// <summary>
-    /// Do not log anything.
+    /// The name of the fan mode.
     /// </summary>
-    None = 0,
+    [XmlElement]
+    public string Name { get; set; }
 
     /// <summary>
-    /// Only log Fatal events.
+    /// The description of the fan mode.
     /// </summary>
-    Fatal = 1,
+    [XmlElement]
+    public string Desc { get; set; }
 
     /// <summary>
-    /// Log Errors and Fatal events.
+    /// The value to write to the EC register
+    /// when this performance mode is selected.
     /// </summary>
-    Error = 2,
-
-    /// <summary>
-    /// Log Warnings, Errors, and Fatal events.
-    /// </summary>
-    Warn = 3,
-
-    /// <summary>
-    /// Log all events, except for Debug events.
-    /// </summary>
-    Info = 4,
-
-    /// <summary>
-    /// Log all events.
-    /// </summary>
-    Debug = 5,
+    [XmlElement]
+    public byte Value { get; set; }
 }

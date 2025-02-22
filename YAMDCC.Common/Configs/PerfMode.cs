@@ -14,33 +14,32 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
-using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace YAMDCC.Config;
+namespace YAMDCC.Common.Configs;
 
 /// <summary>
-/// Represents a configuration for the performance modes of a laptop
-/// (separate from the Windows power plans).
+/// Represents a configuration for an
+/// individual performance mode of a laptop.
 /// </summary>
-public sealed class PerfModeConf
+public sealed class PerfMode
 {
     /// <summary>
-    /// The register that controls the performance mode.
+    /// The name of the performance mode.
     /// </summary>
     [XmlElement]
-    public byte Reg { get; set; }
+    public string Name { get; set; }
 
     /// <summary>
-    /// The default performance mode, as an index of the available
-    /// performance modes, when not overriden by a <see cref="FanCurveConf"/>.
+    /// The description of the performance mode.
     /// </summary>
     [XmlElement]
-    public int ModeSel { get; set; }
+    public string Desc { get; set; }
 
     /// <summary>
-    /// An array of possible performance modes for the laptop.
+    /// The value to write to the EC register
+    /// when this performance mode is selected.
     /// </summary>
-    [XmlArray]
-    public List<PerfMode> PerfModes { get; set; }
+    [XmlElement]
+    public byte Value { get; set; }
 }

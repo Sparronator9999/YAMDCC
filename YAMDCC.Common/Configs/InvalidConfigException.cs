@@ -14,36 +14,18 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
-using System.Xml.Serialization;
+using System;
 
-namespace YAMDCC.Config;
+namespace YAMDCC.Common.Configs;
 
 /// <summary>
-/// Represents a configuration for the Win/Fn key swap feature of a laptop.
+/// The exception thrown when an invalid <see cref="YAMDCC_Config"/> is loaded.
 /// </summary>
-public sealed class KeySwapConf
+public sealed class InvalidConfigException : Exception
 {
     /// <summary>
-    /// The register that controls the Win/Fn key swap state.
+    /// Initializes a new instance of the <see cref="InvalidConfigException"/> class.
     /// </summary>
-    [XmlElement]
-    public byte Reg { get; set; }
-
-    /// <summary>
-    /// Is the Win/Fn key swap feature enabled?
-    /// </summary>
-    [XmlElement]
-    public bool Enabled { get; set; }
-
-    /// <summary>
-    /// The value to turn on Win/Fn key swapping.
-    /// </summary>
-    [XmlElement]
-    public byte OnVal { get; set; }
-
-    /// <summary>
-    /// The value to turn off Win/Fn key swapping.
-    /// </summary>
-    [XmlElement]
-    public byte OffVal { get; set; }
+    public InvalidConfigException()
+        : base("The config was not in the expected format.") { }
 }

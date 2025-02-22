@@ -19,7 +19,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Reflection;
 
-namespace YAMDCC.Logs;
+namespace YAMDCC.Common.Logs;
 
 /// <summary>
 /// A simple logger class for writing logs to
