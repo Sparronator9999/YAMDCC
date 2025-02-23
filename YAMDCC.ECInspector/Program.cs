@@ -15,120 +15,82 @@
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
 using System;
-using System.ServiceProcess;
 using System.Threading;
 using YAMDCC.Common;
-using YAMDCC.IPC;
+using YAMDCC.ECAccess;
 
 namespace YAMDCC.ECInspector;
 
-internal sealed class Program
+internal static class Program
 {
-    private static readonly NamedPipeClient<ServiceResponse, ServiceCommand> IPCClient =
-        new("YAMDCC-Server");
-
-    private static readonly Mutex LogMutex = new(false);
-
-    private static readonly ECValue[] ECValues = new ECValue[256];
+    private static readonly EC _EC = new();
 
     private static int Main(string[] args)
     {
         if (!Utils.IsAdmin())
         {
-            Console.WriteLine(Strings.GetString("NoAdmin"));
+            Console.WriteLine("ERROR: admin privileges required");
             return 255;
         }
 
-        // check that YAMDCC service is running
-        using (ServiceController yamdccSvc = new("yamdccsvc"))
+        if (args.Length > 0 && args[0].Length > 0)
         {
-            try
+            switch (args[0][0])
             {
-                if (yamdccSvc.Status == ServiceControllerStatus.Stopped)
-                {
-                    Console.WriteLine(Strings.GetString("SvcStopped"));
-                    return 1;
-                }
-            }
-            catch
-            {
-                Console.WriteLine(Strings.GetString("SvcNotFound"));
-                return 1;
-            }
-        }
-
-        if (args.Length == 0)
-        {
-            Console.WriteLine(Strings.GetString("NoCmd"));
-            Help();
-            return 2;
-        }
-        switch (args[0])
-        {
-            case "--version":
-            case "-v":
-                Console.WriteLine(Utils.GetVerString());
-                return 0;
-            case "--help":
-            case "-h":
-                Help();
-                return 0;
-            case "--dump":
-            case "-d":
-                if (ConnectService())
-                {
-                    DumpEC(1000, 1);
+                case 'v':
+                case 'V':
+                    Console.WriteLine(Utils.GetVerString());
                     return 0;
-                }
-                return 3;
-            case "--monitor":
-            case "-m":
-                if (ConnectService())
-                {
-                    DumpEC(1000, -1);
-                    return 0;
-                }
-                return 3;
-            case "":
-                Console.WriteLine(Strings.GetString("NoCmd"));
-                Help();
-                return 2;
-            default:
-                Console.WriteLine(Strings.GetString("BadCmd", args[0]));
-                Help();
-                return 2;
+                case 'h':
+                case 'H':
+                    break;
+                case 'd':
+                case 'D':
+                    return DumpEC(1000, 1) ? 0 : 1;
+                case 'm':
+                case 'M':
+                    return DumpEC(1000, -1) ? 0 : 1;
+                default:
+                    Console.WriteLine($"ERROR: unknown command: {args[0]}");
+                    break;
+            }
         }
+        else
+        {
+            Console.WriteLine("ERROR: no command specified");
+        }
+        Help();
+        return 1;
     }
 
     private static void Help()
     {
-        Console.WriteLine(Strings.GetString("Help",
-            Environment.OSVersion, Utils.GetVerString(),
-            Utils.GetRevision(), AppDomain.CurrentDomain.FriendlyName));
+        Console.WriteLine("\nYAMDCC EC inspection utility\n\n" +
+            $"OS version: {Environment.OSVersion}\n" +
+            $"App version: {Utils.GetVerString()}\n" +
+            $"Revision (git): {Utils.GetRevision()}\n\n" +
+            $"Usage: {AppDomain.CurrentDomain.FriendlyName} <command> [<args>]\n\n" +
+            "Commands:\n" +
+            "  help              Print this help screen\n" +
+            "  version           Print the program version\n" +
+            "  dump              Dump all EC registers\n" +
+            "  monitor           Dump EC and monitor for changes");
     }
 
-    private static bool ConnectService()
+    private static bool DumpEC(int interval, int loops)
     {
-        IPCClient.ServerMessage += ServerMessage;
-        IPCClient.Error += IPCError;
-
-        IPCClient.Start();
-        if (!IPCClient.WaitForConnection(5000))
+        if (!_EC.LoadDriver())
         {
-            Console.WriteLine(Strings.GetString("SvcConnErr"));
             return false;
         }
-        return true;
-    }
 
-    private static void DumpEC(int interval, int loops)
-    {
+        ECValue[] values = new ECValue[256];
         for (int i = 0; i <= byte.MaxValue; i++)
         {
-            ECValues[i] = new ECValue();
+            values[i] = new ECValue();
         }
-        Console.Clear();
 
+        Console.Clear();
         Console.SetCursorPosition(0, 0);
 
         // write heading
@@ -137,17 +99,16 @@ internal sealed class Program
         {
             Console.Write($" 0{i:X}");
         }
-        Console.WriteLine();
-        Console.WriteLine("|".PadLeft(5, '-').PadRight(53, '-'));
+        Console.WriteLine("\n-----|".PadRight(53, '-'));
 
         for (int i = 0; i < 16; i++)
         {
             Console.WriteLine($" {i:X}0 |");
         }
 
-        Console.WriteLine("\nPress Ctrl+C to exit");
+        Console.WriteLine("Press Ctrl+C to exit");
         Console.CursorVisible = false;
-        Console.CancelKeyPress += CancelKey;
+        Console.CancelKeyPress += new ConsoleCancelEventHandler(CancelKey);
 
         int j = 0;
         while (true)
@@ -157,54 +118,31 @@ internal sealed class Program
                 break;
             }
 
-            byte i = byte.MaxValue;
-            do
+            // TODO: optimise out jumping all over the place?
+            // (leftover from when we used YAMDCC service for EC access)
+            for (int i = 0; i < values.Length; i++)
             {
-                i++;
-                IPCClient.PushMessage(new ServiceCommand(Command.ReadECByte, i));
-            }
-            while (i < byte.MaxValue);
-
-            Thread.Sleep(interval);
-            j++;
-        }
-
-        Console.CursorVisible = true;
-        IPCClient.Stop();
-    }
-
-    private static void CancelKey(object sender, ConsoleCancelEventArgs e)
-    {
-        Console.CursorVisible = true;
-        IPCClient.Stop();
-    }
-
-    private static void ServerMessage(object sender, PipeMessageEventArgs<ServiceResponse, ServiceCommand> e)
-    {
-        if (LogMutex.WaitOne())
-        {
-            try
-            {
-                object[] args = e.Message.Value;
-                if (e.Message.Response == Response.ReadResult &&
-                    args.Length == 2 && args[0] is byte reg && args[1] is byte value)
+                if (_EC.ReadByte((byte)i, out byte value))
                 {
-                    int lowBits = reg & 0x0F,
-                        hiBits = (reg & 0xF0) >> 4;
+                    int lowBits = i & 0x0F,
+                        hiBits = (i & 0xF0) >> 4;
+
+                    // keep the default console colour in case it was
+                    // changed with e.g. the `color` command
                     ConsoleColor original = Console.ForegroundColor;
 
                     // write hex value
                     Console.SetCursorPosition(6 + lowBits * 3, 4 + hiBits);
 
-                    if (ECValues[reg].Value == value)
+                    if (values[i].Value == value)
                     {
-                        ECValues[reg].Age++;
+                        values[i].Age++;
                         Console.ForegroundColor = ConsoleColor.DarkRed;
                     }
                     else
                     {
-                        ECValues[reg].Value = value;
-                        ECValues[reg].Age = 0;
+                        values[i].Value = value;
+                        values[i].Age = 0;
                         Console.ForegroundColor = ConsoleColor.Green;
                     }
 
@@ -216,7 +154,7 @@ internal sealed class Program
 
                     // write string representation
                     Console.SetCursorPosition(55 + lowBits, 4 + hiBits);
-                    if (value is < 32 or > 126)
+                    if (value < 32 || value > 126)
                     {
                         // unprintable non-extended ASCII char
                         Console.Write('.');
@@ -226,20 +164,36 @@ internal sealed class Program
                         Console.Write((char)value);
                     }
 
-                    // restore console colour and cursor position
+                    // restore console colour
                     Console.ForegroundColor = original;
-                    Console.SetCursorPosition(0, 20);
                 }
             }
-            finally
-            {
-                LogMutex.ReleaseMutex();
-            }
+
+            Thread.Sleep(interval);
+            j++;
         }
+
+        Console.CursorVisible = true;
+        _EC?.UnloadDriver();
+        return true;
     }
 
-    private static void IPCError(object sender, PipeErrorEventArgs<ServiceResponse, ServiceCommand> e)
+    private static void CancelKey(object sender, ConsoleCancelEventArgs e)
     {
-        throw e.Exception;
+        Console.CursorVisible = true;
+        _EC?.UnloadDriver();
+    }
+
+    private struct ECValue
+    {
+        /// <summary>
+        /// The EC value itself.
+        /// </summary>
+        public int Value;
+
+        /// <summary>
+        /// How many EC polls it's been since <see cref="Value"/> was last updated.
+        /// </summary>
+        public int Age;
     }
 }

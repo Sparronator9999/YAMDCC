@@ -104,8 +104,8 @@
       "ec-inspect": {
         "type": "Project",
         "dependencies": {
-          "YAMDCC.Common": "[1.0.3-release, )",
-          "YAMDCC.IPC": "[2.1.3-release, )"
+          "YAMDCC.Common": "[1.0.4-dev, )",
+          "YAMDCC.ECAccess": "[1.0.4-dev, )"
         }
       },
       "Updater": {
@@ -114,7 +114,7 @@
           "MarkedNet": "[2.1.4, )",
           "Newtonsoft.Json": "[13.0.3, )",
           "TaskScheduler": "[2.11.0, )",
-          "YAMDCC.Common": "[1.0.3-release, )"
+          "YAMDCC.Common": "[1.0.4-dev, )"
         }
       },
       "yamdcc.common": {
@@ -132,8 +132,8 @@
       "yamdccsvc": {
         "type": "Project",
         "dependencies": {
-          "YAMDCC.Common": "[1.0.3-release, )",
-          "YAMDCC.ECAccess": "[1.0.3-release, )",
+          "YAMDCC.Common": "[1.0.4-dev, )",
+          "YAMDCC.ECAccess": "[1.0.4-dev, )",
           "YAMDCC.IPC": "[2.1.3-release, )"
         }
       }
