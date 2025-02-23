@@ -128,19 +128,34 @@ internal static class Program
 
             // delete the old YAMDCC installation
             dlg.Caption = "Installing YAMDCC update...";
-            DirectoryInfo di = new(destPath);
-            foreach (FileInfo fi in di.GetFiles())
+            DirectoryInfo di;
+            try
             {
-                fi.Delete();
-            }
-            foreach (DirectoryInfo dir in di.GetDirectories())
-            {
-                if (dir.FullName != confPath &&
-                    dir.FullName != oldPath &&
-                    dir.FullName != updatePath)
+                di = new(destPath);
+                foreach (FileInfo fi in di.GetFiles())
                 {
-                    dir.Delete(true);
+                    fi.Delete();
                 }
+                foreach (DirectoryInfo dir in di.GetDirectories())
+                {
+                    if (dir.FullName != confPath &&
+                        dir.FullName != oldPath &&
+                        dir.FullName != updatePath)
+                    {
+                        dir.Delete(true);
+                    }
+                }
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                Utils.ShowError(
+                    "Failed to delete old YAMDCC installation.\n" +
+                    "This probably means something else has YAMDCC's files open.\n" +
+                    "See issue #62 on the YAMDCC GitHub for more info.\n\n" +
+                    "Details:\n" +
+                    $"{ex.GetType()}: {ex.Message}\n" +
+                    $"{ex.StackTrace}");
+                return false;
             }
 
             // move updated YAMDCC into place
