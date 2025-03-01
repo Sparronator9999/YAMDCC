@@ -221,10 +221,17 @@ internal sealed class FanControlService : ServiceBase
             case Command.Nothing:
                 Log.Warn("Empty command received!");
                 return;
-            case Command.GetVersion:
+            case Command.GetServiceVer:
                 IPCServer.PushMessage(new ServiceResponse(
-                    Response.Version, Utils.GetRevision()), id);
+                    Response.ServiceVer, Utils.GetRevision()), id);
                 return;
+            case Command.GetFirmVer:
+            {
+                parseSuccess = true;
+                sendSuccessMsg = false;
+                cmdSuccess = GetFirmVer(id);
+                break;
+            }
             case Command.ReadECByte:
             {
                 if (args.Length == 1 && args[0] is byte reg)
@@ -279,11 +286,11 @@ internal sealed class FanControlService : ServiceBase
                 }
                 break;
             }
-            case Command.ApplyConfig:
+            case Command.ApplyConf:
                 parseSuccess = true;
                 cmdSuccess = LoadConf() && ApplyConf();
                 break;
-            case Command.FullBlast:
+            case Command.SetFullBlast:
             {
                 if (args.Length == 1 && args[0] is bool enable)
                 {
@@ -306,11 +313,30 @@ internal sealed class FanControlService : ServiceBase
                 }
                 break;
             }
-            case Command.GetFirmVer:
+            case Command.ChangeFanProf:
             {
-                parseSuccess = true;
-                sendSuccessMsg = false;
-                cmdSuccess = GetFirmVer(id);
+                if (args.Length == 1 && args[0] is int fanProf)
+                {
+                    parseSuccess = true;
+                    foreach (FanConf cfg in Config.FanConfs)
+                    {
+                        cfg.CurveSel = fanProf;
+                    }
+                    cmdSuccess = ApplyConf();
+                }
+                break;
+            }
+            case Command.ChangePerfMode:
+            {
+                if (args.Length == 1 && args[0] is int perfMode)
+                {
+                    parseSuccess = true;
+                    if (Config.PerfModeConf is not null)
+                    {
+                        Config.PerfModeConf.ModeSel = perfMode;
+                        cmdSuccess = ApplyConf();
+                    }
+                }
                 break;
             }
             default:    // Unknown command
@@ -377,7 +403,7 @@ internal sealed class FanControlService : ServiceBase
         return success;
     }
 
-    private bool LoadConf()
+    private bool LoadConf(int? clientID = null)
     {
         Log.Info(Strings.GetString("cfgLoading"));
 
@@ -385,6 +411,12 @@ internal sealed class FanControlService : ServiceBase
         {
             Config = YAMDCC_Config.Load(Paths.CurrentConf);
             Log.Info(Strings.GetString("cfgLoaded"));
+
+            if (clientID is not null)
+            {
+                IPCServer?.PushMessage(new ServiceResponse(
+                    Response.ConfLoaded, clientID.Value));
+            }
 
             if (Config.FirmVerSupported)
             {
@@ -681,7 +713,9 @@ internal sealed class FanControlService : ServiceBase
         Log.Debug(Strings.GetString("svcSetKeyLight", brightness));
 
         KeyLightConf klCfg = Config.KeyLightConf;
-        return LogECWriteByte(klCfg.Reg, (byte)(brightness + klCfg.MinVal));
+        byte value = (byte)(brightness + klCfg.MinVal);
+        return value >= klCfg.MinVal && value <= klCfg.MaxVal &&
+            LogECWriteByte(klCfg.Reg, value);
     }
 
     private bool GetFirmVer(int clientId)

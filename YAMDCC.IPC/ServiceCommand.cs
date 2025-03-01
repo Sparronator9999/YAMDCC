@@ -18,13 +18,22 @@ public enum Command
     /// <remarks>
     /// <para>
     /// The result is sent to the caller as a
-    /// <see cref="Response.Version"/> message.
+    /// <see cref="Response.ServiceVer"/> message.
     /// </para>
+    /// <para>This command expects no arguments.</para>
+    /// </remarks>
+    GetServiceVer,
+    /// <summary>
+    /// Gets the EC firmware version and date for the current laptop.
+    /// </summary>
+    /// <remarks>
+    /// <para>This command expects no arguments.</para>
     /// <para>
-    /// This command expects no arguments.
+    /// The result is sent to the caller as a
+    /// <see cref="Response.FirmVer"/> message.
     /// </para>
     /// </remarks>
-    GetVersion,
+    GetFirmVer,
     /// <summary>
     /// Read a byte from the EC.
     /// </summary>
@@ -52,18 +61,19 @@ public enum Command
     /// </remarks>
     WriteECByte,
     /// <summary>
-    /// Reload and apply a YAMDCC config.
+    /// Reloads and applys the YAMDCC config located at
+    /// <c>C:\ProgramData\Sparronator9999\YAMDCC\CurrentConfig.xml</c>.
     /// </summary>
-    ApplyConfig,
+    ApplyConf,
     /// <summary>
     /// Enable or disable Full Blast on the system.
     /// </summary>
     /// <remarks>
     /// This command expects the following argument as
     /// a <see langword="bool"/>:<br/>
-    /// • Enable: 1 to enable Full Blast, 0 to disable.
+    /// • Enable: 1 to enable Full Blast, 0 to disable, -1 to toggle.
     /// </remarks>
-    FullBlast,
+    SetFullBlast,
     /// <summary>
     /// Get the target speed of a specified system fan in the
     /// currently loaded YAMDCC config.
@@ -117,28 +127,65 @@ public enum Command
     /// and sends a <see cref="Response.KeyLightBright"/>
     /// response with the result.
     /// </summary>
+    /// <remarks>
+    /// Returns an error if the read keyboard backlight value is outside the allowed
+    /// range specified by the current YAMDCC config, or if keyboard backlight
+    /// support straight up doesn't exist in the current YAMDCC config.
+    /// </remarks>
     GetKeyLightBright,
     /// <summary>
     /// Sets the keyboard backlight to the specified value.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// Returns an error if the keyboard backlight value is outside the allowed
+    /// range specified by the current YAMDCC config, or if keyboard backlight
+    /// support straight up doesn't exist in the current YAMDCC config.
+    /// </para>
+    /// <para>
     /// This command expects the following argument as
     /// a <see langword="byte"/>:<br/>
     /// • Brightness: A value between the minimum and
     /// maximum brightness value (minus offset).
+    /// </para>
     /// </remarks>
     SetKeyLightBright,
     /// <summary>
-    /// Gets the EC firmware version and date for the current laptop.
+    /// Sets all fans' profiles to the specified index, or cycles through
+    /// all available fan profiles (depending on the value passed to
+    /// <see cref="ServiceCommand.Arguments"/>).
     /// </summary>
     /// <remarks>
-    /// <para>This command does not take any data.</para>
+    /// <para>This setting will be reset when reloading the current config.</para>
+    /// <para>Out-of-range values are clamped to the nearest valid value.</para>
     /// <para>
-    /// The result is sent to the caller as a
-    /// <see cref="Response.FirmVer"/> message.
+    /// This command expects the following argument as
+    /// an <see langword="int"/>:<br/>
+    /// • ProfSel: A zero-indexed value indicating the fan profile to switch to,
+    /// or -1 to switch to the next fan profile in order.
     /// </para>
     /// </remarks>
-    GetFirmVer,
+    ChangeFanProf,
+    /// <summary>
+    /// Sets the computer's performance mode to the specified index, or cycles through
+    /// all available performance modes (depending on the value passed to
+    /// <see cref="ServiceCommand.Arguments"/>).
+    /// </summary>
+    /// <remarks>
+    /// <para>This setting will be reset when reloading the current config.</para>
+    /// <para>Out-of-range values are clamped to the nearest valid value.</para>
+    /// <para>
+    /// Returns an error if performance modes are not
+    /// supported by the current YAMDCC config.
+    /// </para>
+    /// <para>
+    /// This command expects the following argument as
+    /// an <see langword="int"/>:<br/>
+    /// • ModeSel: A zero-indexed value indicating the performance mode to switch to,
+    /// or -1 to switch to the next performance mode in order.
+    /// </para>
+    /// </remarks>
+    ChangePerfMode,
 }
 
 /// <summary>

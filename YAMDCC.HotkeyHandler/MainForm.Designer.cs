@@ -248,8 +248,9 @@ namespace YAMDCC.HotkeyHandler
             // 
             // tblHotKeys
             // 
-            this.tblHotKeys.ColumnCount = 4;
-            this.tblHotKeys.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 184F));
+            this.tblHotKeys.ColumnCount = 5;
+            this.tblHotKeys.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 182F));
+            this.tblHotKeys.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 134F));
             this.tblHotKeys.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblHotKeys.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tblHotKeys.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());

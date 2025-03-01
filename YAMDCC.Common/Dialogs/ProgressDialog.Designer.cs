@@ -54,6 +54,7 @@ namespace YAMDCC.Common.Dialogs
             // tblMain
             // 
             tblMain.AutoSize = true;
+            tblMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             tblMain.ColumnCount = 1;
             tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             tblMain.Controls.Add(this.pbProgress, 0, 1);
@@ -66,16 +67,16 @@ namespace YAMDCC.Common.Dialogs
             tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            tblMain.Size = new System.Drawing.Size(300, 65);
+            tblMain.Size = new System.Drawing.Size(300, 63);
             tblMain.TabIndex = 0;
             // 
             // pbProgress
             // 
-            this.pbProgress.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pbProgress.Dock = System.Windows.Forms.DockStyle.Top;
             this.pbProgress.Location = new System.Drawing.Point(9, 29);
             this.pbProgress.MarqueeAnimationSpeed = 20;
             this.pbProgress.Name = "pbProgress";
-            this.pbProgress.Size = new System.Drawing.Size(282, 27);
+            this.pbProgress.Size = new System.Drawing.Size(282, 25);
             this.pbProgress.TabIndex = 2;
             // 
             // lblCaption
@@ -93,7 +94,7 @@ namespace YAMDCC.Common.Dialogs
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(300, 65);
+            this.ClientSize = new System.Drawing.Size(300, 63);
             this.Controls.Add(tblMain);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

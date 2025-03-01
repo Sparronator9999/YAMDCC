@@ -204,7 +204,7 @@ internal sealed partial class MainForm : Form
         // Disable Full Blast if it was enabled while the program was running:
         if (chkFullBlast.Checked)
         {
-            SendSvcMessage(new ServiceCommand(Command.FullBlast, false));
+            SendSvcMessage(new ServiceCommand(Command.SetFullBlast, false));
         }
     }
 
@@ -237,7 +237,7 @@ internal sealed partial class MainForm : Form
                     }
                     switch ((Command)cmd)
                     {
-                        case Command.ApplyConfig:
+                        case Command.ApplyConf:
                             ToggleSvcCmds(true);
                             UpdateStatus(StatusCode.ConfApplied);
                             if (Config.KeyLightConf is not null)
@@ -245,7 +245,7 @@ internal sealed partial class MainForm : Form
                                 SendSvcMessage(new ServiceCommand(Command.GetKeyLightBright));
                             }
                             break;
-                        case Command.FullBlast:
+                        case Command.SetFullBlast:
                             ToggleSvcCmds(true);
                             UpdateStatus(StatusCode.FullBlastToggled);
                             break;
@@ -314,7 +314,7 @@ internal sealed partial class MainForm : Form
                 }
                 case Response.FirmVer:
                 {
-                    // no idea how the EcVer struct became a nested
+                    // no idea how the EcInfo class became a nested
                     // object array, but this works so keeping it
                     if (args[0] is object[] obj && obj.Length == 2 &&
                         obj[0] is string ver && obj[1] is DateTime date)
@@ -997,7 +997,7 @@ internal sealed partial class MainForm : Form
     private void FullBlastToggle(object sender, EventArgs e)
     {
         ToggleSvcCmds(false);
-        SendSvcMessage(new ServiceCommand(Command.FullBlast, chkFullBlast.Checked));
+        SendSvcMessage(new ServiceCommand(Command.SetFullBlast, chkFullBlast.Checked));
     }
 
     private void RevertConf(object sender, EventArgs e)
@@ -1038,7 +1038,7 @@ internal sealed partial class MainForm : Form
         Config.Save(Paths.CurrentConf);
 
         // Tell the service to reload and apply the updated config
-        SendSvcMessage(new ServiceCommand(Command.ApplyConfig));
+        SendSvcMessage(new ServiceCommand(Command.ApplyConf));
     }
 
     private void tmrPoll_Tick(object sender, EventArgs e)

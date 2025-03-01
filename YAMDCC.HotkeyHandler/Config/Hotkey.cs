@@ -50,4 +50,5 @@ public enum HotkeyAction
     KeyLightUp,
     KeyLightDown,
     SwitchFanProf,
+    SwitchPerfMode,
 }

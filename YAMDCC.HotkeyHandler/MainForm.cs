@@ -15,7 +15,7 @@ namespace YAMDCC.HotkeyHandler;
 
 public partial class MainForm : Form
 {
-    private readonly HotkeyConf Config;
+    private readonly HotkeyConf HotkeyConf;
 
     private readonly List<TextBox> txtHotkeys = [];
 
@@ -42,13 +42,13 @@ public partial class MainForm : Form
 
         try
         {
-            Config = HotkeyConf.Load(Paths.HotkeyConf);
+            HotkeyConf = HotkeyConf.Load(Paths.HotkeyConf);
         }
         catch (Exception ex)
         {
             if (ex is FileNotFoundException or InvalidOperationException or InvalidConfigException)
             {
-                Config = new();
+                HotkeyConf = new();
             }
             else
             {
@@ -61,7 +61,7 @@ public partial class MainForm : Form
 
     private void CurrentDomain_ProcessExit(object sender, EventArgs e)
     {
-        Config?.Save(Paths.HotkeyConf);
+        HotkeyConf?.Save(Paths.HotkeyConf);
     }
 
     protected override void SetVisibleCore(bool value)
@@ -162,9 +162,9 @@ public partial class MainForm : Form
 
     private void ReloadHotkeys()
     {
-        if (Config.Hotkeys.Count == 0)
+        if (HotkeyConf.Hotkeys.Count == 0)
         {
-            Config.Hotkeys.Add(new Hotkey());
+            HotkeyConf.Hotkeys.Add(new Hotkey());
         }
 
         float scale = AutoScaleDimensions.Width / 96;
@@ -172,13 +172,21 @@ public partial class MainForm : Form
         txtHotkeys.Clear();
         tblHotKeys.Controls.Clear();
         tblHotKeys.RowStyles.Clear();
-        tblHotKeys.RowCount = Config.Hotkeys.Count + 1;
+        tblHotKeys.RowCount = HotkeyConf.Hotkeys.Count + 1;
 
-        for (int i = 0; i < Config.Hotkeys.Count; i++)
+        for (int i = 0; i < HotkeyConf.Hotkeys.Count; i++)
         {
-            Hotkey hk = Config.Hotkeys[i];
+            Hotkey hk = HotkeyConf.Hotkeys[i];
             tblHotKeys.RowStyles.Add(new RowStyle());
             tblHotKeys.Controls.Add(ActionComboBox(i, scale, hk.Action), 0, i);
+            tblHotKeys.Controls.Add(new ComboBox()
+            {
+                Dock = DockStyle.Fill,
+                DropDownStyle = ComboBoxStyle.DropDownList,
+                Enabled = false,
+                Margin = new Padding((int)(2 * scale)),
+                Tag = i,
+            }, 1, i);
             txtHotkeys.Add(new TextBox
             {
                 ReadOnly = true,
@@ -190,9 +198,9 @@ public partial class MainForm : Form
             txtHotkeys[i].Leave += KeyBindLeave;
             txtHotkeys[i].KeyDown += KeyBindDown;
             txtHotkeys[i].KeyUp += KeyBindUp;
-            tblHotKeys.Controls.Add(txtHotkeys[i], 1, i);
-            tblHotKeys.Controls.Add(HotkeyButton(i, false, scale), 2, i);
-            tblHotKeys.Controls.Add(HotkeyButton(i, true, scale), 3, i);
+            tblHotKeys.Controls.Add(txtHotkeys[i], 2, i);
+            tblHotKeys.Controls.Add(HotkeyButton(i, false, scale), 3, i);
+            tblHotKeys.Controls.Add(HotkeyButton(i, true, scale), 4, i);
         }
         tblHotKeys.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
         tblHotKeys.ResumeLayout();
@@ -202,7 +210,7 @@ public partial class MainForm : Form
     {
         if (BindInProgress)
         {
-            Config.Hotkeys[(int)((Control)sender).Tag] = OldHotkey;
+            HotkeyConf.Hotkeys[(int)((Control)sender).Tag] = OldHotkey;
             BindInProgress = false;
         }
     }
@@ -214,8 +222,8 @@ public partial class MainForm : Form
 
         if (!BindInProgress)
         {
-            OldHotkey = Config.Hotkeys[i];
-            Config.Hotkeys[i].Modifiers = 0;
+            OldHotkey = HotkeyConf.Hotkeys[i];
+            HotkeyConf.Hotkeys[i].Modifiers = 0;
             BindInProgress = true;
             tb.Clear();
         }
@@ -230,33 +238,33 @@ public partial class MainForm : Form
             case Keys.LMenu:
             case Keys.RMenu:
             case Keys.Menu:
-                if ((Config.Hotkeys[i].Modifiers & HotkeyModifiers.Alt) != HotkeyModifiers.Alt)
+                if ((HotkeyConf.Hotkeys[i].Modifiers & HotkeyModifiers.Alt) != HotkeyModifiers.Alt)
                 {
-                    Config.Hotkeys[i].Modifiers |= HotkeyModifiers.Alt;
-                    tb.Text = HotkeyText(Config.Hotkeys[i].Modifiers);
+                    HotkeyConf.Hotkeys[i].Modifiers |= HotkeyModifiers.Alt;
+                    tb.Text = HotkeyText(HotkeyConf.Hotkeys[i].Modifiers);
                 }
                 break;
             case Keys.LControlKey:
             case Keys.RControlKey:
             case Keys.ControlKey:
-                if ((Config.Hotkeys[i].Modifiers & HotkeyModifiers.Ctrl) != HotkeyModifiers.Ctrl)
+                if ((HotkeyConf.Hotkeys[i].Modifiers & HotkeyModifiers.Ctrl) != HotkeyModifiers.Ctrl)
                 {
-                    Config.Hotkeys[i].Modifiers |= HotkeyModifiers.Ctrl;
-                    tb.Text = HotkeyText(Config.Hotkeys[i].Modifiers);
+                    HotkeyConf.Hotkeys[i].Modifiers |= HotkeyModifiers.Ctrl;
+                    tb.Text = HotkeyText(HotkeyConf.Hotkeys[i].Modifiers);
                 }
                 break;
             case Keys.LShiftKey:
             case Keys.RShiftKey:
             case Keys.ShiftKey:
-                if ((Config.Hotkeys[i].Modifiers & HotkeyModifiers.Shift) != HotkeyModifiers.Shift)
+                if ((HotkeyConf.Hotkeys[i].Modifiers & HotkeyModifiers.Shift) != HotkeyModifiers.Shift)
                 {
-                    Config.Hotkeys[i].Modifiers |= HotkeyModifiers.Shift;
-                    tb.Text = HotkeyText(Config.Hotkeys[i].Modifiers);
+                    HotkeyConf.Hotkeys[i].Modifiers |= HotkeyModifiers.Shift;
+                    tb.Text = HotkeyText(HotkeyConf.Hotkeys[i].Modifiers);
                 }
                 break;
             default:
-                tb.Text = HotkeyText(Config.Hotkeys[i].Modifiers, e.KeyCode);
-                Config.Hotkeys[i].KeyCode = e.KeyCode;
+                tb.Text = HotkeyText(HotkeyConf.Hotkeys[i].Modifiers, e.KeyCode);
+                HotkeyConf.Hotkeys[i].KeyCode = e.KeyCode;
                 BindInProgress = false;
                 break;
         }
@@ -277,29 +285,29 @@ public partial class MainForm : Form
             case Keys.LMenu:
             case Keys.RMenu:
             case Keys.Menu:
-                if ((Config.Hotkeys[i].Modifiers & HotkeyModifiers.Alt) == HotkeyModifiers.Alt)
+                if ((HotkeyConf.Hotkeys[i].Modifiers & HotkeyModifiers.Alt) == HotkeyModifiers.Alt)
                 {
-                    Config.Hotkeys[i].Modifiers &= ~HotkeyModifiers.Alt;
+                    HotkeyConf.Hotkeys[i].Modifiers &= ~HotkeyModifiers.Alt;
                 }
                 break;
             case Keys.LControlKey:
             case Keys.RControlKey:
             case Keys.ControlKey:
-                if ((Config.Hotkeys[i].Modifiers & HotkeyModifiers.Ctrl) == HotkeyModifiers.Ctrl)
+                if ((HotkeyConf.Hotkeys[i].Modifiers & HotkeyModifiers.Ctrl) == HotkeyModifiers.Ctrl)
                 {
-                    Config.Hotkeys[i].Modifiers &= ~HotkeyModifiers.Ctrl;
+                    HotkeyConf.Hotkeys[i].Modifiers &= ~HotkeyModifiers.Ctrl;
                 }
                 break;
             case Keys.LShiftKey:
             case Keys.RShiftKey:
             case Keys.ShiftKey:
-                if ((Config.Hotkeys[i].Modifiers & HotkeyModifiers.Shift) == HotkeyModifiers.Shift)
+                if ((HotkeyConf.Hotkeys[i].Modifiers & HotkeyModifiers.Shift) == HotkeyModifiers.Shift)
                 {
-                    Config.Hotkeys[i].Modifiers &= ~HotkeyModifiers.Shift;
+                    HotkeyConf.Hotkeys[i].Modifiers &= ~HotkeyModifiers.Shift;
                 }
                 break;
         }
-        tb.Text = HotkeyText(Config.Hotkeys[i].Modifiers);
+        tb.Text = HotkeyText(HotkeyConf.Hotkeys[i].Modifiers);
     }
 
     private ComboBox ActionComboBox(int tag, float scale, HotkeyAction action)
@@ -319,10 +327,8 @@ public partial class MainForm : Form
             "Toggle Win/Fn swap",
             "Increase keyboard backlight",
             "Decrease keyboard backlight",
-            "Switch to next fan profile",
-            "Switch to Default",
-            "Switch to Silent",
-            "Switch to Performance",
+            "Switch fan profiles",
+            "Switch performance modes",
         ]);
         cbo.SelectedIndex = (int)action;
         cbo.SelectedIndexChanged += new EventHandler(ActionChanged);
@@ -345,21 +351,21 @@ public partial class MainForm : Form
     private void ActionAdd(object sender, EventArgs e)
     {
         Button b = (Button)sender;
-        Config.Hotkeys.Insert((int)b.Tag + 1, new Hotkey());
+        HotkeyConf.Hotkeys.Insert((int)b.Tag + 1, new Hotkey());
         ReloadHotkeys();
     }
 
     private void ActionDel(object sender, EventArgs e)
     {
         Button b = (Button)sender;
-        Config.Hotkeys.RemoveAt((int)b.Tag);
+        HotkeyConf.Hotkeys.RemoveAt((int)b.Tag);
         ReloadHotkeys();
     }
 
     private void ActionChanged(object sender, EventArgs e)
     {
         ComboBox cb = (ComboBox)sender;
-        Config.Hotkeys[(int)cb.Tag].Action = (HotkeyAction)cb.SelectedIndex;
+        HotkeyConf.Hotkeys[(int)cb.Tag].Action = (HotkeyAction)cb.SelectedIndex;
     }
 
     private static string HotkeyText(HotkeyModifiers modifiers, Keys key = Keys.None)

@@ -34,7 +34,7 @@ public enum Response
     /// </remarks>
     Error,
     /// <summary>
-    /// The result of a <see cref="Command.GetVersion"/> command.
+    /// The result of a <see cref="Command.GetServiceVer"/> command.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -43,7 +43,16 @@ public enum Response
     /// • Revison: The current YAMDCC service version, as a Git revision/hash.
     /// </para>
     /// </remarks>
-    Version,
+    ServiceVer,
+    /// <summary>
+    /// The result of a <see cref="Command.GetFirmVer"/> command.
+    /// </summary>
+    /// <remarks>
+    /// This response's <see cref="ServiceResponse.Value"/> field
+    /// includes an <see cref="EcInfo"/> instance containing the
+    /// firmware version and date.
+    /// </remarks>
+    FirmVer,
     /// <summary>
     /// The result of a <see cref="Command.ReadECByte"/> command.
     /// </summary>
@@ -104,14 +113,17 @@ public enum Response
     /// </remarks>
     KeyLightBright,
     /// <summary>
-    /// The result of a <see cref="Command.GetFirmVer"/> command.
+    /// Sent to all connected clients when the YAMDCC service
+    /// reloads the current YAMDCC config (CurrentConfig.xml).
     /// </summary>
     /// <remarks>
-    /// This response's <see cref="ServiceResponse.Value"/> field
-    /// includes an <see cref="EcInfo"/> instance containing the
-    /// firmware version and date.
+    /// <para>
+    /// This response's <see cref="ServiceResponse.Value"/> field includes
+    /// the following data as an <see langword="int"/><br/>
+    /// • ClientId: The ID of the client that triggered the config reload.
+    /// </para>
     /// </remarks>
-    FirmVer,
+    ConfLoaded,
 }
 
 /// <summary>
