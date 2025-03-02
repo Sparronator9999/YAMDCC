@@ -10,17 +10,24 @@ using YAMDCC.Common;
 using YAMDCC.Common.Configs;
 using YAMDCC.Common.Dialogs;
 using YAMDCC.HotkeyHandler.Config;
+using YAMDCC.IPC;
 
 namespace YAMDCC.HotkeyHandler;
 
 public partial class MainForm : Form
 {
+    private readonly NamedPipeClient<ServiceResponse, ServiceCommand> IPCClient =
+        new("YAMDCC-Server");
+
+    private YAMDCC_Config Config;
+
     private readonly HotkeyConf HotkeyConf;
 
     private readonly List<TextBox> txtHotkeys = [];
 
+    private readonly List<ComboBox> cboActionDatas = [];
+
     private Hotkey OldHotkey;
-    private bool bindInProgress;
 
     private bool BindInProgress
     {
@@ -31,6 +38,7 @@ public partial class MainForm : Form
             lblBindInProgress.Text = $"{value}";
         }
     }
+    private bool bindInProgress;
 
     public MainForm()
     {
@@ -56,11 +64,27 @@ public partial class MainForm : Form
             }
         }
 
+        IPCClient.ServerMessage += new EventHandler<PipeMessageEventArgs<ServiceResponse, ServiceCommand>>(IPCMessage);
+        IPCClient.Error += new EventHandler<PipeErrorEventArgs<ServiceResponse, ServiceCommand>>(IPCError);
+        IPCClient.Start();
+
+        ProgressDialog<bool> dlg = new()
+        {
+            Caption = "Connecting to YAMDCC service...",
+            DoWork = () => !IPCClient.WaitForConnection(5000)
+        };
+        dlg.ShowDialog();
+
+        if (dlg.Result)
+        {
+            throw new TimeoutException("Failed to connect to the YAMDCC service (connection timed out).");
+        }
         AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
     }
 
     private void CurrentDomain_ProcessExit(object sender, EventArgs e)
     {
+        IPCClient.Stop();
         HotkeyConf?.Save(Paths.HotkeyConf);
     }
 
@@ -115,6 +139,25 @@ public partial class MainForm : Form
         base.WndProc(ref m);
     }
 
+    private void IPCMessage(object sender, PipeMessageEventArgs<ServiceResponse, ServiceCommand> e)
+    {
+        if (e.Message.Response == Response.ConfLoaded)
+        {
+            // refresh hotkey handler if the current YAMDCC config is reloaded
+            // (i.e. service restarted, user updated config...)
+            if (e.Message.Value[0] is int i && i == IPCClient.Connection.ID)
+            {
+                return;
+            }
+            ReloadHotkeys();
+        }
+    }
+
+    private void IPCError(object sender, PipeErrorEventArgs<ServiceResponse, ServiceCommand> e)
+    {
+        new CrashDialog(e.Exception).ShowDialog();
+    }
+
     private void tsiAbout_Click(object sender, EventArgs e)
     {
         VersionDialog dlg = new();
@@ -162,14 +205,20 @@ public partial class MainForm : Form
 
     private void ReloadHotkeys()
     {
+        // load currently applied YAMDCC config
+        // (used to populate fan profiles/performance modes)
+        Config = YAMDCC_Config.Load(Paths.CurrentConf);
+
         if (HotkeyConf.Hotkeys.Count == 0)
         {
             HotkeyConf.Hotkeys.Add(new Hotkey());
         }
 
         float scale = AutoScaleDimensions.Width / 96;
-        tblHotKeys.SuspendLayout();
+
+        cboActionDatas.Clear();
         txtHotkeys.Clear();
+        tblHotKeys.SuspendLayout();
         tblHotKeys.Controls.Clear();
         tblHotKeys.RowStyles.Clear();
         tblHotKeys.RowCount = HotkeyConf.Hotkeys.Count + 1;
@@ -178,15 +227,20 @@ public partial class MainForm : Form
         {
             Hotkey hk = HotkeyConf.Hotkeys[i];
             tblHotKeys.RowStyles.Add(new RowStyle());
-            tblHotKeys.Controls.Add(ActionComboBox(i, scale, hk.Action), 0, i);
-            tblHotKeys.Controls.Add(new ComboBox()
+
+            cboActionDatas.Add(new ComboBox()
             {
                 Dock = DockStyle.Fill,
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Enabled = false,
                 Margin = new Padding((int)(2 * scale)),
                 Tag = i,
-            }, 1, i);
+            });
+            cboActionDatas[i].SelectedIndexChanged += new EventHandler(ActionDataChanged);
+            tblHotKeys.Controls.Add(cboActionDatas[i], 1, i);
+
+            tblHotKeys.Controls.Add(ActionComboBox(i, scale, hk.Action), 0, i);
+
             txtHotkeys.Add(new TextBox
             {
                 ReadOnly = true,
@@ -195,10 +249,11 @@ public partial class MainForm : Form
                 Tag = i,
                 Text = HotkeyText(hk.Modifiers, hk.KeyCode),
             });
-            txtHotkeys[i].Leave += KeyBindLeave;
-            txtHotkeys[i].KeyDown += KeyBindDown;
-            txtHotkeys[i].KeyUp += KeyBindUp;
+            txtHotkeys[i].Leave += new EventHandler(KeyBindLeave);
+            txtHotkeys[i].KeyDown += new KeyEventHandler(KeyBindDown);
+            txtHotkeys[i].KeyUp += new KeyEventHandler(KeyBindUp);
             tblHotKeys.Controls.Add(txtHotkeys[i], 2, i);
+
             tblHotKeys.Controls.Add(HotkeyButton(i, false, scale), 3, i);
             tblHotKeys.Controls.Add(HotkeyButton(i, true, scale), 4, i);
         }
@@ -220,7 +275,9 @@ public partial class MainForm : Form
         TextBox tb = (TextBox)sender;
         int i = (int)tb.Tag;
 
-        if (!BindInProgress)
+        Keys vk = e.KeyCode;
+        if (!BindInProgress && vk != Keys.None && vk != (Keys)255 &&
+            vk != Keys.LWin && vk != Keys.RWin)
         {
             OldHotkey = HotkeyConf.Hotkeys[i];
             HotkeyConf.Hotkeys[i].Modifiers = 0;
@@ -234,6 +291,7 @@ public partial class MainForm : Form
             case (Keys)255:
             case Keys.LWin:
             case Keys.RWin:
+                // ignore Windows key and unknown/extended keys
                 break;
             case Keys.LMenu:
             case Keys.RMenu:
@@ -312,14 +370,14 @@ public partial class MainForm : Form
 
     private ComboBox ActionComboBox(int tag, float scale, HotkeyAction action)
     {
-        ComboBox cbo = new()
+        ComboBox cb = new()
         {
             Dock = DockStyle.Fill,
             DropDownStyle = ComboBoxStyle.DropDownList,
             Margin = new Padding((int)(2 * scale)),
             Tag = tag,
         };
-        cbo.Items.AddRange(
+        cb.Items.AddRange(
         [
             "None",
             "Open config editor",
@@ -330,9 +388,9 @@ public partial class MainForm : Form
             "Switch fan profiles",
             "Switch performance modes",
         ]);
-        cbo.SelectedIndex = (int)action;
-        cbo.SelectedIndexChanged += new EventHandler(ActionChanged);
-        return cbo;
+        cb.SelectedIndexChanged += new EventHandler(ActionChanged);
+        cb.SelectedIndex = (int)action;
+        return cb;
     }
 
     private Button HotkeyButton(int tag, bool del, float scale)
@@ -364,8 +422,54 @@ public partial class MainForm : Form
 
     private void ActionChanged(object sender, EventArgs e)
     {
+        ComboBox actionCb = (ComboBox)sender;
+        int i = (int)actionCb.Tag;
+
+        ComboBox dataCb = cboActionDatas[i];
+        Hotkey hk = HotkeyConf.Hotkeys[i];
+
+        hk.Action = (HotkeyAction)actionCb.SelectedIndex;
+
+        dataCb.Enabled = false;
+        dataCb.Items.Clear();
+        switch (actionCb.SelectedIndex)
+        {
+            case 6: // switch fan profiles
+                dataCb.Items.Add("<next fan profile>");
+                foreach (FanCurveConf cfg in Config.FanConfs[0].FanCurveConfs)
+                {
+                    dataCb.Items.Add(cfg.Name);
+                }
+                dataCb.Enabled = true;
+                break;
+            case 7: // switch perf. modes
+                dataCb.Items.Add("<next perf. mode>");
+                foreach (PerfMode pm in Config.PerfModeConf.PerfModes)
+                {
+                    dataCb.Items.Add(pm.Name);
+                }
+                dataCb.Enabled = true;
+                break;
+        }
+
+        if (dataCb.Items.Count > 0)
+        {
+            if (hk.ActionData + 1 < dataCb.Items.Count)
+            {
+                dataCb.SelectedIndex = hk.ActionData + 1;
+            }
+            else
+            {
+                dataCb.SelectedIndex = dataCb.Items.Count - 1;
+                hk.ActionData = dataCb.SelectedIndex - 1;
+            }
+        }
+    }
+
+    private void ActionDataChanged(object sender, EventArgs e)
+    {
         ComboBox cb = (ComboBox)sender;
-        HotkeyConf.Hotkeys[(int)cb.Tag].Action = (HotkeyAction)cb.SelectedIndex;
+        HotkeyConf.Hotkeys[(int)cb.Tag].ActionData = cb.SelectedIndex - 1;
     }
 
     private static string HotkeyText(HotkeyModifiers modifiers, Keys key = Keys.None)

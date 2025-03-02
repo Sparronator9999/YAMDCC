@@ -24,5 +24,6 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\YAMDCC.Common\YAMDCC.Common.csproj" />
+        <ProjectReference Include="..\YAMDCC.IPC\YAMDCC.IPC.csproj" />
     </ItemGroup>
 </Project>

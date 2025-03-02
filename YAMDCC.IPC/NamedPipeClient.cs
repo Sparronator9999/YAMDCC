@@ -81,7 +81,7 @@ public class NamedPipeClient<TRead, TWrite> : IDisposable
     public event EventHandler<PipeErrorEventArgs<TRead, TWrite>> Error;
 
     private readonly string _pipeName;
-    private NamedPipeConnection<TRead, TWrite> _connection;
+    public NamedPipeConnection<TRead, TWrite> Connection { get; private set; }
 
     private readonly AutoResetEvent _connected = new(false);
     private readonly AutoResetEvent _disconnected = new(false);
@@ -126,7 +126,7 @@ public class NamedPipeClient<TRead, TWrite> : IDisposable
     public void Stop()
     {
         _closedExplicitly = true;
-        _connection?.Close();
+        Connection?.Close();
     }
 
     /// <summary>
@@ -137,7 +137,7 @@ public class NamedPipeClient<TRead, TWrite> : IDisposable
     /// </param>
     public void PushMessage(TWrite message)
     {
-        _connection?.PushMessage(message);
+        Connection?.PushMessage(message);
     }
 
     #region Wait for connection/disconnection
@@ -244,14 +244,14 @@ public class NamedPipeClient<TRead, TWrite> : IDisposable
         NamedPipeClientStream dataPipe = PipeClientFactory.CreateAndConnectPipe(dataPipeName);
 
         // Create a Connection object for the data pipe
-        _connection = ConnectionFactory.CreateConnection<TRead, TWrite>(dataPipe);
-        _connection.Disconnected += OnDisconnected;
-        _connection.ReceiveMessage += OnReceiveMessage;
-        _connection.Error += ConnectionOnError;
-        _connection.Open();
+        Connection = ConnectionFactory.CreateConnection<TRead, TWrite>(dataPipe);
+        Connection.Disconnected += OnDisconnected;
+        Connection.ReceiveMessage += OnReceiveMessage;
+        Connection.Error += ConnectionOnError;
+        Connection.Open();
 
         _connected.Set();
-        Connected?.Invoke(this, new PipeConnectionEventArgs<TRead, TWrite>(_connection));
+        Connected?.Invoke(this, new PipeConnectionEventArgs<TRead, TWrite>(Connection));
     }
 
     private void OnDisconnected(object sender, PipeConnectionEventArgs<TRead, TWrite> e)
@@ -287,7 +287,7 @@ public class NamedPipeClient<TRead, TWrite> : IDisposable
     /// </summary>
     private void WorkerOnError(object sender, WorkerErrorEventArgs e)
     {
-        Error?.Invoke(sender, new PipeErrorEventArgs<TRead, TWrite>(_connection, e.Exception));
+        Error?.Invoke(sender, new PipeErrorEventArgs<TRead, TWrite>(Connection, e.Exception));
     }
     #endregion
 
