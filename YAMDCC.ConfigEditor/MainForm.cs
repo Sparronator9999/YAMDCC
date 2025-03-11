@@ -204,7 +204,7 @@ internal sealed partial class MainForm : Form
         // Disable Full Blast if it was enabled while the program was running:
         if (chkFullBlast.Checked)
         {
-            SendSvcMessage(new ServiceCommand(Command.SetFullBlast, false));
+            SendSvcMessage(new ServiceCommand(Command.SetFullBlast, 0));
         }
     }
 
@@ -997,7 +997,7 @@ internal sealed partial class MainForm : Form
     private void FullBlastToggle(object sender, EventArgs e)
     {
         ToggleSvcCmds(false);
-        SendSvcMessage(new ServiceCommand(Command.SetFullBlast, chkFullBlast.Checked));
+        SendSvcMessage(new ServiceCommand(Command.SetFullBlast, chkFullBlast.Checked ? 1 : 0));
     }
 
     private void RevertConf(object sender, EventArgs e)

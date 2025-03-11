@@ -51,6 +51,8 @@ internal sealed class FanControlService : ServiceBase
     private readonly Timer CooldownTimer = new(1000);
 
     private EcInfo EcInfo;
+
+    private bool FullBlastEnabled;
     #endregion
 
     /// <summary>
@@ -179,6 +181,8 @@ internal sealed class FanControlService : ServiceBase
             case PowerBroadcastStatus.ResumeAutomatic:
                 if (!CooldownTimer.Enabled)
                 {
+                    // fan settings get reset on sleep/restart
+                    FullBlastEnabled = false;
                     // Re-apply the fan curve after waking up from sleep:
                     Log.Info(Strings.GetString("svcWake"));
                     ApplyConf();
@@ -262,7 +266,7 @@ internal sealed class FanControlService : ServiceBase
                 break;
             case Command.SetFullBlast:
             {
-                if (args.Length == 1 && args[0] is bool enable)
+                if (args.Length == 1 && args[0] is int enable)
                 {
                     parseSuccess = true;
                     cmdSuccess = SetFullBlast(enable);
@@ -668,7 +672,7 @@ internal sealed class FanControlService : ServiceBase
         return false;
     }
 
-    private bool SetFullBlast(bool enable)
+    private bool SetFullBlast(int enable)
     {
         if (Config?.FullBlastConf is null)
         {
@@ -678,7 +682,27 @@ internal sealed class FanControlService : ServiceBase
         FullBlastConf fbCfg = Config.FullBlastConf;
         if (LogECReadByte(fbCfg.Reg, out byte value))
         {
-            if (enable)
+            bool oldFbEnable = FullBlastEnabled;
+
+            if (enable == -1)
+            {
+                FullBlastEnabled = !FullBlastEnabled;
+            }
+            else if (enable == 0)
+            {
+                FullBlastEnabled = false;
+            }
+            else if (enable == 1)
+            {
+                FullBlastEnabled = true;
+            }
+            else
+            {
+                // invalid Full Blast value
+                return false;
+            }
+
+            if (FullBlastEnabled)
             {
                 Log.Debug("Enabling Full Blast...");
                 value |= fbCfg.Mask;
@@ -693,6 +717,8 @@ internal sealed class FanControlService : ServiceBase
             {
                 return true;
             }
+            // failed to change full blast state; revert to old full blast enabled
+            FullBlastEnabled = oldFbEnable;
         }
         return false;
     }
