@@ -151,6 +151,14 @@ public enum Command
     /// </remarks>
     SetKeyLightBright,
     /// <summary>
+    /// Sets whether the Windows and Fn keys are swapped compared to their labels.
+    /// </summary>
+    /// <remarks>
+    /// <para>This setting will be reset when reloading the current config.</para>
+    /// <para>This command expects no arguments.</para>
+    /// </remarks>
+    SetWinFnSwap,
+    /// <summary>
     /// Sets all fans' profiles to the specified index, or cycles through
     /// all available fan profiles (depending on the value passed to
     /// <see cref="ServiceCommand.Arguments"/>).
@@ -165,7 +173,7 @@ public enum Command
     /// or -1 to switch to the next fan profile in order.
     /// </para>
     /// </remarks>
-    ChangeFanProf,
+    SetFanProf,
     /// <summary>
     /// Sets the computer's performance mode to the specified index, or cycles through
     /// all available performance modes (depending on the value passed to
@@ -185,7 +193,7 @@ public enum Command
     /// or -1 to switch to the next performance mode in order.
     /// </para>
     /// </remarks>
-    ChangePerfMode,
+    SetPerfMode,
 }
 
 /// <summary>

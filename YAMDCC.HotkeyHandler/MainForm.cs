@@ -1,6 +1,7 @@
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -10,6 +11,7 @@ using YAMDCC.Common;
 using YAMDCC.Common.Configs;
 using YAMDCC.Common.Dialogs;
 using YAMDCC.HotkeyHandler.Config;
+using YAMDCC.HotkeyHandler.Win32;
 using YAMDCC.IPC;
 
 namespace YAMDCC.HotkeyHandler;
@@ -20,14 +22,25 @@ public partial class MainForm : Form
         new("YAMDCC-Server");
 
     private YAMDCC_Config Config;
-
-    private readonly HotkeyConf HotkeyConf;
+    private HotkeyConf HotkeyConf;
 
     private readonly List<TextBox> txtHotkeys = [];
-
     private readonly List<ComboBox> cboActionDatas = [];
 
     private Hotkey OldHotkey;
+
+    /// <summary>
+    /// The set of hotkey IDs currently registered with Windows
+    /// (using the <see cref="User32.RegisterHotKey"/> function).
+    /// </summary>
+    private readonly Dictionary<int, Hotkey> RegisteredKeys = [];
+
+    /// <summary>
+    /// Temporary variable to control whether the keyboard backlight brightness
+    /// should be increased or decreased in brightness when receiving a
+    /// <see cref="Response.KeyLightBright"/> message.
+    /// </summary>
+    private bool KeyLightUp;
 
     private bool BindInProgress
     {
@@ -48,22 +61,6 @@ public partial class MainForm : Form
         Icon = Utils.GetEntryAssemblyIcon();
         TrayIcon.Icon = Icon;
 
-        try
-        {
-            HotkeyConf = HotkeyConf.Load(Paths.HotkeyConf);
-        }
-        catch (Exception ex)
-        {
-            if (ex is FileNotFoundException or InvalidOperationException or InvalidConfigException)
-            {
-                HotkeyConf = new();
-            }
-            else
-            {
-                throw;
-            }
-        }
-
         IPCClient.ServerMessage += new EventHandler<PipeMessageEventArgs<ServiceResponse, ServiceCommand>>(IPCMessage);
         IPCClient.Error += new EventHandler<PipeErrorEventArgs<ServiceResponse, ServiceCommand>>(IPCError);
         IPCClient.Start();
@@ -79,13 +76,35 @@ public partial class MainForm : Form
         {
             throw new TimeoutException("Failed to connect to the YAMDCC service (connection timed out).");
         }
-        AppDomain.CurrentDomain.ProcessExit += CurrentDomain_ProcessExit;
+        AppDomain.CurrentDomain.ProcessExit += new EventHandler(CurrentDomain_ProcessExit);
+
+        LoadHotkeyConf();
+    }
+
+    private void LoadHotkeyConf()
+    {
+        try
+        {
+            HotkeyConf = HotkeyConf.Load(Paths.HotkeyConf);
+        }
+        catch (Exception ex)
+        {
+            if (ex is FileNotFoundException or InvalidOperationException or InvalidConfigException)
+            {
+                HotkeyConf = new();
+            }
+            else
+            {
+                throw;
+            }
+        }
+        RefreshHotkeyUI();
     }
 
     private void CurrentDomain_ProcessExit(object sender, EventArgs e)
     {
         IPCClient.Stop();
-        HotkeyConf?.Save(Paths.HotkeyConf);
+        UnregisterHotkeys();
     }
 
     protected override void SetVisibleCore(bool value)
@@ -97,12 +116,6 @@ public partial class MainForm : Form
             CreateHandle();
         }
         base.SetVisibleCore(value);
-    }
-
-    protected override void OnLoad(EventArgs e)
-    {
-        base.OnLoad(e);
-        ReloadHotkeys();
     }
 
     protected override void OnFormClosing(FormClosingEventArgs e)  
@@ -127,29 +140,61 @@ public partial class MainForm : Form
                     return;
                 }
                 break;
-            /*case 0x312: // WM_HOTKEY
+            case 0x312: // WM_HOTKEY
                 // only handle shortcuts if hotkeys are
                 // enabled and the config window isn't open
                 if (tsiEnabled.Checked && !Visible)
                 {
-
+                    foreach (int i in RegisteredKeys.Keys)
+                    {
+                        if (m.WParam.ToInt32() == i)
+                        {
+                            RunHotkeyAction(RegisteredKeys[i]);
+                        }
+                    }
                 }
-            break;*/
+                break;
         }
         base.WndProc(ref m);
     }
 
     private void IPCMessage(object sender, PipeMessageEventArgs<ServiceResponse, ServiceCommand> e)
     {
-        if (e.Message.Response == Response.ConfLoaded)
+        switch (e.Message.Response)
         {
-            // refresh hotkey handler if the current YAMDCC config is reloaded
-            // (i.e. service restarted, user updated config...)
-            if (e.Message.Value[0] is int i && i == IPCClient.Connection.ID)
+            case Response.ConfLoaded:
             {
-                return;
+                // refresh hotkey handler if the current YAMDCC config is reloaded
+                // (i.e. service restarted, user updated config...)
+                if (e.Message.Value[0] is int i && i == IPCClient.Connection.ID)
+                {
+                    return;
+                }
+                RefreshHotkeyUI();
+                break;
             }
-            ReloadHotkeys();
+            case Response.KeyLightBright:
+            {
+                // this message should only be received if the keyboard
+                // backlight adjustment shortcut is pressed
+                // (see RunHotkeyAction() for more)
+                object[] value = e.Message.Value;
+                if (value.Length > 0 && value[0] is int i)
+                {
+                    KeyLightConf cfg = Config.KeyLightConf;
+                    if (KeyLightUp && i < cfg.MaxVal - cfg.MinVal)
+                    {
+                        IPCClient.PushMessage(new ServiceCommand(
+                            Command.SetKeyLightBright, i + 1));
+                    }
+                    else if (i > 0)
+                    {
+                        IPCClient.PushMessage(new ServiceCommand(
+                            Command.SetKeyLightBright, i - 1));
+                    }
+                }
+                break;
+            }
         }
     }
 
@@ -203,7 +248,7 @@ public partial class MainForm : Form
         }
     }
 
-    private void ReloadHotkeys()
+    private void RefreshHotkeyUI()
     {
         // load currently applied YAMDCC config
         // (used to populate fan profiles/performance modes)
@@ -402,7 +447,7 @@ public partial class MainForm : Form
             Tag = tag,
             Text = del ? "-" : "+",
         };
-        b.Click += del ? ActionDel : ActionAdd;
+        b.Click += del ? new EventHandler(ActionDel) : new EventHandler(ActionAdd);
         return b;
     }
 
@@ -410,14 +455,14 @@ public partial class MainForm : Form
     {
         Button b = (Button)sender;
         HotkeyConf.Hotkeys.Insert((int)b.Tag + 1, new Hotkey());
-        ReloadHotkeys();
+        RefreshHotkeyUI();
     }
 
     private void ActionDel(object sender, EventArgs e)
     {
         Button b = (Button)sender;
         HotkeyConf.Hotkeys.RemoveAt((int)b.Tag);
-        ReloadHotkeys();
+        RefreshHotkeyUI();
     }
 
     private void ActionChanged(object sender, EventArgs e)
@@ -492,5 +537,85 @@ public partial class MainForm : Form
             s += $"{key}";
         }
         return s;
+    }
+
+    private void RegisterHotkeys()
+    {
+        // unregister old hotkeys (if they exist) first
+        UnregisterHotkeys();
+
+        // register new hotkeys
+        for (int i = 0; i < HotkeyConf.Hotkeys.Count; i++)
+        {
+            // ignore key repeats for held hotkey (that's what the 0x4000 is for)
+            Hotkey hk = HotkeyConf.Hotkeys[i];
+            if (hk.Action != HotkeyAction.None)
+            {
+                User32.RegisterHotKey(Handle, i, (uint)hk.Modifiers + 0x4000, (uint)hk.KeyCode);
+                RegisteredKeys.Add(i, hk);
+            }
+        }
+    }
+
+    private void UnregisterHotkeys()
+    {
+        foreach (int i in RegisteredKeys.Keys)
+        {
+            User32.UnregisterHotKey(Handle, i);
+            RegisteredKeys.Remove(i);
+        }
+    }
+
+
+    private void RunHotkeyAction(Hotkey hk)
+    {
+        switch (hk.Action)
+        {
+            case HotkeyAction.OpenConfEditor:
+                try
+                {
+                    Process.Start(@".\ConfigEditor.exe");
+                }
+                catch (Win32Exception ex)
+                {
+                    Utils.ShowError(
+                        "Failed to open Config Editor:\n" +
+                        $"{ex.Message} ({ex.NativeErrorCode})");
+                }
+                break;
+            case HotkeyAction.ToggleFullBlast:
+                IPCClient.PushMessage(new ServiceCommand(Command.SetFullBlast, -1));
+                break;
+            case HotkeyAction.ToggleWinFnSwap:
+                IPCClient.PushMessage(new ServiceCommand(Command.SetWinFnSwap, -1));
+                break;
+            case HotkeyAction.KeyLightUp:
+                // Get the current keyboard backlight brightness.
+                // The IPCMessage function handles the actual keyboard backlight setting.
+                KeyLightUp = true;
+                IPCClient.PushMessage(new ServiceCommand(Command.GetKeyLightBright));
+                break;
+            case HotkeyAction.KeyLightDown:
+                KeyLightUp = false;
+                IPCClient.PushMessage(new ServiceCommand(Command.GetKeyLightBright));
+                break;
+            case HotkeyAction.SwitchFanProf:
+                IPCClient.PushMessage(new ServiceCommand(Command.SetFanProf, hk.ActionData));
+                break;
+            case HotkeyAction.SwitchPerfMode:
+                IPCClient.PushMessage(new ServiceCommand(Command.SetPerfMode, hk.ActionData));
+                break;
+        }
+    }
+
+    private void btnApply_Click(object sender, EventArgs e)
+    {
+        HotkeyConf.Save(Paths.HotkeyConf);
+        RegisterHotkeys();
+    }
+
+    private void btnRevert_Click(object sender, EventArgs e)
+    {
+        LoadHotkeyConf();
     }
 }

@@ -256,6 +256,19 @@ internal sealed class FanControlService : ServiceBase
                 }
                 break;
             }
+            case Command.ApplyConf:
+                parseSuccess = true;
+                cmdSuccess = LoadConf() && ApplyConf();
+                break;
+            case Command.SetFullBlast:
+            {
+                if (args.Length == 1 && args[0] is bool enable)
+                {
+                    parseSuccess = true;
+                    cmdSuccess = SetFullBlast(enable);
+                }
+                break;
+            }
             case Command.GetFanSpeed:
             {
                 if (args.Length == 1 && args[0] is int fan)
@@ -286,19 +299,6 @@ internal sealed class FanControlService : ServiceBase
                 }
                 break;
             }
-            case Command.ApplyConf:
-                parseSuccess = true;
-                cmdSuccess = LoadConf() && ApplyConf();
-                break;
-            case Command.SetFullBlast:
-            {
-                if (args.Length == 1 && args[0] is bool enable)
-                {
-                    parseSuccess = true;
-                    cmdSuccess = SetFullBlast(enable);
-                }
-                break;
-            }
             case Command.GetKeyLightBright:
                 parseSuccess = true;
                 sendSuccessMsg = false;
@@ -313,7 +313,14 @@ internal sealed class FanControlService : ServiceBase
                 }
                 break;
             }
-            case Command.ChangeFanProf:
+            case Command.SetWinFnSwap:
+            {
+                KeySwapConf cfg = Config.KeySwapConf;
+                cfg.Enabled = !cfg.Enabled;
+                SetWinFnSwap(cfg);
+                break;
+            }
+            case Command.SetFanProf:
             {
                 if (args.Length == 1 && args[0] is int fanProf)
                 {
@@ -326,7 +333,7 @@ internal sealed class FanControlService : ServiceBase
                 }
                 break;
             }
-            case Command.ChangePerfMode:
+            case Command.SetPerfMode:
             {
                 if (args.Length == 1 && args[0] is int perfMode)
                 {
@@ -477,6 +484,11 @@ internal sealed class FanControlService : ServiceBase
         // Write custom register values, if configured:
         if (Config.RegConfs?.Count > 0)
         {
+            Log.Warn(
+                "RegConfs are deprecated and will be removed in a future release.\n" +
+                "All MSI laptops should no longer need RegConfs.\n" +
+                "Update to a YAMDCC-provided config to remove this warning.");
+
             int numRegConfs = Config.RegConfs.Count;
             for (int i = 0; i < numRegConfs; i++)
             {
@@ -562,15 +574,19 @@ internal sealed class FanControlService : ServiceBase
         KeySwapConf keySwapCfg = Config.KeySwapConf;
         if (keySwapCfg is not null)
         {
-            Log.Info(Strings.GetString("svcWriteKeySwap"));
-            if (!LogECWriteByte(keySwapCfg.Reg, keySwapCfg.Enabled
-                ? keySwapCfg.OnVal
-                : keySwapCfg.OffVal))
+            if (!SetWinFnSwap(keySwapCfg))
             {
                 success = false;
             }
         }
         return success;
+    }
+
+    private bool SetWinFnSwap(KeySwapConf cfg)
+    {
+        Log.Info(Strings.GetString("svcWriteKeySwap"));
+        return LogECWriteByte(cfg.Reg,
+            cfg.Enabled ? cfg.OnVal : cfg.OffVal);
     }
 
     private bool GetFanSpeed(int clientId, int fan)

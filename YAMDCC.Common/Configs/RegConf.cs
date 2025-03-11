@@ -19,12 +19,8 @@ using System.Xml.Serialization;
 namespace YAMDCC.Common.Configs;
 
 /// <summary>
-/// Represents miscellaneous EC register configurations for the target
-/// computer. May be required to enable fan control via YAMDCC.
+/// Deprecated as of v1.1.0, and will be removed in a future release. Do not use.
 /// </summary>
-/// <remarks>
-/// All RegConfs defined here will be applied on service start (unless disabled).
-/// </remarks>
 public sealed class RegConf
 {
     /// <summary>

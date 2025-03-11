@@ -131,13 +131,19 @@ to 100% always).
 
 ## Roadmap
 
-The following features are currently planned for v1.1:
+### v1.1
 
-- [ ] Hotkey support ([#22](https://github.com/Sparronator9999/YAMDCC/issues/22)) *(in progress)*
+The following features are planned for v1.1:
+
+- [x] Hotkey support ([#22](https://github.com/Sparronator9999/YAMDCC/issues/22))
   - This will be a separate background program that stays in the system tray
     and listens to keyboard shortcuts.
-- [x] Switch fan profiles on performance mode setting adjustment
-      ([#37](https://github.com/Sparronator9999/YAMDCC/issues/37))
+
+Betas will be released soon after this README is updated. You can download them
+from the [Releases page](https://github.com/Sparronator9999/YAMDCC/releases),
+or by enabling download of pre-release versions in the YAMDCC updater.
+
+### Future releases
 
 Below are some planned features for potential future releases:
 
@@ -145,20 +151,25 @@ Below are some planned features for potential future releases:
   - Development of a CLI application for YAMDCC has started, but isn't publicly
     available yet
     - The CLI is missing a *lot* of features, and could do with a rewrite.
-- [ ] GPU switch support *(currently being researched)*
-- [ ] Support for editing laptop config registers using the GUI/CLI
-  - This would allow for creating configs for other laptop brands from the
-    config UI
-  - Currently, the only way to do this is to edit the XML directly.
-- [ ] Plugin system for additional optional features *(needs research)*
-- [ ] Re-work install experience
+- [ ] Re-work setup experience
   - Currently the Config Editor handles managing service installation, but this
     should probably be done in an installer/separate application.
+  - All MSI laptops appear to have one of two EC configurations. In the future,
+    I plan to first ask which generation of laptop they have (10th-gen Intel or
+    later, or 9th-gen Intel or older), then implement auto-detection of laptop
+    generation in the future once I figure out when laptops with AMD chips
+    started using the "2nd-gen" EC layout.
+- [ ] Plugin system for additional optional features *(needs research)*
 - [ ] Support for keyboard mic/speaker mute LEDs
   - Apparently this isn't handled by hardware/Windows, but after
     [reverse-engineering Apple's Boot Camp](https://github.com/Sparronator9999/OpenBootCamp)
     to get keyboard shortcuts working without it, I really shouldn't be
     surprised anymore.
+- [ ] GPU switch support
+  - Research for this feature has stalled. Since my laptop doesn't appear to
+    support this feature, this may be removed from the planned features in the
+    future unless someone else figures out how to control the GPU switch
+    without MSI Center/Feature Manager.
 - [ ] .NET support
   - Mandatory for Linux support
   - The GUI *should* compile on .NET 8 (and in fact *has* been compiled on .NET 8 before).
