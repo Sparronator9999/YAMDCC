@@ -319,9 +319,31 @@ internal sealed class FanControlService : ServiceBase
             }
             case Command.SetWinFnSwap:
             {
-                KeySwapConf cfg = Config.KeySwapConf;
-                cfg.Enabled = !cfg.Enabled;
-                SetWinFnSwap(cfg);
+                if (args.Length == 1 && args[0] is int enable)
+                {
+                    parseSuccess = true;
+                    KeySwapConf cfg = Config.KeySwapConf;
+                    if (enable == -1)
+                    {
+                        cfg.Enabled = !cfg.Enabled;
+                    }
+                    else if (enable == 0)
+                    {
+                        cfg.Enabled = false;
+                    }
+                    else if (enable == 1)
+                    {
+                        cfg.Enabled = true;
+                    }
+                    else
+                    {
+                        parseSuccess = false;
+                    }
+                    if (parseSuccess)
+                    {
+                        cmdSuccess = SetWinFnSwap(cfg);
+                    }
+                }
                 break;
             }
             case Command.SetFanProf:
