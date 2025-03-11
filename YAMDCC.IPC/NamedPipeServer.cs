@@ -71,10 +71,11 @@ public class NamedPipeServer<TRead, TWrite>
     /// </summary>
     public event EventHandler<PipeErrorEventArgs<TRead, TWrite>> Error;
 
+    public List<NamedPipeConnection<TRead, TWrite>> Connections { get; } = [];
+
     private readonly string _pipeName;
     private readonly int _bufferSize;
     private readonly PipeSecurity _security;
-    private readonly List<NamedPipeConnection<TRead, TWrite>> _connections = [];
 
     private int _nextPipeId;
 
@@ -136,9 +137,9 @@ public class NamedPipeServer<TRead, TWrite>
     /// </param>
     public void PushMessage(TWrite message)
     {
-        lock (_connections)
+        lock (Connections)
         {
-            foreach (NamedPipeConnection<TRead, TWrite> client in _connections)
+            foreach (NamedPipeConnection<TRead, TWrite> client in Connections)
             {
                 client.PushMessage(message);
             }
@@ -157,10 +158,10 @@ public class NamedPipeServer<TRead, TWrite>
     /// <inheritdoc cref="PushMessage(TWrite)"/>
     public void PushMessage(TWrite message, int targetId)
     {
-        lock (_connections)
+        lock (Connections)
         {
             // Can we speed this up with Linq or does that add overhead?
-            foreach (NamedPipeConnection<TRead, TWrite> client in _connections)
+            foreach (NamedPipeConnection<TRead, TWrite> client in Connections)
             {
                 if (client.ID == targetId)
                 {
@@ -189,10 +190,10 @@ public class NamedPipeServer<TRead, TWrite>
     /// <inheritdoc cref="PushMessage(TWrite, int[])"/>
     public void PushMessage(TWrite message, List<int> targetIds)
     {
-        lock (_connections)
+        lock (Connections)
         {
             // Can we speed this up with Linq or does that add overhead?
-            foreach (NamedPipeConnection<TRead, TWrite> client in _connections)
+            foreach (NamedPipeConnection<TRead, TWrite> client in Connections)
             {
                 if (targetIds.Contains(client.ID))
                 {
@@ -208,10 +209,10 @@ public class NamedPipeServer<TRead, TWrite>
     /// <inheritdoc cref="PushMessage(TWrite, int)"/>
     public void PushMessage(TWrite message, string targetName)
     {
-        lock (_connections)
+        lock (Connections)
         {
             // Can we speed this up with Linq or does that add overhead?
-            foreach (NamedPipeConnection<TRead, TWrite> client in _connections)
+            foreach (NamedPipeConnection<TRead, TWrite> client in Connections)
             {
                 if (client.Name == targetName)
                 {
@@ -228,9 +229,9 @@ public class NamedPipeServer<TRead, TWrite>
     /// <inheritdoc cref="PushMessage(TWrite, List{int})"/>
     public void PushMessage(TWrite message, List<string> targetNames)
     {
-        lock (_connections)
+        lock (Connections)
         {
-            foreach (NamedPipeConnection<TRead, TWrite> client in _connections)
+            foreach (NamedPipeConnection<TRead, TWrite> client in Connections)
             {
                 if (targetNames.Contains(client.Name))
                 {
@@ -247,9 +248,9 @@ public class NamedPipeServer<TRead, TWrite>
     {
         _shouldKeepRunning = false;
 
-        lock (_connections)
+        lock (Connections)
         {
-            foreach (NamedPipeConnection<TRead, TWrite> client in _connections.ToArray())
+            foreach (NamedPipeConnection<TRead, TWrite> client in Connections.ToArray())
             {
                 client.Close();
             }
@@ -306,7 +307,7 @@ public class NamedPipeServer<TRead, TWrite>
             connection.Error += ConnectionOnError;
             connection.Open();
 
-            lock (_connections) { _connections.Add(connection); }
+            lock (Connections) { Connections.Add(connection); }
 
             PipeConnectionEventArgs<TRead, TWrite> e = new(connection);
 
@@ -357,9 +358,9 @@ public class NamedPipeServer<TRead, TWrite>
             return;
         }
 
-        lock (_connections)
+        lock (Connections)
         {
-            _connections.Remove(e.Connection);
+            Connections.Remove(e.Connection);
         }
 
         ClientDisconnected?.Invoke(sender, e);
