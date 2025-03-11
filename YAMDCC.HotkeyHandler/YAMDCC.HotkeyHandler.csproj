@@ -10,7 +10,7 @@
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
         <LangVersion>13.0</LangVersion>
         <VersionPrefix>1.1.0</VersionPrefix>
-        <VersionSuffix>dev</VersionSuffix>
+        <VersionSuffix>beta.1</VersionSuffix>
         <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>
     <ItemGroup>
