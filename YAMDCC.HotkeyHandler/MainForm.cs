@@ -431,7 +431,7 @@ public partial class MainForm : Form
             "Increase keyboard backlight",
             "Decrease keyboard backlight",
             "Switch fan profiles",
-            "Switch performance modes",
+            "Switch default perf. modes",
         ]);
         cb.SelectedIndexChanged += new EventHandler(ActionChanged);
         cb.SelectedIndex = (int)action;
