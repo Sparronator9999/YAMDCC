@@ -98,8 +98,8 @@
       },
       "TaskScheduler": {
         "type": "Transitive",
-        "resolved": "2.11.0",
-        "contentHash": "p9wH58XSNIyUtO7PIFAEldaKUzpYmlj+YWAfnUqBKnGxIZRY51I9BrsBGJijUVwlxrgmLLPUigRIv2ZTD4uPJA=="
+        "resolved": "2.12.1",
+        "contentHash": "DzSVmVs0i5yHmuDy9ZMcTtKg48GU0aEFBbhp2XJrzA4saTRec/KbU5aGE/4P4FE499G3PDx9KPOHysoKzS/i3g=="
       },
       "ec-inspect": {
         "type": "Project",
@@ -121,7 +121,7 @@
         "dependencies": {
           "MarkedNet": "[2.1.4, )",
           "Newtonsoft.Json": "[13.0.3, )",
-          "TaskScheduler": "[2.11.0, )",
+          "TaskScheduler": "[2.12.1, )",
           "YAMDCC.Common": "[1.1.0-dev, )"
         }
       },

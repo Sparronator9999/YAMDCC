@@ -16,9 +16,9 @@
       },
       "TaskScheduler": {
         "type": "Direct",
-        "requested": "[2.11.0, )",
-        "resolved": "2.11.0",
-        "contentHash": "p9wH58XSNIyUtO7PIFAEldaKUzpYmlj+YWAfnUqBKnGxIZRY51I9BrsBGJijUVwlxrgmLLPUigRIv2ZTD4uPJA=="
+        "requested": "[2.12.1, )",
+        "resolved": "2.12.1",
+        "contentHash": "DzSVmVs0i5yHmuDy9ZMcTtKg48GU0aEFBbhp2XJrzA4saTRec/KbU5aGE/4P4FE499G3PDx9KPOHysoKzS/i3g=="
       },
       "yamdcc.common": {
         "type": "Project"

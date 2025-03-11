@@ -35,7 +35,7 @@
     <ItemGroup>
       <PackageReference Include="MarkedNet" Version="2.1.4" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-      <PackageReference Include="TaskScheduler" Version="2.11.0" />
+      <PackageReference Include="TaskScheduler" Version="2.12.1" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\YAMDCC.Common\YAMDCC.Common.csproj" />
