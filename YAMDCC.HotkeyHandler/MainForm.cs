@@ -28,6 +28,7 @@ public partial class MainForm : Form
     private readonly List<ComboBox> cboActionDatas = [];
 
     private Hotkey OldHotkey;
+    private bool BindInProgress;
 
     /// <summary>
     /// The set of hotkey IDs currently registered with Windows
@@ -41,17 +42,6 @@ public partial class MainForm : Form
     /// <see cref="Response.KeyLightBright"/> message.
     /// </summary>
     private bool KeyLightUp;
-
-    private bool BindInProgress
-    {
-        get => bindInProgress;
-        set
-        {
-            bindInProgress = value;
-            lblBindInProgress.Text = $"{value}";
-        }
-    }
-    private bool bindInProgress;
 
     public MainForm()
     {
@@ -269,15 +259,17 @@ public partial class MainForm : Form
 
         cboActionDatas.Clear();
         txtHotkeys.Clear();
-        tblHotKeys.SuspendLayout();
-        tblHotKeys.Controls.Clear();
-        tblHotKeys.RowStyles.Clear();
-        tblHotKeys.RowCount = HotkeyConf.Hotkeys.Count + 1;
+        tblHotkeys.AutoScroll = false;
+        tblHotkeys.Padding = new Padding(0, 0, SystemInformation.VerticalScrollBarWidth, 0);
+        tblHotkeys.SuspendLayout();
+        tblHotkeys.Controls.Clear();
+        tblHotkeys.RowStyles.Clear();
+        tblHotkeys.RowCount = HotkeyConf.Hotkeys.Count + 1;
 
         for (int i = 0; i < HotkeyConf.Hotkeys.Count; i++)
         {
             Hotkey hk = HotkeyConf.Hotkeys[i];
-            tblHotKeys.RowStyles.Add(new RowStyle());
+            tblHotkeys.RowStyles.Add(new RowStyle());
 
             cboActionDatas.Add(new ComboBox()
             {
@@ -288,9 +280,9 @@ public partial class MainForm : Form
                 Tag = i,
             });
             cboActionDatas[i].SelectedIndexChanged += new EventHandler(ActionDataChanged);
-            tblHotKeys.Controls.Add(cboActionDatas[i], 1, i);
+            tblHotkeys.Controls.Add(cboActionDatas[i], 1, i);
 
-            tblHotKeys.Controls.Add(ActionComboBox(i, scale, hk.Action), 0, i);
+            tblHotkeys.Controls.Add(ActionComboBox(i, scale, hk.Action), 0, i);
 
             txtHotkeys.Add(new TextBox
             {
@@ -303,13 +295,15 @@ public partial class MainForm : Form
             txtHotkeys[i].Leave += new EventHandler(KeyBindLeave);
             txtHotkeys[i].KeyDown += new KeyEventHandler(KeyBindDown);
             txtHotkeys[i].KeyUp += new KeyEventHandler(KeyBindUp);
-            tblHotKeys.Controls.Add(txtHotkeys[i], 2, i);
+            tblHotkeys.Controls.Add(txtHotkeys[i], 2, i);
 
-            tblHotKeys.Controls.Add(HotkeyButton(i, false, scale), 3, i);
-            tblHotKeys.Controls.Add(HotkeyButton(i, true, scale), 4, i);
+            tblHotkeys.Controls.Add(HotkeyButton(i, false, scale), 3, i);
+            tblHotkeys.Controls.Add(HotkeyButton(i, true, scale), 4, i);
         }
-        tblHotKeys.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
-        tblHotKeys.ResumeLayout();
+        tblHotkeys.RowStyles.Add(new RowStyle(SizeType.Absolute, 16));
+        tblHotkeys.ResumeLayout();
+        tblHotkeys.AutoScroll = true;
+        tblHotkeys.Padding = new Padding(0);
     }
 
     private void KeyBindLeave(object sender, EventArgs e)

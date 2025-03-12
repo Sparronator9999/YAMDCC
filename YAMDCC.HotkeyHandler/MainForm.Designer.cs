@@ -42,17 +42,16 @@ namespace YAMDCC.HotkeyHandler
             System.Windows.Forms.ContextMenuStrip TrayMenu;
             System.Windows.Forms.ToolStripSeparator sep2;
             System.Windows.Forms.ToolStripMenuItem tsiTrayExit;
-            System.Windows.Forms.GroupBox grpHKeys;
+            System.Windows.Forms.GroupBox grpHotkeys;
+            System.Windows.Forms.TableLayoutPanel tblMain;
+            System.Windows.Forms.Button btnRevert;
             this.tsiEnabled = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiTrayMin = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiTrayClose = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiTrayAbout = new System.Windows.Forms.ToolStripMenuItem();
-            this.tblHotKeys = new System.Windows.Forms.TableLayoutPanel();
-            this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.lblBindInProgress = new System.Windows.Forms.Label();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.btnRevert = new System.Windows.Forms.Button();
+            this.tblHotkeys = new System.Windows.Forms.TableLayoutPanel();
             this.btnApply = new System.Windows.Forms.Button();
+            this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             menuStrip = new System.Windows.Forms.MenuStrip();
             tsiFile = new System.Windows.Forms.ToolStripMenuItem();
             tsiExit = new System.Windows.Forms.ToolStripMenuItem();
@@ -66,11 +65,13 @@ namespace YAMDCC.HotkeyHandler
             TrayMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             sep2 = new System.Windows.Forms.ToolStripSeparator();
             tsiTrayExit = new System.Windows.Forms.ToolStripMenuItem();
-            grpHKeys = new System.Windows.Forms.GroupBox();
+            grpHotkeys = new System.Windows.Forms.GroupBox();
+            tblMain = new System.Windows.Forms.TableLayoutPanel();
+            btnRevert = new System.Windows.Forms.Button();
             menuStrip.SuspendLayout();
             TrayMenu.SuspendLayout();
-            grpHKeys.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
+            grpHotkeys.SuspendLayout();
+            tblMain.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -210,82 +211,67 @@ namespace YAMDCC.HotkeyHandler
             tsiTrayExit.Text = "Exit";
             tsiTrayExit.Click += new System.EventHandler(this.Exit);
             // 
-            // grpHKeys
+            // grpHotkeys
             // 
-            this.tableLayoutPanel1.SetColumnSpan(grpHKeys, 3);
-            grpHKeys.Controls.Add(this.tblHotKeys);
-            grpHKeys.Dock = System.Windows.Forms.DockStyle.Fill;
-            grpHKeys.Location = new System.Drawing.Point(3, 3);
-            grpHKeys.Name = "grpHKeys";
-            grpHKeys.Size = new System.Drawing.Size(618, 322);
-            grpHKeys.TabIndex = 8;
-            grpHKeys.TabStop = false;
-            grpHKeys.Text = "Hotkeys";
+            tblMain.SetColumnSpan(grpHotkeys, 3);
+            grpHotkeys.Controls.Add(this.tblHotkeys);
+            grpHotkeys.Dock = System.Windows.Forms.DockStyle.Fill;
+            grpHotkeys.Location = new System.Drawing.Point(3, 3);
+            grpHotkeys.Name = "grpHotkeys";
+            grpHotkeys.Size = new System.Drawing.Size(618, 322);
+            grpHotkeys.TabIndex = 8;
+            grpHotkeys.TabStop = false;
+            grpHotkeys.Text = "Hotkeys";
             // 
-            // tblHotKeys
+            // tblHotkeys
             // 
-            this.tblHotKeys.ColumnCount = 5;
-            this.tblHotKeys.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 182F));
-            this.tblHotKeys.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 134F));
-            this.tblHotKeys.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblHotKeys.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tblHotKeys.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tblHotKeys.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tblHotKeys.Location = new System.Drawing.Point(3, 19);
-            this.tblHotKeys.Name = "tblHotKeys";
-            this.tblHotKeys.RowCount = 2;
-            this.tblHotKeys.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblHotKeys.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblHotKeys.Size = new System.Drawing.Size(612, 300);
-            this.tblHotKeys.TabIndex = 7;
+            this.tblHotkeys.AutoScroll = true;
+            this.tblHotkeys.ColumnCount = 5;
+            this.tblHotkeys.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 182F));
+            this.tblHotkeys.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 134F));
+            this.tblHotkeys.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblHotkeys.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tblHotkeys.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tblHotkeys.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tblHotkeys.Location = new System.Drawing.Point(3, 19);
+            this.tblHotkeys.Name = "tblHotkeys";
+            this.tblHotkeys.RowCount = 2;
+            this.tblHotkeys.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tblHotkeys.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tblHotkeys.Size = new System.Drawing.Size(612, 303);
+            this.tblHotkeys.TabIndex = 7;
             // 
-            // TrayIcon
+            // tblMain
             // 
-            this.TrayIcon.ContextMenuStrip = TrayMenu;
-            this.TrayIcon.Visible = true;
-            this.TrayIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TrayIcon_MouseDoubleClick);
-            // 
-            // lblBindInProgress
-            // 
-            this.lblBindInProgress.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblBindInProgress.AutoSize = true;
-            this.lblBindInProgress.Location = new System.Drawing.Point(3, 335);
-            this.lblBindInProgress.Name = "lblBindInProgress";
-            this.lblBindInProgress.Size = new System.Drawing.Size(33, 15);
-            this.lblBindInProgress.TabIndex = 9;
-            this.lblBindInProgress.Text = "False";
-            // 
-            // tableLayoutPanel1
-            // 
-            this.tableLayoutPanel1.ColumnCount = 3;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.Controls.Add(grpHKeys, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lblBindInProgress, 0, 1);
-            this.tableLayoutPanel1.Controls.Add(this.btnRevert, 1, 1);
-            this.tableLayoutPanel1.Controls.Add(this.btnApply, 2, 1);
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 24);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 2;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(624, 357);
-            this.tableLayoutPanel1.TabIndex = 10;
+            tblMain.ColumnCount = 3;
+            tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            tblMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            tblMain.Controls.Add(grpHotkeys, 0, 0);
+            tblMain.Controls.Add(btnRevert, 1, 1);
+            tblMain.Controls.Add(this.btnApply, 2, 1);
+            tblMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            tblMain.Location = new System.Drawing.Point(0, 24);
+            tblMain.Name = "tblMain";
+            tblMain.RowCount = 2;
+            tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            tblMain.Size = new System.Drawing.Size(624, 357);
+            tblMain.TabIndex = 10;
             // 
             // btnRevert
             // 
-            this.btnRevert.Location = new System.Drawing.Point(465, 331);
-            this.btnRevert.Name = "btnRevert";
-            this.btnRevert.Size = new System.Drawing.Size(75, 23);
-            this.btnRevert.TabIndex = 10;
-            this.btnRevert.Text = "Revert";
-            this.btnRevert.UseVisualStyleBackColor = true;
-            this.btnRevert.Click += new System.EventHandler(this.btnRevert_Click);
+            btnRevert.Location = new System.Drawing.Point(465, 331);
+            btnRevert.Name = "btnRevert";
+            btnRevert.Size = new System.Drawing.Size(75, 23);
+            btnRevert.TabIndex = 10;
+            btnRevert.Text = "Revert";
+            btnRevert.UseVisualStyleBackColor = true;
+            btnRevert.Click += new System.EventHandler(this.btnRevert_Click);
             // 
             // btnApply
             // 
+            this.btnApply.Enabled = false;
             this.btnApply.Location = new System.Drawing.Point(546, 331);
             this.btnApply.Name = "btnApply";
             this.btnApply.Size = new System.Drawing.Size(75, 23);
@@ -294,12 +280,18 @@ namespace YAMDCC.HotkeyHandler
             this.btnApply.UseVisualStyleBackColor = true;
             this.btnApply.Click += new System.EventHandler(this.btnApply_Click);
             // 
+            // TrayIcon
+            // 
+            this.TrayIcon.ContextMenuStrip = TrayMenu;
+            this.TrayIcon.Visible = true;
+            this.TrayIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TrayIcon_MouseDoubleClick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(624, 381);
-            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(tblMain);
             this.Controls.Add(menuStrip);
             this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -309,9 +301,8 @@ namespace YAMDCC.HotkeyHandler
             menuStrip.ResumeLayout(false);
             menuStrip.PerformLayout();
             TrayMenu.ResumeLayout(false);
-            grpHKeys.ResumeLayout(false);
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
+            grpHotkeys.ResumeLayout(false);
+            tblMain.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -320,14 +311,11 @@ namespace YAMDCC.HotkeyHandler
         #endregion
 
         private System.Windows.Forms.NotifyIcon TrayIcon;
-        private System.Windows.Forms.TableLayoutPanel tblHotKeys;
+        private System.Windows.Forms.TableLayoutPanel tblHotkeys;
         private System.Windows.Forms.ToolStripMenuItem tsiTrayMin;
         private System.Windows.Forms.ToolStripMenuItem tsiTrayClose;
         private System.Windows.Forms.ToolStripMenuItem tsiEnabled;
         private System.Windows.Forms.ToolStripMenuItem tsiTrayAbout;
-        private System.Windows.Forms.Label lblBindInProgress;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.Button btnRevert;
         private System.Windows.Forms.Button btnApply;
     }
 }
