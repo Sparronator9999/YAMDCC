@@ -11,12 +11,13 @@
         <LangVersion>13.0</LangVersion>
         <OutputType>WinExe</OutputType>
         <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+        <PlatformTarget>AnyCPU</PlatformTarget>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <RuntimeIdentifiers>win7-x64;win7-x86;win-x64;win-x86</RuntimeIdentifiers>
         <TargetFramework>net48</TargetFramework>
         <Title>YAMDCC service</Title>
         <VersionPrefix>1.1.0</VersionPrefix>
-        <VersionSuffix>beta.1</VersionSuffix>
+        <VersionSuffix>dev</VersionSuffix>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>none</DebugType>
@@ -43,18 +44,6 @@
         <ProjectReference Include="..\YAMDCC.Common\YAMDCC.Common.csproj" />
         <ProjectReference Include="..\YAMDCC.ECAccess\YAMDCC.ECAccess.csproj" />
         <ProjectReference Include="..\YAMDCC.IPC\YAMDCC.IPC.csproj" />
-    </ItemGroup>
-    <ItemGroup>
-        <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
-            <Visible>False</Visible>
-            <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
-            <Install>true</Install>
-        </BootstrapperPackage>
-        <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-            <Visible>False</Visible>
-            <ProductName>.NET Framework 3.5 SP1</ProductName>
-            <Install>false</Install>
-        </BootstrapperPackage>
     </ItemGroup>
     <ItemGroup>
         <Content Include="ec.ico" />

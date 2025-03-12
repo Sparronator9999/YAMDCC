@@ -5,10 +5,8 @@
         <AssemblyName>ec-inspect</AssemblyName>
         <AssemblyTitle>YAMDCC EC inspector</AssemblyTitle>
         <Authors>Sparronator9999</Authors>
-        <BootstrapperEnabled>true</BootstrapperEnabled>
         <Copyright>Copyright © 2025 Sparronator9999 (and Contributors)</Copyright>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
-        <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
         <LangVersion>13.0</LangVersion>
         <OutputType>Exe</OutputType>
         <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
@@ -19,7 +17,7 @@
         <Title>YAMDCC EC inspector</Title>
         <UseWindowsForms>true</UseWindowsForms>
         <VersionPrefix>1.1.0</VersionPrefix>
-        <VersionSuffix>beta.1</VersionSuffix>
+        <VersionSuffix>dev</VersionSuffix>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>none</DebugType>

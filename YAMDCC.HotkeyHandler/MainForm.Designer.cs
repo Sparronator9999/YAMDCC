@@ -1,3 +1,19 @@
+// This file is part of YAMDCC (Yet Another MSI Dragon Center Clone).
+// Copyright © Sparronator9999 and Contributors 2025.
+//
+// YAMDCC is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by the Free
+// Software Foundation, either version 3 of the License, or (at your option)
+// any later version.
+//
+// YAMDCC is distributed in the hope that it will be useful, but
+// WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+// or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+// more details.
+//
+// You should have received a copy of the GNU General Public License along with
+// YAMDCC. If not, see <https://www.gnu.org/licenses/>.
+
 namespace YAMDCC.HotkeyHandler
 {
     partial class MainForm
@@ -49,6 +65,7 @@ namespace YAMDCC.HotkeyHandler
             this.tsiTrayMin = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiTrayClose = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiTrayAbout = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsiShowConfig = new System.Windows.Forms.ToolStripMenuItem();
             this.tblHotkeys = new System.Windows.Forms.TableLayoutPanel();
             this.btnApply = new System.Windows.Forms.Button();
             this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
@@ -188,26 +205,35 @@ namespace YAMDCC.HotkeyHandler
             TrayMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsiTrayAbout,
             sep2,
+            this.tsiShowConfig,
             tsiTrayExit});
             TrayMenu.Name = "TrayMenu";
-            TrayMenu.Size = new System.Drawing.Size(169, 54);
+            TrayMenu.Size = new System.Drawing.Size(221, 76);
             // 
             // tsiTrayAbout
             // 
             this.tsiTrayAbout.Name = "tsiTrayAbout";
-            this.tsiTrayAbout.Size = new System.Drawing.Size(168, 22);
+            this.tsiTrayAbout.Size = new System.Drawing.Size(220, 22);
             this.tsiTrayAbout.Text = "About YAMDCC...";
             this.tsiTrayAbout.Click += new System.EventHandler(this.tsiAbout_Click);
             // 
             // sep2
             // 
             sep2.Name = "sep2";
-            sep2.Size = new System.Drawing.Size(165, 6);
+            sep2.Size = new System.Drawing.Size(217, 6);
+            // 
+            // tsiShowConfig
+            // 
+            this.tsiShowConfig.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.tsiShowConfig.Name = "tsiShowConfig";
+            this.tsiShowConfig.Size = new System.Drawing.Size(220, 22);
+            this.tsiShowConfig.Text = "Show hotkey configurator";
+            this.tsiShowConfig.Click += new System.EventHandler(this.ShowHotkeyConfig);
             // 
             // tsiTrayExit
             // 
             tsiTrayExit.Name = "tsiTrayExit";
-            tsiTrayExit.Size = new System.Drawing.Size(168, 22);
+            tsiTrayExit.Size = new System.Drawing.Size(220, 22);
             tsiTrayExit.Text = "Exit";
             tsiTrayExit.Click += new System.EventHandler(this.Exit);
             // 
@@ -225,20 +251,19 @@ namespace YAMDCC.HotkeyHandler
             // 
             // tblHotkeys
             // 
-            this.tblHotkeys.AutoScroll = true;
             this.tblHotkeys.ColumnCount = 5;
             this.tblHotkeys.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 182F));
             this.tblHotkeys.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 134F));
             this.tblHotkeys.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblHotkeys.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tblHotkeys.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tblHotkeys.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tblHotkeys.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblHotkeys.Location = new System.Drawing.Point(3, 19);
             this.tblHotkeys.Name = "tblHotkeys";
             this.tblHotkeys.RowCount = 2;
             this.tblHotkeys.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblHotkeys.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tblHotkeys.Size = new System.Drawing.Size(612, 303);
+            this.tblHotkeys.Size = new System.Drawing.Size(612, 300);
             this.tblHotkeys.TabIndex = 7;
             // 
             // tblMain
@@ -271,7 +296,6 @@ namespace YAMDCC.HotkeyHandler
             // 
             // btnApply
             // 
-            this.btnApply.Enabled = false;
             this.btnApply.Location = new System.Drawing.Point(546, 331);
             this.btnApply.Name = "btnApply";
             this.btnApply.Size = new System.Drawing.Size(75, 23);
@@ -284,7 +308,7 @@ namespace YAMDCC.HotkeyHandler
             // 
             this.TrayIcon.ContextMenuStrip = TrayMenu;
             this.TrayIcon.Visible = true;
-            this.TrayIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.TrayIcon_MouseDoubleClick);
+            this.TrayIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.ShowHotkeyConfig);
             // 
             // MainForm
             // 
@@ -317,5 +341,6 @@ namespace YAMDCC.HotkeyHandler
         private System.Windows.Forms.ToolStripMenuItem tsiEnabled;
         private System.Windows.Forms.ToolStripMenuItem tsiTrayAbout;
         private System.Windows.Forms.Button btnApply;
+        private System.Windows.Forms.ToolStripMenuItem tsiShowConfig;
     }
 }

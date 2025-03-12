@@ -1,26 +1,39 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net48</TargetFramework>
-        <OutputType>WinExe</OutputType>
-        <UseWindowsForms>true</UseWindowsForms>
-        <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
-        <AssemblyName>HotkeyHandler</AssemblyName>
+        <AnalysisLevel>latest-recommended</AnalysisLevel>
         <ApplicationIcon>hkey.ico</ApplicationIcon>
-        <LangVersion>13.0</LangVersion>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <AssemblyName>HotkeyHandler</AssemblyName>
+        <AssemblyTitle>YAMDCC hotkey handler</AssemblyTitle>
+        <Authors>Sparronator9999</Authors>
+        <Copyright>Copyright © 2025 Sparronator9999 (and Contributors)</Copyright>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
         <LangVersion>13.0</LangVersion>
+        <OutputType>WinExe</OutputType>
+        <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
+        <PlatformTarget>AnyCPU</PlatformTarget>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <RuntimeIdentifiers>win7-x64;win7-x86;win-x64;win-x86</RuntimeIdentifiers>
+        <TargetFramework>net48</TargetFramework>
+        <Title>YAMDCC hotkey handler</Title>
+        <UseWindowsForms>true</UseWindowsForms>
         <VersionPrefix>1.1.0</VersionPrefix>
-        <VersionSuffix>beta.1</VersionSuffix>
-        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <VersionSuffix>dev</VersionSuffix>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)'=='Release'">
+        <DebugType>none</DebugType>
     </PropertyGroup>
     <ItemGroup>
-      <EmbeddedResource Remove="MainForm.resx" />
+        <Reference Include="System.ServiceProcess" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="hkey.ico" />
     </ItemGroup>
     <ItemGroup>
-      <None Include="MainForm.resx" />
+      <EmbeddedResource Remove="MainForm.resx" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="MainForm.resx" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\YAMDCC.Common\YAMDCC.Common.csproj" />

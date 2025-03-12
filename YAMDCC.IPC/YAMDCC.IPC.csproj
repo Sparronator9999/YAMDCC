@@ -2,12 +2,13 @@
     <PropertyGroup>
         <AnalysisLevel>latest-recommended</AnalysisLevel>
         <AssemblyTitle>Named Pipe Wrapper library</AssemblyTitle>
-        <Copyright>Copyright © 2013 Andrew C. Dvorak, 2014-2018 ReliableHosting, 2020-2021 Twosense, 2023-2024 Sparronator9999</Copyright>
+        <Copyright>Copyright © 2013 Andrew C. Dvorak, 2014-2018 ReliableHosting, 2020-2021 Twosense, 2023-2025 Sparronator9999</Copyright>
         <Description>A simple, easy to use, strongly-typed wrapper around .NET named pipes, modified for MSI Fan Control.</Description>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
         <LangVersion>13.0</LangVersion>
         <OutputType>Library</OutputType>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PlatformTarget>AnyCPU</PlatformTarget>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <RuntimeIdentifiers>win7-x64;win7-x86;win-x64;win-x86</RuntimeIdentifiers>
         <TargetFramework>net48</TargetFramework>

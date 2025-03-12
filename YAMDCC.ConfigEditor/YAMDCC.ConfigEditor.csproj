@@ -6,28 +6,28 @@
         <AssemblyName>ConfigEditor</AssemblyName>
         <AssemblyTitle>YAMDCC config editor</AssemblyTitle>
         <Authors>Sparronator9999</Authors>
-        <BootstrapperEnabled>true</BootstrapperEnabled>
         <Copyright>Copyright © 2023-2025 Sparronator9999 (and Contributors)</Copyright>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
-        <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
         <LangVersion>13.0</LangVersion>
         <OutputType>WinExe</OutputType>
         <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
         <PlatformTarget>AnyCPU</PlatformTarget>
-        <PublishUrl>publish\</PublishUrl>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <RuntimeIdentifiers>win7-x64;win7-x86;win-x64;win-x86</RuntimeIdentifiers>
         <TargetFramework>net48</TargetFramework>
         <Title>YAMDCC config editor</Title>
         <UseWindowsForms>true</UseWindowsForms>
         <VersionPrefix>1.1.0</VersionPrefix>
-        <VersionSuffix>beta.1</VersionSuffix>
+        <VersionSuffix>dev</VersionSuffix>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>none</DebugType>
     </PropertyGroup>
     <ItemGroup>
-      <EmbeddedResource Remove="MainWindow.resx" />
+      <EmbeddedResource Remove="MainForm.resx" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="MainForm.resx" />
     </ItemGroup>
     <ItemGroup>
         <Reference Include="System.ServiceProcess" />
@@ -42,23 +42,5 @@
         <ProjectReference Include="..\YAMDCC.Service\YAMDCC.Service.csproj" />
         <ProjectReference Include="..\YAMDCC.IPC\YAMDCC.IPC.csproj" />
         <ProjectReference Include="..\YAMDCC.Updater\YAMDCC.Updater.csproj" />
-    </ItemGroup>
-    <ItemGroup>
-        <WCFMetadata Include="Connected Services\" />
-    </ItemGroup>
-    <ItemGroup>
-        <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
-            <Visible>False</Visible>
-            <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
-            <Install>true</Install>
-        </BootstrapperPackage>
-        <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-            <Visible>False</Visible>
-            <ProductName>.NET Framework 3.5 SP1</ProductName>
-            <Install>false</Install>
-        </BootstrapperPackage>
-    </ItemGroup>
-    <ItemGroup>
-      <None Include="MainForm.resx" />
     </ItemGroup>
 </Project>
