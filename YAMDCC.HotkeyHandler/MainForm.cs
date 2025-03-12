@@ -104,7 +104,6 @@ public partial class MainForm : Form
     private void CurrentDomain_ProcessExit(object sender, EventArgs e)
     {
         IPCClient.Stop();
-        UnregisterHotkeys();
     }
 
     protected override void SetVisibleCore(bool value)
@@ -118,6 +117,12 @@ public partial class MainForm : Form
         base.SetVisibleCore(value);
     }
 
+    protected override void OnHandleCreated(EventArgs e)
+    {
+        base.OnHandleCreated(e);
+        RegisterHotkeys();
+    }
+
     protected override void OnFormClosing(FormClosingEventArgs e)  
     {
         base.OnFormClosing(e);
@@ -126,6 +131,7 @@ public partial class MainForm : Form
             Hide();
             e.Cancel = true;
         }
+        UnregisterHotkeys();
     }
 
     protected override void WndProc(ref Message m)
@@ -562,10 +568,9 @@ public partial class MainForm : Form
         foreach (int i in RegisteredKeys.Keys)
         {
             User32.UnregisterHotKey(Handle, i);
-            RegisteredKeys.Remove(i);
         }
+        RegisteredKeys.Clear();
     }
-
 
     private void RunHotkeyAction(Hotkey hk)
     {
