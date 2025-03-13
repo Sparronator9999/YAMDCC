@@ -22,6 +22,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Windows.Forms;
 using YAMDCC.Common;
 using YAMDCC.Common.Configs;
@@ -275,17 +276,16 @@ public partial class MainForm : Form
 
         cboActionDatas.Clear();
         txtHotkeys.Clear();
+        
         tblHotkeys.AutoScroll = false;
         tblHotkeys.Padding = new Padding(0, 0, SystemInformation.VerticalScrollBarWidth, 0);
         tblHotkeys.SuspendLayout();
         tblHotkeys.Controls.Clear();
-        tblHotkeys.RowStyles.Clear();
-        tblHotkeys.RowCount = HotkeyConf.Hotkeys.Count + 1;
+        tblHotkeys.RowCount = HotkeyConf.Hotkeys.Count;
 
         for (int i = 0; i < HotkeyConf.Hotkeys.Count; i++)
         {
             Hotkey hk = HotkeyConf.Hotkeys[i];
-            tblHotkeys.RowStyles.Add(new RowStyle());
 
             cboActionDatas.Add(new ComboBox()
             {
@@ -293,6 +293,7 @@ public partial class MainForm : Form
                 DropDownStyle = ComboBoxStyle.DropDownList,
                 Enabled = false,
                 Margin = new Padding((int)(2 * scale)),
+                TabIndex = i * 4 + 1,
                 Tag = i,
             });
             cboActionDatas[i].SelectedIndexChanged += new EventHandler(ActionDataChanged);
@@ -305,6 +306,7 @@ public partial class MainForm : Form
                 ReadOnly = true,
                 Dock = DockStyle.Fill,
                 Margin = new Padding((int)(2 * scale)),
+                TabIndex = i * 4 + 2,
                 Tag = i,
                 Text = HotkeyText(hk.Modifiers, hk.KeyCode),
             });
@@ -316,7 +318,6 @@ public partial class MainForm : Form
             tblHotkeys.Controls.Add(HotkeyButton(i, false, scale), 3, i);
             tblHotkeys.Controls.Add(HotkeyButton(i, true, scale), 4, i);
         }
-        tblHotkeys.RowStyles.Add(new RowStyle(SizeType.Absolute, 16));
         tblHotkeys.ResumeLayout();
         tblHotkeys.AutoScroll = true;
         tblHotkeys.Padding = new Padding(0);
@@ -436,6 +437,7 @@ public partial class MainForm : Form
             Dock = DockStyle.Fill,
             DropDownStyle = ComboBoxStyle.DropDownList,
             Margin = new Padding((int)(2 * scale)),
+            TabIndex = tag * 4,
             Tag = tag,
         };
         cb.Items.AddRange(
@@ -460,6 +462,7 @@ public partial class MainForm : Form
         {
             Margin = new Padding((int)(2 * scale)),
             Size = new Size((int)(23 * scale), (int)(23 * scale)),
+            TabIndex = del ? tag * 4 + 4 : tag * 4 + 3,
             Tag = tag,
             Text = del ? "-" : "+",
         };

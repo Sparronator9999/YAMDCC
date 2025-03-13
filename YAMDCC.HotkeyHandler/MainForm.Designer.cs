@@ -260,9 +260,8 @@ namespace YAMDCC.HotkeyHandler
             this.tblHotkeys.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tblHotkeys.Location = new System.Drawing.Point(3, 19);
             this.tblHotkeys.Name = "tblHotkeys";
-            this.tblHotkeys.RowCount = 2;
+            this.tblHotkeys.RowCount = 1;
             this.tblHotkeys.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblHotkeys.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tblHotkeys.Size = new System.Drawing.Size(612, 300);
             this.tblHotkeys.TabIndex = 7;
             // 
