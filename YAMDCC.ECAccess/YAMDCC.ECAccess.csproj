@@ -15,7 +15,7 @@
         <TargetFramework>net48</TargetFramework>
         <Title>YAMDCC EC library</Title>
         <VersionPrefix>1.1.0</VersionPrefix>
-        <VersionSuffix>dev</VersionSuffix>
+        <VersionSuffix>beta.2</VersionSuffix>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>none</DebugType>

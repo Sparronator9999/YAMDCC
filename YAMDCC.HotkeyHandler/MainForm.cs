@@ -342,7 +342,7 @@ public partial class MainForm : Form
             tblHotkeys.Controls.Add(HotkeyButton(i, false, scale), 3, i);
             tblHotkeys.Controls.Add(HotkeyButton(i, true, scale), 4, i);
         }
-        tblHotkeys.ResumeLayout();
+        tblHotkeys.ResumeLayout(true);
         tblHotkeys.AutoScroll = true;
         tblHotkeys.Padding = new Padding(0);
     }

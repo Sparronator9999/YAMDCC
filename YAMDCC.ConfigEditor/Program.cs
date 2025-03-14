@@ -191,10 +191,10 @@ internal static class Program
         Application.Run(new MainForm());
     }
 
-    [DllImport("user32.dll")]
+    [DllImport("User32")]
     private static extern bool SetForegroundWindow(IntPtr hWnd);
 
-    [DllImport("user32.dll")]
+    [DllImport("User32")]
     private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
     private static void ThreadException(object sender, ThreadExceptionEventArgs e)

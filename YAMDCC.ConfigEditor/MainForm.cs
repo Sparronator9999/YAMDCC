@@ -283,9 +283,11 @@ internal sealed partial class MainForm : Form
                 {
                     if (args.Length == 2 && args[0] is int fan && args[1] is int rpm && fan == cboFanSel.SelectedIndex)
                     {
-                        lblFanRPM.Text = rpm == -1
-                            ? "RPM: 0"
-                            : $"RPM: {rpm}";
+                        if (rpm < 0)
+                        {
+                            rpm = 0;
+                        }
+                        lblFanRPM.Text = $"RPM: {rpm}";
                     }
                     break;
                 }
@@ -646,9 +648,9 @@ internal sealed partial class MainForm : Form
 
         if (numFanSpds is null || numFanSpds.Length != cfg.FanCurveRegs.Length)
         {
-            tblCurve.SuspendLayout();
             float scale = CurrentAutoScaleDimensions.Height / 96;
 
+            tblCurve.SuspendLayout();
             tblCurve.Controls.Clear();
             numUpTs = new NumericUpDown[cfg.UpThresholdRegs.Length];
             numDownTs = new NumericUpDown[cfg.DownThresholdRegs.Length];
