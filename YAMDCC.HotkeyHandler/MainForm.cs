@@ -22,7 +22,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Reflection;
-using System.Security.Cryptography;
 using System.Windows.Forms;
 using YAMDCC.Common;
 using YAMDCC.Common.Configs;
@@ -60,6 +59,8 @@ public partial class MainForm : Form
     /// </summary>
     private bool KeyLightUp;
 
+    private readonly ToolTip ttMain = new();
+
     public MainForm()
     {
         InitializeComponent();
@@ -67,6 +68,15 @@ public partial class MainForm : Form
         TrayIcon.Text = Text = $"YAMDCC hotkey handler - v{Utils.GetVerString()}";
         Icon = Utils.GetEntryAssemblyIcon();
         TrayIcon.Icon = Icon;
+
+        #region Set tooltips
+        ttMain.SetToolTip(btnApply, Strings.GetString("ttApply"));
+        ttMain.SetToolTip(btnRevert, Strings.GetString("ttRevert"));
+        tsiExit.ToolTipText = tsiTrayExit.ToolTipText = Strings.GetString("ttExit");
+        tsiEnabled.ToolTipText = Strings.GetString("ttEnabled");
+        tsiTrayMin.ToolTipText = Strings.GetString("ttTrayMin");
+        tsiTrayClose.ToolTipText = Strings.GetString("ttTrayClose");
+        #endregion // Set tooltips
 
         IPCClient.ServerMessage += new EventHandler<PipeMessageEventArgs<ServiceResponse, ServiceCommand>>(IPCMessage);
         IPCClient.Error += new EventHandler<PipeErrorEventArgs<ServiceResponse, ServiceCommand>>(IPCError);
@@ -81,7 +91,7 @@ public partial class MainForm : Form
 
         if (dlg.Result)
         {
-            throw new TimeoutException("Failed to connect to the YAMDCC service (connection timed out).");
+            throw new TimeoutException(Strings.GetString("exSvcTimeout"));
         }
         AppDomain.CurrentDomain.ProcessExit += new EventHandler(CurrentDomain_ProcessExit);
 
@@ -240,8 +250,15 @@ public partial class MainForm : Form
 
     private void ShowHotkeyConfig(object sender, EventArgs e)
     {
-        Show();
-        Activate();
+        if (Visible)
+        {
+            Hide();
+        }
+        else
+        {
+            Show();
+            Activate();
+        }
     }
 
     private void tsiSysStart_Click(object sender, EventArgs e)
@@ -303,13 +320,20 @@ public partial class MainForm : Form
 
             txtHotkeys.Add(new TextBox
             {
-                ReadOnly = true,
                 Dock = DockStyle.Fill,
+                ForeColor = Color.DimGray,
                 Margin = new Padding((int)(2 * scale)),
                 TabIndex = i * 4 + 2,
                 Tag = i,
-                Text = HotkeyText(hk.Modifiers, hk.KeyCode),
+                Text = "Click to bind a hotkey...",
             });
+            string hkText = HotkeyText(hk.Modifiers, hk.KeyCode);
+            if (!string.IsNullOrEmpty(hkText))
+            {
+                txtHotkeys[i].ForeColor = Color.Black;
+                txtHotkeys[i].Text = hkText;
+            }
+            txtHotkeys[i].Enter += new EventHandler(KeyBindEnter);
             txtHotkeys[i].Leave += new EventHandler(KeyBindLeave);
             txtHotkeys[i].KeyDown += new KeyEventHandler(KeyBindDown);
             txtHotkeys[i].KeyUp += new KeyEventHandler(KeyBindUp);
@@ -323,12 +347,28 @@ public partial class MainForm : Form
         tblHotkeys.Padding = new Padding(0);
     }
 
+    private void KeyBindEnter(object sender, EventArgs e)
+    {
+        TextBox tb = (TextBox)sender;
+        tb.Text = string.Empty;
+        tb.ForeColor = Color.Black;
+    }
+
     private void KeyBindLeave(object sender, EventArgs e)
     {
+        TextBox tb = (TextBox)sender;
         if (BindInProgress)
         {
-            HotkeyConf.Hotkeys[(int)((Control)sender).Tag] = OldHotkey;
+            HotkeyConf.Hotkeys[(int)tb.Tag] = OldHotkey;
             BindInProgress = false;
+        }
+
+        Hotkey hk = HotkeyConf.Hotkeys[(int)tb.Tag];
+        if (hk.KeyCode == Keys.None && hk.Modifiers == HotkeyModifiers.None)
+        {
+            tb.ForeColor = Color.DimGray;
+            tb.Text = "Click to bind a hotkey...";
+            return;
         }
     }
 
@@ -336,6 +376,8 @@ public partial class MainForm : Form
     {
         TextBox tb = (TextBox)sender;
         int i = (int)tb.Tag;
+
+        e.SuppressKeyPress = true;
 
         Keys vk = e.KeyCode;
         if (!BindInProgress && vk != Keys.None && vk != (Keys)255 &&
@@ -453,6 +495,7 @@ public partial class MainForm : Form
         ]);
         cb.SelectedIndexChanged += new EventHandler(ActionChanged);
         cb.SelectedIndex = (int)action;
+        ttMain.SetToolTip(cb, Strings.GetString("ttHkAction"));
         return cb;
     }
 
@@ -467,6 +510,9 @@ public partial class MainForm : Form
             Text = del ? "-" : "+",
         };
         b.Click += del ? new EventHandler(ActionDel) : new EventHandler(ActionAdd);
+        ttMain.SetToolTip(b, del
+            ? Strings.GetString("ttHkDel")
+            : Strings.GetString("ttHkAdd"));
         return b;
     }
 
@@ -494,7 +540,6 @@ public partial class MainForm : Form
 
         hk.Action = (HotkeyAction)actionCb.SelectedIndex;
 
-        dataCb.Enabled = false;
         dataCb.Items.Clear();
         switch (actionCb.SelectedIndex)
         {
@@ -504,6 +549,7 @@ public partial class MainForm : Form
                 {
                     dataCb.Items.Add(cfg.Name);
                 }
+                ttMain.SetToolTip(dataCb, Strings.GetString("ttHkFanProf"));
                 dataCb.Enabled = true;
                 break;
             case 7: // switch perf. modes
@@ -512,7 +558,12 @@ public partial class MainForm : Form
                 {
                     dataCb.Items.Add(pm.Name);
                 }
+                ttMain.SetToolTip(dataCb, Strings.GetString("ttHkPerfMode"));
                 dataCb.Enabled = true;
+                break;
+            default:
+                ttMain.SetToolTip(dataCb, string.Empty);
+                dataCb.Enabled = false;
                 break;
         }
 

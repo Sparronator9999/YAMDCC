@@ -40,4 +40,9 @@
         <ProjectReference Include="..\YAMDCC.ECAccess\YAMDCC.ECAccess.csproj" />
         <ProjectReference Include="..\YAMDCC.IPC\YAMDCC.IPC.csproj" />
     </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Update="Strings.resx">
+        <SubType>Designer</SubType>
+      </EmbeddedResource>
+    </ItemGroup>
 </Project>

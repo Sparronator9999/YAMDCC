@@ -41,10 +41,7 @@ internal static class Program
 
         if (!Utils.IsAdmin())
         {
-            Utils.ShowError(
-                "If you see this message, Hotkey Handler is not running as an Administrator.\n\n" +
-                "Please re-run this program as Administrator\n" +
-                "(by right-clicking on this program and clicking \"Run as administrator\").");
+            Utils.ShowError(Strings.GetString("dlgNoAdmin"));
             return;
         }
 
@@ -64,17 +61,13 @@ internal static class Program
                     {
                         if (yamdccSvc.Status == ServiceControllerStatus.Stopped)
                         {
-                            Utils.ShowError(
-                                "The YAMDCC service is currently not running.\n" +
-                                "Please run the YAMDCC Config Editor to start it.");
+                            Utils.ShowError(Strings.GetString("dlgSvcStopped"));
                             return;
                         }
                     }
                     catch
                     {
-                        Utils.ShowError(
-                            "The YAMDCC service is not installed.\n" +
-                            "Please run the YAMDCC Config Editor to install it.");
+                        Utils.ShowError(Strings.GetString("dlgSvcNotInstalled"));
                         return;
                     }
                 }
