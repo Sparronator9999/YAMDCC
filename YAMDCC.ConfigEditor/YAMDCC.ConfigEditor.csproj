@@ -18,7 +18,7 @@
         <Title>YAMDCC config editor</Title>
         <UseWindowsForms>true</UseWindowsForms>
         <VersionPrefix>1.1.0</VersionPrefix>
-        <VersionSuffix>beta.2</VersionSuffix>
+        <VersionSuffix>dev</VersionSuffix>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>none</DebugType>

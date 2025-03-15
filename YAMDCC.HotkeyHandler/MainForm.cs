@@ -208,12 +208,12 @@ public partial class MainForm : Form
                     if (KeyLightUp && i < cfg.MaxVal - cfg.MinVal)
                     {
                         IPCClient.PushMessage(new ServiceCommand(
-                            Command.SetKeyLightBright, i + 1));
+                            Command.SetKeyLightBright, (byte)(i + 1)));
                     }
-                    else if (i > 0)
+                    else if (!KeyLightUp && i > 0)
                     {
                         IPCClient.PushMessage(new ServiceCommand(
-                            Command.SetKeyLightBright, i - 1));
+                            Command.SetKeyLightBright, (byte)(i - 1)));
                     }
                 }
                 break;
