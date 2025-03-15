@@ -353,7 +353,21 @@ internal sealed class FanControlService : ServiceBase
                     parseSuccess = true;
                     foreach (FanConf cfg in Config.FanConfs)
                     {
-                        cfg.CurveSel = fanProf;
+                        if (fanProf < 0)
+                        {
+                            if (cfg.CurveSel >= cfg.FanCurveConfs.Count - 1)
+                            {
+                                cfg.CurveSel = 0;
+                            }
+                            else
+                            {
+                                cfg.CurveSel++;
+                            }
+                        }
+                        else
+                        {
+                            cfg.CurveSel = fanProf;
+                        }
                     }
                     cmdSuccess = ApplyConf();
                 }
@@ -366,7 +380,22 @@ internal sealed class FanControlService : ServiceBase
                     parseSuccess = true;
                     if (Config.PerfModeConf is not null)
                     {
-                        Config.PerfModeConf.ModeSel = perfMode;
+                        PerfModeConf cfg = Config.PerfModeConf;
+                        if (perfMode < 0)
+                        {
+                            if (cfg.ModeSel >= cfg.PerfModes.Count - 1)
+                            {
+                                cfg.ModeSel = 0;
+                            }
+                            else
+                            {
+                                cfg.ModeSel++;
+                            }
+                        }
+                        else
+                        {
+                            cfg.ModeSel = perfMode;
+                        }
                         cmdSuccess = ApplyConf();
                     }
                 }
