@@ -5,6 +5,9 @@ A fast, lightweight MSI Center alternative and fan control utility for MSI lapto
 **Please read the whole README (or at least the [Supported Laptops](#supported-laptops)**
 **and [FAQ](#faq) sections) before downloading.**
 
+> [!IMPORTANT]
+> Windows has recently begun flagging WinRing0 (the driver YAMDCC uses for EC access) as malware. See [this discussion](https://github.com/Sparronator9999/YAMDCC/discussions/67) for more information.
+
 <details><summary>Table of contents <i>(click to expand</i>)</summary>
 
 - [Disclaimers](#disclaimers)
