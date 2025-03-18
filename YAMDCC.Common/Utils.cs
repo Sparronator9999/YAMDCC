@@ -311,7 +311,6 @@ public static class Utils
     {
         string runtimePath = RuntimeEnvironment.GetRuntimeDirectory();
         int exitCode = RunCmd($"{runtimePath}\\installutil.exe", $"\"{svcExe}.exe\"");
-        DeleteInstallUtilLogs();
         return exitCode == 0;
     }
 
@@ -330,7 +329,6 @@ public static class Utils
     {
         string runtimePath = RuntimeEnvironment.GetRuntimeDirectory();
         int exitCode = RunCmd($"{runtimePath}\\installutil.exe", $"/u \"{svcExe}.exe\"");
-        DeleteInstallUtilLogs();
         return exitCode == 0;
     }
 
@@ -409,18 +407,6 @@ public static class Utils
             return service.Status
                 is ServiceControllerStatus.Running
                 or ServiceControllerStatus.StartPending;
-        }
-    }
-
-    private static void DeleteInstallUtilLogs()
-    {
-        foreach (string file in Directory.GetFiles(".", "*.InstallLog", SearchOption.TopDirectoryOnly))
-        {
-            try
-            {
-                File.Delete(file);
-            }
-            catch (DirectoryNotFoundException) { }
         }
     }
 
