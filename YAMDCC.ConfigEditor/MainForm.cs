@@ -1204,6 +1204,14 @@ internal sealed partial class MainForm : Form
         cboFanSel.SelectedIndex = 0;
         tsiECMon.Enabled = true;
 
+        if (cfg.RegConfs?.Count > 0)
+        {
+            // RegConfs will be removed in a future version of YAMDCC
+            // due to no longer being needed on MSI laptops
+            MessageBox.Show(Strings.GetString("dlgRegConfWarn"), "Warning",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+
         UpdateStatus(StatusCode.None);
         ToggleSvcCmds(true);
     }

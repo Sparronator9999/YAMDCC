@@ -435,4 +435,9 @@ NOTE: these settings should be left on the default value unless you know what yo
   <data name="dlgSvcUninstalled" xml:space="preserve">
     <value>The YAMDCC service was uninstalled sucessfully.</value>
   </data>
+  <data name="dlgRegConfWarn" xml:space="preserve">
+    <value>RegConfs are deprecated and will be removed in a future release.
+All MSI laptops should no longer need RegConfs.
+Update to a YAMDCC-provided config to remove this warning.</value>
+  </data>
 </root>

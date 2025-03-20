@@ -355,7 +355,7 @@ internal sealed class FanControlService : ServiceBase
                     {
                         if (fanProf < 0)
                         {
-                            if (cfg.CurveSel >= cfg.FanCurveConfs.Count - 1)
+                            if (cfg.CurveSel > cfg.FanCurveConfs.Count)
                             {
                                 cfg.CurveSel = 0;
                             }
@@ -366,7 +366,7 @@ internal sealed class FanControlService : ServiceBase
                         }
                         else
                         {
-                            cfg.CurveSel = fanProf;
+                            cfg.CurveSel = GetValidFanIndex(fanProf);
                         }
                     }
                     cmdSuccess = ApplyConf();
@@ -383,7 +383,7 @@ internal sealed class FanControlService : ServiceBase
                         PerfModeConf cfg = Config.PerfModeConf;
                         if (perfMode < 0)
                         {
-                            if (cfg.ModeSel >= cfg.PerfModes.Count - 1)
+                            if (cfg.ModeSel > cfg.PerfModes.Count)
                             {
                                 cfg.ModeSel = 0;
                             }
@@ -394,7 +394,9 @@ internal sealed class FanControlService : ServiceBase
                         }
                         else
                         {
-                            cfg.ModeSel = perfMode;
+                            cfg.ModeSel = perfMode > cfg.PerfModes.Count
+                                ? cfg.PerfModes.Count
+                                : perfMode;
                         }
                         cmdSuccess = ApplyConf();
                     }
@@ -539,10 +541,8 @@ internal sealed class FanControlService : ServiceBase
         // Write custom register values, if configured:
         if (Config.RegConfs?.Count > 0)
         {
-            Log.Warn(
-                "RegConfs are deprecated and will be removed in a future release.\n" +
-                "All MSI laptops should no longer need RegConfs.\n" +
-                "Update to a YAMDCC-provided config to remove this warning.");
+            // RegConfs are deprecated and will be removed in a future release
+            Log.Warn(Strings.GetString("warnRegConf"));
 
             int numRegConfs = Config.RegConfs.Count;
             for (int i = 0; i < numRegConfs; i++)
@@ -651,6 +651,7 @@ internal sealed class FanControlService : ServiceBase
             return false;
         }
 
+        fan = GetValidFanIndex(fan);
         FanConf cfg = Config.FanConfs[fan];
 
         if (LogECReadByte(cfg.SpeedReadReg, out byte speed))
@@ -669,6 +670,7 @@ internal sealed class FanControlService : ServiceBase
             return false;
         }
 
+        fan = GetValidFanIndex(fan);
         FanConf cfg = Config.FanConfs[fan];
         FanRPMConf rpmCfg = cfg.RPMConf;
         bool success;
@@ -712,6 +714,7 @@ internal sealed class FanControlService : ServiceBase
             return false;
         }
 
+        fan = GetValidFanIndex(fan);
         FanConf cfg = Config.FanConfs[fan];
 
         if (LogECReadByte(cfg.TempReadReg, out byte temp))
@@ -943,5 +946,13 @@ internal sealed class FanControlService : ServiceBase
     private static string GetWin32Error(int error)
     {
         return new Win32Exception(error).Message;
+    }
+
+    private int GetValidFanIndex(int i)
+    {
+        // clamp provided i value to valid FanConf range
+        return i > Config.FanConfs.Count
+            ? Config.FanConfs.Count - 1
+            : i > 0 ? i : 0;
     }
 }

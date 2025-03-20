@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -245,5 +245,10 @@ Please run 'YAMDCC.exe' instead.</value>
   </data>
   <data name="svcGetFirmVer" xml:space="preserve">
     <value>Sending firmware version to client {0}...</value>
+  </data>
+  <data name="warnRegConf" xml:space="preserve">
+    <value>RegConfs are deprecated and will be removed in a future release.
+All MSI laptops should no longer need RegConfs.
+Update to a YAMDCC-provided config to remove this warning.</value>
   </data>
 </root>
