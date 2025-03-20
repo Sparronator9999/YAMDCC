@@ -402,11 +402,18 @@ public static class Utils
     /// </returns>
     public static bool ServiceRunning(string svcName)
     {
-        using (ServiceController service = new(svcName))
+        try
         {
-            return service.Status
-                is ServiceControllerStatus.Running
-                or ServiceControllerStatus.StartPending;
+            using (ServiceController service = new(svcName))
+            {
+                return service.Status
+                    is ServiceControllerStatus.Running
+                    or ServiceControllerStatus.StartPending;
+            }
+        }
+        catch (InvalidOperationException)
+        {
+            return false;
         }
     }
 

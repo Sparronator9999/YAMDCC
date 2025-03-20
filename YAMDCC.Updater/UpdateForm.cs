@@ -47,9 +47,10 @@ internal sealed partial class UpdateForm : Form
 
     private static readonly string ExeName = Path.GetFileName(Assembly.GetEntryAssembly().Location);
     private static readonly string TargetPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-    private static readonly string DownloadPath = Path.GetFullPath(@".\YAMDCC-Update.zip");
-    private static readonly string UpdatePath = Path.GetFullPath(@".\Update");
-    private static readonly string OldPath = Path.GetFullPath(@".\Old");
+    private static readonly string TempPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+    private static readonly string DownloadPath = Path.Combine(TempPath, "YAMDCC-Update.zip");
+    private static readonly string UpdatePath = Path.Combine(TempPath, "Update");
+    private static readonly string OldPath = Path.Combine(TempPath, "Old");
     private static readonly string ConfPath = Path.GetFullPath(@".\Configs");
 
     public UpdateForm(Release release = null, bool autoUpdate = false)
@@ -109,14 +110,7 @@ internal sealed partial class UpdateForm : Form
             btnLater.Enabled = false;
 
             SetProgress(-1, "Downloading update...");
-            try
-            {
-                // delete old update ZIP if it's still there
-                // (from cancelled/failed previous update)
-                File.Delete(DownloadPath);
-            }
-            catch (FileNotFoundException) { }
-
+            Directory.CreateDirectory(TempPath);
             try
             {
                 await Updater.DownloadUpdateAsync(
@@ -147,37 +141,6 @@ internal sealed partial class UpdateForm : Form
 
             // make a copy of the old YAMDCC installation
             CopyDir(new DirectoryInfo(TargetPath), new DirectoryInfo(OldPath));
-
-            // backup existing YAMDCC configs so they don't
-            // get deleted when installing the new update
-            try
-            {
-                DirectoryInfo confDI = new(ConfPath);
-                foreach (FileInfo fi in confDI.GetFiles())
-                {
-                    string name = Path.GetFileNameWithoutExtension(fi.Name);
-
-                    // config is a backup from previous update; ignore
-                    if (name.Contains("-backup-"))
-                    {
-                        continue;
-                    }
-
-                    // backup the config, just in case :)
-                    string path = Path.Combine(fi.DirectoryName, name);
-                    string date = $"{DateTime.Now:s}".Replace(':', '-');
-                    fi.MoveTo($"{path}-backup-{date}{fi.Extension}");
-                }
-            }
-            catch (Exception ex)
-            {
-                // catch exception that occurs if there is no Configs
-                // folder in the same location as YAMDCC's executables
-                if (ex is not FileNotFoundException and not DirectoryNotFoundException)
-                {
-                    throw;
-                }
-            }
 
             // actually install the update
             InstallUpdate();
@@ -350,7 +313,7 @@ internal sealed partial class UpdateForm : Form
             // run the installer from a different location so we can
             // clean the old directory
             Utils.RunCmd(Path.Combine(OldPath, ExeName),
-                $"--install \"{OldPath}\" \"{UpdatePath}\" \"{TargetPath}\" \"{ConfPath}\"", false);
+                $"--install \"{TempPath}\" \"{OldPath}\" \"{UpdatePath}\" \"{TargetPath}\" \"{ConfPath}\"", false);
             Close();
         }
         catch (Win32Exception ex)

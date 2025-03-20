@@ -68,12 +68,22 @@ internal static class Program
                     Utils.ShowError("Could not set pre-release setting!");
                     return 1;
                 case "--install":
-                    // args: --install <oldPath> <updatePath> <destPath> <confPath>
-                    if (args.Length >= 5)
+                    // args: --install <tmpDir> <oldPath> <updatePath> <destPath> <confPath>
+                    if (args.Length >= 6)
                     {
-                        InstallUpdate(args[1], args[2], args[3], args[4]);
+                        InstallUpdate(args[1], args[2], args[3], args[4], args[5]);
                     }
                     return 0;
+                case "--cleanup":
+                    if (args.Length >= 2)
+                    {
+                        // clean up the temporary update dir
+                        Directory.Delete(args[1], true);
+                    }
+                    return 0;
+                default:
+                    Utils.ShowError($"Unknown command: {args[0]}");
+                    return 1;
             }
         }
 
@@ -83,7 +93,7 @@ internal static class Program
     }
 
     private static void InstallUpdate(
-        string oldPath, string updatePath, string destPath, string confPath)
+        string tempPath, string oldPath, string updatePath, string destPath, string confPath)
     {
         ProgressDialog<bool> dlg = new();
 
@@ -126,6 +136,36 @@ internal static class Program
                 }
             }
 
+            // backup old YAMDCC configs
+            try
+            {
+                DirectoryInfo confDI = new(confPath);
+                foreach (FileInfo fi in confDI.GetFiles())
+                {
+                    string name = Path.GetFileNameWithoutExtension(fi.Name);
+
+                    // config is a backup from previous update; ignore
+                    if (name.Contains("-backup-"))
+                    {
+                        continue;
+                    }
+
+                    // backup the config, just in case :)
+                    string path = Path.Combine(fi.DirectoryName, name);
+                    string date = $"{DateTime.Now:s}".Replace(':', '-');
+                    fi.MoveTo($"{path}-backup-{date}{fi.Extension}");
+                }
+            }
+            catch (Exception ex)
+            {
+                // catch exception that occurs if there is no Configs
+                // folder in the same location as YAMDCC's executables
+                if (ex is not FileNotFoundException and not DirectoryNotFoundException)
+                {
+                    throw;
+                }
+            }
+
             // delete the old YAMDCC installation
             dlg.Caption = "Installing YAMDCC update...";
             DirectoryInfo di;
@@ -152,6 +192,7 @@ internal static class Program
                     "Failed to delete old YAMDCC installation.\n" +
                     "This probably means something else has YAMDCC's files open.\n" +
                     "See issue #62 on the YAMDCC GitHub for more info.\n\n" +
+                    $"Your old installation is located at: {oldPath}\n\n" +
                     "Details:\n" +
                     $"{ex.GetType()}: {ex.Message}\n" +
                     $"{ex.StackTrace}");
@@ -205,6 +246,7 @@ internal static class Program
         {
             Process.Start(Path.Combine(destPath, "ConfigEditor"));
         }
+        Process.Start(Path.Combine(destPath, "Updater"), $"--cleanup \"{tempPath}\"");
     }
 
     private static bool BGUpdate(bool autoUpdate)
