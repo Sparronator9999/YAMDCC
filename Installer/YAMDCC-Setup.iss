@@ -39,11 +39,11 @@ WizardStyle=modern
 WizardSmallImageFile=Installer\fan-update.bmp
 
 [CustomMessages]
-Portable=Portable mode (don't create uninstaller files or entries)
-DeskIcons=Create desktop icons
-DeskIconsCommon=For all users
-DeskIconsUser=For the current user only
-LaunchCE=Launch config editor
+english.Portable=Portable mode (don't create uninstaller files or entries)
+english.DeskIcons=Create desktop icons
+english.DeskIconsCommon=For all users
+english.DeskIconsUser=For the current user only
+english.LaunchCE=Launch config editor
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"

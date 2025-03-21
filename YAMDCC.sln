@@ -24,8 +24,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YAMDCC.Updater", "YAMDCC.Up
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YAMDCC.HotkeyHandler", "YAMDCC.HotkeyHandler\YAMDCC.HotkeyHandler.csproj", "{00A0A259-1B03-4D7D-A1BA-52D54D565B65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YAMDCC.SetupHelper", "YAMDCC.SetupHelper\YAMDCC.SetupHelper.csproj", "{F3F41CC6-F93E-4D38-8048-581B3FA175A9}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -64,10 +62,6 @@ Global
 		{00A0A259-1B03-4D7D-A1BA-52D54D565B65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00A0A259-1B03-4D7D-A1BA-52D54D565B65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00A0A259-1B03-4D7D-A1BA-52D54D565B65}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F3F41CC6-F93E-4D38-8048-581B3FA175A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F3F41CC6-F93E-4D38-8048-581B3FA175A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F3F41CC6-F93E-4D38-8048-581B3FA175A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F3F41CC6-F93E-4D38-8048-581B3FA175A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
