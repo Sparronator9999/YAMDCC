@@ -146,7 +146,7 @@ UpgradeLog*.htm
 
 # Temp files when opening LibreOffice on ubuntu
 .~lock.*
- 
+
 # svn
 .svn
 
@@ -224,3 +224,6 @@ AppPackages/
 #####
 # End of core ignore list, below put you custom 'per project' settings (patterns or path)
 #####
+
+# Inno Setup Compiler output path
+[Oo]utput/
