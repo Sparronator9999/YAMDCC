@@ -9,8 +9,6 @@
 #define AppURL "https://github.com/Sparronator9999/YAMDCC"
 #define AppExeCE "ConfigEditor.exe"
 #define AppExeHH "HotkeyHandler.exe"
-#define DotNetRoot32 "{win}\Microsoft.NET\Framework\v4.0.30319"
-#define DotNetRoot64 "{win}\Microsoft.NET\Framework64\v4.0.30319"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
@@ -31,6 +29,7 @@ DisableProgramGroupPage=yes
 LicenseFile=Installer\LICENSE.rtf
 OutputBaseFilename=YAMDCC-v{#AppVer}-Setup
 SetupIconFile=YAMDCC.Updater\fan-update.ico
+SetupMutex=YAMDCC-Setup-{{AFE03526-3AAD-40FA-AF49-03A0150C4229}
 SolidCompression=yes
 SourceDir=..
 Uninstallable=Not WizardIsTaskSelected('portable')
@@ -67,18 +66,10 @@ Name: "{userdesktop}\{#AppName} {#AppNameCE}"; Filename: "{app}\{#AppExeCE}"; Ta
 Name: "{userdesktop}\{#AppName} {#AppNameHH}"; Filename: "{app}\{#AppExeHH}"; Tasks: deskicons\user
 
 [Run]
-; TODO: check if YAMDCC service is already installed
-Filename: "{#DotNetRoot64}\InstallUtil.exe"; Parameters: """{app}\yamdccsvc.exe"""; StatusMsg: "Installing YAMDCC service..."; Check: Not Is64BitInstallMode; Flags: logoutput runhidden
-Filename: "{#DotNetRoot64}\InstallUtil.exe"; Parameters: """{app}\yamdccsvc.exe"""; StatusMsg: "Installing YAMDCC service..."; Check: Is64BitInstallMode; Flags: logoutput runhidden
-Filename: "{sys}\net.exe"; Parameters: "start yamdccsvc"; StatusMsg: "Starting YAMDCC service..."; Flags: logoutput runhidden
+; YAMDCC service install is done in CurStepChanged procedure
 Filename: "{app}\{#AppExeCE}"; Description: "{cm:LaunchCE}"; Flags: nowait postinstall runascurrentuser skipifsilent
 
-[UninstallRun]
-; Stop and uninstall YAMDCC service before deleting program files
-; TODO: check if YAMDCC service is already stopped/uninstalled
-Filename: "{sys}\net.exe"; Parameters: "stop yamdccsvc"; RunOnceId: "StopSvc"; Flags: logoutput runhidden
-Filename: "{#DotNetRoot64}\InstallUtil.exe"; Parameters: "/u ""{app}\yamdccsvc.exe"""; RunOnceId: "DelSvc32"; Check: Not Is64BitInstallMode; Flags: logoutput runhidden
-Filename: "{#DotNetRoot64}\InstallUtil.exe"; Parameters: "/u ""{app}\yamdccsvc.exe"""; RunOnceId: "DelSvc64"; Check: Is64BitInstallMode; Flags: logoutput runhidden
+; TODO: stop/uninstall YAMDCC service on uninstall
 
 [Code]
 #ifdef UNICODE
@@ -115,6 +106,9 @@ type
     dwWaitHint: DWORD;
   end;
 
+var
+  ServiceInstalled: Boolean;
+
 function OpenService(hSCManager: TSCHandle; lpServiceName: string; dwDesiredAccess: DWORD): TSCHandle;
   external 'OpenService{#AW}@advapi32.dll stdcall';
 function OpenSCManager(lpMachineName: string; lpDatabaseName: string; dwDesiredAccess: DWORD): TSCHandle;
@@ -126,20 +120,28 @@ function CloseServiceHandle(hSCObject: TSCHandle): BOOL;
 function ControlService(hService: TSCHandle; dwControl: DWORD; out lpServiceStatus: TServiceStatus): BOOL;
   external 'ControlService@advapi32.dll stdcall';
 
-function GetWin32ErrorMsg() : String;
+function GetWin32ErrorMsg: String;
 begin
   Result := SysErrorMessage(DllGetLastError()) + ' (' + IntToStr(DllGetLastError()) + ')';
 end;
 
-//function GetNETRuntimePath(): String;
-//var
-//  RuntimePath: String;
-//begin
-//  if RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Client\', 'InstallPath', RuntimePath) then
-//    Result := RuntimePath
-//  else
-//    Result := '';
-//end;
+function GetInstallUtilPath: String;
+var
+  RuntimePath: String;
+begin
+  if RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Client\', 'InstallPath', RuntimePath) then
+    Result := RuntimePath + 'InstallUtil.exe'
+  else
+    RaiseException('Failed to locate InstallUtil.exe (used to install the YAMDCC service)!')
+end;
+
+function InitializeSetup: Boolean;
+begin
+  // make sure .NET Framework 4.8 or later is installed (it should be by default on Windows 10 and 11)
+  Result := IsDotNetInstalled(net48, 0)
+  if not Result then
+    SuppressibleMsgBox(FmtMessage(SetupMessage(msgWinVersionTooLowError), ['.NET Framework', '4.8']), mbCriticalError, MB_OK, IDOK);
+end;
 
 // partially based on: https://stackoverflow.com/a/32476546
 function PrepareToInstall(var NeedsRestart: Boolean): String;
@@ -148,13 +150,15 @@ var
   hService: TSCHandle;
   ServiceStatus: TServiceStatus;
 begin
-  Log('Checking if YAMDCC service is already installed...')
+  ServiceInstalled := False;
+  Log('Checking if YAMDCC service is already installed...');
   hSCM := OpenSCManager('', '', SC_MANAGER_CONNECT);
   if hSCM <> 0 then
   begin
     hService := OpenService(hSCM, 'yamdccsvc', $0024);  //SERVICE_QUERY_STATUS | SERVICE_STOP
     if hService <> 0 then
     begin
+      ServiceInstalled := True;
       if QueryServiceStatus(hService, ServiceStatus) then
       begin
         Log('YAMDCC service is already installed, querying service status...');
@@ -171,13 +175,46 @@ begin
         end;
       end
       else
-        if DllGetLastError() = ERROR_SERVICE_DOES_NOT_EXIST then
-          Log('YAMDCC service is not installed.')
-        else
-          Result := 'Failed to query status of YAMDCC service: ' + GetWin32ErrorMsg() + #10#10 +
-            'This is likely a bug, and therefore should be reported to `https://github.com/Sparronator9999/YAMDCC/issues/new`.';
+        Result := 'Failed to query status of YAMDCC service: ' + GetWin32ErrorMsg();
       CloseServiceHandle(hService);
-    end;
+    end
+    else
+    begin
+      if DllGetLastError() = ERROR_SERVICE_DOES_NOT_EXIST then
+      begin
+        Log('YAMDCC service is not installed.');
+      end
+      else
+        Result := 'Failed to connect to YAMDCC service: ' + GetWin32ErrorMsg();
     CloseServiceHandle(hSCM);
+    end;
+  end
+  else
+    Result := 'Failed to connect to the Service Control Manager to check if the YAMDCC service is installed: ' + GetWin32ErrorMsg();
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+var
+  ExitCode: Integer;
+begin
+  if CurStep = ssPostInstall then
+  begin
+    if not ServiceInstalled then
+    begin
+      Log('YAMDCC service is not installed, installing it...');
+      if ExecAndLogOutput(GetInstallUtilPath(), ExpandConstant('"{app}\yamdccsvc.exe"'), '', SW_HIDE, ewWaitUntilTerminated, ExitCode, nil) then
+      begin
+        // for some reason this can't be `if Exec(...) and ExitCode = 0`??
+        if ExitCode = 0 then
+        begin
+          ServiceInstalled := True;
+          Log('YAMDCC service installed successfully!');
+        end
+        else
+          RaiseException('Failed to install the YAMDCC service!');
+      end
+      else
+        RaiseException('Failed to install the YAMDCC service!');
+    end;
   end;
 end;
