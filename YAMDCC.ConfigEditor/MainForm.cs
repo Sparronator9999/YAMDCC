@@ -719,7 +719,7 @@ internal sealed partial class MainForm : Form
         for (int i = 0; i < numFanSpds.Length; i++)
         {
             numFanSpds[i].Maximum = tbFanSpds[i].Maximum =
-                Math.Abs(cfg.MaxSpeed - cfg.MinSpeed) * (tsiFanOC.Checked ? 2 : 1);
+                Math.Abs(cfg.MaxSpeed - cfg.MinSpeed);
         }
 
         cboProfSel.Enabled = true;
@@ -886,7 +886,6 @@ internal sealed partial class MainForm : Form
     {
         Control c = (Control)sender;
         int i = (int)c.Tag;
-        FanConf cfg = Config.FanConfs[cboFanSel.SelectedIndex];
 
         if (c is NumericUpDown)
         {
@@ -897,8 +896,10 @@ internal sealed partial class MainForm : Form
             numFanSpds[i].Value = tbFanSpds[i].Value;
         }
 
-        cfg.FanCurveConfs[cboProfSel.SelectedIndex].TempThresholds[i].FanSpeed =
-            Math.Min((byte)tbFanSpds[i].Value, (byte)Math.Abs(cfg.MaxSpeed - cfg.MinSpeed));
+
+        Config.FanConfs[cboFanSel.SelectedIndex]
+            .FanCurveConfs[cboProfSel.SelectedIndex]
+            .TempThresholds[i].FanSpeed = (byte)tbFanSpds[i].Value;
     }
 
     private void UpTChange(object sender, EventArgs e)
@@ -1245,18 +1246,6 @@ internal sealed partial class MainForm : Form
             Margin = new Padding((int)(3 * scale)),
             Tag = tag,
         };
-    }
-
-    private void tsiFanOC_Click(object sender, EventArgs e)
-    {
-        FanConf cfg = Config.FanConfs[cboFanSel.SelectedIndex];
-        int maxSpeed = Math.Abs(cfg.MaxSpeed - cfg.MinSpeed) * (((ToolStripMenuItem)sender).Checked ? 2 : 1);
-
-        for (int i = 0; i < tbFanSpds.Length; i++)
-        {
-            tbFanSpds[i].Maximum = maxSpeed;
-            numFanSpds[i].Maximum = maxSpeed;
-        }
     }
 
     private void DisableAll()

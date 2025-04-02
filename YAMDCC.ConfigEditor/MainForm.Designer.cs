@@ -49,7 +49,6 @@ namespace YAMDCC.ConfigEditor
             System.Windows.Forms.ToolStripSeparator sep2;
             System.Windows.Forms.ToolStripSeparator sep3;
             System.Windows.Forms.ToolStripSeparator sep4;
-            System.Windows.Forms.ToolStripMenuItem tsiExperimental;
             System.Windows.Forms.ToolStripSeparator sep5;
             System.Windows.Forms.ToolStripMenuItem tsiLogLevel;
             System.Windows.Forms.ToolStripMenuItem tsiCheckUpdate;
@@ -90,7 +89,6 @@ namespace YAMDCC.ConfigEditor
             this.tsiECtoConf = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiECMon = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiAdvanced = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsiFanOC = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiLogDebug = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiLogInfo = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiLogWarn = new System.Windows.Forms.ToolStripMenuItem();
@@ -137,7 +135,6 @@ namespace YAMDCC.ConfigEditor
             sep2 = new System.Windows.Forms.ToolStripSeparator();
             sep3 = new System.Windows.Forms.ToolStripSeparator();
             sep4 = new System.Windows.Forms.ToolStripSeparator();
-            tsiExperimental = new System.Windows.Forms.ToolStripMenuItem();
             sep5 = new System.Windows.Forms.ToolStripSeparator();
             tsiLogLevel = new System.Windows.Forms.ToolStripMenuItem();
             tsiCheckUpdate = new System.Windows.Forms.ToolStripMenuItem();
@@ -268,7 +265,6 @@ namespace YAMDCC.ConfigEditor
             sep4,
             this.tsiECMon,
             this.tsiAdvanced,
-            tsiExperimental,
             sep5,
             tsiLogLevel,
             this.tsiStopSvc,
@@ -350,22 +346,6 @@ namespace YAMDCC.ConfigEditor
             this.tsiAdvanced.Size = new System.Drawing.Size(257, 22);
             this.tsiAdvanced.Text = "Show &advanced settings";
             this.tsiAdvanced.Click += new System.EventHandler(this.AdvancedToggle);
-            // 
-            // tsiExperimental
-            // 
-            tsiExperimental.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsiFanOC});
-            tsiExperimental.Name = "tsiExperimental";
-            tsiExperimental.Size = new System.Drawing.Size(257, 22);
-            tsiExperimental.Text = "E&xperimental features";
-            // 
-            // tsiFanOC
-            // 
-            this.tsiFanOC.CheckOnClick = true;
-            this.tsiFanOC.Name = "tsiFanOC";
-            this.tsiFanOC.Size = new System.Drawing.Size(200, 22);
-            this.tsiFanOC.Text = "Enable fan &overclocking";
-            this.tsiFanOC.Click += new System.EventHandler(this.tsiFanOC_Click);
             // 
             // sep5
             // 
@@ -1222,6 +1202,5 @@ namespace YAMDCC.ConfigEditor
         private System.Windows.Forms.TextBox txtFirmDate;
         private System.Windows.Forms.TextBox txtFirmVer;
         private System.Windows.Forms.ComboBox cboProfPerfMode;
-        private System.Windows.Forms.ToolStripMenuItem tsiFanOC;
     }
 }
