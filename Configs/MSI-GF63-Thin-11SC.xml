@@ -89,7 +89,7 @@
 				</FanCurveConf>
 				<FanCurveConf>
 					<Name>Custom</Name>
-					<Desc>The custom CPU fan curve that Sparronator9999 uses on his computer.</Desc>
+					<Desc>The custom CPU fan profile that Sparronator9999 uses on his computer.</Desc>
 					<TempThresholds>
 						<TempThreshold>
 							<UpThreshold>0</UpThreshold>
@@ -214,7 +214,7 @@
 				</FanCurveConf>
 				<FanCurveConf>
 					<Name>Custom</Name>
-					<Desc>The custom GPU fan curve that Sparronator9999 uses on his computer.</Desc>
+					<Desc>The custom GPU fan profile that Sparronator9999 uses on his computer.</Desc>
 					<TempThresholds>
 						<TempThreshold>
 							<UpThreshold>0</UpThreshold>
@@ -274,7 +274,7 @@
 				<Name>Maximum battery life</Name>
 				<Desc>Optimises your laptop for maximum battery life.
 Limits CPU power draw to 10W.
-If set to default fan curve, uses an alternative fan curve.</Desc>
+If set to default fan profile, uses an alternative fan profile.</Desc>
 				<Value>194</Value>
 			</PerfMode>
 			<PerfMode>
@@ -300,7 +300,7 @@ If set to default fan curve, uses an alternative fan curve.</Desc>
 		<FanModes>
 			<FanMode>
 				<Name>Automatic</Name>
-				<Desc>Uses the default laptop fan curve.</Desc>
+				<Desc>Uses the default laptop fan profile.</Desc>
 				<Value>13</Value>
 			</FanMode>
 			<FanMode>

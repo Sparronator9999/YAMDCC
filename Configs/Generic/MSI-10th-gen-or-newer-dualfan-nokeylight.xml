@@ -196,7 +196,7 @@ computer, click `Options` > `Get default fan profile from EC...`</Desc>
 				<Name>Maximum battery life</Name>
 				<Desc>Optimises your laptop for maximum battery life.
 Limits CPU power draw to 10W.
-If set to default fan curve, uses an alternative fan curve.</Desc>
+If set to default fan profile, uses an alternative fan profile.</Desc>
 				<Value>194</Value>
 			</PerfMode>
 			<PerfMode>
@@ -222,7 +222,7 @@ If set to default fan curve, uses an alternative fan curve.</Desc>
 		<FanModes>
 			<FanMode>
 				<Name>Automatic</Name>
-				<Desc>Uses the default laptop fan curve.</Desc>
+				<Desc>Uses the default laptop fan profile.</Desc>
 				<Value>13</Value>
 			</FanMode>
 			<FanMode>
