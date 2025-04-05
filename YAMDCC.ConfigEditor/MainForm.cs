@@ -756,7 +756,7 @@ internal sealed partial class MainForm : Form
         bool enable = curveCfg.Name != "Default";
         for (int i = 0; i < numFanSpds.Length; i++)
         {
-            // Fan curve
+            // Fan profile
             TempThreshold t = curveCfg.TempThresholds[i];
             numFanSpds[i].Value = tbFanSpds[i].Value = t.FanSpeed;
             numFanSpds[i].Enabled = enable;

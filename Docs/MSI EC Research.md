@@ -59,7 +59,7 @@ above 100% do not appear to speed up the fan any further on the GF63 Thin 11SC
 
 ## `0x72..0x79`
 
-Stores the fan curve for the CPU fan profile.
+Stores the fan profile for the CPU fan.
 
 `0x79` appears to be tied to `0x70`, which doesn't appear to have its own
 temperature down threshold. This value is also set to `0x64` (100% fan speed)
@@ -104,7 +104,7 @@ Stores the current GPU fan speed target (from 0-100%).
 
 ## `0x8A..0x91`
 
-Stores the fan curve for the GPU fan profile.
+Stores the fan profile for the GPU fan.
 
 `0x91` appears to be tied to `0x88`, which doesn't appear to have its own
 temperature down threshold. This value is also set to `0x64` (100% fan speed)
@@ -163,7 +163,7 @@ Controls the performance level of the laptop:
 - `0xC2`: Low:
   - Limits CPU power draw to 10W while active (but not the dGPU power draw, funnily enough).
   - Modifys some fan settings. This is still being studied, but appears to completely mess up
-    custom fan curves.
+    custom fan profiles.
 
 ## `0xD3`
 
@@ -173,8 +173,8 @@ Controls the keyboard backlight. The brightness level can be set using
 
 ## `0xD4`
 
-Appears to change some fan control setting, must be written to `0x4D` for fan
-control curve to be applied correctly (Default: `0x0D`)
+Appears to change some fan control setting, must be written to `0x4D` for
+manually set fan profiles to be applied correctly (Default: `0x0D`)
 
 ## `0xD7`
 

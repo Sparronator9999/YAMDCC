@@ -119,13 +119,13 @@ internal sealed class FanControlService : ServiceBase
 
             Log.Info(Strings.GetString("svcStarted"));
 
-            // Attempt to read default fan curve if it's pending:
+            // Attempt to read default fan profile if it's pending:
             if (CommonConfig.GetECtoConfState() == ECtoConfState.PostReboot)
             {
                 ECtoConf();
             }
 
-            // Apply the fan curve and charging threshold:
+            // Apply the fan profiles and charging threshold:
             if (confLoaded)
             {
                 ApplyConf();
@@ -183,7 +183,7 @@ internal sealed class FanControlService : ServiceBase
                 {
                     // fan settings get reset on sleep/restart
                     FullBlastEnabled = false;
-                    // Re-apply the fan curve after waking up from sleep:
+                    // Re-apply the fan profiles after waking up from sleep:
                     Log.Info(Strings.GetString("svcWake"));
                     ApplyConf();
                     CooldownTimer.Start();
@@ -898,7 +898,7 @@ internal sealed class FanControlService : ServiceBase
                     cfg.CurveSel++;
                 }
 
-                // reset first fan curve config description
+                // reset each fan's first fan profile descriptions
                 curveCfg.Desc = Strings.GetString("DefaultDesc");
 
                 for (int j = 0; j < curveCfg.TempThresholds.Count; j++)

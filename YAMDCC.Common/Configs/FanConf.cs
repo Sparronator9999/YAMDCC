@@ -93,7 +93,7 @@ public sealed class FanConf
     /// </summary>
     /// <remarks>
     /// If the base config is a template, this may be <see langword="null"/>,
-    /// otherwise at least one fan curve (the "default" curve) must exist.
+    /// otherwise at least one fan profile (the "default" profile) must exist.
     /// </remarks>
     [XmlArray]
     public List<FanCurveConf> FanCurveConfs { get; set; }

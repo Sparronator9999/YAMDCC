@@ -196,7 +196,7 @@ Args: {1}</value>
     <value>Writing custom EC register configs ({0}/{1})...</value>
   </data>
   <data name="svcWriteFanConfs" xml:space="preserve">
-    <value>Writing fan curve config for `{0}` ({1}/{2})...</value>
+    <value>Writing fan profile for `{0}` ({1}/{2})...</value>
   </data>
   <data name="svcWriteChgLim" xml:space="preserve">
     <value>Writing charge limit configuration...</value>
@@ -238,7 +238,7 @@ Please run 'YAMDCC.exe' instead.</value>
     <value>Failed to get computer manufacturer!</value>
   </data>
   <data name="svcWake" xml:space="preserve">
-    <value>Resume from sleep detected, re-applying fan curve...</value>
+    <value>Resume from sleep detected, re-applying fan profile...</value>
   </data>
   <data name="svcWriteFanMode" xml:space="preserve">
     <value>Writing fan mode setting...</value>

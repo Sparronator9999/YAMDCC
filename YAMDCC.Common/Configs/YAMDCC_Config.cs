@@ -259,20 +259,20 @@ public sealed class YAMDCC_Config
                 return false;
             }
 
-            // the selected fan curve shouldn't be higher than
-            // the number of fan curves in the config.
+            // the selected fan profile shouldn't be higher than
+            // the number of fan profiles in the config.
             if (cfg.CurveSel >= FanConfs[i].FanCurveConfs.Count ||
                 cfg.CurveSel < 0)
             {
                 // if the fan profile selection is out of range,
-                // silently set it to 0 (the first fan curve)
+                // silently set it to 0 (the first fan profile)
                 // which should always exist:
                 cfg.CurveSel = 0;
             }
 
             // make sure that:
             // - there is at least one each of up threshold, down threshold,
-            //   and fan curve registers
+            //   and fan profile registers
             // - there are the same amount of up threshold registers
             //   as down threshold registers
             // - there is one more fan profile register than up/down threshold registers

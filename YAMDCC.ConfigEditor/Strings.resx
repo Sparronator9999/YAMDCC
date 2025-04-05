@@ -304,13 +304,13 @@ Please re-run this program as Administrator
 You will need to reboot your computer to reset the fan profiles to their defaults.</value>
   </data>
   <data name="dlgECtoConfErr" xml:space="preserve">
-    <value>An error occurred while fetching your laptop's default fan curves.
+    <value>An error occurred while fetching your laptop's default fan profiles.
 
 This is probably a bug; please report this to YAMDCC's issue tracker, including the log folder
 (located at {0}).</value>
   </data>
   <data name="dlgECtoConfSuccess" xml:space="preserve">
-    <value>Your laptop's default fan curves have been saved to the currently applied config successfully.
+    <value>Your laptop's default fan profiles have been saved to the currently applied config successfully.
 
 Make sure to save your config (using the "Save config" button)!</value>
   </data>

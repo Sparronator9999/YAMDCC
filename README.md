@@ -43,9 +43,9 @@ A fast, lightweight MSI Center alternative and fan control utility for MSI lapto
 
 ## Features
 
-- **Fan control:** Change the fan curves for your CPU and GPU fans, including
+- **Fan control:** Change the fan profiles for your CPU and GPU fans, including
   fan speeds, temperature thresholds, and Full Blast (a.k.a. Cooler Boost in
-  MSI Center). This allows you to fix a curve that is not aggressive enough
+  MSI Center). This allows you to fix a fan profile that isn't aggressive enough
   under full load, turn your fans off when your computer is idle, or just give
   them a boost during CPU-heavy tasks.
 - **Performance mode:** MSI laptops have their own performance mode setting
@@ -72,6 +72,7 @@ Currently, there are configs for the following laptops:
 
   - MSI Alpha 17 C7VF (thanks @SethCodingInc)
   - MSI Bravo 15 B7ED (thanks @VisionCrizzal)
+  - MSI Bravo 17 C7VE (thanks @advait404)
   - MSI Crosshair 17 B12UGZ (thanks @ios7jbpro)
   - MSI GF63 Thin 11SC
   - MSI Katana GF66 12UG (thanks @porkmanager)
@@ -80,7 +81,7 @@ Currently, there are configs for the following laptops:
 
 There are also generic configs that should work with most MSI laptops, but with
 an incorrect default config. You can use the EC-to-config feature to get the
-proper fan curves for your laptop, then [create a pull request](https://github.com/Sparronator9999/YAMDCC/pulls)
+proper fan profiles for your laptop, then [create a pull request](https://github.com/Sparronator9999/YAMDCC/pulls)
 to get your laptop's config added to the project.
 
 Other laptop brands are not officially supported. You can still try and
