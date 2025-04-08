@@ -99,7 +99,7 @@ internal static class Program
         {
             Console.Write($" 0{i:X}");
         }
-        Console.WriteLine("\n-----|".PadRight(53, '-'));
+        Console.WriteLine("\n----|".PadRight(55, '-'));
 
         for (int i = 0; i < 16; i++)
         {
