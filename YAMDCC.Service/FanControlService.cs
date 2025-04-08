@@ -577,7 +577,11 @@ internal sealed class FanControlService : ServiceBase
                     {
                         success = false;
                     }
-                    if (!LogECWriteByte(cfg.DownThresholdRegs[j - 1], (byte)(t.UpThreshold - t.DownThreshold)))
+                    byte downT = Config.OffsetDT
+                        ? (byte)(t.UpThreshold - t.DownThreshold)
+                        : t.DownThreshold;
+
+                    if (!LogECWriteByte(cfg.DownThresholdRegs[j - 1], downT))
                     {
                         success = false;
                     }
@@ -924,7 +928,9 @@ internal sealed class FanControlService : ServiceBase
                         }
                         if (LogECReadByte(cfg.DownThresholdRegs[j - 1], out value))
                         {
-                            t.DownThreshold = (byte)(t.UpThreshold - value);
+                            t.DownThreshold = Config.OffsetDT
+                                ? (byte)(t.UpThreshold - value)
+                                : value;
                         }
                     }
                 }

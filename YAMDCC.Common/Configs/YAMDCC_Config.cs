@@ -89,6 +89,18 @@ public sealed class YAMDCC_Config
     public DateTime? FirmDate { get; set; }
 
     /// <summary>
+    /// Set to <see langword="true"/> if the temperature down thresholds are
+    /// stored in the EC as an offset from the corresponding up threshold,
+    /// otherwise <see langword="false"/>.
+    /// </summary>
+    /// <remarks>
+    /// Only known to be needed for one MSI laptop so far
+    /// (Vector 16 HX AI A2XWIG), and possibly more released in 2025 or later.
+    /// </remarks>
+    [XmlElement]
+    public bool OffsetDT { get; set; } = true;
+
+    /// <summary>
     /// The list of <see cref="FanConf"/>s associated with the laptop.
     /// </summary>
     [XmlArray]
