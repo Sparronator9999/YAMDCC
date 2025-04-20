@@ -311,7 +311,9 @@ public sealed class YAMDCC_Config
 
                 for (int k = 0; k < curveCfg.TempThresholds.Count; k++)
                 {
-                    if (curveCfg.TempThresholds[k] is null)
+                    if (curveCfg.TempThresholds[k] is null ||
+                        curveCfg.TempThresholds[k].FanSpeed < cfg.MinSpeed ||
+                        curveCfg.TempThresholds[k].FanSpeed > cfg.MaxSpeed)
                     {
                         return false;
                     }
