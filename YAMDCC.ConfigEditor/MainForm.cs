@@ -896,10 +896,12 @@ internal sealed partial class MainForm : Form
             numFanSpds[i].Value = tbFanSpds[i].Value;
         }
 
-
-        Config.FanConfs[cboFanSel.SelectedIndex]
-            .FanCurveConfs[cboProfSel.SelectedIndex]
-            .TempThresholds[i].FanSpeed = (byte)tbFanSpds[i].Value;
+        if (cboProfSel.SelectedIndex != -1)
+        {
+            Config.FanConfs[cboFanSel.SelectedIndex]
+                .FanCurveConfs[cboProfSel.SelectedIndex]
+                .TempThresholds[i].FanSpeed = (byte)tbFanSpds[i].Value;
+        }
     }
 
     private void UpTChange(object sender, EventArgs e)
