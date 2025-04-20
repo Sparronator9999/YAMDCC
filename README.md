@@ -139,12 +139,15 @@ to 100% always).
 
 The following features are planned for v1.1:
 
-- [x] Hotkey support ([#22](https://github.com/Sparronator9999/YAMDCC/issues/22))
-  - This will be a separate background program that stays in the system tray
-    and listens to keyboard shortcuts.
+- [ ] A proper installer app
+  - Started and works (kind of), but needs some more work on service install
+    management.
+  - Changes to the YAMDCC updater would need to be made to handle the installer,
+    and would break existing installations (sorry).
+  - A portable ZIP version will still be available for download, but will have
+    Updater support removed.
 
-Betas will be released soon after this README is updated. You can download them
-from the [Releases page](https://github.com/Sparronator9999/YAMDCC/releases),
+Betas are currently available for download from the [Releases page](https://github.com/Sparronator9999/YAMDCC/releases),
 or by enabling download of pre-release versions in the YAMDCC updater.
 
 ### Future releases
@@ -156,8 +159,6 @@ Below are some planned features for potential future releases:
     available yet
     - The CLI is missing a *lot* of features, and could do with a rewrite.
 - [ ] Re-work setup experience
-  - Currently the Config Editor handles managing service installation, but this
-    should probably be done in an installer/separate application.
   - All MSI laptops appear to have one of two EC configurations. In the future,
     I plan to first ask which generation of laptop they have (10th-gen Intel or
     later, or 9th-gen Intel or older), then implement auto-detection of laptop
