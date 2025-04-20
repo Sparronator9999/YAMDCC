@@ -912,6 +912,11 @@ internal sealed class FanControlService : ServiceBase
 
                     if (LogECReadByte(cfg.FanCurveRegs[j], out byte value))
                     {
+                        if (value < cfg.MinSpeed || value > cfg.MaxSpeed)
+                        {
+                            CommonConfig.SetECtoConfState(ECtoConfState.Fail);
+                            return false;
+                        }
                         t.FanSpeed = value;
                     }
 
