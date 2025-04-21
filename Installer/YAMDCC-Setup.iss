@@ -8,8 +8,17 @@
 #define AppExeHH "HotkeyHandler.exe"
 #define AppExeSvc "yamdccsvc.exe"
 #define BuildConfig "Debug"
+; Used to determine which Win32 function to use (ANSI or Unicode version).
+; Should resolve to "W" since Inno Setup 6 and later since the Unicode version is always used in that case.
+#ifdef UNICODE
+  #define AW "W"
+#else
+  #define AW "A"
+#endif
 
 [Setup]
+AllowNetworkDrive=no
+AllowUNCPath=no
 ; NOTE: The value of AppId uniquely identifies this application. Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{AFE03526-3AAD-40FA-AF49-03A0150C4229}
@@ -29,6 +38,7 @@ DefaultDirName={autopf}\{#AppPublisher}\{#AppName}
 DisableProgramGroupPage=yes
 DisableWelcomePage=no
 LicenseFile=Installer\LICENSE.rtf
+LZMANumFastBytes=273
 OutputBaseFilename=YAMDCC-v{#AppVer}-Setup
 SetupIconFile=YAMDCC.Updater\fan-update.ico
 SetupMutex=YAMDCC-Setup-{{AFE03526-3AAD-40FA-AF49-03A0150C4229}
@@ -36,7 +46,7 @@ SolidCompression=yes
 SourceDir=..
 Uninstallable=Not WizardIsTaskSelected('portable')
 UninstallDisplayIcon={app}\{#AppNameCE}
-WizardStyle=modern
+WizardStyle=classic
 WizardImageFile=Installer\setup.bmp
 WizardSmallImageFile=Installer\fan-update.bmp
 
@@ -80,12 +90,6 @@ Filename: "{sys}\net.exe"; Parameters: "stop yamdccsvc"; RunOnceId: "StopSvc"; F
 Filename: "{dotnet40}\InstallUtil.exe"; Parameters: "/u ""{app}\yamdccsvc.exe"""; RunOnceId: "DelSvc"; Flags: logoutput runhidden
 
 [Code]
-#ifdef UNICODE
-  #define AW "W"
-#else
-  #define AW "A"
-#endif
-
 const
   SC_MANAGER_CONNECT = $0001;
 
