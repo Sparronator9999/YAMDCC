@@ -142,6 +142,28 @@ begin
   Result := not ServiceInstalled
 end;
 
+function GetServiceImagePath(const ServiceName: String): String;
+  var
+    ImagePath: String;
+begin
+  if RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SYSTEM\CurrentControlSet\Services\' + ServiceName, 'ImagePath', ImagePath) then
+    Result := ImagePath
+  else
+    Result := '';
+end;
+
+// Based on: https://stackoverflow.com/q/70208868
+function NormaliseFilePath(Path: String): String;
+begin
+  // Normalise the provided file path. The below code:
+  // - Removes surrounding quotes from a path,
+  // - Normalises a sequence of any slashes to one backslash (e.g. '//' -> '\'), except for leading backslashes in UNC paths (e.g. '\\.\'),
+  // - Resolves relative paths,
+  // - Removes the trailing backslash (if any),
+  // - Returns the normalised path.
+  Result := RemoveBackslashUnlessRoot(ExpandFileName(RemoveQuotes(Path)));
+end;
+
 function InitializeSetup: Boolean;
 begin
   // make sure .NET Framework 4.8 or later is installed
@@ -151,14 +173,17 @@ begin
     SuppressibleMsgBox(FmtMessage(SetupMessage(msgWinVersionTooLowError), ['.NET Framework', '4.8']), mbCriticalError, MB_OK, IDOK);
 end;
 
-// partially based on: https://stackoverflow.com/a/32476546
+// Partially based on: https://stackoverflow.com/a/32476546
 function PrepareToInstall(var NeedsRestart: Boolean): String;
 var
   hSCM: TSCHandle;
   hService: TSCHandle;
   ServiceStatus: TServiceStatus;
+  ExpectedPath: String;
+  ActualPath: String;
 begin
   ServiceInstalled := False;
+  Log('-- YAMDCC service checks --');
   Log('Checking if YAMDCC service is already installed...');
   hSCM := OpenSCManager('', '', SC_MANAGER_CONNECT);
   if hSCM <> 0 then
@@ -169,7 +194,22 @@ begin
       ServiceInstalled := True;
       if QueryServiceStatus(hService, ServiceStatus) then
       begin
-        Log('YAMDCC service is already installed, querying service status...');
+        Log('YAMDCC service is already installed. Making sure it''s in the right location...');
+        ExpectedPath := NormaliseFilePath(ExpandConstant('{app}') + '\{#AppExeSvc}');
+        ActualPath := NormaliseFilePath(GetServiceImagePath('yamdccsvc'));
+        if SameText(ExpectedPath, ActualPath) then
+          Log('YAMDCC service paths match!')
+        else
+        begin
+          Log('YAMDCC service paths do NOT match!');
+          Log('Expected YAMDCC service location: ' + ExpectedPath);
+          Log('Actual YAMDCC service location: ' + ActualPath);
+          Result := 'The YAMDCC service appears to be already be installed somewhere else. ' +
+            'Make sure you uninstalled all previous versions of YAMDCC, then try installing again.' + #10#10 +
+            'Expected YAMDCC service location: ' + ExpectedPath + #10
+            'Actual YAMDCC service location: ' + ActualPath;
+        end;
+        Log('Querying service status...');
         if ServiceStatus.dwCurrentState = SERVICE_STOPPED then
           Log('YAMDCC service is already stopped.')
         else
