@@ -208,8 +208,8 @@ begin
   if CurUninstallStep = usPostUninstall then
   begin
     AppDataDir := ExpandConstant('{commonappdata}\Sparronator9999\YAMDCC')
-    if MsgBox('Delete the YAMDCC data directory (located at `' + AppDataDir + '`?'#10#10
-      'Click "Yes" if you don''t intend to re-install YAMDCC.', mbConfirmation, MB_YESNO) = IDYES then
+    if DirExists(AppDataDir) and (SuppressibleMsgBox('Delete the YAMDCC data directory (located at `' + AppDataDir + '`)?'#10#10
+      'Click "Yes" if you don''t intend to re-install YAMDCC.', mbConfirmation, MB_YESNO, IDNO) = IDYES) then
       DelTree(AppDataDir, True, True, True);
   end;
 end;
