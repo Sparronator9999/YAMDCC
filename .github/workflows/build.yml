@@ -49,9 +49,15 @@ jobs:
     - name: Copy LICENSE to build path
       run: copy LICENSE.md YAMDCC.ConfigEditor\bin\${{ matrix.config }}\net48
 
+    - name: Build installer
+      uses: Minionguyjpro/Inno-Setup-Action@v1
+      with:
+        path: Installer/YAMDCC-Setup.iss
+        options: /O+ "/DBuildConfig=${{ matrix.config }}"
+
     - name: Upload build artifact
       uses: actions/upload-artifact@v4
       with:
         name: "YAMDCC-${{ github.ref_name }}-${{ env.sha_short }}-${{ matrix.config }}"
-        path: "./YAMDCC.ConfigEditor/bin/${{ matrix.config }}/net48/"
+        path: "./Output/"
         compression-level: 9

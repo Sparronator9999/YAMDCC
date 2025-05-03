@@ -1,7 +1,7 @@
 #define AppName "YAMDCC"
 #define AppNameCE "Config Editor"
 #define AppNameHH "Hotkey Handler"
-#define AppVer "1.1.0"
+#define AppVer "1.1.0-beta.6"
 #define AppPublisher "Sparronator9999"
 #define AppURL "https://github.com/Sparronator9999/YAMDCC"
 #define AppExeCE "ConfigEditor.exe"
