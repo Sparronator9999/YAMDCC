@@ -19,11 +19,9 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Net;
 using System.Net.Http;
 using System.Reflection;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using YAMDCC.Common;
 using YAMDCC.Common.Configs;
@@ -45,13 +43,8 @@ internal sealed partial class UpdateForm : Form
 
     private Release Release;
 
-    private static readonly string ExeName = Path.GetFileName(Assembly.GetEntryAssembly().Location);
-    private static readonly string TargetPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
     private static readonly string TempPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-    private static readonly string DownloadPath = Path.Combine(TempPath, "YAMDCC-Update.zip");
-    private static readonly string UpdatePath = Path.Combine(TempPath, "Update");
-    private static readonly string OldPath = Path.Combine(TempPath, "Old");
-    private static readonly string ConfPath = Path.GetFullPath(@".\Configs");
+    private static readonly string DownloadPath = Path.Combine(TempPath, "YAMDCC-Update.exe");
 
     public UpdateForm(Release release = null, bool autoUpdate = false)
     {
@@ -109,7 +102,8 @@ internal sealed partial class UpdateForm : Form
             btnDisable.Enabled = false;
             btnLater.Enabled = false;
 
-            SetProgress(-1, "Downloading update...");
+            // download the update installer EXE
+            SetProgress(-1, "Downloading installer...");
             Directory.CreateDirectory(TempPath);
             try
             {
@@ -118,31 +112,10 @@ internal sealed partial class UpdateForm : Form
             }
             catch (HttpRequestException ex)
             {
-                UpdateError(ex, "failed to download update", "errDownload");
+                UpdateError(ex, "failed to download installer", "errDownload");
             }
 
-            try
-            {
-                SetProgress(-1, "Extracting update...");
-                await ExtractUpdate(DownloadPath, UpdatePath);
-            }
-            catch (Exception ex)
-            {
-                UpdateError(ex, "failed to extract update", "errExtract");
-            }
-
-            // delete old YAMDCC install from previous update if it exists
-            SetProgress(-1, "Preparing to install update...");
-            try
-            {
-                Directory.Delete(OldPath, true);
-            }
-            catch (DirectoryNotFoundException) { }
-
-            // make a copy of the old YAMDCC installation
-            CopyDir(new DirectoryInfo(TargetPath), new DirectoryInfo(OldPath));
-
-            // actually install the update
+            // install the update
             InstallUpdate();
             return;
         }
@@ -275,7 +248,7 @@ internal sealed partial class UpdateForm : Form
         }
     }
 
-    private void UpdateError(Exception ex, string shortMsg, string longMsg)
+    private void UpdateError(HttpRequestException ex, string shortMsg, string longMsg)
     {
         SetProgress(0, $"ERROR: {shortMsg}: {(ex.InnerException is WebException ex2 ? ex2.Message : ex.Message)}");
         wbChangelog.DocumentText = GetHtml(Strings.GetString(
@@ -288,22 +261,7 @@ internal sealed partial class UpdateForm : Form
     private void DownloadProgress(long bytesReceived, long fileSize)
     {
         SetProgress((int)(bytesReceived * 100 / fileSize),
-            $"Downloading update ({FormatByteCount(fileSize - bytesReceived)} remaining)...");
-    }
-
-    private static async Task ExtractUpdate(string src, string dest)
-    {
-        // delete target directory if it exists
-        try
-        {
-            Directory.Delete(dest, true);
-        }
-        catch (DirectoryNotFoundException) { }
-
-        // extract the archive
-        Directory.CreateDirectory(dest);
-        await Task.Run(() => ZipFile.ExtractToDirectory(src, dest));
-        return;
+            $"Downloading installer ({FormatByteCount(fileSize - bytesReceived)} remaining)...");
     }
 
     private void InstallUpdate()
@@ -312,8 +270,7 @@ internal sealed partial class UpdateForm : Form
         {
             // run the installer from a different location so we can
             // clean the old directory
-            Utils.RunCmd(Path.Combine(OldPath, ExeName),
-                $"--install \"{TempPath}\" \"{OldPath}\" \"{UpdatePath}\" \"{TargetPath}\" \"{ConfPath}\"", false);
+            Utils.RunCmd(DownloadPath, "/SP- /silent /noicons", false);
             Close();
         }
         catch (Win32Exception ex)
@@ -359,33 +316,6 @@ internal sealed partial class UpdateForm : Form
         if (!string.IsNullOrEmpty(text))
         {
             grpProgress.Text = text;
-        }
-    }
-
-    internal static void CopyDir(DirectoryInfo src, DirectoryInfo dest)
-    {
-        Directory.CreateDirectory(dest.FullName);
-
-        // Copy each file into the new directory.
-        foreach (FileInfo fi in src.GetFiles())
-        {
-            if (fi.FullName != DownloadPath)
-            {
-                fi.CopyTo(Path.Combine(dest.FullName, fi.Name), true);
-            }
-        }
-
-        // Copy each subdirectory using recursion.
-        foreach (DirectoryInfo diSourceSubDir in src.GetDirectories())
-        {
-            if (diSourceSubDir.FullName != ConfPath &&
-                diSourceSubDir.FullName != OldPath &&
-                diSourceSubDir.FullName != UpdatePath)
-            {
-                DirectoryInfo nextTargetSubDir =
-                dest.CreateSubdirectory(diSourceSubDir.Name);
-                CopyDir(diSourceSubDir, nextTargetSubDir);
-            }
         }
     }
 

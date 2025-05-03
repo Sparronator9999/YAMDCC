@@ -67,20 +67,23 @@ internal static class Program
                     }
                     Utils.ShowError("Could not set pre-release setting!");
                     return 1;
+                case "--updated":
+                    if (Utils.ShowInfo(
+                        "YAMDCC updated successfully!\n" +
+                        "Would you like to run the config editor now?", "Success!",
+                        MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    {
+                        Process.Start(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ConfigEditor"));
+                    }
+                    return 0;
                 case "--install":
-                    // args: --install <tmpDir> <oldPath> <updatePath> <destPath> <confPath>
-                    if (args.Length >= 6)
-                    {
-                        InstallUpdate(args[1], args[2], args[3], args[4], args[5]);
-                    }
-                    return 0;
                 case "--cleanup":
-                    if (args.Length >= 2)
-                    {
-                        // clean up the temporary update dir
-                        Directory.Delete(args[1], true);
-                    }
-                    return 0;
+                    Utils.ShowError(
+                        "The --install and --cleanup commands are no longer supported.\n\n" +
+                        "If you are updating from YAMDCC v1.1 Beta 4 (or v1.0.3) or earlier,\n" +
+                        "please download and manually install the latest release from:\n" +
+                        "https://github.com/Sparronator9999/YAMDCC/releases");
+                    return 1;
                 default:
                     Utils.ShowError($"Unknown command: {args[0]}");
                     return 1;
@@ -90,163 +93,6 @@ internal static class Program
         // no arguments, just launch normally
         Application.Run(new UpdateForm());
         return 0;
-    }
-
-    private static void InstallUpdate(
-        string tempPath, string oldPath, string updatePath, string destPath, string confPath)
-    {
-        ProgressDialog<bool> dlg = new();
-
-        dlg.DoWork = () =>
-        {
-            // kill all running instances of YAMDCC
-            dlg.Caption = "Closing all YAMDCC instances...";
-            string[] names =
-            [
-                "ConfigEditor",
-                "ec-inspect",
-                // yamdccsvc is stopped in next section
-            ];
-
-            foreach (Process p in Process.GetProcesses())
-            {
-                foreach (string name in names)
-                {
-                    if (p.ProcessName == name)
-                    {
-                        // try to close the main window.
-                        // If that doesn't work, kill the process instead
-                        if (!p.CloseMainWindow() || !p.WaitForExit(3000))
-                        {
-                            p.Kill();
-                        }
-                    }
-                }
-            }
-
-            bool svcRunning = Utils.ServiceRunning("yamdccsvc");
-
-            // stop the YAMDCC service if it's running
-            if (svcRunning)
-            {
-                dlg.Caption = "Stopping YAMDCC service...";
-                if (!Utils.StopService("yamdccsvc"))
-                {
-                    Utils.ShowError("Failed to stop YAMDCC service!");
-                }
-            }
-
-            // backup old YAMDCC configs
-            try
-            {
-                DirectoryInfo confDI = new(confPath);
-                foreach (FileInfo fi in confDI.GetFiles())
-                {
-                    string name = Path.GetFileNameWithoutExtension(fi.Name);
-
-                    // config is a backup from previous update; ignore
-                    if (name.Contains("-backup-"))
-                    {
-                        continue;
-                    }
-
-                    // backup the config, just in case :)
-                    string path = Path.Combine(fi.DirectoryName, name);
-                    string date = $"{DateTime.Now:s}".Replace(':', '-');
-                    fi.MoveTo($"{path}-backup-{date}{fi.Extension}");
-                }
-            }
-            catch (Exception ex)
-            {
-                // catch exception that occurs if there is no Configs
-                // folder in the same location as YAMDCC's executables
-                if (ex is not FileNotFoundException and not DirectoryNotFoundException)
-                {
-                    throw;
-                }
-            }
-
-            // delete the old YAMDCC installation
-            dlg.Caption = "Installing YAMDCC update...";
-            DirectoryInfo di;
-            try
-            {
-                di = new(destPath);
-                foreach (FileInfo fi in di.GetFiles())
-                {
-                    fi.Delete();
-                }
-                foreach (DirectoryInfo dir in di.GetDirectories())
-                {
-                    if (dir.FullName != confPath &&
-                        dir.FullName != oldPath &&
-                        dir.FullName != updatePath)
-                    {
-                        dir.Delete(true);
-                    }
-                }
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                Utils.ShowError(
-                    "Failed to delete old YAMDCC installation.\n" +
-                    "This probably means something else has YAMDCC's files open.\n" +
-                    "See issue #62 on the YAMDCC GitHub for more info.\n\n" +
-                    $"Your old installation is located at: {oldPath}\n\n" +
-                    "Details:\n" +
-                    $"{ex.GetType()}: {ex.Message}\n" +
-                    $"{ex.StackTrace}");
-                return false;
-            }
-
-            // move updated YAMDCC into place
-            di = new(updatePath);
-            foreach (FileInfo fi in di.GetFiles())
-            {
-                fi.MoveTo(Path.Combine(destPath, fi.Name));
-            }
-            foreach (DirectoryInfo dir in di.GetDirectories())
-            {
-                if (dir.Name == "Configs")
-                {
-                    // copy new configs individually since we can't
-                    // merge directories without extra work
-                    Directory.CreateDirectory(confPath);
-                    foreach (FileInfo fi in dir.GetFiles())
-                    {
-                        fi.MoveTo(Path.Combine(confPath, fi.Name));
-                    }
-                }
-                else
-                {
-                    dir.MoveTo(Path.Combine(destPath, dir.Name));
-                }
-            }
-
-            // restart the YAMDCC service if it was running before the update
-            if (svcRunning)
-            {
-                dlg.Caption = "Starting YAMDCC service...";
-                Utils.StartService("yamdccsvc");
-            }
-
-            // cleanup :)
-            // (note: does not delete "Old" folder that we should be running from)
-            dlg.Caption = "Cleaning up...";
-            Directory.Delete(updatePath, true);
-
-            return true;
-        };
-        dlg.ShowDialog();
-
-        if (Utils.ShowInfo(
-            "YAMDCC updated successfully!\n" +
-            "Would you like to run the config editor now?", "Success!",
-            MessageBoxButtons.YesNo) == DialogResult.Yes)
-        {
-            Process.Start(Path.Combine(destPath, "ConfigEditor"));
-        }
-        Process.Start(Path.Combine(destPath, "Updater"), $"--cleanup \"{tempPath}\"");
     }
 
     private static bool BGUpdate(bool autoUpdate)

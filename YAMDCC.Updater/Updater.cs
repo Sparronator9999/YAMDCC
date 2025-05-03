@@ -73,6 +73,7 @@ internal static class Updater
                 {
                     return true;
                 }
+                i++;
             }
             while (currentSuffixVer != -1 || latestSuffixVer != -1);
 
@@ -182,7 +183,8 @@ internal static class Updater
         string url = string.Empty;
         foreach (ReleaseAsset asset in release.Assets)
         {
-            if (asset.Name.Contains(BuildConfig))
+            // make sure the update we download is an installer EXE
+            if (asset.Name.Contains(BuildConfig) && asset.Name.Contains(".exe"))
             {
                 url = asset.Url;
             }

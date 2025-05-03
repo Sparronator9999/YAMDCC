@@ -39,7 +39,7 @@ DisableProgramGroupPage=yes
 DisableWelcomePage=no
 LicenseFile=Installer\LICENSE.rtf
 LZMANumFastBytes=273
-OutputBaseFilename=YAMDCC-v{#AppVer}-Setup
+OutputBaseFilename=YAMDCC-v{#AppVer}-{#BuildConfig}-setup
 SetupIconFile=YAMDCC.Updater\fan-update.ico
 SetupMutex=YAMDCC-Setup-{{AFE03526-3AAD-40FA-AF49-03A0150C4229}
 SolidCompression=yes
@@ -68,7 +68,6 @@ Name: "deskicons\user"; Description: "{cm:DeskIconsUser}"; GroupDescription: "{c
 
 [Files]
 Source: "YAMDCC.ConfigEditor\bin\{#BuildConfig}\net48\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
 Name: "{autoprograms}\{#AppName}\{#AppNameCE}"; Filename: "{app}\{#AppExeCE}"
@@ -81,6 +80,9 @@ Name: "{userdesktop}\{#AppName} {#AppNameHH}"; Filename: "{app}\{#AppExeHH}"; Ta
 [Run]
 Filename: "{dotnet40}\InstallUtil.exe"; Parameters: """{app}\yamdccsvc.exe"""; StatusMsg: "Installing YAMDCC service..."; Check: ShouldInstallService; Flags: logoutput runhidden
 Filename: "{sys}\net.exe"; Parameters: "start yamdccsvc"; StatusMsg: "Starting YAMDCC service..."; Flags: logoutput runhidden
+; Run YAMDCC updater to show "YAMDCC has been updated successfully" message
+; if run silently, otherwise run Config Editor (if selected during setup)
+Filename: "{app}\Updater.exe"; Parameters: "--updated"; Flags: postinstall runascurrentuser skipifnotsilent
 Filename: "{app}\{#AppExeCE}"; Description: "{cm:LaunchCE}"; Flags: nowait postinstall runascurrentuser skipifsilent
 
 ; Stop and uninstall YAMDCC service before deleting program files
