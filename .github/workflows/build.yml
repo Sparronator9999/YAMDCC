@@ -50,7 +50,7 @@ jobs:
       run: copy LICENSE.md YAMDCC.ConfigEditor\bin\${{ matrix.config }}\net48
 
     - name: Build installer
-      uses: Minionguyjpro/Inno-Setup-Action@v1
+      uses: Minionguyjpro/Inno-Setup-Action@v1.2.5
       with:
         path: Installer/YAMDCC-Setup.iss
         options: /O+ "/DBuildConfig=${{ matrix.config }}"
