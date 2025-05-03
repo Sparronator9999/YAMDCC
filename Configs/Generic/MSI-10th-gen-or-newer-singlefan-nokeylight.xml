@@ -51,6 +51,7 @@
 					<Desc>A generic CPU fan profile for MSI laptops.
 To replace this with the true default fan profile for your
 computer, click `Options` > `Get default fan profile from EC...`</Desc>
+					<PerfModeSel>-1</PerfModeSel>
 					<TempThresholds>
 						<TempThreshold>
 							<UpThreshold>0</UpThreshold>
@@ -137,6 +138,7 @@ computer, click `Options` > `Get default fan profile from EC...`</Desc>
 					<Desc>A generic GPU fan profile for MSI laptops.
 To replace this with the true default fan profile for your
 computer, click `Options` > `Get default fan profile from EC...`</Desc>
+					<PerfModeSel>-1</PerfModeSel>
 					<TempThresholds>
 						<TempThreshold>
 							<UpThreshold>0</UpThreshold>
@@ -196,7 +198,7 @@ computer, click `Options` > `Get default fan profile from EC...`</Desc>
 				<Name>Maximum battery life</Name>
 				<Desc>Optimises your laptop for maximum battery life.
 Limits CPU power draw to 10W.
-If set to default fan profile, uses an alternative fan profile.</Desc>
+If set to the default fan profile, uses an alternative fan profile.</Desc>
 				<Value>194</Value>
 			</PerfMode>
 			<PerfMode>

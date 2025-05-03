@@ -49,6 +49,7 @@
 				<FanCurveConf>
 					<Name>Default</Name>
 					<Desc>The default CPU fan profile for your computer.</Desc>
+					<PerfModeSel>-1</PerfModeSel>
 					<TempThresholds>
 						<TempThreshold>
 							<UpThreshold>0</UpThreshold>
@@ -108,7 +109,7 @@
 				<Name>Maximum battery life</Name>
 				<Desc>Optimises your laptop for maximum battery life.
 Limits CPU power draw to 10W.
-If set to default fan profile, uses an alternative fan profile.</Desc>
+If set to the default fan profile, uses an alternative fan profile.</Desc>
 				<Value>194</Value>
 			</PerfMode>
 			<PerfMode>

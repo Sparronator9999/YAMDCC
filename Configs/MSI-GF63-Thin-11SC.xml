@@ -1,9 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <YAMDCC_Config xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Ver="1">
 	<Manufacturer>Micro-Star International Co., Ltd.</Manufacturer>
 	<Model>GF63 Thin 11SC</Model>
 	<Author>Sparronator9999</Author>
 	<FirmVerSupported>true</FirmVerSupported>
+	<FirmVer>16R6EMS1.104</FirmVer>
+	<FirmDate>2021-11-14T15:56:31Z</FirmDate>
+	<OffsetDT>true</OffsetDT>
 	<FanConfs>
 		<FanConf>
 			<Name>CPU Fan</Name>
@@ -49,6 +52,7 @@
 				<FanCurveConf>
 					<Name>Default</Name>
 					<Desc>The default CPU fan profile for your computer.</Desc>
+					<PerfModeSel>-1</PerfModeSel>
 					<TempThresholds>
 						<TempThreshold>
 							<UpThreshold>0</UpThreshold>
@@ -90,6 +94,7 @@
 				<FanCurveConf>
 					<Name>Custom</Name>
 					<Desc>The custom CPU fan profile that Sparronator9999 uses on his computer.</Desc>
+					<PerfModeSel>-1</PerfModeSel>
 					<TempThresholds>
 						<TempThreshold>
 							<UpThreshold>0</UpThreshold>
@@ -174,6 +179,7 @@
 				<FanCurveConf>
 					<Name>Default</Name>
 					<Desc>The default GPU fan profile for your computer.</Desc>
+					<PerfModeSel>-1</PerfModeSel>
 					<TempThresholds>
 						<TempThreshold>
 							<UpThreshold>0</UpThreshold>
@@ -215,6 +221,7 @@
 				<FanCurveConf>
 					<Name>Custom</Name>
 					<Desc>The custom GPU fan profile that Sparronator9999 uses on his computer.</Desc>
+					<PerfModeSel>-1</PerfModeSel>
 					<TempThresholds>
 						<TempThreshold>
 							<UpThreshold>0</UpThreshold>
@@ -274,7 +281,7 @@
 				<Name>Maximum battery life</Name>
 				<Desc>Optimises your laptop for maximum battery life.
 Limits CPU power draw to 10W.
-If set to default fan profile, uses an alternative fan profile.</Desc>
+If set to the default fan profile, uses an alternative fan profile.</Desc>
 				<Value>194</Value>
 			</PerfMode>
 			<PerfMode>

@@ -11,7 +11,7 @@
 			<Name>CPU Fan</Name>
 			<MinSpeed>0</MinSpeed>
 			<MaxSpeed>100</MaxSpeed>
-			<CurveSel>1</CurveSel>
+			<CurveSel>0</CurveSel>
 			<SpeedReadReg>113</SpeedReadReg>
 			<TempReadReg>104</TempReadReg>
 			<RPMConf>
@@ -95,10 +95,10 @@
 					<Desc>Slightly more aggressive cooling; tries to work with laptop's default behaviors.
 
 Laptop behavior:
-76C CPU, the GPU Fan overrides to at least 70% to "help" the CPU Fan.
+When the CPU reaches 76°C, the GPU fan overrides to at least 70% to "help" the CPU fan.
 
 Action:
-Match the CPU fan to 70% at 76C and linear ramp to 100% at 90C</Desc>
+Match the CPU fan to 70% at 76°C and linear ramp to 100% at 90°C.</Desc>
 					<PerfModeSel>-1</PerfModeSel>
 					<TempThresholds>
 						<TempThreshold>
@@ -144,7 +144,7 @@ Match the CPU fan to 70% at 76C and linear ramp to 100% at 90C</Desc>
 			<Name>GPU Fan</Name>
 			<MinSpeed>0</MinSpeed>
 			<MaxSpeed>100</MaxSpeed>
-			<CurveSel>1</CurveSel>
+			<CurveSel>0</CurveSel>
 			<SpeedReadReg>137</SpeedReadReg>
 			<TempReadReg>128</TempReadReg>
 			<RPMConf>
@@ -228,11 +228,11 @@ Match the CPU fan to 70% at 76C and linear ramp to 100% at 90C</Desc>
 					<Desc>Slightly more aggressive cooling; tries to work with laptop's default behaviors.
 
 Laptop behavior:
-66C GPU, 3rd Aux Fan turns on "95%"
+When the GPU reaches 66°C, a 3rd "Aux" fan turns on at 95% speed.
 
 Action:
-Spin up GPU Fan to 70% when Aux Fan kicks in
-Attempt to hold 65C to avoid Aux Fan turning on</Desc>
+Spin up the GPU Fan to 70% when the Aux fan kicks in.
+Attempt to hold 65°C to avoid Aux fan turning on.</Desc>
 					<PerfModeSel>-1</PerfModeSel>
 					<TempThresholds>
 						<TempThreshold>
@@ -293,7 +293,7 @@ Attempt to hold 65C to avoid Aux Fan turning on</Desc>
 				<Name>Maximum battery life</Name>
 				<Desc>Optimises your laptop for maximum battery life.
 Limits CPU power draw to 10W.
-If set to default fan profile, uses an alternative fan profile.</Desc>
+If set to the default fan profile, uses an alternative fan profile.</Desc>
 				<Value>194</Value>
 			</PerfMode>
 			<PerfMode>
@@ -342,7 +342,7 @@ If set to default fan profile, uses an alternative fan profile.</Desc>
 	</FanModeConf>
 	<KeySwapConf>
 		<Reg>232</Reg>
-		<Enabled>true</Enabled>
+		<Enabled>false</Enabled>
 		<OnVal>16</OnVal>
 		<OffVal>0</OffVal>
 	</KeySwapConf>
