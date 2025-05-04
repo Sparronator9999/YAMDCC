@@ -1,14 +1,19 @@
+; Defined when compiled via GitHub Actions. Uncomment one of the below when compiling locally.
+;#define BuildConfig "Debug"
+;#define BuildConfig "Release"
+
+; Define constants used in other sections of the installer.
 #define AppName "YAMDCC"
 #define AppNameCE "Config Editor"
 #define AppNameHH "Hotkey Handler"
 #define AppVer "1.1.0-beta.6"
+#define AppVerFriendly "1.1 Beta 6"
 #define AppPublisher "Sparronator9999"
 #define AppURL "https://github.com/Sparronator9999/YAMDCC"
 #define AppExeCE "ConfigEditor.exe"
 #define AppExeHH "HotkeyHandler.exe"
 #define AppExeSvc "yamdccsvc.exe"
-; Defined when run via GitHub Actions. Uncomment for local build.
-;#define BuildConfig "Debug"
+
 ; Used to determine which Win32 function to use (ANSI or Unicode version).
 ; Should resolve to "W" since Inno Setup 6 and later since the Unicode version is always used in that case.
 #ifdef UNICODE
@@ -24,12 +29,12 @@ AllowUNCPath=no
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{AFE03526-3AAD-40FA-AF49-03A0150C4229}
 AppName={#AppName}
-AppVersion={#AppVer}
+AppVersion={#AppVerFriendly} ({#BuildConfig})
 ;AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#AppPublisher}
 AppPublisherURL={#AppURL}
-AppSupportURL={#AppURL}
-AppUpdatesURL={#AppURL}
+AppSupportURL={#AppURL}/issues
+AppUpdatesURL={#AppURL}/releases
 ArchitecturesAllowed=x86compatible or x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 ; we already handle stopping YAMDCC service ourselves
@@ -47,10 +52,10 @@ SetupMutex=YAMDCC-Setup-{{AFE03526-3AAD-40FA-AF49-03A0150C4229}
 SolidCompression=yes
 SourceDir=..
 Uninstallable=Not WizardIsTaskSelected('portable')
-UninstallDisplayIcon={app}\{#AppNameCE}
-WizardStyle=classic
+UninstallDisplayIcon={app}\{#AppExeCE}
+WizardStyle=modern
 WizardImageFile=Installer\setup.bmp
-WizardSmallImageFile=Installer\fan-update.bmp
+WizardSmallImageFile=Installer\setup-small.bmp
 
 [CustomMessages]
 english.Portable=Portable mode (don't create uninstaller files or entries)
@@ -93,6 +98,11 @@ Filename: "{app}\{#AppExeCE}"; Description: "{cm:LaunchCE}"; Flags: nowait posti
 Filename: "{sys}\net.exe"; Parameters: "stop yamdccsvc"; RunOnceId: "StopSvc"; Flags: logoutput runhidden
 Filename: "{dotnet40}\InstallUtil.exe"; Parameters: "/u ""{app}\yamdccsvc.exe"""; RunOnceId: "DelSvc"; Flags: logoutput runhidden
 
+; Remove logs left behind by running InstallUtil while uninstalling the YAMDCC service.
+[UninstallDelete]
+Type: files; Name: "{app}\InstallUtil.InstallLog"
+Type: files; Name: "{app}\yamdccsvc.InstallLog"
+
 [Code]
 const
   SC_MANAGER_CONNECT = $0001;
@@ -110,8 +120,6 @@ const
   ERROR_SERVICE_DOES_NOT_EXIST = $0424;
 
 type
-  TSCHandle = THandle;
-
   TServiceStatus = record
     dwServiceType: DWORD;
     dwCurrentState: DWORD;
@@ -124,16 +132,17 @@ type
 
 var
   ServiceInstalled: Boolean;
+  PrepareToInstallProgressPage: TOutputProgressWizardPage;
 
-function OpenService(hSCManager: TSCHandle; lpServiceName: string; dwDesiredAccess: DWORD): TSCHandle;
+function OpenService(hSCManager: THandle; lpServiceName: string; dwDesiredAccess: DWORD): THandle;
   external 'OpenService{#AW}@advapi32.dll stdcall';
-function OpenSCManager(lpMachineName: string; lpDatabaseName: string; dwDesiredAccess: DWORD): TSCHandle;
+function OpenSCManager(lpMachineName: string; lpDatabaseName: string; dwDesiredAccess: DWORD): THandle;
   external 'OpenSCManager{#AW}@advapi32.dll stdcall';
-function QueryServiceStatus(hService: TSCHandle; out lpServiceStatus: TServiceStatus): BOOL;
+function QueryServiceStatus(hService: THandle; out lpServiceStatus: TServiceStatus): BOOL;
   external 'QueryServiceStatus@advapi32.dll stdcall';
-function CloseServiceHandle(hSCObject: TSCHandle): BOOL;
+function CloseServiceHandle(hSCObject: THandle): BOOL;
   external 'CloseServiceHandle@advapi32.dll stdcall';
-function ControlService(hService: TSCHandle; dwControl: DWORD; out lpServiceStatus: TServiceStatus): BOOL;
+function ControlService(hService: THandle; dwControl: DWORD; out lpServiceStatus: TServiceStatus): BOOL;
   external 'ControlService@advapi32.dll stdcall';
 
 function GetWin32ErrorMsg: String;
@@ -168,6 +177,16 @@ begin
   Result := RemoveBackslashUnlessRoot(ExpandFileName(RemoveQuotes(Path)));
 end;
 
+// https://stackoverflow.com/a/25811746
+procedure InitializeWizard;
+var
+  S: String;
+begin
+  S := SetupMessage(msgPreparingDesc);
+  StringChange(S, '[name]', '{#AppName}')
+  PrepareToInstallProgressPage := CreateOutputProgressPage(SetupMessage(msgWizardPreparing), S);
+end;
+
 function InitializeSetup: Boolean;
 begin
   // make sure .NET Framework 4.8 or later is installed
@@ -180,11 +199,12 @@ end;
 // Partially based on: https://stackoverflow.com/a/32476546
 function PrepareToInstall(var NeedsRestart: Boolean): String;
 var
-  hSCM: TSCHandle;
-  hService: TSCHandle;
+  hSCM: THandle;
+  hService: THandle;
   ServiceStatus: TServiceStatus;
   ExpectedPath: String;
   ActualPath: String;
+  i: Integer;
 begin
   ServiceInstalled := False;
   Log('-- YAMDCC service checks --');
@@ -220,14 +240,69 @@ begin
         begin
           Log('YAMDCC service is running! Stopping it...');
           if ControlService(hService, SERVICE_CONTROL_STOP, ServiceStatus) then
-            Log('YAMDCC service stop requested successfully.')
+          begin
+            Log('YAMDCC service stop requested successfully. Waiting for it to stop...');
+            PrepareToInstallProgressPage.SetProgress(0, 10);
+            PrepareToInstallProgressPage.SetText('Waiting for the YAMDCC service to stop.', 'This shouldn''t take long, but may take up to 10 seconds if the service is unresponsive.');
+            PrepareToInstallProgressPage.Show();
+            try
+              // wait up to 10 seconds (20 half-seconds) for the YAMDCC service to stop
+              for i := 1 to 20 do
+              begin
+                PrepareToInstallProgressPage.SetProgress(i - 1, 10);
+                Sleep(500);
+                if QueryServiceStatus(hService, ServiceStatus) then
+                begin
+                  Log('dwCurrentState = ' + IntToStr(ServiceStatus.dwCurrentState));
+                  if ServiceStatus.dwCurrentState = SERVICE_STOPPED then
+                  begin
+                    Log('Service stopped successfully!');
+                    break;
+                  end
+                  else if ServiceStatus.dwCurrentState <> SERVICE_STOP_PENDING then
+                  begin
+                    Log('Unexpected service state! (' + IntToStr(ServiceStatus.dwCurrentState) + ')');
+                    i := 21;
+                    break;
+                  end;
+                end
+                else
+                begin
+                  Log('Service status query failed!');
+                  Result := 'Failed to query status of YAMDCC service: ' + GetWin32ErrorMsg() + #10#10 +
+                    'Please try installing again. If you get this error again, this is probably a bug, and should be reported to: ' + #10#10 +
+                    'https://github.com/Sparronator9999/YAMDCC/issues';
+                  break;
+                end;
+              end;
+              Log('i = ' + IntToStr(i));
+              if i = 211 then
+              begin
+                Log('Failed to stop YAMDCC service (timed out/unexpected state)!');
+                Result := 'Failed to stop the YAMDCC service, either due to a timeout or unexpected service state.' + #10#10 +
+                  'This is probably a bug. Please report it, along with service logs (if any) at:' + #10#10 +
+                  'https://github.com/Sparronator9999/YAMDCC/issues' + #10#10 +
+                  'Service status code: ' + IntToStr(ServiceStatus.dwCurrentState);
+              end;
+            finally
+              PrepareToInstallProgressPage.Hide();
+            end;
+          end
           else
+          begin
+            Log('Failed to send service stop request!');
             Result := 'Failed to stop YAMDCC service: ' + GetWin32ErrorMsg() + #10#10 +
-             'Please try stopping it manually with `net stop yamdccsvc` before proceeding with the installation.';
+              'Please try stopping it manually with `net stop yamdccsvc` before proceeding with the installation.';
+          end;
         end;
       end
       else
-        Result := 'Failed to query status of YAMDCC service: ' + GetWin32ErrorMsg();
+      begin
+        Log('Service status query failed!');
+        Result := 'Failed to query status of YAMDCC service: ' + #10#10 +
+          'Please try installing again. If you get this error again, this is probably a bug, and should be reported to: ' + #10#10 +
+          'https://github.com/Sparronator9999/YAMDCC/issues';
+      end;
       CloseServiceHandle(hService);
     end
     else
@@ -237,23 +312,33 @@ begin
         Log('YAMDCC service is not installed.');
       end
       else
-        Result := 'Failed to connect to YAMDCC service: ' + GetWin32ErrorMsg();
+        Result := 'Failed to connect to YAMDCC service: ' + GetWin32ErrorMsg() + #10#10 +
+          'Please try installing again. If you get this error again, this is probably a bug, and should be reported to: ' + #10#10 +
+          'https://github.com/Sparronator9999/YAMDCC/issues';
     CloseServiceHandle(hSCM);
     end;
   end
   else
-    Result := 'Failed to connect to the Service Control Manager to check if the YAMDCC service is installed: ' + GetWin32ErrorMsg();
+    Result := 'Failed to connect to the Service Control Manager to check if the YAMDCC service is installed: ' + GetWin32ErrorMsg() + #10#10 +
+      'Please try installing again. If you get this error again, this is probably a bug, and should be reported to: ' + #10#10 +
+      'https://github.com/Sparronator9999/YAMDCC/issues';
 end;
 
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 var
   AppDataDir: String;
 begin
+  // Ask to delete the YAMDCC data directory on successful uninstall.
   if CurUninstallStep = usPostUninstall then
   begin
     AppDataDir := ExpandConstant('{commonappdata}\Sparronator9999\YAMDCC')
-    if DirExists(AppDataDir) and (SuppressibleMsgBox('Delete the YAMDCC data directory (located at `' + AppDataDir + '`)?'#10#10
-      'Click "Yes" if you don''t intend to re-install YAMDCC.', mbConfirmation, MB_YESNO, IDNO) = IDYES) then
+    if DirExists(AppDataDir) and (SuppressibleMsgBox('Keep the YAMDCC data directory (located at `' + AppDataDir + '`)?' + #10#10
+      'Click "No" if you don''t intend to re-install YAMDCC.', mbConfirmation, MB_YESNO, IDYES) = IDNO) then
+    begin
+      Log('Deleting YAMDCC data directory...');
       DelTree(AppDataDir, True, True, True);
+    end
+    else
+      Log('Leaving YAMDCC data directory untouched.');
   end;
 end;
