@@ -32,7 +32,8 @@ AppUpdatesURL={#AppURL}
 ArchitecturesAllowed=x86compatible or x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
 ; we already handle stopping YAMDCC service ourselves
-CloseApplicationsFilterExcludes={#AppExeSvc}
+; TODO: fix GitHub Actions using too old InnoSetup version
+;CloseApplicationsFilterExcludes={#AppExeSvc}
 Compression=lzma/ultra64
 DefaultDirName={autopf}\{#AppPublisher}\{#AppName}
 DisableProgramGroupPage=yes
