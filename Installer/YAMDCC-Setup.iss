@@ -7,7 +7,8 @@
 #define AppExeCE "ConfigEditor.exe"
 #define AppExeHH "HotkeyHandler.exe"
 #define AppExeSvc "yamdccsvc.exe"
-#define BuildConfig "Debug"
+; Defined when run via GitHub Actions. Uncomment for local build.
+;#define BuildConfig "Debug"
 ; Used to determine which Win32 function to use (ANSI or Unicode version).
 ; Should resolve to "W" since Inno Setup 6 and later since the Unicode version is always used in that case.
 #ifdef UNICODE
