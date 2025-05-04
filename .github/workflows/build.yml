@@ -8,6 +8,7 @@ on:
       - "**.csproj"
       - "**.resx"
       - "**build.yml"
+      - "**.iss"
 
 jobs:
   build:
