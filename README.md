@@ -140,42 +140,52 @@ to 100% always).
 
 The following features are planned for v1.1:
 
-- [ ] A proper installer app
-  - Started and works (kind of), but needs some more work on service install
-    management.
-  - Changes to the YAMDCC updater would need to be made to handle the installer,
-    and would break existing installations (sorry).
-  - A portable ZIP version will still be available for download, but will have
-    Updater support removed.
+- [x] A proper installer app
+  - Available in [Beta 5](https://github.com/Sparronator9999/YAMDCC/releases/tag/v1.1.0-beta.5) and later!
+  - Portable ZIPs will not be provided (despite a previous promise, sorry).
+  - You can enable "portable" mode in the installer to disable creating uninstaller information and Start Menu entries
+    - Equivalent (or at least should be) to the old ZIP releases but with checks for other YAMDCC service installations, etc.
+  - Please test both the installer (including uninstallation process) and updater, and report any bugs you find.
 
 Betas are currently available for download from the [Releases page](https://github.com/Sparronator9999/YAMDCC/releases),
 or by enabling download of pre-release versions in the YAMDCC updater.
+
+### v1.2/v1.3
+
+Not sure yet which order I'll do these in. When one feature is done, it will be released in v1.2, then v1.3 after the other is finished.
+
+- [ ] CLI support
+  - The CLI I started writing at least a year ago will probably be re-written.
+- [ ] Support for keyboard mic/speaker mute LEDs
+  - Apparently this isn't handled by hardware/Windows, but after
+    [reverse-engineering Apple's Boot Camp](https://github.com/Sparronator9999/OpenBootCamp)
+    to get keyboard shortcuts working without it, I really shouldn't be
+    surprised anymore.
+  - If you have information on how these work, please comment on [this issue](https://github.com/Sparronator9999/YAMDCC/issues/82).
+    - I am already aware of BeardOverflow's Linux EC driver for MSI laptops, and will look to this first.
 
 ### Future releases
 
 Below are some planned features for potential future releases:
 
-- [ ] CLI support
-  - Development of a CLI application for YAMDCC has started, but isn't publicly
-    available yet
-    - The CLI is missing a *lot* of features, and could do with a rewrite.
 - [ ] Re-work setup experience
   - All MSI laptops appear to have one of two EC configurations. In the future,
     I plan to first ask which generation of laptop they have (10th-gen Intel or
     later, or 9th-gen Intel or older), then implement auto-detection of laptop
     generation in the future once I figure out when laptops with AMD chips
     started using the "2nd-gen" EC layout.
+  - This would probably need a re-write of the config system, making old configs incompatible, and therefore will probably be included in a v2.0 or later.
+- [ ] Switch to WMI for EC access
+  - This would resolve the reliability issues with attempting to access the EC separately from the OS (which probably uses WMI under the hood).
+  - An [msi-ec](https://github.com/BeardOverflow/msi-ec) developer has reached out to me with more information.
+  - This would also probably be a v2.0 feature.
 - [ ] Plugin system for additional optional features *(needs research)*
-- [ ] Support for keyboard mic/speaker mute LEDs
-  - Apparently this isn't handled by hardware/Windows, but after
-    [reverse-engineering Apple's Boot Camp](https://github.com/Sparronator9999/OpenBootCamp)
-    to get keyboard shortcuts working without it, I really shouldn't be
-    surprised anymore.
 - [ ] GPU switch support
   - Research for this feature has stalled. Since my laptop doesn't appear to
     support this feature, this may be removed from the planned features in the
     future unless someone else figures out how to control the GPU switch
     without MSI Center/Feature Manager.
+  - Comment on [this issue](https://github.com/Sparronator9999/YAMDCC/issues/74) if you know how to get this working without MSI Center.
 - [ ] .NET support
   - Mandatory for Linux support
   - The GUI *should* compile on .NET 8 (and in fact *has* been compiled on .NET 8 before).
