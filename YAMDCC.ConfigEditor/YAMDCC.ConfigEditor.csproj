@@ -37,10 +37,6 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\YAMDCC.Common\YAMDCC.Common.csproj" />
-        <ProjectReference Include="..\YAMDCC.ECInspector\YAMDCC.ECInspector.csproj" />
-        <ProjectReference Include="..\YAMDCC.HotkeyHandler\YAMDCC.HotkeyHandler.csproj" />
-        <ProjectReference Include="..\YAMDCC.Service\YAMDCC.Service.csproj" />
         <ProjectReference Include="..\YAMDCC.IPC\YAMDCC.IPC.csproj" />
-        <ProjectReference Include="..\YAMDCC.Updater\YAMDCC.Updater.csproj" />
     </ItemGroup>
 </Project>

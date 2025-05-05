@@ -30,16 +30,12 @@ AllowUNCPath=no
 AppId={{AFE03526-3AAD-40FA-AF49-03A0150C4229}
 AppName={#AppName}
 AppVersion={#AppVerFriendly} ({#BuildConfig})
-;AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#AppPublisher}
 AppPublisherURL={#AppURL}
 AppSupportURL={#AppURL}/issues
 AppUpdatesURL={#AppURL}/releases
 ArchitecturesAllowed=x86compatible or x64compatible
 ArchitecturesInstallIn64BitMode=x64compatible
-; we already handle stopping YAMDCC service ourselves
-; TODO: fix GitHub Actions using too old InnoSetup version
-;CloseApplicationsFilterExcludes={#AppExeSvc}
 Compression=lzma/ultra64
 DefaultDirName={autopf}\{#AppPublisher}\{#AppName}
 DisableProgramGroupPage=yes
@@ -51,14 +47,15 @@ SetupIconFile=YAMDCC.Updater\fan-update.ico
 SetupMutex=YAMDCC-Setup-{{AFE03526-3AAD-40FA-AF49-03A0150C4229}
 SolidCompression=yes
 SourceDir=..
-Uninstallable=Not WizardIsTaskSelected('portable')
+Uninstallable=not IsPortableMode
 UninstallDisplayIcon={app}\{#AppExeCE}
 WizardStyle=modern
 WizardImageFile=Installer\setup.bmp
 WizardSmallImageFile=Installer\setup-small.bmp
 
 [CustomMessages]
-english.Portable=Portable mode (don't create uninstaller files or entries)
+english.StartMenu=Start menu:
+english.StartIcons=Create Start menu shortcuts
 english.DeskIcons=Create desktop icons
 english.DeskIconsCommon=For all users
 english.DeskIconsUser=For the current user only
@@ -67,18 +64,29 @@ english.LaunchCE=Launch config editor
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
+[Components]
+Name: "main"; Description: "YAMDCC Service and common libraries (required)"; Types: full compact custom; Flags: fixed
+Name: "confeditor"; Description: "Config Editor"; Types: full compact
+Name: "ecinspect"; Description: "EC Inspector"; Types: full
+Name: "hkhandler"; Description: "Hotkey Handler"; Types: full
+Name: "updater"; Description: "Updater"; Types: full compact
+
 [Tasks]
-Name: "portable"; Description: "{cm:Portable}"; Flags: unchecked
+Name: "starticons"; Description: "{cm:StartIcons}"; GroupDescription: "{cm:StartMenu}";
 Name: "deskicons"; Description: "{cm:DeskIcons}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 Name: "deskicons\common"; Description: "{cm:DeskIconsCommon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: exclusive unchecked
 Name: "deskicons\user"; Description: "{cm:DeskIconsUser}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: exclusive unchecked
 
 [Files]
-Source: "YAMDCC.ConfigEditor\bin\{#BuildConfig}\net48\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "YAMDCC.Service\bin\{#BuildConfig}\net48\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Components: main
+Source: "YAMDCC.ConfigEditor\bin\{#BuildConfig}\net48\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Components: confeditor
+Source: "YAMDCC.ECInspector\bin\{#BuildConfig}\net48\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Components: ecinspect
+Source: "YAMDCC.HotkeyHandler\bin\{#BuildConfig}\net48\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Components: hkhandler
+Source: "YAMDCC.Updater\bin\{#BuildConfig}\net48\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Components: updater; Check: Not IsPortableMode
 
 [Icons]
-Name: "{autoprograms}\{#AppName}\{#AppNameCE}"; Filename: "{app}\{#AppExeCE}"
-Name: "{autoprograms}\{#AppName}\{#AppNameHH}"; Filename: "{app}\{#AppExeHH}"
+Name: "{autoprograms}\{#AppName}\{#AppNameCE}"; Filename: "{app}\{#AppExeCE}"; Tasks: starticons; Check: not IsPortableMode
+Name: "{autoprograms}\{#AppName}\{#AppNameHH}"; Filename: "{app}\{#AppExeHH}"; Tasks: starticons; Check: not IsPortableMode
 Name: "{commondesktop}\{#AppName} {#AppNameCE}"; Filename: "{app}\{#AppExeCE}"; Tasks: deskicons\common
 Name: "{commondesktop}\{#AppName} {#AppNameHH}"; Filename: "{app}\{#AppExeHH}"; Tasks: deskicons\common
 Name: "{userdesktop}\{#AppName} {#AppNameCE}"; Filename: "{app}\{#AppExeCE}"; Tasks: deskicons\user
@@ -86,11 +94,11 @@ Name: "{userdesktop}\{#AppName} {#AppNameHH}"; Filename: "{app}\{#AppExeHH}"; Ta
 
 [Run]
 Filename: "{dotnet40}\InstallUtil.exe"; Parameters: """{app}\yamdccsvc.exe"""; StatusMsg: "Installing YAMDCC service..."; Check: ShouldInstallService; Flags: logoutput runhidden
-Filename: "{sys}\net.exe"; Parameters: "start yamdccsvc"; StatusMsg: "Starting YAMDCC service..."; Flags: logoutput runhidden
+Filename: "{sys}\net.exe"; Parameters: "start yamdccsvc"; StatusMsg: "Starting YAMDCC service..."; Check: not IsPortableMode; Flags: logoutput runhidden
 ; Run YAMDCC updater to show "YAMDCC has been updated successfully" message
 ; if run silently, otherwise run Config Editor (if selected during setup)
-Filename: "{app}\Updater.exe"; Parameters: "--updated"; Flags: postinstall runascurrentuser skipifnotsilent
-Filename: "{app}\{#AppExeCE}"; Description: "{cm:LaunchCE}"; Flags: nowait postinstall runascurrentuser skipifsilent
+Filename: "{app}\Updater.exe"; Parameters: "--updated"; Flags: postinstall skipifnotsilent; Components: updater
+Filename: "{app}\{#AppExeCE}"; Description: "{cm:LaunchCE}"; Flags: nowait postinstall runascurrentuser skipifsilent; Components: confeditor
 
 ; Stop and uninstall YAMDCC service before deleting program files
 ; TODO: better YAMDCC service stop/uninstall
@@ -132,6 +140,7 @@ type
 
 var
   ServiceInstalled: Boolean;
+  SetupTypePage: TInputOptionWizardPage;
   PrepareToInstallProgressPage: TOutputProgressWizardPage;
 
 function OpenService(hSCManager: THandle; lpServiceName: string; dwDesiredAccess: DWORD): THandle;
@@ -150,9 +159,17 @@ begin
   Result := SysErrorMessage(DllGetLastError()) + ' (' + IntToStr(DllGetLastError()) + ')';
 end;
 
+function IsPortableMode: Boolean;
+begin
+  Result := SetupTypePage.SelectedValueIndex = 1;
+end;
+
 function ShouldInstallService: Boolean;
 begin
-  Result := not ServiceInstalled
+  if IsPortableMode then
+    Result := False
+  else
+    Result := not ServiceInstalled;
 end;
 
 function GetServiceImagePath(const ServiceName: String): String;
@@ -182,6 +199,12 @@ procedure InitializeWizard;
 var
   S: String;
 begin
+  SetupTypePage := CreateInputOptionPage(wpLicense, 'Setup type', 'How to install YAMDCC', 'Should YAMDCC be installed like any other app, or just extracted to a selected directory?', True, False);
+  SetupTypePage.Add('Standard install (select this option if unsure)');
+  SetupTypePage.Add('Portable mode (extract files only)');
+  SetupTypePage.Values[0] := True;
+  SetupTypePage.Values[1] := False;
+
   S := SetupMessage(msgPreparingDesc);
   StringChange(S, '[name]', '{#AppName}')
   PrepareToInstallProgressPage := CreateOutputProgressPage(SetupMessage(msgWizardPreparing), S);
@@ -196,6 +219,21 @@ begin
     SuppressibleMsgBox(FmtMessage(SetupMessage(msgWinVersionTooLowError), ['.NET Framework', '4.8']), mbCriticalError, MB_OK, IDOK);
 end;
 
+function ShouldSkipPage(PageID: Integer): Boolean;
+begin
+  if IsPortableMode then
+  begin
+    case PageID of
+      wpSelectComponents, wpSelectProgramGroup, wpSelectTasks, wpReady:
+        Result := True;
+    else
+      Result := False;
+    end;
+  end
+  else
+    Result := False;
+end;
+
 // Partially based on: https://stackoverflow.com/a/32476546
 function PrepareToInstall(var NeedsRestart: Boolean): String;
 var
@@ -207,6 +245,11 @@ var
   i: Integer;
 begin
   ServiceInstalled := False;
+
+  // Don't do any YAMDCC service checks if running in portable mode
+  if IsPortableMode() then
+    Exit;
+
   Log('-- YAMDCC service checks --');
   Log('Checking if YAMDCC service is already installed...');
   hSCM := OpenSCManager('', '', SC_MANAGER_CONNECT);
@@ -222,7 +265,68 @@ begin
         ExpectedPath := NormaliseFilePath(ExpandConstant('{app}') + '\{#AppExeSvc}');
         ActualPath := NormaliseFilePath(GetServiceImagePath('yamdccsvc'));
         if SameText(ExpectedPath, ActualPath) then
-          Log('YAMDCC service paths match!')
+        begin
+          Log('YAMDCC service paths match! Querying service status...');
+          if ServiceStatus.dwCurrentState = SERVICE_STOPPED then
+            Log('YAMDCC service is already stopped.')
+          else
+          begin
+            Log('YAMDCC service is running! Stopping it...');
+            if ControlService(hService, SERVICE_CONTROL_STOP, ServiceStatus) then
+            begin
+              Log('YAMDCC service stop requested successfully. Waiting for it to stop...');
+              PrepareToInstallProgressPage.SetProgress(0, 10);
+              PrepareToInstallProgressPage.SetText('Waiting for the YAMDCC service to stop.', 'This shouldn''t take long, but may take up to 10 seconds if the service is unresponsive.');
+              PrepareToInstallProgressPage.Show();
+              try
+                // wait up to 10 seconds (20 half-seconds) for the YAMDCC service to stop
+                for i := 1 to 20 do
+                begin
+                  PrepareToInstallProgressPage.SetProgress(i - 1, 10);
+                  Sleep(500);
+                  if QueryServiceStatus(hService, ServiceStatus) then
+                  begin
+                    if ServiceStatus.dwCurrentState = SERVICE_STOPPED then
+                    begin
+                      Log('Service stopped successfully!');
+                      break;
+                    end
+                    else if ServiceStatus.dwCurrentState <> SERVICE_STOP_PENDING then
+                    begin
+                      Log('Unexpected service state! (' + IntToStr(ServiceStatus.dwCurrentState) + ')');
+                      i := 21;
+                      break;
+                    end;
+                  end
+                  else
+                  begin
+                    Log('Service status query failed!');
+                    Result := 'Failed to query status of YAMDCC service: ' + GetWin32ErrorMsg() + #10#10 +
+                      'Please try installing again. If you get this error again, this is probably a bug, and should be reported to: ' + #10#10 +
+                      'https://github.com/Sparronator9999/YAMDCC/issues';
+                    break;
+                  end;
+                end;
+                if i = 211 then
+                begin
+                  Log('Failed to stop YAMDCC service (timed out/unexpected state)!');
+                  Result := 'Failed to stop the YAMDCC service, either due to a timeout or unexpected service state.' + #10#10 +
+                    'This is probably a bug. Please report it, along with service logs (if any) at:' + #10#10 +
+                    'https://github.com/Sparronator9999/YAMDCC/issues' + #10#10 +
+                    'Service status code: ' + IntToStr(ServiceStatus.dwCurrentState);
+                end;
+              finally
+                PrepareToInstallProgressPage.Hide();
+              end;
+            end
+            else
+            begin
+              Log('Failed to send service stop request!');
+              Result := 'Failed to stop YAMDCC service: ' + GetWin32ErrorMsg() + #10#10 +
+                'Please try stopping it manually with `net stop yamdccsvc` before proceeding with the installation.';
+            end;
+          end;
+        end
         else
         begin
           Log('YAMDCC service paths do NOT match!');
@@ -232,68 +336,6 @@ begin
             'Make sure you uninstalled all previous versions of YAMDCC, then try installing again.' + #10#10 +
             'Expected YAMDCC service location: ' + ExpectedPath + #10
             'Actual YAMDCC service location: ' + ActualPath;
-        end;
-        Log('Querying service status...');
-        if ServiceStatus.dwCurrentState = SERVICE_STOPPED then
-          Log('YAMDCC service is already stopped.')
-        else
-        begin
-          Log('YAMDCC service is running! Stopping it...');
-          if ControlService(hService, SERVICE_CONTROL_STOP, ServiceStatus) then
-          begin
-            Log('YAMDCC service stop requested successfully. Waiting for it to stop...');
-            PrepareToInstallProgressPage.SetProgress(0, 10);
-            PrepareToInstallProgressPage.SetText('Waiting for the YAMDCC service to stop.', 'This shouldn''t take long, but may take up to 10 seconds if the service is unresponsive.');
-            PrepareToInstallProgressPage.Show();
-            try
-              // wait up to 10 seconds (20 half-seconds) for the YAMDCC service to stop
-              for i := 1 to 20 do
-              begin
-                PrepareToInstallProgressPage.SetProgress(i - 1, 10);
-                Sleep(500);
-                if QueryServiceStatus(hService, ServiceStatus) then
-                begin
-                  Log('dwCurrentState = ' + IntToStr(ServiceStatus.dwCurrentState));
-                  if ServiceStatus.dwCurrentState = SERVICE_STOPPED then
-                  begin
-                    Log('Service stopped successfully!');
-                    break;
-                  end
-                  else if ServiceStatus.dwCurrentState <> SERVICE_STOP_PENDING then
-                  begin
-                    Log('Unexpected service state! (' + IntToStr(ServiceStatus.dwCurrentState) + ')');
-                    i := 21;
-                    break;
-                  end;
-                end
-                else
-                begin
-                  Log('Service status query failed!');
-                  Result := 'Failed to query status of YAMDCC service: ' + GetWin32ErrorMsg() + #10#10 +
-                    'Please try installing again. If you get this error again, this is probably a bug, and should be reported to: ' + #10#10 +
-                    'https://github.com/Sparronator9999/YAMDCC/issues';
-                  break;
-                end;
-              end;
-              Log('i = ' + IntToStr(i));
-              if i = 211 then
-              begin
-                Log('Failed to stop YAMDCC service (timed out/unexpected state)!');
-                Result := 'Failed to stop the YAMDCC service, either due to a timeout or unexpected service state.' + #10#10 +
-                  'This is probably a bug. Please report it, along with service logs (if any) at:' + #10#10 +
-                  'https://github.com/Sparronator9999/YAMDCC/issues' + #10#10 +
-                  'Service status code: ' + IntToStr(ServiceStatus.dwCurrentState);
-              end;
-            finally
-              PrepareToInstallProgressPage.Hide();
-            end;
-          end
-          else
-          begin
-            Log('Failed to send service stop request!');
-            Result := 'Failed to stop YAMDCC service: ' + GetWin32ErrorMsg() + #10#10 +
-              'Please try stopping it manually with `net stop yamdccsvc` before proceeding with the installation.';
-          end;
         end;
       end
       else

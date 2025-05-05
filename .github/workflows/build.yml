@@ -44,19 +44,19 @@ jobs:
     - name: Restore solution (including NuGet packages for solution)
       run: msbuild.exe /t:restore /p:configuration="${{ matrix.config }}" /p:RestoreLockedMode=true
 
-    - name: Build solution
+    - name: Compile solution
       run: msbuild.exe YAMDCC.sln /nologo /nr:false /p:DeployOnBuild=true /p:platform="Any CPU" /p:configuration="${{ matrix.config }}"
 
     - name: Copy LICENSE to build path
       run: copy LICENSE.md YAMDCC.ConfigEditor\bin\${{ matrix.config }}\net48
 
-    - name: Build installer
+    - name: Compile installer
       uses: Minionguyjpro/Inno-Setup-Action@v1.2.5
       with:
         path: Installer/YAMDCC-Setup.iss
         options: /O+ "/DBuildConfig=${{ matrix.config }}"
 
-    - name: Upload build artifact
+    - name: Upload compiled installer artifact
       uses: actions/upload-artifact@v4
       with:
         name: "YAMDCC-${{ github.ref_name }}-${{ env.sha_short }}-${{ matrix.config }}"
