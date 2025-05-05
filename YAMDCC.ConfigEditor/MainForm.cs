@@ -134,18 +134,26 @@ internal sealed partial class MainForm : Form
                 break;
         }
 
-        if (!CommonConfig.GetAutoUpdateAsked())
+        if (!CommonConfig.GetAutoUpdateAsked() && File.Exists("./Updater.exe"))
         {
             if (Utils.ShowInfo(Strings.GetString("dlgAutoUpdate"),
                 "Check for updates?", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
                 try
                 {
-                    Process.Start("Updater", "--setautoupdate true");
+                    Process.Start("./Updater.exe", "--setautoupdate true");
                 }
-                catch (FileNotFoundException)
+                catch (Win32Exception ex)
                 {
-                    Utils.ShowError("Updater.exe not found!");
+                    // catch the exception that occurs if the Updater is not found
+                    if (ex.ErrorCode == -2147467259 && ex.NativeErrorCode == 2)
+                    {
+                        Utils.ShowError("Updater.exe not found!");
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
             }
             CommonConfig.SetAutoUpdateAsked(true);
@@ -579,7 +587,22 @@ internal sealed partial class MainForm : Form
                         if (Utils.UninstallService("yamdccsvc"))
                         {
                             // Delete the auto-update scheduled task
-                            Utils.RunCmd("updater", "--setautoupdate false");
+                            try
+                            {
+                                Process.Start("./Updater.exe", "--setautoupdate false");
+                            }
+                            catch (Win32Exception ex)
+                            {
+                                // catch the exception that occurs if the Updater is not found
+                                if (ex.ErrorCode == -2147467259 && ex.NativeErrorCode == 2)
+                                {
+                                    Utils.ShowError("Updater.exe not found!");
+                                }
+                                else
+                                {
+                                    throw;
+                                }
+                            }
 
                             // Only delete service data if the
                             // service uninstalled successfully
@@ -618,11 +641,12 @@ internal sealed partial class MainForm : Form
     {
         try
         {
-            Process.Start("updater", "--checkupdate");
+            Process.Start("./Updater.exe", "--checkupdate");
         }
-        catch (Exception ex)
+        catch (Win32Exception ex)
         {
-            if (ex is Win32Exception or FileNotFoundException)
+            // catch the exception that occurs if the Updater is not found
+            if (ex.ErrorCode == -2147467259 && ex.NativeErrorCode == 2)
             {
                 Utils.ShowError("Updater.exe not found!");
             }

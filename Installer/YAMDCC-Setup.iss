@@ -13,6 +13,7 @@
 #define AppExeCE "ConfigEditor.exe"
 #define AppExeHH "HotkeyHandler.exe"
 #define AppExeSvc "yamdccsvc.exe"
+#define AppExeUpdater "Updater.exe"
 
 ; Used to determine which Win32 function to use (ANSI or Unicode version).
 ; Should resolve to "W" since Inno Setup 6 and later since the Unicode version is always used in that case.
@@ -97,12 +98,13 @@ Filename: "{dotnet40}\InstallUtil.exe"; Parameters: """{app}\yamdccsvc.exe"""; S
 Filename: "{sys}\net.exe"; Parameters: "start yamdccsvc"; StatusMsg: "Starting YAMDCC service..."; Check: not IsPortableMode; Flags: logoutput runhidden
 ; Run YAMDCC updater to show "YAMDCC has been updated successfully" message
 ; if run silently, otherwise run Config Editor (if selected during setup)
-Filename: "{app}\Updater.exe"; Parameters: "--updated"; Flags: postinstall skipifnotsilent; Components: updater
+Filename: "{app}\{#AppExeUpdater}"; Parameters: "--updated"; Flags: postinstall skipifnotsilent; Components: updater
 Filename: "{app}\{#AppExeCE}"; Description: "{cm:LaunchCE}"; Flags: nowait postinstall runascurrentuser skipifsilent; Components: confeditor
 
 ; Stop and uninstall YAMDCC service before deleting program files
 ; TODO: better YAMDCC service stop/uninstall
 [UninstallRun]
+Filename: "{app}\{#AppExeUpdater}"; Parameters: "--setautoupdate false"; RunOnceId: "NoAutoUpdate"; Components: updater
 Filename: "{sys}\net.exe"; Parameters: "stop yamdccsvc"; RunOnceId: "StopSvc"; Flags: logoutput runhidden
 Filename: "{dotnet40}\InstallUtil.exe"; Parameters: "/u ""{app}\yamdccsvc.exe"""; RunOnceId: "DelSvc"; Flags: logoutput runhidden
 
