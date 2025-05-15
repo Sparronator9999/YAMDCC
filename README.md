@@ -296,12 +296,5 @@ This project makes use of the following third-party libraries:
 
 - The [r/MSILaptops](https://redlib.catsarch.com/r/MSILaptops) subreddit for thinking YAMDCC is good enough to deserve a pinned post.
 - @porkmanager for basically being my personal bug bounty hunter.
-- Everyone who has starred this project:
-
-<a href="https://www.star-history.com/#Sparronator9999/YAMDCC&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=sparronator9999/yamdcc&type=Date&theme=dark"/>
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=sparronator9999/yamdcc&type=Date"/>
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=sparronator9999/yamdcc&type=Date"/>
- </picture>
-</a>
+- [Everyone who has starred this project](https://www.star-history.com/#Sparronator9999/YAMDCC&Date)
+  - Unfortunately, the star history graphic isn't working for some reason...
