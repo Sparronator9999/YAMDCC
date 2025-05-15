@@ -18,7 +18,7 @@
         <Title>YAMDCC hotkey handler</Title>
         <UseWindowsForms>true</UseWindowsForms>
         <VersionPrefix>1.1.0</VersionPrefix>
-        <VersionSuffix>beta.6</VersionSuffix>
+        <VersionSuffix>release</VersionSuffix>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>none</DebugType>

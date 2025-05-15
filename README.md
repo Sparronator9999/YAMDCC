@@ -53,7 +53,7 @@ A fast, lightweight MSI Center alternative and fan control utility for MSI lapto
 - **Charging threshold:** This program can limit how much your laptop's battery
   charges to, which can help reduce battery degradation, especially if you
   leave your laptop plugged in all the time.
-- **Lightweight:** YAMDCC takes up less than two megabytes of disk space when
+- **Lightweight:** YAMDCC takes up less than ten megabytes of disk space when
   installed, and is designed to be light on your laptop's CPU.
 - **Configurable:** Almost all settings (including those not accessible through
   the config editor) can be changed with the power of XML.
@@ -106,61 +106,72 @@ wiki page and follow the instructions to get a config for your laptop.
 
 | Feature                         | MSI Center | YAMDCC      |
 |---------------------------------|------------|-------------|
-| Installed size                  | ~950 MB²   | ~2.5 MB²    |
+| Installed size¹                 | ~950 MB    | ~5.8 MB     |
 | Fan control                     | ✔          | ✔           |
 | Temp. threshold control         | ❌          | ✔           |
 | Multi-fan profile support       | ❌          | ✔           |
-| Charge threshold setting        | Limited³   | ✔           |
+| Charge threshold setting        | Limited²   | ✔           |
 | Perf. mode setting              | ✔          | ✔           |
-| Win/Fn key swap¹                | ✔          | ✔           |
+| Win/Fn key swap                 | ✔          | ✔³          |
 | Win key disable                 | ✔          | ❌           |
-| Keyboard backlight adjustment¹  | ❌          | ✔           |
-| Hardware monitoring             | ✔          | Limited⁴    |
+| Keyboard backlight adjustment   | ❌          | ✔⁴          |
+| Hardware monitoring             | ✔          | Limited⁵    |
 | Other MSI Center features       | ✔          | ❌           |
 | Open source                     | ❌          | ✔           |
 
-1: Support for this feature depends on the specific MSI laptop model and YAMDCC
-support.
-
-2: As of v2.0.38, MSI Center takes about 950 MB of storage space when counting
+1: As of v2.0.38, MSI Center takes about 950 MB of storage space when counting
 the UWP app (749 MB) and the files installed on first launch to
 `C:\Program Files (x86)\MSI` (205 MB). YAMDCC's installed size is based on the
-Release build of [v1.0](https://github.com/Sparronator9999/YAMDCC/releases/tag/v1.0.0),
-and includes all unzipped program files and included config XMLs.
+Release build of [v1.1](https://github.com/Sparronator9999/YAMDCC/releases/tag/v1.1.0)
+when installed normally (plus uninstaller) with all components selected (the default).
 
-3: MSI Center only supports setting the charge threshold to 60%, 80%, or 100%,
+2: MSI Center only supports setting the charge threshold to 60%, 80%, or 100%,
 while YAMDCC can set this to anything between 0 and 100% (with 0 meaning charge
 to 100% always).
 
-4: YAMDCC only supports monitoring the CPU/GPU temperatures and fan speeds via EC.
+3: Not supported by older MSI laptops under YAMDCC. Not sure about MSI Center,
+however.
+
+4: Not supported by laptops without a keyboard backlight (obviously), or by
+most newer laptops with RGB keyboard backlights.
+
+5: YAMDCC only supports monitoring the CPU/GPU temperatures and fan speeds via EC.
 
 ## Roadmap
 
-### v1.1
-
-The following features are planned for v1.1:
-
-- [x] A proper installer app
-  - Available in [Beta 5](https://github.com/Sparronator9999/YAMDCC/releases/tag/v1.1.0-beta.5) and later!
-  - Portable ZIPs will not be provided (despite a previous promise, sorry).
-  - You can enable "portable" mode in the installer to disable creating uninstaller information and Start Menu entries
-    - Equivalent (or at least should be) to the old ZIP releases but with checks for other YAMDCC service installations, etc.
-  - Please test both the installer (including uninstallation process) and updater, and report any bugs you find.
-
-Betas are currently available for download from the [Releases page](https://github.com/Sparronator9999/YAMDCC/releases),
-or by enabling download of pre-release versions in the YAMDCC updater.
-
-### v1.2/v1.3
-
-Not sure yet which order I'll do these in. When one feature is done, it will be released in v1.2, then v1.3 after the other is finished.
+### v1.2
 
 - [ ] CLI support
   - The CLI I started writing at least a year ago will probably be re-written.
+
+### v2.0
+
+- [ ] Re-write config system
+  - YAMDCC was originally written to allow anyone to add support for their own
+    laptop brands (by changing which and how many EC registers are written),
+    however since then it has added many features specific to MSI laptops.
+  - The new config system would simplify configs by removing register configs
+    and only storing user settings (custom fan profiles, charge threshold, etc.)
+  - Old configs would most likely be incompatible, but can be easily migrated
+    to v2.0, possibly via a migrator app/script.
+  - Since there are two main EC generations for MSI laptops, the user can be
+    asked when their laptop was released until detection is implemeted
+    (see next feature).
+- [ ] Switch to WMI for EC access
+  - An [msi-ec](https://github.com/BeardOverflow/msi-ec) developer has reached
+    out to me with more information.
+  - This would resolve the reliability issues with attempting to access the EC
+    separately from the OS (which probably uses WMI under the hood).
+  - This could also make laptop EC generation detection possible, eliminating
+    the need to ask the user when their laptop was released.
+  - YAMDCC can also stop relying on WinRing0 for most features (I have been
+    told by an msi-ec developer that "gen 1" ECs may still require a kernel
+    driver for some features, however).
 - [ ] Support for keyboard mic/speaker mute LEDs
   - Apparently this isn't handled by hardware/Windows, but after
     [reverse-engineering Apple's Boot Camp](https://github.com/Sparronator9999/OpenBootCamp)
-    to get keyboard shortcuts working without it, I really shouldn't be
-    surprised anymore.
+    to get keyboard shortcuts working without its original Boot Camp Manager
+    app (drivers are still required), I really shouldn't be surprised anymore.
   - If you have information on how these work, please comment on [this issue](https://github.com/Sparronator9999/YAMDCC/issues/82).
     - I am already aware of BeardOverflow's Linux EC driver for MSI laptops, and will look to this first.
 
@@ -168,17 +179,6 @@ Not sure yet which order I'll do these in. When one feature is done, it will be 
 
 Below are some planned features for potential future releases:
 
-- [ ] Re-work setup experience
-  - All MSI laptops appear to have one of two EC configurations. In the future,
-    I plan to first ask which generation of laptop they have (10th-gen Intel or
-    later, or 9th-gen Intel or older), then implement auto-detection of laptop
-    generation in the future once I figure out when laptops with AMD chips
-    started using the "2nd-gen" EC layout.
-  - This would probably need a re-write of the config system, making old configs incompatible, and therefore will probably be included in a v2.0 or later.
-- [ ] Switch to WMI for EC access
-  - This would resolve the reliability issues with attempting to access the EC separately from the OS (which probably uses WMI under the hood).
-  - An [msi-ec](https://github.com/BeardOverflow/msi-ec) developer has reached out to me with more information.
-  - This would also probably be a v2.0 feature.
 - [ ] Plugin system for additional optional features *(needs research)*
 - [ ] GPU switch support
   - Research for this feature has stalled. Since my laptop doesn't appear to
