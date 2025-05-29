@@ -407,12 +407,12 @@ public sealed class YAMDCC_Config
             }
         }
 
-        if (KeySwapConf?.OnVal == KeySwapConf?.OffVal)
+        if (KeySwapConf is not null && KeySwapConf.OnVal == KeySwapConf.OffVal)
         {
             return false;
         }
 
-        if (KeyLightConf?.MinVal >= KeyLightConf?.MaxVal)
+        if (KeyLightConf is not null && KeyLightConf.MinVal >= KeyLightConf.MaxVal)
         {
             return false;
         }
