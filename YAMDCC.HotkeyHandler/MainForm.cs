@@ -641,14 +641,16 @@ public partial class MainForm : Form
         switch (hk.Action)
         {
             case HotkeyAction.OpenConfEditor:
+                string pathCE = Path.GetFullPath(@".\ConfigEditor.exe");
                 try
                 {
-                    Process.Start(@".\ConfigEditor.exe");
+                    Process.Start(pathCE);
                 }
                 catch (Win32Exception ex)
                 {
                     Utils.ShowError(
-                        "Failed to open Config Editor:\n" +
+                        $"Failed to open Config Editor\n" +
+                        $"(located at: {pathCE}):\n" +
                         $"{ex.Message} ({ex.NativeErrorCode})");
                 }
                 break;
