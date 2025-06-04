@@ -12,7 +12,7 @@ assignees: Sparronator9999
 <!-- To check the boxes below, replace the space within the square brackets with an x, i.e. change [ ] to [x].
      Leaving the space in (i.e. [ x] or [x ]) will cause the check box to not display properly. -->
 
-- [ ] This issue is not a [feature request](https://github.com/Sparronator9999/YAMDCC/issues/new?template=feature_request.md) or [bug report](https://github.com/Sparronator9999/YAMDCC/issues/new?template=question.md).
+- [ ] This issue is not a [feature request](https://github.com/Sparronator9999/YAMDCC/issues/new?template=feature_request.md) or [question](https://github.com/Sparronator9999/YAMDCC/issues/new?template=question.md).
 - [ ] I have searched the [issue tracker](https://github.com/Sparronator9999/YAMDCC/issues?q=label:"type:+bug") for duplicate or similar bug reports.
 - [ ] I have not answered the above questions truthfully.
 
