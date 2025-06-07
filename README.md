@@ -77,8 +77,11 @@ Currently, there are configs for the following laptops:
   - MSI GF63 Thin 11SC
   - MSI Katana GF66 12UG (thanks @porkmanager)
   - MSI Modern 15 A5M (thanks @tedomi2705)
+  - MSI Stealth 15M A11SDK (thanks @l1ngu)
   - MSI Stealth GS76 11UG (thanks @gemSquared)
   - MSI Titan GT77HX 13VH (thanks @noteMASTER11)
+  - MSI Vector 16 HX A14VHG (thanks @KamykJr)
+  - MSI Vector 16 HX AI A2XWIG (thanks @Peter42R)
 
 There are also generic configs that should work with most MSI laptops, but with
 an incorrect default config. You can use the EC-to-config feature to get the
