@@ -17,8 +17,8 @@
         <TargetFramework>net48</TargetFramework>
         <Title>YAMDCC updater</Title>
         <UseWindowsForms>true</UseWindowsForms>
-        <VersionPrefix>1.1.0</VersionPrefix>
-        <VersionSuffix>release</VersionSuffix>
+        <VersionPrefix>1.1.1</VersionPrefix>
+        <VersionSuffix>dev</VersionSuffix>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>none</DebugType>

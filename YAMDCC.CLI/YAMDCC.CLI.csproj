@@ -1,9 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <AnalysisLevel>latest-recommended</AnalysisLevel>
-        <ApplicationManifest>app.manifest</ApplicationManifest>
-        <AssemblyName>ec-inspect</AssemblyName>
-        <AssemblyTitle>YAMDCC EC inspector</AssemblyTitle>
+        <AssemblyName>yamdcc</AssemblyName>
+        <AssemblyTitle>YAMDCC CLI</AssemblyTitle>
         <Authors>Sparronator9999</Authors>
         <Copyright>Copyright © 2025 Sparronator9999 (and Contributors)</Copyright>
         <EnableNETAnalyzers>True</EnableNETAnalyzers>
@@ -14,9 +13,9 @@
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <RuntimeIdentifiers>win7-x64;win7-x86;win-x64;win-x86</RuntimeIdentifiers>
         <TargetFramework>net48</TargetFramework>
-        <Title>YAMDCC EC inspector</Title>
+        <Title>YAMDCC CLI</Title>
         <UseWindowsForms>true</UseWindowsForms>
-        <VersionPrefix>1.1.1</VersionPrefix>
+        <VersionPrefix>1.2.0</VersionPrefix>
         <VersionSuffix>dev</VersionSuffix>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
@@ -24,6 +23,11 @@
     </PropertyGroup>
     <ItemGroup>
       <ProjectReference Include="..\YAMDCC.Common\YAMDCC.Common.csproj" />
-      <ProjectReference Include="..\YAMDCC.ECAccess\YAMDCC.ECAccess.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Update="Strings.resx">
+            <DependentUpon>Strings.cs</DependentUpon>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
     </ItemGroup>
 </Project>

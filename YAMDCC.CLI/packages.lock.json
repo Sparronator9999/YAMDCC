@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "dependencies": {
+    ".NETFramework,Version=v4.8": {
+      "yamdcc.common": {
+        "type": "Project"
+      }
+    },
+    ".NETFramework,Version=v4.8/win-x64": {},
+    ".NETFramework,Version=v4.8/win-x86": {},
+    ".NETFramework,Version=v4.8/win7-x64": {},
+    ".NETFramework,Version=v4.8/win7-x86": {}
+  }
+}
