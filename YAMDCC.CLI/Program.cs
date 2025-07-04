@@ -52,14 +52,10 @@ internal static class Program
         }
         else
         {
-            // print progressively squashed YAMDCC logo if CMD window is very small
+            // don't print logo if CMD window is too small
             if (Console.BufferWidth >= 80)
             {
                 Console.WriteLine(Strings.GetString("Logo", Utils.GetVerString()));
-            }
-            else if (Console.BufferWidth >= 60)
-            {
-                Console.WriteLine(Strings.GetString("LogoS", Utils.GetVerString()));
             }
             else
             {
@@ -81,14 +77,7 @@ internal static class Program
 
     private static void PrintHelp()
     {
-        Console.WriteLine(
-            $"Usage: {AppDomain.CurrentDomain.FriendlyName} <options> [...]\n\n" +
-            "Program information:\n" +
-            "  -H, -help\tPrint this help screen.\n" +
-            "  -V, -version\tPrint YAMDCC's current version.\n" +
-            "  -L, -license\tPrint full copyright and license information.\n\n" +
-            "...that's it for now. More stuff to be implemented Soon (TM)." +
-            "");
+        Console.WriteLine(Strings.GetString("Help", AppDomain.CurrentDomain.FriendlyName));
     }
 
     private static void ParseArgs(string[] args)

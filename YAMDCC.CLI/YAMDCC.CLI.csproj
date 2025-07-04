@@ -17,6 +17,7 @@
         <UseWindowsForms>true</UseWindowsForms>
         <VersionPrefix>1.2.0</VersionPrefix>
         <VersionSuffix>dev</VersionSuffix>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)'=='Release'">
         <DebugType>none</DebugType>

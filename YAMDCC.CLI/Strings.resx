@@ -140,8 +140,8 @@ along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
 </value>
   </data>
   <data name="Logo" xml:space="preserve">
-    <value>                                     _                                  _   _
-                                    | |                                | | |_|
+    <value>				     _  				_   _
+				    | | 			       | | |_|
   _    _   ______   _________   ____| |  ______   ______       ______  | |  _
  | |  | | |  __  | |  _   _  | |  __  | |  ____| |  ____|     |  ____| | | | |
  | |  | | | |  | | | | | | | | | |  | | | |      | |          | |      | | | |
@@ -154,16 +154,51 @@ along with this program.  If not, see &lt;https://www.gnu.org/licenses/&gt;.
   <data name="Title" xml:space="preserve">
     <value>YAMDCC CLI - v{0}</value>
   </data>
-  <data name="LogoS" xml:space="preserve">
-    <value>                                _                   _   _
-                               | |                 | | |_|
-  _   _   _____   _______   ___| |  _____   _____  | |  _
- | | | | |  _  | |       | |  _  | |  ___| |  ___| | | | |
- | | | | | | | | | || || | | | | | | |     | |     | | | |
- | |_| | | |/  | | || || | | |_| | | |___  | |___  | | | |
- |___  | |__/|_| |_||_||_| |_____| |_____| |_____| |_| |_|
-  ___| |
- |_____|  v{0}
-</value>
+  <data name="Help" xml:space="preserve">
+    <value>Usage: {0} &lt;options&gt; [...]
+
+Program information:
+  -H, -help	Print this help screen.
+  -V, -version	Print YAMDCC's current version.
+  -L, -license	Print full copyright and license information.
+
+Basic commands:
+  -I, -info	Print information about a config, including available options
+		for `-fan`, `-profile`, and `-perfmode`.
+  -M, -monitor	Show the fan speed/RPM/temperature monitor
+		(general info, fan profiles, etc.)
+
+Fan profile management:
+  -F, -fan	The fan to modify profiles for
+  -P, -profile	The fan profile to modify
+  -N, -new	Create a new fan profile (overrides `-profile`)
+  -D, -delete	Delete the fan profile specified by `-profile`
+
+  -S, -speed	Set a profile's speed/temperature point, in the format
+		&lt;idx,speed,up_t,down_t&gt;. Use -1 to keep original value.
+		The shorter form &lt;idx,speed&gt; is also accepted, and will
+		adjust only the fan speed at the given point.
+  -chargelim	Set the laptop charge limit.
+  -perfmode	If `-profile` is unspecified, sets the default performance
+		mode for all fan profiles.
+		If `-profile` is specified, sets that profile's performance
+		mode.
+  -keylight	Sets the keyboard backlight on supported laptops to the
+		specified brightness (0-3).
+
+Config management:
+  -C, -config	Make changes to the specified config
+		(instead of the currently loaded one).
+  -A, -apply	Apply the config specified by `-config` to the computer.
+		If `-config` is unspecified, re-applies the currently loaded
+		config.
+  -author	Set the config author.
+
+Notes:
+  - All options will apply to the currently loaded config unless otherwise
+    specified with `-config`.
+  - Settings won't be applied to the system unless `-apply` is specified on
+    the command line. Use this to make multiple changes to a config before
+    applying new settings.</value>
   </data>
 </root>
