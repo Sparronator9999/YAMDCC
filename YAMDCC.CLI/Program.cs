@@ -17,8 +17,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using YAMDCC.Common;
 using YAMDCC.Common.Configs;
+using YAMDCC.IPC;
 
 namespace YAMDCC.CLI;
 
@@ -30,6 +32,12 @@ internal static class Program
     /// arguments passed with the verb.
     /// </summary>
     private static readonly Dictionary<string, string> Args = [];
+
+    /// <summary>
+    /// The client that connects to the YAMDCC Service
+    /// </summary>
+    private static readonly NamedPipeClient<ServiceResponse, ServiceCommand> IPCClient =
+        new("YAMDCC-Server");
 
     private static void Main(string[] args)
     {
@@ -256,6 +264,65 @@ internal static class Program
             Console.ForegroundColor = fgColor;
         }
 
+        // Look up fan and profile indexes by name if fanIdx/profIdx are -1:
+        if (fanIdx == -1)
+        {
+            for (int i = 0; i < cfg.FanConfs.Count; i++)
+            {
+                if (cfg.FanConfs[i].Name == fanName)
+                {
+                    fanIdx = i;
+                    break;
+                }
+            }
+        }
+
+        if (profIdx == -1 && fanIdx != -1)
+        {
+            FanConf fanCfg =  cfg.FanConfs[fanIdx];
+            for (int i = 0; i < fanCfg.FanCurveConfs.Count; i++)
+            {
+                if (fanCfg.FanCurveConfs[i].Name == fanName)
+                {
+                    profIdx = i;
+                    break;
+                }
+            }
+        }
+
+        if (ecMonitor && ConnectSvc())
+        {
+            Console.Clear();
+            Console.WriteLine("YAMDCC EC monitor");
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine("   Fan");
+            Console.WriteLine("  Temp");
+            Console.WriteLine(" Speed");
+            Console.WriteLine("   RPM");
+            Console.WriteLine();
+            Console.ForegroundColor = fgColor;
+            Console.WriteLine("Press Ctrl+C to exit");
+
+            for (int i = 0; i < cfg.FanConfs.Count; i++)
+            {
+                Console.SetCursorPosition((i + 1) * 10, 2);
+                Console.Write(cfg.FanConfs[i].Name);
+            }
+
+            while (true)
+            {
+                for (int i = 0; i < cfg.FanConfs.Count; i++)
+                {
+                    IPCClient.PushMessage(new ServiceCommand(Command.GetTemp, i));
+                    IPCClient.PushMessage(new ServiceCommand(Command.GetFanSpeed, i));
+                    IPCClient.PushMessage(new ServiceCommand(Command.GetFanRPM, i));
+                }
+
+                Thread.Sleep(1000);
+            }
+        }
+
         if (showInfo)
         {
             if (cfg is null)
@@ -369,6 +436,48 @@ internal static class Program
         Console.WriteLine(Strings.GetString("Help", AppDomain.CurrentDomain.FriendlyName));
     }
 
+    /// <summary>
+    /// Connects to the YAMDCC service, if not already connected.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true"/> if connected successfully, otherwise <see langword="false"/>.
+    /// </returns>
+    private static bool ConnectSvc()
+    {
+        ConsoleColor fgColor = Console.ForegroundColor;
+        if (!Utils.IsAdmin())
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"ERROR: Admin privileges required to connect to the YAMDCC service.");
+            Console.ForegroundColor = fgColor;
+            return false;
+        }
+
+        // return true if we already connected to the YAMDCC service
+        if (IPCClient.Connection is not null && IPCClient.Connection.IsConnected)
+        {
+            return true;
+        }
+
+        IPCClient.ServerMessage += new EventHandler<PipeMessageEventArgs<ServiceResponse, ServiceCommand>>(IPCMessage);
+        IPCClient.Start();
+        Console.WriteLine("Connecting to YAMDCC service...");
+        if (IPCClient.WaitForConnection(5000))
+        {
+            Console.WriteLine("Connected successfully!");
+            return true;
+        }
+        else
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"ERROR: failed to connect to the YAMDCC service!");
+            Console.WriteLine("Make sure the service is installed and running;");
+            Console.WriteLine("try `net start yamdccsvc` to start the YAMDCC service.");
+            Console.ForegroundColor = fgColor;
+            return false;
+        }
+    }
+
     private static void ParseArgs(string[] args)
     {
         string verb = string.Empty,
@@ -411,5 +520,44 @@ internal static class Program
     {
         key = tuple.Key;
         value = tuple.Value;
+    }
+    private static void IPCMessage(object sender, PipeMessageEventArgs<ServiceResponse, ServiceCommand> e)
+    {
+        object[] args = e.Message.Value;
+        switch (e.Message.Response)
+        {
+            case Response.Temp:
+            {
+                if (args.Length == 2 && args[0] is int fan && args[1] is int temp)
+                {
+                    Console.SetCursorPosition((fan + 1) * 10, 3);
+                    Console.Write($"{temp,4} °C");
+                }
+                break;
+            }
+            case Response.FanSpeed:
+            {
+                if (args.Length == 2 && args[0] is int fan && args[1] is int speed)
+                {
+                    Console.SetCursorPosition((fan + 1) * 10, 4);
+                    Console.Write($"{speed,4} %");
+                }
+                break;
+            }
+            case Response.FanRPM:
+            {
+                if (args.Length == 2 && args[0] is int fan && args[1] is int rpm)
+                {
+                    if (rpm < 0)
+                    {
+                        rpm = 0;
+                    }
+                    Console.SetCursorPosition((fan + 1) * 10, 5);
+                    Console.Write($"{rpm,4} RPM");
+                }
+                break;
+            }
+        }
+        Console.SetCursorPosition(0, 6);
     }
 }

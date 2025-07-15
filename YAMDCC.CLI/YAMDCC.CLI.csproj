@@ -23,7 +23,8 @@
         <DebugType>none</DebugType>
     </PropertyGroup>
     <ItemGroup>
-      <ProjectReference Include="..\YAMDCC.Common\YAMDCC.Common.csproj" />
+        <ProjectReference Include="..\YAMDCC.Common\YAMDCC.Common.csproj" />
+        <ProjectReference Include="..\YAMDCC.IPC\YAMDCC.IPC.csproj" />
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Update="Strings.resx">
