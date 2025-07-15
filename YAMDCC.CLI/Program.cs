@@ -16,7 +16,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using YAMDCC.Common;
+using YAMDCC.Common.Configs;
 
 namespace YAMDCC.CLI;
 
@@ -125,11 +127,6 @@ internal static class Program
                         continue;
                     }
                     break;
-                default:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine($"WARNING: Unknown argument `{verb}`");
-                    Console.ForegroundColor = fgColor;
-                    continue;
             }
 
             // actually parse arguments
@@ -229,6 +226,11 @@ internal static class Program
                     break;
                 case "author":
                     break;
+                default:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine($"WARNING: Unknown argument `{verb}`");
+                    Console.ForegroundColor = fgColor;
+                    continue;
             }
         }
 
@@ -240,7 +242,126 @@ internal static class Program
         }
         #endregion
 
+        #region The actual command logic
+        YAMDCC_Config cfg = null;
+        try
+        {
+            cfg = YAMDCC_Config.Load(confPath);
+        }
+        catch (Exception ex)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"WARNING: Failed to load config at {confPath}, most commands will not work!");
+            Console.WriteLine($"{ex.GetType()}: {ex.Message}");
+            Console.ForegroundColor = fgColor;
+        }
 
+        if (showInfo)
+        {
+            if (cfg is null)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"ERROR: No config is loaded, cannot show config info!");
+                Console.ForegroundColor = fgColor;
+            }
+            else
+            {
+                Console.WriteLine("~~~~~ Config info ~~~~~");
+                Console.WriteLine($"Author: {cfg.Author}");
+                Console.WriteLine($"Laptop manufacturer: {cfg.Manufacturer}");
+                Console.WriteLine($"Laptop model: {cfg.Model}");
+                if (cfg.FirmVerSupported)
+                {
+                    Console.WriteLine($"EC firmware version: {cfg.FirmVer}");
+                    Console.WriteLine($"EC firmware date: {cfg.FirmDate}");
+                }
+                else
+                {
+                    Console.WriteLine("EC firmware version: (unsupported)");
+                }
+
+                for (int i = 0; i < cfg.FanConfs.Count; i++)
+                {
+                    FanConf fanCfg = cfg.FanConfs[i];
+                    FanCurveConf curveCfg = fanCfg.FanCurveConfs[fanCfg.CurveSel];
+
+                    Console.WriteLine();
+                    Console.WriteLine($"~~~~~ {i}: {fanCfg.Name} ~~~~~");
+                    Console.WriteLine($"Fan speed range: {fanCfg.MinSpeed}-{fanCfg.MaxSpeed}%");
+                    Console.WriteLine($"Current fan profile: {curveCfg.Name}");
+                    Console.WriteLine("Available fan profiles:");
+                    for (int j = 0; j < fanCfg.FanCurveConfs.Count; j++)
+                    {
+                        Console.WriteLine($"  {j}: {fanCfg.FanCurveConfs[j].Name}");
+                    }
+
+                    Console.WriteLine();
+                    Console.WriteLine("Current fan profile settings:");
+
+                    StringBuilder
+                        fanSpds = new("  Speed (%): "),
+                        tUps =      new("    Up (°C): "),
+                        tDowns =    new("  Down (°C): ");
+
+                    for (int j = 0; j < curveCfg.TempThresholds.Count; j++)
+                    {
+                        fanSpds.Append($"{curveCfg.TempThresholds[j].FanSpeed,3} ");
+                        if (j == 0)
+                        {
+                            tUps.Append("  L ");
+                        }
+                        else
+                        {
+                            tUps.Append($"{curveCfg.TempThresholds[j].UpThreshold,3} ");
+                        }
+
+                        if (j == curveCfg.TempThresholds.Count - 1)
+                        {
+                            tDowns.Append("  H ");
+                        }
+                        else
+                        {
+                            tDowns.Append($"{curveCfg.TempThresholds[j + 1].DownThreshold,3} ");
+                        }
+                    }
+                    Console.WriteLine($"{fanSpds}");
+                    Console.WriteLine($"{tUps}");
+                    Console.WriteLine($"{tDowns}");
+                }
+
+                Console.WriteLine();
+                if (cfg.ChargeLimitConf is not null ||
+                    cfg.PerfModeConf is not null ||
+                    cfg.KeySwapConf is not null)
+                {
+                    Console.WriteLine("~~~~~ Extras ~~~~~");
+                    if (cfg.ChargeLimitConf is not null)
+                    {
+                        if (cfg.ChargeLimitConf.CurVal == 0)
+                        {
+                            Console.WriteLine($"Charge threshold: disabled");
+                        }
+                        Console.WriteLine($"Charge threshold: {cfg.ChargeLimitConf.CurVal}%");
+                    }
+                    if (cfg.KeySwapConf is not null)
+                    {
+                        Console.WriteLine($"Win/Fn key swap: {(cfg.KeySwapConf.Enabled ? "enabled" : "disabled")}");
+                    }
+                    if (cfg.PerfModeConf is not null)
+                    {
+                        Console.WriteLine();
+                        PerfModeConf pMode = cfg.PerfModeConf;
+                        Console.WriteLine($"Default performance mode: {pMode.PerfModes[pMode.ModeSel].Name}");
+                        Console.WriteLine($"Available performance modes:");
+                        for (int i = 0; i < pMode.PerfModes.Count; i++)
+                        {
+                            Console.WriteLine($"  {i}: {pMode.PerfModes[i].Name}");
+                        }
+                    }
+                }
+            }
+        }
+        #endregion
     }
 
     private static void PrintHelp()
