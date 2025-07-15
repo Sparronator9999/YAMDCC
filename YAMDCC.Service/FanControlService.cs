@@ -159,6 +159,9 @@ internal sealed class FanControlService : ServiceBase
 
     private void StopSvc()
     {
+        // disable Full Blast if it was enabled while running
+        SetFullBlast(0);
+
         Log.Info(Strings.GetString("svcStopping"));
 
         // Stop the IPC server:

@@ -112,6 +112,8 @@ internal sealed partial class MainForm : Form
         };
         tmrSvcTimeout.Tick += new EventHandler(tmrSvcTimeout_Tick);
 
+        tsiFBExit.Checked = CommonConfig.GetDisableFBOnExit();
+
         switch (CommonConfig.GetLogLevel())
         {
             case LogLevel.None:
@@ -209,8 +211,9 @@ internal sealed partial class MainForm : Form
     protected override void OnFormClosing(FormClosingEventArgs e)
     {
         base.OnFormClosing(e);
-        // Disable Full Blast if it was enabled while the program was running:
-        if (chkFullBlast.Checked)
+        // Disable Full Blast if it was enabled while the program
+        // was running and the user wants it disabled on exit:
+        if (chkFullBlast.Checked && CommonConfig.GetDisableFBOnExit())
         {
             SendSvcMessage(new ServiceCommand(Command.SetFullBlast, 0));
         }
@@ -530,6 +533,11 @@ internal sealed partial class MainForm : Form
         tsiLogWarn.Checked = false;
         tsiLogError.Checked = false;
         tsiLogFatal.Checked = true;
+    }
+
+    private void tsiFBExit_Click(object sender, EventArgs e)
+    {
+        CommonConfig.SetDisableFBOnExit(((ToolStripMenuItem)sender).Checked);
     }
 
     private void tsiStopSvc_Click(object sender, EventArgs e)

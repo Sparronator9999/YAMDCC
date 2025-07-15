@@ -130,6 +130,7 @@ namespace YAMDCC.ConfigEditor
             this.lblFanRPM = new System.Windows.Forms.Label();
             this.lblTemp = new System.Windows.Forms.Label();
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tsiFBExit = new System.Windows.Forms.ToolStripMenuItem();
             menuStrip = new System.Windows.Forms.MenuStrip();
             sep1 = new System.Windows.Forms.ToolStripSeparator();
             sep2 = new System.Windows.Forms.ToolStripSeparator();
@@ -267,6 +268,7 @@ namespace YAMDCC.ConfigEditor
             this.tsiAdvanced,
             sep5,
             tsiLogLevel,
+            this.tsiFBExit,
             this.tsiStopSvc,
             this.tsiUninstall});
             this.tsiOptions.Name = "tsiOptions";
@@ -368,42 +370,42 @@ namespace YAMDCC.ConfigEditor
             // tsiLogDebug
             // 
             this.tsiLogDebug.Name = "tsiLogDebug";
-            this.tsiLogDebug.Size = new System.Drawing.Size(119, 22);
+            this.tsiLogDebug.Size = new System.Drawing.Size(180, 22);
             this.tsiLogDebug.Text = "Debug";
             this.tsiLogDebug.Click += new System.EventHandler(this.tsiLogDebug_Click);
             // 
             // tsiLogInfo
             // 
             this.tsiLogInfo.Name = "tsiLogInfo";
-            this.tsiLogInfo.Size = new System.Drawing.Size(119, 22);
+            this.tsiLogInfo.Size = new System.Drawing.Size(180, 22);
             this.tsiLogInfo.Text = "Info";
             this.tsiLogInfo.Click += new System.EventHandler(this.tsiLogInfo_Click);
             // 
             // tsiLogWarn
             // 
             this.tsiLogWarn.Name = "tsiLogWarn";
-            this.tsiLogWarn.Size = new System.Drawing.Size(119, 22);
+            this.tsiLogWarn.Size = new System.Drawing.Size(180, 22);
             this.tsiLogWarn.Text = "Warning";
             this.tsiLogWarn.Click += new System.EventHandler(this.tsiLogWarn_Click);
             // 
             // tsiLogError
             // 
             this.tsiLogError.Name = "tsiLogError";
-            this.tsiLogError.Size = new System.Drawing.Size(119, 22);
+            this.tsiLogError.Size = new System.Drawing.Size(180, 22);
             this.tsiLogError.Text = "Error";
             this.tsiLogError.Click += new System.EventHandler(this.tsiLogError_Click);
             // 
             // tsiLogFatal
             // 
             this.tsiLogFatal.Name = "tsiLogFatal";
-            this.tsiLogFatal.Size = new System.Drawing.Size(119, 22);
+            this.tsiLogFatal.Size = new System.Drawing.Size(180, 22);
             this.tsiLogFatal.Text = "Fatal";
             this.tsiLogFatal.Click += new System.EventHandler(this.tsiLogFatal_Click);
             // 
             // tsiLogNone
             // 
             this.tsiLogNone.Name = "tsiLogNone";
-            this.tsiLogNone.Size = new System.Drawing.Size(119, 22);
+            this.tsiLogNone.Size = new System.Drawing.Size(180, 22);
             this.tsiLogNone.Text = "Disabled";
             this.tsiLogNone.Click += new System.EventHandler(this.tsiLogNone_Click);
             // 
@@ -1100,6 +1102,14 @@ namespace YAMDCC.ConfigEditor
             this.tblMain.Size = new System.Drawing.Size(540, 416);
             this.tblMain.TabIndex = 1;
             // 
+            // tsiFBExit
+            // 
+            this.tsiFBExit.CheckOnClick = true;
+            this.tsiFBExit.Name = "tsiFBExit";
+            this.tsiFBExit.Size = new System.Drawing.Size(257, 22);
+            this.tsiFBExit.Text = "Disable Full &Blast on exit";
+            this.tsiFBExit.Click += new System.EventHandler(this.tsiFBExit_Click);
+            // 
             // MainForm
             // 
             this.AcceptButton = this.btnApply;
@@ -1202,5 +1212,6 @@ namespace YAMDCC.ConfigEditor
         private System.Windows.Forms.TextBox txtFirmDate;
         private System.Windows.Forms.TextBox txtFirmVer;
         private System.Windows.Forms.ComboBox cboProfPerfMode;
+        private System.Windows.Forms.ToolStripMenuItem tsiFBExit;
     }
 }

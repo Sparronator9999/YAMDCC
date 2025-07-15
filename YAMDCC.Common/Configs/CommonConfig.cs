@@ -63,6 +63,13 @@ public class CommonConfig
     public LogLevel LogLevel { get; set; } = LogLevel.Debug;
 
     /// <summary>
+    /// <see langword="true"/> to disable Full Blast when exiting the YAMDCC config
+    /// editor, otherwise <see langword="false"/>.
+    /// </summary>
+    [XmlElement]
+    public bool DisableFBOnExit { get; set; } = true;
+
+    /// <summary>
     /// <see langword="true"/> if we've already asked to enable auto-updating,
     /// otherwise <see langword="false"/>.
     /// </summary>
@@ -91,6 +98,11 @@ public class CommonConfig
         return Load().LogLevel;
     }
 
+    public static bool GetDisableFBOnExit()
+    {
+        return Load().DisableFBOnExit;
+    }
+
     public static bool GetAutoUpdateAsked()
     {
         return Load().AutoUpdateAsked;
@@ -101,38 +113,45 @@ public class CommonConfig
         return Load().PreRelease;
     }
 
-    public static void SetLastConf(string path)
+    public static void SetLastConf(string val)
     {
         CommonConfig cfg = Load();
-        cfg.LastConf = path;
+        cfg.LastConf = val;
         cfg.Save();
     }
 
-    public static void SetECtoConfState(ECtoConfState state)
+    public static void SetECtoConfState(ECtoConfState val)
     {
         CommonConfig cfg = Load();
-        cfg.ECtoConfState = state;
+        cfg.ECtoConfState = val;
         cfg.Save();
     }
 
-    public static void SetLogLevel(LogLevel level)
+    public static void SetLogLevel(LogLevel val)
     {
         CommonConfig cfg = Load();
-        cfg.LogLevel = level;
+        cfg.LogLevel = val;
+        cfg.Save();
+    }
+    public static void SetDisableFBOnExit(bool val)
+    {
+        CommonConfig cfg = Load();
+        cfg.DisableFBOnExit = val;
         cfg.Save();
     }
 
-    public static void SetAutoUpdateAsked(bool value)
+
+    public static void SetAutoUpdateAsked(bool val)
     {
         CommonConfig cfg = Load();
-        cfg.AutoUpdateAsked = value;
+        cfg.AutoUpdateAsked = val;
         cfg.Save();
     }
 
-    public static void SetPreRelease(bool value)
+    public static void SetPreRelease(bool val)
     {
         CommonConfig cfg = Load();
-        cfg.PreRelease = value;
+        cfg.PreRelease = val;
         cfg.Save();
     }
 
