@@ -93,7 +93,7 @@ internal static class Program
             delFanProf = false,
             applyConf = false;
 
-        int fanIdx = -1,
+        int spdIdx = -1,
             profIdx = -1,
 
             fanSpd = -1,
@@ -152,7 +152,7 @@ internal static class Program
                 case "fan":
                     // Try to access fan by index first, otherwise
                     // try accessing by name (done after parsing all arguments)
-                    if (!int.TryParse(arg, out fanIdx))
+                    if (!int.TryParse(arg, out spdIdx))
                     {
                         fanName = arg;
                     }
@@ -178,7 +178,7 @@ internal static class Program
                 case "S":
                 case "speed":
                     string[] spdArgs = arg.Split(',');
-                    if (spdArgs.Length < 2 || spdArgs.Length > 4)
+                    if (spdArgs.Length < 2)
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"ERROR: Not enough arguments for `{verb}`");
@@ -186,7 +186,16 @@ internal static class Program
                         Console.ForegroundColor = fgColor;
                         return;
                     }
-                    if (!int.TryParse(spdArgs[0], out fanIdx) ||
+                    else if (spdArgs.Length > 4)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"ERROR: Too many arguments for `{verb}`");
+                        Console.WriteLine($"(expected 2-4, got {spdArgs.Length})");
+                        Console.ForegroundColor = fgColor;
+                        return;
+                    }
+
+                    if (!int.TryParse(spdArgs[0], out spdIdx) ||
                        !int.TryParse(spdArgs[1], out fanSpd) ||
                        (spdArgs.Length >= 3 && !int.TryParse(spdArgs[2], out tUp)) ||
                        (spdArgs.Length >= 4 && !int.TryParse(spdArgs[3], out tDown)))
@@ -251,35 +260,40 @@ internal static class Program
         #endregion
 
         #region The actual command logic
-        YAMDCC_Config cfg = null;
+        YAMDCC_Config cfg;
         try
         {
             cfg = YAMDCC_Config.Load(confPath);
         }
         catch (Exception ex)
         {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"WARNING: Failed to load config at {confPath}, most commands will not work!");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"ERROR: Failed to load config at {confPath}!");
+            if (!Args.ContainsKey("config") && !Args.ContainsKey("C"))
+            {
+                Console.WriteLine("Try loading a config using `-config <path>`.");
+            }
             Console.WriteLine($"{ex.GetType()}: {ex.Message}");
             Console.ForegroundColor = fgColor;
+            return;
         }
 
         // Look up fan and profile indexes by name if fanIdx/profIdx are -1:
-        if (fanIdx == -1)
+        if (spdIdx == -1)
         {
             for (int i = 0; i < cfg.FanConfs.Count; i++)
             {
                 if (cfg.FanConfs[i].Name == fanName)
                 {
-                    fanIdx = i;
+                    spdIdx = i;
                     break;
                 }
             }
         }
 
-        if (profIdx == -1 && fanIdx != -1)
+        if (profIdx == -1 && spdIdx != -1)
         {
-            FanConf fanCfg =  cfg.FanConfs[fanIdx];
+            FanConf fanCfg =  cfg.FanConfs[spdIdx];
             for (int i = 0; i < fanCfg.FanCurveConfs.Count; i++)
             {
                 if (fanCfg.FanCurveConfs[i].Name == fanName)
@@ -427,6 +441,52 @@ internal static class Program
                     }
                 }
             }
+        }
+
+        if (chargeLim != -1)
+        {
+            int max = cfg.ChargeLimitConf.MaxVal - cfg.ChargeLimitConf.MinVal;
+            if (chargeLim < 0 || chargeLim > max)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"ERROR: charge limit must be an integer between 0 and {max}.");
+                Console.ForegroundColor = fgColor;
+                return;
+            }
+            cfg.ChargeLimitConf.CurVal = (byte)chargeLim;
+        }
+
+        if (perfMode != -1)
+        {
+            int max = cfg.PerfModeConf.PerfModes.Count;
+            if (perfMode < 0 || perfMode > max)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"ERROR: performance mode must be an integer between 0 and {max}.");
+                Console.ForegroundColor = fgColor;
+                return;
+            }
+            cfg.ChargeLimitConf.CurVal = (byte)chargeLim;
+        }
+
+        if (keyLight != -1 && ConnectSvc())
+        {
+            int max = cfg.KeyLightConf.MaxVal - cfg.KeyLightConf.MinVal;
+            if (keyLight < 0 || keyLight > max)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"ERROR: keyboard backlight value must be an integer between 0 and {max}.");
+                Console.ForegroundColor = fgColor;
+                return;
+            }
+            IPCClient.PushMessage(new ServiceCommand(Command.SetKeyLightBright, keyLight));
+        }
+
+        cfg.Save(confPath);
+
+        if (applyConf && ConnectSvc())
+        {
+            IPCClient.PushMessage(new ServiceCommand(Command.ApplyConf));
         }
         #endregion
     }
