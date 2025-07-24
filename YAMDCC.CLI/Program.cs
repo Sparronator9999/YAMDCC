@@ -93,9 +93,10 @@ internal static class Program
             delFanProf = false,
             applyConf = false;
 
-        int spdIdx = -1,
+        int fanIdx = -1,
             profIdx = -1,
 
+            spdIdx = -1,
             fanSpd = -1,
             tUp = -1,
             tDown = -1,
@@ -152,7 +153,7 @@ internal static class Program
                 case "fan":
                     // Try to access fan by index first, otherwise
                     // try accessing by name (done after parsing all arguments)
-                    if (!int.TryParse(arg, out spdIdx))
+                    if (!int.TryParse(arg, out fanIdx))
                     {
                         fanName = arg;
                     }
@@ -242,6 +243,13 @@ internal static class Program
                     applyConf = true;
                     break;
                 case "author":
+                    if (string.IsNullOrEmpty(arg))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"ERROR: `-author` requires a name argument");
+                        Console.ForegroundColor = fgColor;
+                        return;
+                    }
                     break;
                 default:
                     Console.ForegroundColor = ConsoleColor.Yellow;
@@ -279,24 +287,24 @@ internal static class Program
         }
 
         // Look up fan and profile indexes by name if fanIdx/profIdx are -1:
-        if (spdIdx == -1)
+        if (fanIdx == -1)
         {
             for (int i = 0; i < cfg.FanConfs.Count; i++)
             {
                 if (cfg.FanConfs[i].Name == fanName)
                 {
-                    spdIdx = i;
+                    fanIdx = i;
                     break;
                 }
             }
         }
 
-        if (profIdx == -1 && spdIdx != -1)
+        if (profIdx == -1 && fanIdx != -1)
         {
-            FanConf fanCfg =  cfg.FanConfs[spdIdx];
+            FanConf fanCfg =  cfg.FanConfs[fanIdx];
             for (int i = 0; i < fanCfg.FanCurveConfs.Count; i++)
             {
-                if (fanCfg.FanCurveConfs[i].Name == fanName)
+                if (fanCfg.FanCurveConfs[i].Name == profName)
                 {
                     profIdx = i;
                     break;
@@ -443,6 +451,38 @@ internal static class Program
             }
         }
 
+        if (newFanProf)
+        {
+            for (int i = 0; i < cfg.FanConfs.Count; i++)
+            {
+                FanConf fanCfg = cfg.FanConfs[i];
+
+                // Create a copy of the currently selected fan profile
+                // and add it to the config's list:
+                FanCurveConf oldCurveCfg = fanCfg.FanCurveConfs[fanCfg.CurveSel];
+                fanCfg.FanCurveConfs.Add(oldCurveCfg.Copy());
+                fanCfg.CurveSel = fanCfg.FanCurveConfs.Count - 1;
+
+                // change name to indicate the new fan profile is a copy of the old one
+                // TODO: allow profile name and description to be configured
+                fanCfg.FanCurveConfs[fanCfg.CurveSel].Name = $"Copy of {oldCurveCfg.Name}";
+                fanCfg.FanCurveConfs[fanCfg.CurveSel].Desc = $"(Copy of {oldCurveCfg.Name})\n{oldCurveCfg.Desc}";
+            }
+        }
+        else if (delFanProf)
+        {
+            // Remove each equivalent fan profile from the config's list
+            for (int i = 0; i < cfg.FanConfs.Count; i++)
+            {
+                FanConf fanCfg = cfg.FanConfs[i];
+                fanCfg.FanCurveConfs.RemoveAt(fanCfg.CurveSel);
+                if (fanCfg.CurveSel > 0)
+                {
+                    fanCfg.CurveSel -= 1;
+                }
+            }
+        }
+
         if (chargeLim != -1)
         {
             int max = cfg.ChargeLimitConf.MaxVal - cfg.ChargeLimitConf.MinVal;
@@ -486,6 +526,12 @@ internal static class Program
 
         if (applyConf && ConnectSvc())
         {
+            // save config to be applied to the correct location if
+            // editing a config other than CurrentConfig.xml
+            if (confPath != Paths.CurrentConf)
+            {
+                cfg.Save(Paths.CurrentConf);
+            }
             IPCClient.PushMessage(new ServiceCommand(Command.ApplyConf));
         }
         #endregion
