@@ -6,8 +6,8 @@
 #define AppName "YAMDCC"
 #define AppNameCE "Config Editor"
 #define AppNameHH "Hotkey Handler"
-#define AppVer "1.1.0"
-#define AppVerFriendly "1.1"
+#define AppVer "1.2.0"
+#define AppVerFriendly "1.2"
 #define AppPublisher "Sparronator9999"
 #define AppURL "https://github.com/Sparronator9999/YAMDCC"
 #define AppExeCE "ConfigEditor.exe"
@@ -69,6 +69,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Components]
 Name: "main"; Description: "YAMDCC Service and common libraries (required)"; Types: full compact custom; Flags: fixed
+Name: "cli"; Description: "CLI (yamdcc.exe)"; types: full
 Name: "confeditor"; Description: "Config Editor"; Types: full compact
 Name: "ecinspect"; Description: "EC Inspector"; Types: full
 Name: "hkhandler"; Description: "Hotkey Handler"; Types: full
@@ -83,6 +84,7 @@ Name: "deskicons\user"; Description: "{cm:DeskIconsUser}"; GroupDescription: "{c
 
 [Files]
 Source: "YAMDCC.Service\bin\{#BuildConfig}\net48\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Components: main
+Source: "YAMDCC.CLI\bin\{#BuildConfig}\net48\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Components: cli
 Source: "YAMDCC.ConfigEditor\bin\{#BuildConfig}\net48\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Components: confeditor
 Source: "YAMDCC.ECInspector\bin\{#BuildConfig}\net48\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Components: ecinspect
 Source: "YAMDCC.HotkeyHandler\bin\{#BuildConfig}\net48\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Components: hkhandler
@@ -147,6 +149,7 @@ var
   ServiceInstalled: Boolean;
   SetupTypePage: TInputOptionWizardPage;
   PrepareToInstallProgressPage: TOutputProgressWizardPage;
+  PathWarningPage: TOutputMsgWizardPage;
 
 function OpenService(hSCManager: THandle; lpServiceName: string; dwDesiredAccess: DWORD): THandle;
   external 'OpenService{#AW}@advapi32.dll stdcall';
@@ -199,22 +202,6 @@ begin
   Result := RemoveBackslashUnlessRoot(ExpandFileName(RemoveQuotes(Path)));
 end;
 
-// https://stackoverflow.com/a/25811746
-procedure InitializeWizard;
-var
-  S: String;
-begin
-  SetupTypePage := CreateInputOptionPage(wpLicense, 'Setup type', 'How to install YAMDCC', 'Should YAMDCC be installed like any other app, or just extracted to a selected directory?', True, False);
-  SetupTypePage.Add('Standard install (select this option if unsure)');
-  SetupTypePage.Add('Portable mode (extract files only)');
-  SetupTypePage.Values[0] := True;
-  SetupTypePage.Values[1] := False;
-
-  S := SetupMessage(msgPreparingDesc);
-  StringChange(S, '[name]', '{#AppName}')
-  PrepareToInstallProgressPage := CreateOutputProgressPage(SetupMessage(msgWizardPreparing), S);
-end;
-
 function InitializeSetup: Boolean;
 begin
   // make sure .NET Framework 4.8 or later is installed
@@ -224,19 +211,48 @@ begin
     SuppressibleMsgBox(FmtMessage(SetupMessage(msgWinVersionTooLowError), ['.NET Framework', '4.8']), mbCriticalError, MB_OK, IDOK);
 end;
 
+procedure InitializeWizard;
+var
+  S: String;
+begin
+  // https://stackoverflow.com/a/25811746
+  SetupTypePage := CreateInputOptionPage(wpLicense, 'Setup type', 'How to install YAMDCC', 'Should YAMDCC be installed like any other app, or just extracted to a selected directory?', True, False);
+  SetupTypePage.Add('Standard install (select this option if unsure)');
+  SetupTypePage.Add('Portable mode (extract files only)');
+  SetupTypePage.Values[0] := True;
+  SetupTypePage.Values[1] := False;
+
+  S := SetupMessage(msgPreparingDesc);
+  StringChange(S, '[name]', '{#AppName}')
+  PrepareToInstallProgressPage := CreateOutputProgressPage(SetupMessage(msgWizardPreparing), S);
+
+  // Create a custom wizard page to be shown if the CLI is going to be installed
+  PathWarningPage := CreateOutputMsgPage(wpSelectComponents, 'Important', 'CLI is not added to PATH (yet)',
+    'The YAMDCC CLI is not currently added to PATH on install (meaning you can''t just run it from the Command Prompt without first cd-ing into the program directory).' + #10#10 +
+    'You will have to add it manually using the Advanced System Settings dialog.');
+end;
+
 function ShouldSkipPage(PageID: Integer): Boolean;
 begin
-  if IsPortableMode then
+  if PageID = PathWarningPage.ID then
   begin
-    case PageID of
-      wpSelectComponents, wpSelectProgramGroup, wpSelectTasks, wpReady:
-        Result := True;
-    else
-      Result := False;
-    end;
+    if not WizardIsComponentSelected('cli') then
+      Result := True;
   end
   else
-    Result := False;
+  begin
+    if IsPortableMode then
+    begin
+      case PageID of
+        wpSelectComponents, wpSelectProgramGroup, wpSelectTasks, wpReady:
+          Result := True;
+      else
+        Result := False;
+      end;
+    end
+    else
+      Result := False;
+  end;
 end;
 
 // Partially based on: https://stackoverflow.com/a/32476546
