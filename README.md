@@ -144,8 +144,11 @@ most newer laptops with RGB keyboard backlights.
 
 ### v1.2
 
-- [ ] CLI support
-  - The CLI I started writing at least a year ago will probably be re-written.
+- [ ] CLI support *(in progress)*
+  - Not every command is impelmented, but test builds are now being provided
+    through GitHub Actions for those that want to test the ones that are
+    implemented.
+  - yeah I ended up rewriting the CLI completely from scratch
 
 ### v2.0
 
