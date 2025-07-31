@@ -106,7 +106,8 @@ internal static class Program
 
         string fanName = string.Empty,
             profName = string.Empty,
-            confPath = Paths.CurrentConf;
+            confPath = Paths.CurrentConf,
+            cfgAuthor = string.Empty;
 
         #region Parse actual commands and arguments
         ConsoleColor fgColor = Console.ForegroundColor;
@@ -250,6 +251,7 @@ internal static class Program
                         Console.ForegroundColor = fgColor;
                         return;
                     }
+                    cfgAuthor = arg;
                     break;
                 default:
                     Console.ForegroundColor = ConsoleColor.Yellow;
@@ -268,6 +270,8 @@ internal static class Program
         #endregion
 
         #region The actual command logic
+        // load the current YAMDCC config, or
+        // the one specified by -config if it's set
         YAMDCC_Config cfg;
         try
         {
@@ -312,6 +316,7 @@ internal static class Program
             }
         }
 
+        // -monitor
         if (ecMonitor && ConnectSvc())
         {
             Console.Clear();
@@ -345,6 +350,7 @@ internal static class Program
             }
         }
 
+        // -info
         if (showInfo)
         {
             if (cfg is null)
@@ -451,6 +457,7 @@ internal static class Program
             }
         }
 
+        // -new
         if (newFanProf)
         {
             for (int i = 0; i < cfg.FanConfs.Count; i++)
@@ -469,6 +476,7 @@ internal static class Program
                 fanCfg.FanCurveConfs[fanCfg.CurveSel].Desc = $"(Copy of {oldCurveCfg.Name})\n{oldCurveCfg.Desc}";
             }
         }
+        // -delete
         else if (delFanProf)
         {
             // Remove each equivalent fan profile from the config's list
@@ -483,6 +491,24 @@ internal static class Program
             }
         }
 
+        // -speed
+        if (spdIdx != -1)
+        {
+            TempThreshold t = cfg.FanConfs[fanIdx].FanCurveConfs[profIdx]
+                .TempThresholds[spdIdx];
+
+            t.FanSpeed = (byte)fanSpd;
+            if (tUp != -1)
+            {
+                t.UpThreshold = (byte)tUp;
+            }
+            if (tDown != -1)
+            {
+                t.UpThreshold = (byte)tDown;
+            }
+        }
+
+        // -chargelim
         if (chargeLim != -1)
         {
             int max = cfg.ChargeLimitConf.MaxVal - cfg.ChargeLimitConf.MinVal;
@@ -496,6 +522,7 @@ internal static class Program
             cfg.ChargeLimitConf.CurVal = (byte)chargeLim;
         }
 
+        // -perfmode
         if (perfMode != -1)
         {
             int max = cfg.PerfModeConf.PerfModes.Count;
@@ -509,6 +536,7 @@ internal static class Program
             cfg.ChargeLimitConf.CurVal = (byte)chargeLim;
         }
 
+        // -keylight
         if (keyLight != -1 && ConnectSvc())
         {
             int max = cfg.KeyLightConf.MaxVal - cfg.KeyLightConf.MinVal;
@@ -522,8 +550,16 @@ internal static class Program
             IPCClient.PushMessage(new ServiceCommand(Command.SetKeyLightBright, keyLight));
         }
 
+        // -author
+        if (!string.IsNullOrEmpty(cfgAuthor))
+        {
+            cfg.Author = cfgAuthor;
+        }
+
+        // save any modifications to the YAMDCC config
         cfg.Save(confPath);
 
+        // -apply
         if (applyConf && ConnectSvc())
         {
             // save config to be applied to the correct location if
