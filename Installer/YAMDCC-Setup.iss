@@ -61,15 +61,13 @@ english.DeskIcons=Create desktop icons
 english.DeskIconsCommon=For all users
 english.DeskIconsUser=For the current user only
 english.LaunchCE=Launch config editor
-;english.Updates=Updates:
-;english.CheckUpdate=Automatically check for updates daily
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Components]
 Name: "main"; Description: "YAMDCC Service and common libraries (required)"; Types: full compact custom; Flags: fixed
-Name: "cli"; Description: "CLI (yamdcc.exe)"; types: full
+Name: "cli"; Description: "CLI (beta)"; types: full
 Name: "confeditor"; Description: "Config Editor"; Types: full compact
 Name: "ecinspect"; Description: "EC Inspector"; Types: full
 Name: "hkhandler"; Description: "Hotkey Handler"; Types: full
@@ -80,7 +78,6 @@ Name: "starticons"; Description: "{cm:StartIcons}"; GroupDescription: "{cm:Start
 Name: "deskicons"; Description: "{cm:DeskIcons}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 Name: "deskicons\common"; Description: "{cm:DeskIconsCommon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: exclusive unchecked
 Name: "deskicons\user"; Description: "{cm:DeskIconsUser}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: exclusive unchecked
-;Name: "autoupdate"; Description: "{cm:CheckUpdate}"; GroupDescription: "{cm:Updates}"
 
 [Files]
 Source: "YAMDCC.Service\bin\{#BuildConfig}\net48\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Components: main

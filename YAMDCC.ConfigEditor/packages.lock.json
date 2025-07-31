@@ -2,11 +2,6 @@
   "version": 1,
   "dependencies": {
     ".NETFramework,Version=v4.8": {
-      "MarkedNet": {
-        "type": "Transitive",
-        "resolved": "2.1.4",
-        "contentHash": "7JSHAIeNM1Zsmza046u6OIBx36GzzGDLjKCSxroAeYKYiAFQ+34dGfbx06nX1KR1RhxBucGyZxlDD1fv/33FIg=="
-      },
       "MessagePack": {
         "type": "Transitive",
         "resolved": "3.1.3",
@@ -48,11 +43,6 @@
           "System.Memory": "4.5.5",
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
-      },
-      "Newtonsoft.Json": {
-        "type": "Transitive",
-        "resolved": "13.0.3",
-        "contentHash": "HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ=="
       },
       "System.Buffers": {
         "type": "Transitive",
@@ -96,53 +86,13 @@
           "System.Runtime.CompilerServices.Unsafe": "4.5.3"
         }
       },
-      "TaskScheduler": {
-        "type": "Transitive",
-        "resolved": "2.12.1",
-        "contentHash": "DzSVmVs0i5yHmuDy9ZMcTtKg48GU0aEFBbhp2XJrzA4saTRec/KbU5aGE/4P4FE499G3PDx9KPOHysoKzS/i3g=="
-      },
-      "ec-inspect": {
-        "type": "Project",
-        "dependencies": {
-          "YAMDCC.Common": "[1.1.0-dev, )",
-          "YAMDCC.ECAccess": "[1.1.0-dev, )"
-        }
-      },
-      "HotkeyHandler": {
-        "type": "Project",
-        "dependencies": {
-          "YAMDCC.Common": "[1.1.0-dev, )",
-          "YAMDCC.ECAccess": "[1.1.0-dev, )",
-          "YAMDCC.IPC": "[2.2.0-release, )"
-        }
-      },
-      "Updater": {
-        "type": "Project",
-        "dependencies": {
-          "MarkedNet": "[2.1.4, )",
-          "Newtonsoft.Json": "[13.0.3, )",
-          "TaskScheduler": "[2.12.1, )",
-          "YAMDCC.Common": "[1.1.0-dev, )"
-        }
-      },
       "yamdcc.common": {
-        "type": "Project"
-      },
-      "yamdcc.ecaccess": {
         "type": "Project"
       },
       "yamdcc.ipc": {
         "type": "Project",
         "dependencies": {
           "MessagePack": "[3.1.3, )"
-        }
-      },
-      "yamdccsvc": {
-        "type": "Project",
-        "dependencies": {
-          "YAMDCC.Common": "[1.1.0-dev, )",
-          "YAMDCC.ECAccess": "[1.1.0-dev, )",
-          "YAMDCC.IPC": "[2.2.0-release, )"
         }
       }
     },

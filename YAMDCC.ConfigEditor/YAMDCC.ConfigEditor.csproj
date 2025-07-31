@@ -1,27 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <AnalysisLevel>latest-recommended</AnalysisLevel>
         <ApplicationIcon>fan.ico</ApplicationIcon>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AssemblyName>ConfigEditor</AssemblyName>
         <AssemblyTitle>YAMDCC config editor</AssemblyTitle>
-        <Authors>Sparronator9999</Authors>
-        <Copyright>Copyright © 2023-2025 Sparronator9999 (and Contributors)</Copyright>
-        <EnableNETAnalyzers>True</EnableNETAnalyzers>
-        <LangVersion>13.0</LangVersion>
         <OutputType>WinExe</OutputType>
-        <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
-        <PlatformTarget>AnyCPU</PlatformTarget>
-        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-        <RuntimeIdentifiers>win7-x64;win7-x86;win-x64;win-x86</RuntimeIdentifiers>
-        <TargetFramework>net48</TargetFramework>
         <Title>YAMDCC config editor</Title>
         <UseWindowsForms>true</UseWindowsForms>
-        <VersionPrefix>1.1.1</VersionPrefix>
-        <VersionSuffix>dev</VersionSuffix>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)'=='Release'">
-        <DebugType>none</DebugType>
     </PropertyGroup>
     <ItemGroup>
       <EmbeddedResource Remove="MainForm.resx" />

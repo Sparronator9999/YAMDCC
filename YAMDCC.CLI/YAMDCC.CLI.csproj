@@ -1,26 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <AnalysisLevel>latest-recommended</AnalysisLevel>
         <AssemblyName>yamdcc</AssemblyName>
         <AssemblyTitle>YAMDCC CLI</AssemblyTitle>
-        <Authors>Sparronator9999</Authors>
-        <Copyright>Copyright © 2025 Sparronator9999 (and Contributors)</Copyright>
-        <EnableNETAnalyzers>True</EnableNETAnalyzers>
-        <LangVersion>13.0</LangVersion>
         <OutputType>Exe</OutputType>
-        <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
-        <PlatformTarget>AnyCPU</PlatformTarget>
-        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-        <RuntimeIdentifiers>win7-x64;win7-x86;win-x64;win-x86</RuntimeIdentifiers>
-        <TargetFramework>net48</TargetFramework>
         <Title>YAMDCC CLI</Title>
         <UseWindowsForms>true</UseWindowsForms>
-        <VersionPrefix>1.2.0</VersionPrefix>
-        <VersionSuffix>dev</VersionSuffix>
         <ApplicationManifest>app.manifest</ApplicationManifest>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)'=='Release'">
-        <DebugType>none</DebugType>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\YAMDCC.Common\YAMDCC.Common.csproj" />
