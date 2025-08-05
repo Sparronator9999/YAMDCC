@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <ApplicationIcon>ec.ico</ApplicationIcon>
         <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -13,9 +13,7 @@
         <Reference Include="System.Windows.Forms" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Update="ProjectInstaller.cs">
-            <SubType>Component</SubType>
-        </Compile>
+        <Compile Update="ProjectInstaller.cs"/>
         <Compile Update="FanControlService.cs">
             <SubType>Component</SubType>
         </Compile>

@@ -21,7 +21,7 @@ using System.ServiceProcess;
 namespace YAMDCC.Service;
 
 [RunInstaller(true)]
-public class ProjectInstaller : Installer
+public sealed class ProjectInstaller : Installer
 {
     public ProjectInstaller()
     {

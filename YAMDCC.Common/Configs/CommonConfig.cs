@@ -22,7 +22,7 @@ using YAMDCC.Common.Logs;
 
 namespace YAMDCC.Common.Configs;
 
-public class CommonConfig
+public sealed class CommonConfig
 {
     /// <summary>
     /// The config version expected when loading a config.
