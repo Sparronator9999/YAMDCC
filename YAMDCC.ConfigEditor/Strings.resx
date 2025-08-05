@@ -132,13 +132,13 @@ Are you sure you want to delete this profile?</value>
     <value>Please enter a new name for your fan profile:</value>
   </data>
   <data name="dlgSvcDelData" xml:space="preserve">
-    <value>Also delete the YAMDCC data directory
+    <value>Keep the YAMDCC data directory
 (located at {0})?
 
-Click "Yes" only if you don't intend to re-install YAMDCC.
+Click "No" if you don't intend to re-install YAMDCC.
 
 WARNING:
-Make sure you save your config using the "Save config" button before clicking "Yes" here!</value>
+Make sure you save your config using the "Save config" button before clicking "No" here!</value>
   </data>
   <data name="dlgSvcStop" xml:space="preserve">
     <value>Are you sure you want to stop the YAMDCC service?
@@ -439,5 +439,12 @@ NOTE: these settings should be left on the default value unless you know what yo
     <value>RegConfs are deprecated and will be removed in a future release.
 All MSI laptops should no longer need RegConfs.
 Update to a YAMDCC-provided config to remove this warning.</value>
+  </data>
+  <data name="dlgLoadConfFail" xml:space="preserve">
+    <value>Failed to load YAMDCC config!
+
+If you recently updated YAMDCC, this could be due to a breaking change in the config format. Download an updated config from GitHub (go to `Help` &gt; `About` &gt; `Source`, then go to the `Configs` folder).
+
+If you're a config writer, you may have ran into a bug with the config validator (rare), or made an error while writing the config.</value>
   </data>
 </root>

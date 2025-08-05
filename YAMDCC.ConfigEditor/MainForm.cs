@@ -141,26 +141,7 @@ internal sealed partial class MainForm : Form
             if (Utils.ShowInfo(Strings.GetString("dlgAutoUpdate"),
                 "Check for updates?", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                string path = Path.GetFullPath(@".\Updater.exe");
-                try
-                {
-                    Process.Start(path, "--setautoupdate true");
-                }
-                catch (Win32Exception ex)
-                {
-                    // catch the exception that occurs if the Updater is not found
-                    if (ex.ErrorCode == -2147467259 && ex.NativeErrorCode == 2)
-                    {
-                        Utils.ShowError(
-                            $"Failed to open the Updater to set auto-update state\n" +
-                            $"(located at: {path}):\n" +
-                            $"{ex.Message} ({ex.NativeErrorCode})");
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                RunUpdater("--setautoupdate true");
             }
             CommonConfig.SetAutoUpdateAsked(true);
         }
@@ -367,8 +348,14 @@ internal sealed partial class MainForm : Form
 
         if (ofd.ShowDialog() == DialogResult.OK)
         {
-            LoadConf(ofd.FileName);
-            CommonConfig.SetLastConf(ofd.FileName);
+            if (LoadConf(ofd.FileName))
+            {
+                CommonConfig.SetLastConf(ofd.FileName);
+            }
+            else
+            {
+                Utils.ShowError(Strings.GetString("dlgLoadConfFail"));
+            }
         }
     }
 
@@ -580,8 +567,7 @@ internal sealed partial class MainForm : Form
         {
             bool delData = Utils.ShowWarning(
                 Strings.GetString("dlgSvcDelData", Paths.Data),
-                "Delete configuration data?",
-                MessageBoxDefaultButton.Button2) == DialogResult.Yes;
+                "Delete configuration data?") == DialogResult.No;
 
             tmrPoll.Stop();
             IPCClient.Stop();
@@ -594,42 +580,41 @@ internal sealed partial class MainForm : Form
                 {
                     // Apparently this fixes the YAMDCC service not uninstalling
                     // when YAMDCC is launched by certain means
-                    if (Utils.StopService("yamdccsvc"))
+                    if (!Utils.StopService("yamdccsvc"))
                     {
-                        if (Utils.UninstallService("yamdccsvc"))
-                        {
-                            // Delete the auto-update scheduled task
-                            try
-                            {
-                                Process.Start("./Updater.exe", "--setautoupdate false");
-                            }
-                            catch (Win32Exception ex)
-                            {
-                                // catch the exception that occurs if the Updater is not found
-                                if (ex.ErrorCode == -2147467259 && ex.NativeErrorCode == 2)
-                                {
-                                    Utils.ShowError("Updater.exe not found!");
-                                }
-                                else
-                                {
-                                    throw;
-                                }
-                            }
-
-                            // Only delete service data if the
-                            // service uninstalled successfully
-                            if (delData)
-                            {
-                                Directory.Delete(Paths.Data, true);
-                            }
-                            Utils.ShowInfo(Strings.GetString("dlgSvcUninstalled"), "Success");
-                            return true;
-                        }
+                        Utils.ShowError(Strings.GetString("dlgSvcStopErr"));
+                        return false;
+                    }
+                    if (!Utils.UninstallService("yamdccsvc"))
+                    {
                         Utils.ShowError(Strings.GetString("dlgUninstallErr"));
                         return false;
                     }
-                    Utils.ShowError(Strings.GetString("dlgSvcStopErr"));
-                    return false;
+
+                    // Delete the auto-update scheduled task
+                    try
+                    {
+                        Process.Start(Path.GetFullPath(@".\Updater.exe"), "--setautoupdate false");
+                    }
+                    catch (Win32Exception ex)
+                    {
+                        // catch the exception that occurs if the Updater is missing
+                        // no need to show the "Updater not found" window during
+                        // uninstall (it might not be installed in the first place)
+                        if (ex.ErrorCode != -2147467259 || ex.NativeErrorCode != 2)
+                        {
+                            throw;
+                        }
+                    }
+
+                    // Only delete service data if the
+                    // service uninstalled successfully
+                    if (delData)
+                    {
+                        Directory.Delete(Paths.Data, true);
+                    }
+                    Utils.ShowInfo(Strings.GetString("dlgSvcUninstalled"), "Success");
+                    return true;
                 }
             };
             dlg.ShowDialog();
@@ -651,22 +636,7 @@ internal sealed partial class MainForm : Form
 
     private void tsiCheckUpdate_Click(object sender, EventArgs e)
     {
-        try
-        {
-            Process.Start("./Updater.exe", "--checkupdate");
-        }
-        catch (Win32Exception ex)
-        {
-            // catch the exception that occurs if the Updater is not found
-            if (ex.ErrorCode == -2147467259 && ex.NativeErrorCode == 2)
-            {
-                Utils.ShowError("Updater.exe not found!");
-            }
-            else
-            {
-                throw;
-            }
-        }
+        RunUpdater("--checkupdate");
     }
     #endregion
 
@@ -1102,7 +1072,7 @@ internal sealed partial class MainForm : Form
     #endregion  // Events
 
     #region Private methods
-    private void LoadConf(string confPath)
+    private bool LoadConf(string confPath)
     {
         UpdateStatus(StatusCode.ConfLoading);
 
@@ -1110,16 +1080,14 @@ internal sealed partial class MainForm : Form
         {
             Config = YAMDCC_Config.Load(confPath);
             LoadConf(Config);
+            return true;
         }
         catch (Exception ex)
         {
             if (ex is InvalidConfigException or InvalidOperationException or FileNotFoundException)
             {
                 UpdateStatus(StatusCode.NoConfig);
-                MessageBox.Show("Failed to load YAMDCC config:\n" +
-                    $"{ex.GetType()}: {ex.Message}\n\n" +
-                    $"Details:\n{ex.StackTrace}");
-                return;
+                return false;
             }
             else
             {
@@ -1403,6 +1371,30 @@ internal sealed partial class MainForm : Form
     {
         IPCClient.PushMessage(command);
         tmrSvcTimeout.Start();
+    }
+
+    private static void RunUpdater(string args)
+    {
+        string path = Path.GetFullPath(@".\Updater.exe");
+        try
+        {
+            Process.Start(path, args);
+        }
+        catch (Win32Exception ex)
+        {
+            // catch the exception that occurs if the Updater is not found
+            if (ex.ErrorCode == -2147467259 && ex.NativeErrorCode == 2)
+            {
+                Utils.ShowError(
+                    "Updater.exe not found!\n" +
+                    $"YAMDCC expected it to be located at: {path}\n\n" +
+                    "This is likely a bug; please report it along with what you were doing before this message appeared.");
+            }
+            else
+            {
+                throw;
+            }
+        }
     }
     #endregion  // Private methods
 }
