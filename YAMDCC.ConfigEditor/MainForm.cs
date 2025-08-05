@@ -141,16 +141,20 @@ internal sealed partial class MainForm : Form
             if (Utils.ShowInfo(Strings.GetString("dlgAutoUpdate"),
                 "Check for updates?", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
+                string path = Path.GetFullPath(@".\Updater.exe");
                 try
                 {
-                    Process.Start("./Updater.exe", "--setautoupdate true");
+                    Process.Start(path, "--setautoupdate true");
                 }
                 catch (Win32Exception ex)
                 {
                     // catch the exception that occurs if the Updater is not found
                     if (ex.ErrorCode == -2147467259 && ex.NativeErrorCode == 2)
                     {
-                        Utils.ShowError("Updater.exe not found!");
+                        Utils.ShowError(
+                            $"Failed to open the Updater to set auto-update state\n" +
+                            $"(located at: {path}):\n" +
+                            $"{ex.Message} ({ex.NativeErrorCode})");
                     }
                     else
                     {
