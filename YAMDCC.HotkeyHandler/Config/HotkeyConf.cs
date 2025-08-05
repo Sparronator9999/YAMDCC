@@ -23,7 +23,7 @@ using YAMDCC.Common.Configs;
 
 namespace YAMDCC.HotkeyHandler.Config;
 
-public class HotkeyConf
+public sealed class HotkeyConf
 {
     [XmlAttribute]
     public int Ver { get; set; } = 1;

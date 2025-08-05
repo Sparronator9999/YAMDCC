@@ -19,7 +19,7 @@ using System.Windows.Forms;
 
 namespace YAMDCC.HotkeyHandler.Config;
 
-public class Hotkey
+public sealed class Hotkey
 {
     /// <summary>
     /// The key that must be pressed (along with its modifiers)

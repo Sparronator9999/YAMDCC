@@ -31,7 +31,7 @@ internal static class Program
     /// The main entry point for the application.
     /// </summary>
     [STAThread]
-    private static void Main()
+    private static void Main(string[] args)
     {
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
@@ -71,7 +71,16 @@ internal static class Program
                         return;
                     }
                 }
-                Application.Run(new MainForm());
+
+                foreach (string arg in args)
+                {
+                    if (arg == "--startup")
+                    {
+                        Application.Run(new MainForm(true));
+                        return;
+                    }
+                }
+                Application.Run(new MainForm(false));
             }
             else
             {

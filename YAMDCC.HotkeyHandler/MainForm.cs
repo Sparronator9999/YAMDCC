@@ -32,7 +32,7 @@ using YAMDCC.IPC;
 
 namespace YAMDCC.HotkeyHandler;
 
-public partial class MainForm : Form
+internal sealed partial class MainForm : Form
 {
     private readonly NamedPipeClient<ServiceResponse, ServiceCommand> IPCClient =
         new("YAMDCC-Server");
@@ -44,7 +44,7 @@ public partial class MainForm : Form
     private readonly List<ComboBox> cboActionDatas = [];
 
     private Hotkey OldHotkey;
-    private bool BindInProgress;
+    private bool BindInProgress, Startup;
 
     /// <summary>
     /// The set of hotkey IDs currently registered with Windows
@@ -61,8 +61,9 @@ public partial class MainForm : Form
 
     private readonly ToolTip ttMain = new();
 
-    public MainForm()
+    public MainForm(bool startup)
     {
+        Startup = startup;
         InitializeComponent();
 
         TrayIcon.Text = Text = $"YAMDCC hotkey handler - v{Utils.GetVerString()}";
@@ -126,7 +127,7 @@ public partial class MainForm : Form
     protected override void SetVisibleCore(bool value)
     {
         // hide form on first launch
-        if (!IsHandleCreated)
+        if (Startup && !IsHandleCreated)
         {
             value = false;
             CreateHandle();
