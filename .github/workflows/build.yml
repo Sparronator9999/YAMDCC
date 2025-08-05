@@ -51,10 +51,7 @@ jobs:
       run: copy LICENSE.md YAMDCC.ConfigEditor\bin\${{ matrix.config }}\net48
 
     - name: Compile installer
-      uses: Minionguyjpro/Inno-Setup-Action@v1.2.5
-      with:
-        path: Installer/YAMDCC-Setup.iss
-        options: /O+ "/DBuildConfig=${{ matrix.config }}"
+      run: Tools\InnoSetup\ISCC.exe /O+ "/DBuildConfig=${{ matrix.config }}" Installer/YAMDCC-Setup.iss
 
     - name: Upload compiled installer artifact
       uses: actions/upload-artifact@v4
