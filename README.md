@@ -293,6 +293,7 @@ This project makes use of the following third-party libraries:
 - [My fork of Named Pipe Wrapper](https://github.com/Sparronator9999/NamedPipeWrapper)
   for communication between the service and UI program (called `YAMDCC.IPC` in
   the source files).
+  - [MessagePack](https://github.com/MessagePack-CSharp/MessagePack-CSharp) for safe(r) message serialisation than .NET's obsolete [BinaryFormatter](https://learn.microsoft.com/en-us/dotnet/standard/serialization/binaryformatter-security-guide).
 - [Task Scheduler Managed Wrapper](https://github.com/dahall/taskscheduler) to
   schedule automatic update checks.
 - [WinRing0](https://github.com/QCute/WinRing0) for low-level hardware access
