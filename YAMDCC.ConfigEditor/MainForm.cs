@@ -1116,6 +1116,9 @@ internal sealed partial class MainForm : Form
             if (ex is InvalidConfigException or InvalidOperationException or FileNotFoundException)
             {
                 UpdateStatus(StatusCode.NoConfig);
+                MessageBox.Show("Failed to load YAMDCC config:\n" +
+                    $"{ex.GetType()}: {ex.Message}\n\n" +
+                    $"Details:\n{ex.StackTrace}");
                 return;
             }
             else
