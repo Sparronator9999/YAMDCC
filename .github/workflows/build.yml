@@ -16,7 +16,7 @@ jobs:
       matrix:
         config: [Debug, Release]
 
-    runs-on: windows-latest
+    runs-on: windows-2025
 
     steps:
     - name: Checkout repository
