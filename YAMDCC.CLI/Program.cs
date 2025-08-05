@@ -199,11 +199,11 @@ internal static class Program
 
                     if (!int.TryParse(spdArgs[0], out spdIdx) ||
                        !int.TryParse(spdArgs[1], out fanSpd) ||
-                       (spdArgs.Length >= 3 && !int.TryParse(spdArgs[2], out tUp)) ||
-                       (spdArgs.Length >= 4 && !int.TryParse(spdArgs[3], out tDown)))
+                       spdArgs.Length >= 3 && !int.TryParse(spdArgs[2], out tUp) ||
+                       spdArgs.Length >= 4 && !int.TryParse(spdArgs[3], out tDown))
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"ERROR: failed to parse arguments for `{verb}`");
+                        Console.WriteLine(Strings.GetString("errArgParse", verb));
                         Console.ForegroundColor = fgColor;
                         return;
                     }
@@ -212,7 +212,7 @@ internal static class Program
                     if (!int.TryParse(arg, out chargeLim))
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"ERROR: failed to parse argument for `{verb}`");
+                        Console.WriteLine(Strings.GetString("errArgParse", verb));
                         Console.ForegroundColor = fgColor;
                         return;
                     }
@@ -221,7 +221,7 @@ internal static class Program
                     if (!int.TryParse(arg, out perfMode))
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"ERROR: failed to parse argument for `{verb}`");
+                        Console.WriteLine(Strings.GetString("errArgParse", verb));
                         Console.ForegroundColor = fgColor;
                         return;
                     }
@@ -230,7 +230,7 @@ internal static class Program
                     if (!int.TryParse(arg, out keyLight))
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"ERROR: failed to parse argument for `{verb}`");
+                        Console.WriteLine(Strings.GetString("errArgParse", verb));
                         Console.ForegroundColor = fgColor;
                         return;
                     }
@@ -247,7 +247,7 @@ internal static class Program
                     if (string.IsNullOrEmpty(arg))
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine($"ERROR: `-author` requires a name argument");
+                        Console.WriteLine("ERROR: `-author` requires a name argument");
                         Console.ForegroundColor = fgColor;
                         return;
                     }
@@ -356,7 +356,7 @@ internal static class Program
             if (cfg is null)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"ERROR: No config is loaded, cannot show config info!");
+                Console.WriteLine(Strings.GetString("errNoCfg"));
                 Console.ForegroundColor = fgColor;
             }
             else
@@ -365,15 +365,8 @@ internal static class Program
                 Console.WriteLine($"Author: {cfg.Author}");
                 Console.WriteLine($"Laptop manufacturer: {cfg.Manufacturer}");
                 Console.WriteLine($"Laptop model: {cfg.Model}");
-                if (cfg.FirmVerSupported)
-                {
-                    Console.WriteLine($"EC firmware version: {cfg.FirmVer}");
-                    Console.WriteLine($"EC firmware date: {cfg.FirmDate}");
-                }
-                else
-                {
-                    Console.WriteLine("EC firmware version: (unsupported)");
-                }
+                Console.WriteLine($"EC firmware version: {(cfg.FirmVerSupported ? cfg.FirmVer : "(unsupported)")}");
+                Console.WriteLine($"EC firmware date: {(cfg.FirmVerSupported ? cfg.FirmDate : "(unsupported)")}");
 
                 for (int i = 0; i < cfg.FanConfs.Count; i++)
                 {
@@ -434,7 +427,7 @@ internal static class Program
                     {
                         if (cfg.ChargeLimitConf.CurVal == 0)
                         {
-                            Console.WriteLine($"Charge threshold: disabled");
+                            Console.WriteLine("Charge threshold: disabled");
                         }
                         Console.WriteLine($"Charge threshold: {cfg.ChargeLimitConf.CurVal}%");
                     }
@@ -447,7 +440,7 @@ internal static class Program
                         Console.WriteLine();
                         PerfModeConf pMode = cfg.PerfModeConf;
                         Console.WriteLine($"Default performance mode: {pMode.PerfModes[pMode.ModeSel].Name}");
-                        Console.WriteLine($"Available performance modes:");
+                        Console.WriteLine("Available performance modes:");
                         for (int i = 0; i < pMode.PerfModes.Count; i++)
                         {
                             Console.WriteLine($"  {i}: {pMode.PerfModes[i].Name}");
@@ -515,7 +508,7 @@ internal static class Program
             if (chargeLim < 0 || chargeLim > max)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"ERROR: charge limit must be an integer between 0 and {max}.");
+                Console.WriteLine(Strings.GetString("errChgLimVal", max));
                 Console.ForegroundColor = fgColor;
                 return;
             }
@@ -523,13 +516,13 @@ internal static class Program
         }
 
         // -perfmode
-        if (perfMode != -1)
+        if (perfMode != -2)
         {
             int max = cfg.PerfModeConf.PerfModes.Count;
             if (perfMode < 0 || perfMode > max)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"ERROR: performance mode must be an integer between 0 and {max}.");
+                Console.WriteLine(Strings.GetString("errPMVal", max));
                 Console.ForegroundColor = fgColor;
                 return;
             }
@@ -543,7 +536,7 @@ internal static class Program
             if (keyLight < 0 || keyLight > max)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"ERROR: keyboard backlight value must be an integer between 0 and {max}.");
+                Console.WriteLine(Strings.GetString("errKLVal", max));
                 Console.ForegroundColor = fgColor;
                 return;
             }
@@ -557,7 +550,16 @@ internal static class Program
         }
 
         // save any modifications to the YAMDCC config
-        cfg.Save(confPath);
+        try
+        {
+            cfg.Save(confPath);
+        }
+        catch (UnauthorizedAccessException)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(Strings.GetString("wrnCfgAdmin"));
+            Console.ForegroundColor = fgColor;
+        }
 
         // -apply
         if (applyConf && ConnectSvc())
@@ -590,7 +592,7 @@ internal static class Program
         if (!Utils.IsAdmin())
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"ERROR: Admin privileges required to connect to the YAMDCC service.");
+            Console.WriteLine(Strings.GetString("errSvcAdmin"));
             Console.ForegroundColor = fgColor;
             return false;
         }
@@ -612,9 +614,7 @@ internal static class Program
         else
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"ERROR: failed to connect to the YAMDCC service!");
-            Console.WriteLine("Make sure the service is installed and running;");
-            Console.WriteLine("try `net start yamdccsvc` to start the YAMDCC service.");
+            Console.WriteLine(Strings.GetString("errSvcConn"));
             Console.ForegroundColor = fgColor;
             return false;
         }
@@ -663,6 +663,7 @@ internal static class Program
         key = tuple.Key;
         value = tuple.Value;
     }
+
     private static void IPCMessage(object sender, PipeMessageEventArgs<ServiceResponse, ServiceCommand> e)
     {
         object[] args = e.Message.Value;

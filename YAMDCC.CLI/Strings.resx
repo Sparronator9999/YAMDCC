@@ -201,4 +201,31 @@ Notes:
     the command line. Use this to make multiple changes to a config before
     applying new settings.</value>
   </data>
+  <data name="errArgParse" xml:space="preserve">
+    <value>ERROR: failed to parse argument(s) for `{0}`</value>
+  </data>
+  <data name="errSvcConn" xml:space="preserve">
+    <value>ERROR: failed to connect to the YAMDCC service!
+Make sure the service is installed and running;
+try `net start yamdccsvc` to start the YAMDCC service.</value>
+  </data>
+  <data name="errSvcAdmin" xml:space="preserve">
+    <value>ERROR: Admin privileges required to connect to the YAMDCC service.</value>
+  </data>
+  <data name="errKLVal" xml:space="preserve">
+    <value>ERROR: keyboard backlight value must be an integer between 0 and {0}.</value>
+  </data>
+  <data name="errPMVal" xml:space="preserve">
+    <value>ERROR: performance mode must be an integer between 0 and {0}.</value>
+  </data>
+  <data name="errChgLimVal" xml:space="preserve">
+    <value>ERROR: charge limit must be an integer between 0 and {0}.</value>
+  </data>
+  <data name="errNoCfg" xml:space="preserve">
+    <value>ERROR: No config is loaded, cannot show config info!</value>
+  </data>
+  <data name="wrnCfgAdmin" xml:space="preserve">
+    <value>WARNING: Admin privileges required to save config.
+Any changes made to the config using the CLI have been lost!</value>
+  </data>
 </root>
