@@ -519,14 +519,32 @@ internal static class Program
         if (perfMode != -2)
         {
             int max = cfg.PerfModeConf.PerfModes.Count;
-            if (perfMode < 0 || perfMode > max)
+            if (profIdx == -1)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(Strings.GetString("errPMVal", max));
-                Console.ForegroundColor = fgColor;
-                return;
+                // set global performance mode value by default
+                if (perfMode < 0 || perfMode > max)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(Strings.GetString("errPMVal", 0, max));
+                    Console.ForegroundColor = fgColor;
+                    return;
+                }
+                cfg.PerfModeConf.ModeSel = (byte)perfMode;
             }
-            cfg.ChargeLimitConf.CurVal = (byte)chargeLim;
+            else
+            {
+                // otherwise set per-profile performance mode value
+                if (perfMode < -1 || perfMode > max)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine(Strings.GetString("errPMVal", "-1 (default)", max));
+                    Console.ForegroundColor = fgColor;
+                    return;
+                }
+                // per-profile performance mode is always
+                // applied from the first fan's config
+                cfg.FanConfs[0].FanCurveConfs[profIdx].PerfModeSel = (byte)perfMode;
+            }
         }
 
         // -keylight

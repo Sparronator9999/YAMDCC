@@ -216,7 +216,7 @@ try `net start yamdccsvc` to start the YAMDCC service.</value>
     <value>ERROR: keyboard backlight value must be an integer between 0 and {0}.</value>
   </data>
   <data name="errPMVal" xml:space="preserve">
-    <value>ERROR: performance mode must be an integer between 0 and {0}.</value>
+    <value>ERROR: performance mode must be an integer between {0} and {1}.</value>
   </data>
   <data name="errChgLimVal" xml:space="preserve">
     <value>ERROR: charge limit must be an integer between 0 and {0}.</value>
