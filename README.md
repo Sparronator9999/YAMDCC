@@ -100,7 +100,7 @@ config is provided below:
 
 - MSI Raider GE66 12UGS (thanks @grimy400): `MSI-10th-gen-or-newer-dualfan.xml`
 - MSI Vector 17 HX A14VHG (thanks @injitools): `MSI-10th-gen-or-newer-dualfan-nokeylight.xml`
-- MSI Vector GP78 HX 13V (thanks @Twisted6): `MSI-10th-gen-or-newer-dualfan.xml-nokeylight.xml`
+- MSI Vector GP78 HX 13V (thanks @Twisted6 and @TheSingular): `MSI-10th-gen-or-newer-dualfan-nokeylight.xml`
 
 To test your laptop, go to the [config tutorial](https://github.com/Sparronator9999/YAMDCC/wiki/How-to-make-a-config-for-YAMDCC)
 wiki page and follow the instructions to get a config for your laptop.
