@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <ApplicationIcon>fan-update.ico</ApplicationIcon>
         <ApplicationManifest>app.manifest</ApplicationManifest>
@@ -9,28 +9,25 @@
         <UseWindowsForms>true</UseWindowsForms>
     </PropertyGroup>
     <ItemGroup>
-      <AdditionalFiles Remove="app.manifest" />
+        <EmbeddedResource Remove="MainForm.resx"/>
     </ItemGroup>
     <ItemGroup>
-      <EmbeddedResource Remove="MainForm.resx" />
+        <None Include="UpdateForm.resx"/>
     </ItemGroup>
     <ItemGroup>
-      <None Include="UpdateForm.resx" />
+        <PackageReference Include="MarkedNet" Version="2.1.4"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+        <PackageReference Include="TaskScheduler" Version="2.12.2"/>
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="MarkedNet" Version="2.1.4" />
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-      <PackageReference Include="TaskScheduler" Version="2.12.2" />
+        <ProjectReference Include="..\YAMDCC.Common\YAMDCC.Common.csproj"/>
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\YAMDCC.Common\YAMDCC.Common.csproj" />
+        <Reference Include="System.Net.Http"/>
     </ItemGroup>
     <ItemGroup>
-      <Reference Include="System.Net.Http" />
-    </ItemGroup>
-    <ItemGroup>
-      <EmbeddedResource Update="Strings.resx">
-        <Generator></Generator>
-      </EmbeddedResource>
+        <EmbeddedResource Update="Strings.resx">
+            <Generator></Generator>
+        </EmbeddedResource>
     </ItemGroup>
 </Project>

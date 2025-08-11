@@ -9,19 +9,19 @@
         <UseWindowsForms>true</UseWindowsForms>
     </PropertyGroup>
     <ItemGroup>
-      <EmbeddedResource Remove="MainForm.resx" />
+        <EmbeddedResource Remove="MainForm.resx"/>
     </ItemGroup>
     <ItemGroup>
-        <None Include="MainForm.resx" />
+        <None Include="MainForm.resx"/>
     </ItemGroup>
     <ItemGroup>
-        <Reference Include="System.ServiceProcess" />
+        <Reference Include="System.ServiceProcess"/>
     </ItemGroup>
     <ItemGroup>
-        <Content Include="fan.ico" />
+        <Content Include="fan.ico"/>
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\YAMDCC.Common\YAMDCC.Common.csproj" />
-        <ProjectReference Include="..\YAMDCC.IPC\YAMDCC.IPC.csproj" />
+        <ProjectReference Include="..\YAMDCC.Common\YAMDCC.Common.csproj"/>
+        <ProjectReference Include="..\YAMDCC.IPC\YAMDCC.IPC.csproj"/>
     </ItemGroup>
 </Project>

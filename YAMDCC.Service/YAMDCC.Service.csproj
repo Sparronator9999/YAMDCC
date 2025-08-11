@@ -8,9 +8,9 @@
         <Title>YAMDCC service</Title>
     </PropertyGroup>
     <ItemGroup>
-        <Reference Include="System.Configuration.Install" />
-        <Reference Include="System.ServiceProcess" />
-        <Reference Include="System.Windows.Forms" />
+        <Reference Include="System.Configuration.Install"/>
+        <Reference Include="System.ServiceProcess"/>
+        <Reference Include="System.Windows.Forms"/>
     </ItemGroup>
     <ItemGroup>
         <Compile Update="ProjectInstaller.cs"/>
@@ -24,11 +24,11 @@
         </EmbeddedResource>
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\YAMDCC.Common\YAMDCC.Common.csproj" />
-        <ProjectReference Include="..\YAMDCC.ECAccess\YAMDCC.ECAccess.csproj" />
-        <ProjectReference Include="..\YAMDCC.IPC\YAMDCC.IPC.csproj" />
+        <ProjectReference Include="..\YAMDCC.Common\YAMDCC.Common.csproj"/>
+        <ProjectReference Include="..\YAMDCC.ECAccess\YAMDCC.ECAccess.csproj"/>
+        <ProjectReference Include="..\YAMDCC.IPC\YAMDCC.IPC.csproj"/>
     </ItemGroup>
     <ItemGroup>
-        <Content Include="ec.ico" />
+        <Content Include="ec.ico"/>
     </ItemGroup>
 </Project>

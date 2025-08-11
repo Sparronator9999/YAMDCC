@@ -6,7 +6,7 @@
         <Title>YAMDCC EC library</Title>
     </PropertyGroup>
     <ItemGroup>
-      <Reference Include="System.ServiceProcess" />
+        <Reference Include="System.ServiceProcess"/>
     </ItemGroup>
     <ItemGroup>
         <None Update="WinRing0.sys">
