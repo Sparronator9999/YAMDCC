@@ -95,6 +95,7 @@ namespace YAMDCC.ConfigEditor
             this.tsiLogError = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiLogFatal = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiLogNone = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsiFBExit = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiStopSvc = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiUninstall = new System.Windows.Forms.ToolStripMenuItem();
             this.tsiHelp = new System.Windows.Forms.ToolStripMenuItem();
@@ -130,7 +131,6 @@ namespace YAMDCC.ConfigEditor
             this.lblFanRPM = new System.Windows.Forms.Label();
             this.lblTemp = new System.Windows.Forms.Label();
             this.tblMain = new System.Windows.Forms.TableLayoutPanel();
-            this.tsiFBExit = new System.Windows.Forms.ToolStripMenuItem();
             menuStrip = new System.Windows.Forms.MenuStrip();
             sep1 = new System.Windows.Forms.ToolStripSeparator();
             sep2 = new System.Windows.Forms.ToolStripSeparator();
@@ -370,44 +370,52 @@ namespace YAMDCC.ConfigEditor
             // tsiLogDebug
             // 
             this.tsiLogDebug.Name = "tsiLogDebug";
-            this.tsiLogDebug.Size = new System.Drawing.Size(180, 22);
+            this.tsiLogDebug.Size = new System.Drawing.Size(119, 22);
             this.tsiLogDebug.Text = "Debug";
             this.tsiLogDebug.Click += new System.EventHandler(this.tsiLogDebug_Click);
             // 
             // tsiLogInfo
             // 
             this.tsiLogInfo.Name = "tsiLogInfo";
-            this.tsiLogInfo.Size = new System.Drawing.Size(180, 22);
+            this.tsiLogInfo.Size = new System.Drawing.Size(119, 22);
             this.tsiLogInfo.Text = "Info";
             this.tsiLogInfo.Click += new System.EventHandler(this.tsiLogInfo_Click);
             // 
             // tsiLogWarn
             // 
             this.tsiLogWarn.Name = "tsiLogWarn";
-            this.tsiLogWarn.Size = new System.Drawing.Size(180, 22);
+            this.tsiLogWarn.Size = new System.Drawing.Size(119, 22);
             this.tsiLogWarn.Text = "Warning";
             this.tsiLogWarn.Click += new System.EventHandler(this.tsiLogWarn_Click);
             // 
             // tsiLogError
             // 
             this.tsiLogError.Name = "tsiLogError";
-            this.tsiLogError.Size = new System.Drawing.Size(180, 22);
+            this.tsiLogError.Size = new System.Drawing.Size(119, 22);
             this.tsiLogError.Text = "Error";
             this.tsiLogError.Click += new System.EventHandler(this.tsiLogError_Click);
             // 
             // tsiLogFatal
             // 
             this.tsiLogFatal.Name = "tsiLogFatal";
-            this.tsiLogFatal.Size = new System.Drawing.Size(180, 22);
+            this.tsiLogFatal.Size = new System.Drawing.Size(119, 22);
             this.tsiLogFatal.Text = "Fatal";
             this.tsiLogFatal.Click += new System.EventHandler(this.tsiLogFatal_Click);
             // 
             // tsiLogNone
             // 
             this.tsiLogNone.Name = "tsiLogNone";
-            this.tsiLogNone.Size = new System.Drawing.Size(180, 22);
+            this.tsiLogNone.Size = new System.Drawing.Size(119, 22);
             this.tsiLogNone.Text = "Disabled";
             this.tsiLogNone.Click += new System.EventHandler(this.tsiLogNone_Click);
+            // 
+            // tsiFBExit
+            // 
+            this.tsiFBExit.CheckOnClick = true;
+            this.tsiFBExit.Name = "tsiFBExit";
+            this.tsiFBExit.Size = new System.Drawing.Size(257, 22);
+            this.tsiFBExit.Text = "Disable Full &Blast on exit";
+            this.tsiFBExit.Click += new System.EventHandler(this.tsiFBExit_Click);
             // 
             // tsiStopSvc
             // 
@@ -467,7 +475,7 @@ namespace YAMDCC.ConfigEditor
             tcMain.Name = "tcMain";
             tcMain.SelectedIndex = 0;
             tcMain.Size = new System.Drawing.Size(534, 364);
-            tcMain.TabIndex = 2;
+            tcMain.TabIndex = 0;
             // 
             // tabFanControl
             // 
@@ -532,7 +540,7 @@ namespace YAMDCC.ConfigEditor
             lblProfPerfMode.Padding = new System.Windows.Forms.Padding(0, 0, 0, 2);
             lblProfPerfMode.Size = new System.Drawing.Size(68, 17);
             lblProfPerfMode.TabIndex = 6;
-            lblProfPerfMode.Text = "Perf. mode:";
+            lblProfPerfMode.Text = "Perf. &mode:";
             // 
             // btnProfDel
             // 
@@ -578,7 +586,7 @@ namespace YAMDCC.ConfigEditor
             lblProfSel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 2);
             lblProfSel.Size = new System.Drawing.Size(44, 17);
             lblProfSel.TabIndex = 2;
-            lblProfSel.Text = "Profile:";
+            lblProfSel.Text = "&Profile:";
             // 
             // cboFanSel
             // 
@@ -601,7 +609,7 @@ namespace YAMDCC.ConfigEditor
             lblFanSel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 2);
             lblFanSel.Size = new System.Drawing.Size(29, 17);
             lblFanSel.TabIndex = 0;
-            lblFanSel.Text = "Fan:";
+            lblFanSel.Text = "Fa&n:";
             // 
             // tblCurve
             // 
@@ -620,7 +628,7 @@ namespace YAMDCC.ConfigEditor
             this.tblCurve.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblCurve.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblCurve.Size = new System.Drawing.Size(524, 307);
-            this.tblCurve.TabIndex = 2;
+            this.tblCurve.TabIndex = 8;
             // 
             // tabExtra
             // 
@@ -681,7 +689,7 @@ namespace YAMDCC.ConfigEditor
             lblFanMode.Name = "lblFanMode";
             lblFanMode.Size = new System.Drawing.Size(125, 15);
             lblFanMode.TabIndex = 8;
-            lblFanMode.Text = "Fan mode (advanced):";
+            lblFanMode.Text = "&Fan mode (advanced):";
             // 
             // lblChgLim
             // 
@@ -693,7 +701,7 @@ namespace YAMDCC.ConfigEditor
             lblChgLim.Padding = new System.Windows.Forms.Padding(0, 0, 0, 3);
             lblChgLim.Size = new System.Drawing.Size(75, 18);
             lblChgLim.TabIndex = 0;
-            lblChgLim.Text = "Charge limit:";
+            lblChgLim.Text = "&Charge limit:";
             // 
             // lblPerfMode
             // 
@@ -704,7 +712,7 @@ namespace YAMDCC.ConfigEditor
             lblPerfMode.Name = "lblPerfMode";
             lblPerfMode.Size = new System.Drawing.Size(153, 15);
             lblPerfMode.TabIndex = 2;
-            lblPerfMode.Text = "Default performance mode:";
+            lblPerfMode.Text = "Default &performance mode:";
             // 
             // cboPerfMode
             // 
@@ -727,7 +735,7 @@ namespace YAMDCC.ConfigEditor
             lblWinFnSwap.Padding = new System.Windows.Forms.Padding(0, 0, 0, 2);
             lblWinFnSwap.Size = new System.Drawing.Size(127, 17);
             lblWinFnSwap.TabIndex = 4;
-            lblWinFnSwap.Text = "Swap Win and Fn keys:";
+            lblWinFnSwap.Text = "&Swap Win and Fn keys:";
             // 
             // chkWinFnSwap
             // 
@@ -750,7 +758,7 @@ namespace YAMDCC.ConfigEditor
             lblKeyLight.Name = "lblKeyLight";
             lblKeyLight.Size = new System.Drawing.Size(112, 15);
             lblKeyLight.TabIndex = 6;
-            lblKeyLight.Text = "Keyboard backlight:";
+            lblKeyLight.Text = "&Keyboard backlight:";
             // 
             // flwKeyLight
             // 
@@ -866,7 +874,7 @@ namespace YAMDCC.ConfigEditor
             tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
             tblInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             tblInfo.Size = new System.Drawing.Size(520, 330);
-            tblInfo.TabIndex = 1;
+            tblInfo.TabIndex = 0;
             // 
             // txtFirmDate
             // 
@@ -875,7 +883,7 @@ namespace YAMDCC.ConfigEditor
             this.txtFirmDate.Name = "txtFirmDate";
             this.txtFirmDate.ReadOnly = true;
             this.txtFirmDate.Size = new System.Drawing.Size(386, 23);
-            this.txtFirmDate.TabIndex = 10;
+            this.txtFirmDate.TabIndex = 9;
             // 
             // txtModel
             // 
@@ -893,7 +901,7 @@ namespace YAMDCC.ConfigEditor
             this.txtManufacturer.Name = "txtManufacturer";
             this.txtManufacturer.ReadOnly = true;
             this.txtManufacturer.Size = new System.Drawing.Size(386, 23);
-            this.txtManufacturer.TabIndex = 4;
+            this.txtManufacturer.TabIndex = 3;
             // 
             // lblModel
             // 
@@ -903,8 +911,8 @@ namespace YAMDCC.ConfigEditor
             lblModel.Name = "lblModel";
             lblModel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 2);
             lblModel.Size = new System.Drawing.Size(84, 17);
-            lblModel.TabIndex = 0;
-            lblModel.Text = "Laptop model:";
+            lblModel.TabIndex = 4;
+            lblModel.Text = "&Laptop model:";
             // 
             // lblManufacturer
             // 
@@ -915,7 +923,7 @@ namespace YAMDCC.ConfigEditor
             lblManufacturer.Padding = new System.Windows.Forms.Padding(0, 0, 0, 2);
             lblManufacturer.Size = new System.Drawing.Size(122, 17);
             lblManufacturer.TabIndex = 2;
-            lblManufacturer.Text = "Laptop manufacturer:";
+            lblManufacturer.Text = "Laptop &manufacturer:";
             // 
             // lblAuthor
             // 
@@ -925,8 +933,8 @@ namespace YAMDCC.ConfigEditor
             lblAuthor.Name = "lblAuthor";
             lblAuthor.Padding = new System.Windows.Forms.Padding(0, 0, 0, 2);
             lblAuthor.Size = new System.Drawing.Size(84, 17);
-            lblAuthor.TabIndex = 1;
-            lblAuthor.Text = "Config author:";
+            lblAuthor.TabIndex = 0;
+            lblAuthor.Text = "Config a&uthor:";
             // 
             // txtAuthor
             // 
@@ -934,7 +942,7 @@ namespace YAMDCC.ConfigEditor
             this.txtAuthor.Location = new System.Drawing.Point(131, 3);
             this.txtAuthor.Name = "txtAuthor";
             this.txtAuthor.Size = new System.Drawing.Size(386, 23);
-            this.txtAuthor.TabIndex = 3;
+            this.txtAuthor.TabIndex = 1;
             this.txtAuthor.Validating += new System.ComponentModel.CancelEventHandler(this.txtAuthor_Validating);
             // 
             // btnGetModel
@@ -942,8 +950,8 @@ namespace YAMDCC.ConfigEditor
             this.btnGetModel.Location = new System.Drawing.Point(131, 148);
             this.btnGetModel.Name = "btnGetModel";
             this.btnGetModel.Size = new System.Drawing.Size(175, 25);
-            this.btnGetModel.TabIndex = 6;
-            this.btnGetModel.Text = "Get model and manufacturer";
+            this.btnGetModel.TabIndex = 10;
+            this.btnGetModel.Text = "&Get model and manufacturer";
             this.btnGetModel.UseVisualStyleBackColor = true;
             this.btnGetModel.Click += new System.EventHandler(this.btnGetModel_Click);
             // 
@@ -954,8 +962,8 @@ namespace YAMDCC.ConfigEditor
             lblFirmVer.Location = new System.Drawing.Point(10, 94);
             lblFirmVer.Name = "lblFirmVer";
             lblFirmVer.Size = new System.Drawing.Size(115, 15);
-            lblFirmVer.TabIndex = 7;
-            lblFirmVer.Text = "EC firmware version:";
+            lblFirmVer.TabIndex = 6;
+            lblFirmVer.Text = "EC firmware &version:";
             // 
             // lblFirmDate
             // 
@@ -965,7 +973,7 @@ namespace YAMDCC.ConfigEditor
             lblFirmDate.Name = "lblFirmDate";
             lblFirmDate.Size = new System.Drawing.Size(100, 15);
             lblFirmDate.TabIndex = 8;
-            lblFirmDate.Text = "EC firmware date:";
+            lblFirmDate.Text = "EC firmware &date:";
             // 
             // txtFirmVer
             // 
@@ -974,7 +982,7 @@ namespace YAMDCC.ConfigEditor
             this.txtFirmVer.Name = "txtFirmVer";
             this.txtFirmVer.ReadOnly = true;
             this.txtFirmVer.Size = new System.Drawing.Size(386, 23);
-            this.txtFirmVer.TabIndex = 9;
+            this.txtFirmVer.TabIndex = 7;
             // 
             // tblApply
             // 
@@ -993,7 +1001,7 @@ namespace YAMDCC.ConfigEditor
             tblApply.RowCount = 1;
             tblApply.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             tblApply.Size = new System.Drawing.Size(536, 29);
-            tblApply.TabIndex = 3;
+            tblApply.TabIndex = 1;
             // 
             // chkFullBlast
             // 
@@ -1003,7 +1011,7 @@ namespace YAMDCC.ConfigEditor
             this.chkFullBlast.Name = "chkFullBlast";
             this.chkFullBlast.Size = new System.Drawing.Size(73, 19);
             this.chkFullBlast.TabIndex = 0;
-            this.chkFullBlast.Text = "Full Blast";
+            this.chkFullBlast.Text = "Full &Blast";
             this.chkFullBlast.UseVisualStyleBackColor = true;
             this.chkFullBlast.CheckedChanged += new System.EventHandler(this.FullBlastToggle);
             // 
@@ -1015,7 +1023,7 @@ namespace YAMDCC.ConfigEditor
             this.btnRevert.Name = "btnRevert";
             this.btnRevert.Size = new System.Drawing.Size(75, 25);
             this.btnRevert.TabIndex = 1;
-            this.btnRevert.Text = "Revert";
+            this.btnRevert.Text = "&Revert";
             this.btnRevert.UseVisualStyleBackColor = true;
             this.btnRevert.Click += new System.EventHandler(this.RevertConf);
             // 
@@ -1026,7 +1034,7 @@ namespace YAMDCC.ConfigEditor
             this.btnApply.Name = "btnApply";
             this.btnApply.Size = new System.Drawing.Size(75, 25);
             this.btnApply.TabIndex = 2;
-            this.btnApply.Text = "Apply";
+            this.btnApply.Text = "&Apply";
             this.btnApply.UseVisualStyleBackColor = true;
             this.btnApply.Click += new System.EventHandler(this.ApplyConf);
             // 
@@ -1042,7 +1050,7 @@ namespace YAMDCC.ConfigEditor
             flwStats.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
             flwStats.Name = "flwStats";
             flwStats.Size = new System.Drawing.Size(540, 15);
-            flwStats.TabIndex = 4;
+            flwStats.TabIndex = 2;
             // 
             // lblStatus
             // 
@@ -1101,14 +1109,6 @@ namespace YAMDCC.ConfigEditor
             this.tblMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tblMain.Size = new System.Drawing.Size(540, 416);
             this.tblMain.TabIndex = 1;
-            // 
-            // tsiFBExit
-            // 
-            this.tsiFBExit.CheckOnClick = true;
-            this.tsiFBExit.Name = "tsiFBExit";
-            this.tsiFBExit.Size = new System.Drawing.Size(257, 22);
-            this.tsiFBExit.Text = "Disable Full &Blast on exit";
-            this.tsiFBExit.Click += new System.EventHandler(this.tsiFBExit_Click);
             // 
             // MainForm
             // 

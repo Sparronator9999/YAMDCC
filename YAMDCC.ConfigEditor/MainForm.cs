@@ -668,15 +668,15 @@ internal sealed partial class MainForm : Form
 
             // labels on left side
             tblCurve.ColumnStyles.Add(new ColumnStyle());
-            tblCurve.Controls.Add(FanCurveLabel("Speed (%)", scale), 0, 0);
-            tblCurve.Controls.Add(FanCurveLabel("Up (°C)", scale), 0, 2);
-            tblCurve.Controls.Add(FanCurveLabel("Down (°C)", scale), 0, 3);
+            tblCurve.Controls.Add(FanCurveLabel("&Speed (%)", scale, 0), 0, 0);
+            tblCurve.Controls.Add(FanCurveLabel("&Up (°C)", scale, (numFanSpds.Length + 1) * 2), 0, 2);
+            tblCurve.Controls.Add(FanCurveLabel("&Down (°C)", scale, (numFanSpds.Length + 1) * 3), 0, 3);
 
             for (int i = 0; i < numFanSpds.Length; i++)
             {
                 tblCurve.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F / numFanSpds.Length));
 
-                numFanSpds[i] = FanCurveNUD(i, scale);
+                numFanSpds[i] = FanCurveNUD(i, scale, i + 1);
                 ttMain.SetToolTip(numFanSpds[i], Strings.GetString("ttFanSpd"));
                 numFanSpds[i].ValueChanged += new EventHandler(FanSpdChange);
                 tblCurve.Controls.Add(numFanSpds[i], i + 1, 0);
@@ -687,6 +687,7 @@ internal sealed partial class MainForm : Form
                     LargeChange = 10,
                     Margin = new Padding((int)(12 * scale), 0, (int)(12 * scale), 0),
                     Orientation = Orientation.Vertical,
+                    TabIndex = i + numFanSpds.Length + 2,
                     Tag = i,
                     TickFrequency = 5,
                     TickStyle = TickStyle.Both,
@@ -697,26 +698,26 @@ internal sealed partial class MainForm : Form
 
                 if (i != 0)
                 {
-                    numUpTs[i - 1] = FanCurveNUD(i - 1, scale);
+                    numUpTs[i - 1] = FanCurveNUD(i - 1, scale, i + (numFanSpds.Length * 2) + 3);
                     ttMain.SetToolTip(numUpTs[i - 1], Strings.GetString("ttUpT"));
                     numUpTs[i - 1].ValueChanged += new EventHandler(UpTChange);
                     tblCurve.Controls.Add(numUpTs[i - 1], i + 1, 2);
                 }
                 else
                 {
-                    tblCurve.Controls.Add(FanCurveLabel("Default", scale, ContentAlignment.MiddleCenter), i + 1, 2);
+                    tblCurve.Controls.Add(FanCurveLabel("Default", scale, i + (numFanSpds.Length * 2) + 3, ContentAlignment.MiddleCenter), i + 1, 2);
                 }
 
                 if (i != numFanSpds.Length - 1)
                 {
-                    numDownTs[i] = FanCurveNUD(i, scale);
+                    numDownTs[i] = FanCurveNUD(i, scale, i + (numFanSpds.Length * 3) + 4);
                     ttMain.SetToolTip(numDownTs[i], Strings.GetString("ttDownT"));
                     numDownTs[i].ValueChanged += new EventHandler(DownTChange);
                     tblCurve.Controls.Add(numDownTs[i], i + 1, 3);
                 }
                 else
                 {
-                    tblCurve.Controls.Add(FanCurveLabel("Max", scale, ContentAlignment.MiddleCenter), i + 1, 3);
+                    tblCurve.Controls.Add(FanCurveLabel("Max", scale, i + (numFanSpds.Length * 3) + 4, ContentAlignment.MiddleCenter), i + 1, 3);
                 }
             }
             tblCurve.ResumeLayout(true);
@@ -836,27 +837,13 @@ internal sealed partial class MainForm : Form
         // hidden crash test
         switch (e.KeyChar)
         {
-            case 'd':
-                Debug = Debug == 0 ? 1 : 0;
-                break;
             case 'e':
-                Debug = Debug == 1 ? 2 : 0;
-                break;
-            case 'b':
-                Debug = Debug == 2 ? 3 : 0;
-                break;
-            case 'u':
-                Debug = Debug == 3 ? 4 : 0;
-                break;
-            case 'g':
-                if (Debug == 4)
+                Debug++;
+                if (Debug == 5)
                 {
                     Debug = 0;
-
-                    // should throw a NullReferenceException
-                    // which should get caught by CrashDialog
-                    YAMDCC_Config cfg = new();
-                    lblFanSpd.Text = cfg.FanConfs[0].Name;
+                    throw new InvalidOperationException(
+                        "You pressed 'E' too many times (crash test triggered).");
                 }
                 break;
             default:
@@ -1233,7 +1220,7 @@ internal sealed partial class MainForm : Form
         SendSvcMessage(new ServiceCommand(Command.GetFanRPM, cboFanSel.SelectedIndex));
     }
 
-    private static Label FanCurveLabel(string text, float scale, ContentAlignment align = ContentAlignment.MiddleRight)
+    private static Label FanCurveLabel(string text, float scale, int tabIdx, ContentAlignment align = ContentAlignment.MiddleRight)
     {
         return new Label
         {
@@ -1241,18 +1228,20 @@ internal sealed partial class MainForm : Form
             Dock = DockStyle.Fill,
             Margin = new Padding((int)(3 * scale)),
             Padding = new Padding(0, 0, 0, (int)(3 * scale)),
+            TabIndex = tabIdx,
             Text = text,
             TextAlign = align,
         };
     }
 
-    private static NumericUpDown FanCurveNUD(int tag, float scale)
+    private static NumericUpDown FanCurveNUD(int tag, float scale, int tabIdx)
     {
         return new NumericUpDown()
         {
             Dock = DockStyle.Fill,
             Height = (int)(23 * scale),
             Margin = new Padding((int)(3 * scale)),
+            TabIndex = tabIdx,
             Tag = tag,
         };
     }

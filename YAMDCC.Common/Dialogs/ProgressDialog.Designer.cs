@@ -87,6 +87,7 @@ namespace YAMDCC.Common.Dialogs
             this.lblCaption.Size = new System.Drawing.Size(49, 15);
             this.lblCaption.TabIndex = 1;
             this.lblCaption.Text = "Caption";
+            this.lblCaption.UseMnemonic = false;
             // 
             // ProgressDialog
             // 
