@@ -16,6 +16,8 @@
 
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 using System.ServiceProcess;
 using System.Threading;
 using System.Windows.Forms;
@@ -71,6 +73,12 @@ internal static class Program
                         return;
                     }
                 }
+
+                // set working directory to same location as executable.
+                // fixes bugs related to calling other YAMDCC programs
+                // when launched with a different working directory.
+                Directory.SetCurrentDirectory(Path.GetDirectoryName(
+                    Assembly.GetEntryAssembly().Location));
 
                 foreach (string arg in args)
                 {
