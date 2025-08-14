@@ -688,6 +688,7 @@ internal sealed partial class MainForm : Form
                     Margin = new Padding((int)(12 * scale), 0, (int)(12 * scale), 0),
                     Orientation = Orientation.Vertical,
                     TabIndex = i + numFanSpds.Length + 2,
+                    TabStop = false,
                     Tag = i,
                     TickFrequency = 5,
                     TickStyle = TickStyle.Both,
@@ -1234,9 +1235,9 @@ internal sealed partial class MainForm : Form
         };
     }
 
-    private static NumericUpDown FanCurveNUD(int tag, float scale, int tabIdx)
+    private NumericUpDown FanCurveNUD(int tag, float scale, int tabIdx)
     {
-        return new NumericUpDown()
+        NumericUpDown nud = new()
         {
             Dock = DockStyle.Fill,
             Height = (int)(23 * scale),
@@ -1244,6 +1245,25 @@ internal sealed partial class MainForm : Form
             TabIndex = tabIdx,
             Tag = tag,
         };
+        nud.KeyDown += new KeyEventHandler(NUDKeyDown);
+        return nud;
+    }
+
+    private void NUDKeyDown(object sender, KeyEventArgs e)
+    {
+        NumericUpDown nud = (NumericUpDown)sender;
+        if (nud.Focused)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.PageUp:
+                    nud.Value += Math.Min(10, nud.Maximum - nud.Value);
+                    break;
+                case Keys.PageDown:
+                    nud.Value -= Math.Min(10, nud.Value - nud.Minimum);
+                    break;
+            }
+        }
     }
 
     private void DisableAll()
