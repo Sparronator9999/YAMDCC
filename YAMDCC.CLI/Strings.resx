@@ -169,15 +169,15 @@ Basic commands:
 		(general info, fan profiles, etc.)
 
 Fan profile management:
-  -F, -fan	The fan to modify profiles for
-  -P, -profile	The fan profile to modify
   -N, -new	Create a new fan profile (overrides `-profile`)
   -D, -delete	Delete the fan profile specified by `-profile`
-
+  -E, -edit	The fan and dprofile to modify, in the form &lt;fan,profile&gt;.
   -S, -speed	Set a profile's speed/temperature point, in the format
 		&lt;idx,speed,up_t,down_t&gt;. Use -1 to keep original value.
 		The shorter form &lt;idx,speed&gt; is also accepted, and will
 		adjust only the fan speed at the given point.
+
+  -P, -profile	The fan profile to use for the system.
   -chargelim	Set the laptop charge limit.
   -perfmode	If `-profile` is unspecified, sets the default performance
 		mode for all fan profiles.

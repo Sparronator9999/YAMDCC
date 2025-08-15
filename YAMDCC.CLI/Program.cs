@@ -93,8 +93,9 @@ internal static class Program
             delFanProf = false,
             applyConf = false;
 
-        int fanIdx = -1,
-            profIdx = -1,
+        int profSwitchIdx = -1,
+            fanEditIdx = -1,
+            profEditIdx = -1,
 
             spdIdx = -1,
             fanSpd = -1,
@@ -116,8 +117,8 @@ internal static class Program
             // Check for missing or unknown arguments
             switch (verb)
             {
-                case "F":
-                case "fan":
+                case "E":
+                case "edit":
                 case "P":
                 case "profile":
                 case "S":
@@ -150,21 +151,35 @@ internal static class Program
                 case "monitor":
                     ecMonitor = true;
                     break;
-                case "F":
-                case "fan":
-                    // Try to access fan by index first, otherwise
-                    // try accessing by name (done after parsing all arguments)
-                    if (!int.TryParse(arg, out fanIdx))
+                case "E":
+                case "edit":
+                    string[] profEditArgs = arg.Split(',');
+                    if (profEditArgs.Length != 2)
                     {
-                        fanName = arg;
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"ERROR: {(profEditArgs.Length < 2 ? "Not enough" : "Too many")} arguments for `{verb}`");
+                        Console.WriteLine($"(expected 2-4, got {profEditArgs.Length})");
+                        Console.ForegroundColor = fgColor;
+                        return;
+                    }
+
+                    if (!int.TryParse(profEditArgs[0], out fanEditIdx))
+                    {
+                        fanName = profEditArgs[0];
+                    }
+                    if (!int.TryParse(profEditArgs[1], out profEditIdx))
+                    {
+                        profName = profEditArgs[1];
                     }
                     break;
                 case "P":
                 case "profile":
-                    // Same as "fan" but for fan profile.
-                    if (!int.TryParse(arg, out profIdx))
+                    if (!int.TryParse(arg, out profSwitchIdx))
                     {
-                        profName = arg;
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine(Strings.GetString("errArgParse", verb));
+                        Console.ForegroundColor = fgColor;
+                        return;
                     }
                     break;
                 case "N":
@@ -291,26 +306,26 @@ internal static class Program
         }
 
         // Look up fan and profile indexes by name if fanIdx/profIdx are -1:
-        if (fanIdx == -1)
+        if (fanEditIdx == -1)
         {
             for (int i = 0; i < cfg.FanConfs.Count; i++)
             {
                 if (cfg.FanConfs[i].Name == fanName)
                 {
-                    fanIdx = i;
+                    fanEditIdx = i;
                     break;
                 }
             }
         }
 
-        if (profIdx == -1 && fanIdx != -1)
+        if (profEditIdx == -1 && fanEditIdx != -1)
         {
-            FanConf fanCfg =  cfg.FanConfs[fanIdx];
+            FanConf fanCfg =  cfg.FanConfs[fanEditIdx];
             for (int i = 0; i < fanCfg.FanCurveConfs.Count; i++)
             {
                 if (fanCfg.FanCurveConfs[i].Name == profName)
                 {
-                    profIdx = i;
+                    profEditIdx = i;
                     break;
                 }
             }
@@ -469,6 +484,7 @@ internal static class Program
                 fanCfg.FanCurveConfs[fanCfg.CurveSel].Desc = $"(Copy of {oldCurveCfg.Name})\n{oldCurveCfg.Desc}";
             }
         }
+
         // -delete
         else if (delFanProf)
         {
@@ -484,10 +500,19 @@ internal static class Program
             }
         }
 
+        // -profile
+        if (profSwitchIdx != -1)
+        {
+            foreach (FanConf fanCfg in cfg.FanConfs)
+            {
+                fanCfg.CurveSel = profSwitchIdx;
+            }
+        }
+
         // -speed
         if (spdIdx != -1)
         {
-            TempThreshold t = cfg.FanConfs[fanIdx].FanCurveConfs[profIdx]
+            TempThreshold t = cfg.FanConfs[fanEditIdx].FanCurveConfs[profEditIdx]
                 .TempThresholds[spdIdx];
 
             t.FanSpeed = (byte)fanSpd;
@@ -519,7 +544,7 @@ internal static class Program
         if (perfMode != -2)
         {
             int max = cfg.PerfModeConf.PerfModes.Count;
-            if (profIdx == -1)
+            if (profEditIdx == -1)
             {
                 // set global performance mode value by default
                 if (perfMode < 0 || perfMode > max)
@@ -543,7 +568,7 @@ internal static class Program
                 }
                 // per-profile performance mode is always
                 // applied from the first fan's config
-                cfg.FanConfs[0].FanCurveConfs[profIdx].PerfModeSel = (byte)perfMode;
+                cfg.FanConfs[0].FanCurveConfs[profEditIdx].PerfModeSel = (byte)perfMode;
             }
         }
 
