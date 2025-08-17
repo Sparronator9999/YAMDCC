@@ -10,7 +10,10 @@ assignees: Sparronator9999
 ### Prerequisites
 
 <!-- To check the boxes below, replace the space within the square brackets with an x, i.e. change [ ] to [x].
-     Leaving the space in (i.e. [ x] or [x ]) will cause the check box to not display properly. -->
+     Leaving the space in (i.e. [ x] or [x ]) will cause the check box to not display properly.
+
+     Similarly, make sure empty check boxes have a space between the brackets, i.e. [ ] (they should by default).
+     Unchecked boxes without the space (i.e. []) will also not display properly. -->
 
 - [ ] This issue is not a [bug report](https://github.com/Sparronator9999/YAMDCC/issues/new?template=bug_report.md) or [feature request](https://github.com/Sparronator9999/YAMDCC/issues/new?template=feature_request.md).
 - [ ] I have searched the [FAQ](https://github.com/Sparronator9999/YAMDCC#faq) for answers.
