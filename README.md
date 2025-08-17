@@ -138,7 +138,7 @@ usage.
 however.
 
 4: Not supported by laptops without a keyboard backlight (obviously), or by
-most newer laptops with RGB keyboard backlights.
+any laptop with an RGB keyboard backlight.
 
 5: YAMDCC only supports monitoring the CPU/GPU temperatures and fan speeds via EC.
 
