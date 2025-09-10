@@ -6,8 +6,8 @@
 #define AppName "YAMDCC"
 #define AppNameCE "Config Editor"
 #define AppNameHH "Hotkey Handler"
-#define AppVer "1.2.0-beta.2"
-#define AppVerFriendly "1.2 Beta 2"
+#define AppVer "1.2.0"
+#define AppVerFriendly "1.2"
 #define AppPublisher "Sparronator9999"
 #define AppURL "https://github.com/Sparronator9999/YAMDCC"
 #define AppExeCE "ConfigEditor.exe"
@@ -67,7 +67,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Components]
 Name: "main"; Description: "YAMDCC Service and common libraries (required)"; Types: full compact custom; Flags: fixed
-Name: "cli"; Description: "CLI (beta)"; types: full
+Name: "cli"; Description: "CLI"; types: full
 Name: "confeditor"; Description: "Config Editor"; Types: full compact
 Name: "ecinspect"; Description: "EC Inspector"; Types: full
 Name: "hkhandler"; Description: "Hotkey Handler"; Types: full

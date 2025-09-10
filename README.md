@@ -7,6 +7,8 @@ A fast, lightweight MSI Center alternative and fan control utility for MSI lapto
 
 > [!IMPORTANT]
 > Windows has recently begun flagging WinRing0 (the driver YAMDCC uses for EC access) as malware. See [this discussion](https://github.com/Sparronator9999/YAMDCC/discussions/67) for more information.
+> 
+> This is planned to be fixed in v2.0 of YAMDCC by removing the need for WinRing0.
 
 <details><summary>Table of contents <i>(click to expand</i>)</summary>
 
@@ -85,12 +87,11 @@ Currently, there are configs for the following laptops:
 
 There are also generic configs that should work with most MSI laptops, but with
 an incorrect default config. You can use the EC-to-config feature to get the
-proper fan profiles for your laptop, then [create a pull request](https://github.com/Sparronator9999/YAMDCC/pulls)
-to get your laptop's config added to the project.
+proper fan profiles for your laptop. This will be made the default behaviour in
+a future version of YAMDCC.
 
-Other laptop brands are not officially supported. You can still try and
-[make your own config](https://github.com/Sparronator9999/YAMDCC/wiki/How-to-make-a-config-for-YAMDCC#manually-from-scratch),
-but chances are you're looking for [NoteBook FanControl](https://github.com/UraniumDonut/nbfc-revive) instead.
+Other laptop brands are not supported. You're probably looking for
+[NoteBook FanControl](https://github.com/UraniumDonut/nbfc-revive) instead.
 
 ### Community-tested laptops
 
@@ -109,7 +110,7 @@ wiki page and follow the instructions to get a config for your laptop.
 
 | Feature                       | MSI Center | YAMDCC      |
 |-------------------------------|------------|-------------|
-| Installed size¹               | ~950 MB    | ~5.8 MB     |
+| Installed size¹               | ~950 MB    | ~5.9 MB     |
 | Fan control                   | ✔          | ✔           |
 | Temp. threshold control       | ❌          | ✔           |
 | Multi-fan profile support     | ❌          | ✔           |
@@ -125,7 +126,7 @@ wiki page and follow the instructions to get a config for your laptop.
 1: As of v2.0.38, MSI Center takes about 950 MB of storage space when counting
 the UWP app (749 MB) and the files installed on first launch to
 `C:\Program Files (x86)\MSI` (205 MB). YAMDCC's installed size is based on the
-Release build of [v1.1](https://github.com/Sparronator9999/YAMDCC/releases/tag/v1.1.0)
+Release build of [v1.2](https://github.com/Sparronator9999/YAMDCC/releases/tag/v1.2.0)
 when installed normally (plus uninstaller) with all components selected
 (the default).
 
@@ -143,11 +144,6 @@ any laptop with an RGB keyboard backlight.
 5: YAMDCC only supports monitoring the CPU/GPU temperatures and fan speeds via EC.
 
 ## Roadmap
-
-### v1.2
-
-- [x] CLI support
-  - Currently in beta. Please test and report issues before the full v1.2 release.
 
 ### v2.0
 
@@ -229,9 +225,9 @@ See also the [wiki page](https://github.com/Sparronator9999/YAMDCC/wiki/Building
 7.  ???
 8.  Profit!
 
-Make sure to only use matching `yamdccsvc.exe` and `ConfigEditor.exe` together,
-otherwise you may encounter issues (that means `net stop yamdccsvc` first, then
-compile).
+Make sure to only use matching `yamdccsvc.exe` and `ConfigEditor.exe`/`yamdcc.exe`
+together, otherwise you may encounter issues (that means `net stop yamdccsvc`
+first, then compile).
 
 ### From the command line
 
@@ -303,4 +299,4 @@ This project makes use of the following third-party libraries:
 - The [r/MSILaptops](https://redlib.catsarch.com/r/MSILaptops) subreddit for thinking YAMDCC is good enough to deserve a pinned post.
 - @porkmanager for basically being my personal bug bounty hunter.
 - [Everyone who has starred this project](https://www.star-history.com/#Sparronator9999/YAMDCC&Date)
-  - Unfortunately, the star history graphic isn't working for some reason...
+  - Unfortunately, the star history graphic isn't working for some reason (as of writing)...
