@@ -1,0 +1,2 @@
+# Fix Inno Setup being over-represented in the project language statistics
+Tools/** linguist-vendored
