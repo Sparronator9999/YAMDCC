@@ -24,6 +24,7 @@ using System.Runtime.InteropServices;
 using System.Security.Principal;
 using System.ServiceProcess;
 using System.Windows.Forms;
+using YAMDCC.Common.Configs;
 
 namespace YAMDCC.Common;
 
@@ -502,5 +503,29 @@ public static class Utils
         {
             return ((string)biosKey?.GetValue(name, string.Empty)).Trim();
         }
+    }
+
+    public static byte ToECValue(this PerfMode mode)
+    {
+        return mode switch
+        {
+            PerfMode.MaxBattery => 0xC2,
+            PerfMode.Silent => 0xC1,
+            PerfMode.Balanced => 0xC0,
+            PerfMode.Performance => 0xC4,
+            _ => throw new NotSupportedException($"{mode} cannot be converted to an EC value."),
+        };
+    }
+
+    public static byte ToECValue(this FanMode mode)
+    {
+        return mode switch
+        {
+            FanMode.Auto => 0x0D,
+            FanMode.Silent => 0x1D,
+            FanMode.Basic => 0x4D,
+            FanMode.Advanced => 0x8D,
+            _ => throw new NotSupportedException($"{mode} cannot be converted to an EC value."),
+        };
     }
 }

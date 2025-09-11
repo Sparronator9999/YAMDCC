@@ -69,7 +69,7 @@ public static class Paths
     /// <remarks>
     /// (C:\ProgramData\Sparronator9999\YAMDCC\CurrentConfig.xml on Windows)
     /// </remarks>
-    public static readonly string CurrentConf = Path.Combine(Data, "CurrentConfig.xml");
+    public static readonly string CurrentConfV2 = Path.Combine(Data, "CurrentConfigV2.xml");
 
     /// <summary>
     /// The path where the currently applied Hotkey Handler config is saved.

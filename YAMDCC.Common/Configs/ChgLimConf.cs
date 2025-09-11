@@ -14,33 +14,36 @@
 // You should have received a copy of the GNU General Public License along with
 // YAMDCC. If not, see <https://www.gnu.org/licenses/>.
 
-using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace YAMDCC.Common.Configs;
 
 /// <summary>
-/// Represents a configuration for the performance modes of a laptop
-/// (separate from the Windows power plans).
+/// Represents a charge limit config for a laptop.
 /// </summary>
-public sealed class PerfModeConf
+public sealed class ChgLimConf
 {
     /// <summary>
-    /// The register that controls the performance mode.
+    /// The register that controls the charge limit.
     /// </summary>
     [XmlElement]
     public byte Reg { get; set; }
 
     /// <summary>
-    /// The default performance mode, as an index of the available
-    /// performance modes, when not overriden by a <see cref="FanCurveConf"/>.
+    /// The value that corresponds to 0% charge limit (i.e. disabled).
     /// </summary>
     [XmlElement]
-    public int ModeSel { get; set; }
+    public byte MinVal { get; set; }
 
     /// <summary>
-    /// An array of possible performance modes for the laptop.
+    /// The value that corresponds to 100% charge limit.
     /// </summary>
-    [XmlArray]
-    public List<PerfMode> PerfModes { get; set; }
+    [XmlElement]
+    public byte MaxVal { get; set; }
+
+    /// <summary>
+    /// The currently set charge limit value.
+    /// </summary>
+    [XmlElement]
+    public byte CurVal { get; set; }
 }

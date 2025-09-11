@@ -36,7 +36,7 @@ internal sealed partial class MainForm : Form
     /// <summary>
     /// The YAMDCC config that is currently open for editing.
     /// </summary>
-    private YAMDCC_Config Config;
+    private YamdccCfg Config;
 
     /// <summary>
     /// The client that connects to the YAMDCC Service
@@ -51,6 +51,7 @@ internal sealed partial class MainForm : Form
 
     private readonly Timer tmrPoll, tmrStatusReset, tmrSvcTimeout;
 
+    private bool GPUFan;
     private int Debug;
     #endregion
 
@@ -88,7 +89,7 @@ internal sealed partial class MainForm : Form
         tsiUninstall.ToolTipText = Strings.GetString("ttUninstall");
         tsiAbout.ToolTipText = Strings.GetString("ttAbout");
         tsiSource.ToolTipText = Strings.GetString("ttSource");
-        ttMain.SetToolTip(cboFanSel, Strings.GetString("ttFanSel"));
+        ttMain.SetToolTip(btnFanSel, Strings.GetString("ttFanSel"));
         ttMain.SetToolTip(btnProfAdd, Strings.GetString("ttProfAdd"));
         ttMain.SetToolTip(btnProfDel, Strings.GetString("ttProfDel"));
         ttMain.SetToolTip(btnApply, Strings.GetString("ttApply"));
@@ -169,16 +170,10 @@ internal sealed partial class MainForm : Form
         }
         AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit);
 
-        LoadConf(Paths.CurrentConf);
+        LoadConf(Paths.CurrentConfV2);
 
-        if (Config?.KeyLightConf is null)
-        {
-            ttMain.SetToolTip(tbKeyLight, Strings.GetString("ttNotSupported"));
-        }
-        else
-        {
-            SendSvcMessage(new ServiceCommand(Command.GetKeyLightBright));
-        }
+        ttMain.SetToolTip(tbKeyLight, Strings.GetString("ttNotSupported"));
+        SendSvcMessage(new ServiceCommand(Command.GetKeyLightSupported));
 
         switch (CommonConfig.GetECtoConfState())
         {
@@ -236,10 +231,7 @@ internal sealed partial class MainForm : Form
                         case Command.ApplyConf:
                             ToggleSvcCmds(true);
                             UpdateStatus(StatusCode.ConfApplied);
-                            if (Config.KeyLightConf is not null)
-                            {
-                                SendSvcMessage(new ServiceCommand(Command.GetKeyLightBright));
-                            }
+                            SendSvcMessage(new ServiceCommand(Command.GetKeyLightSupported));
                             break;
                         case Command.SetFullBlast:
                             ToggleSvcCmds(true);
@@ -256,11 +248,11 @@ internal sealed partial class MainForm : Form
                     }
                     break;
                 }
-                case Response.Temp:
+                /*case Response.Temp:
                 {
-                    if (args.Length == 2 && args[0] is int fan && args[1] is int temp)
+                    if (args.Length == 2 && args[0] is bool gpuFan && args[1] is int temp)
                     {
-                        if (fan == cboFanSel.SelectedIndex)
+                        if (gpuFan)
                         {
                             lblTemp.Text = $"Temp: {temp}°C";
                         }
@@ -286,6 +278,28 @@ internal sealed partial class MainForm : Form
                         lblFanRPM.Text = $"RPM: {rpm}";
                     }
                     break;
+                }*/
+                case Response.KeyLightSupported:
+                {
+                    if (args.Length == 1 && args[0] is bool supported)
+                    {
+                        if (supported)
+                        {
+                            ttMain.SetToolTip(tbKeyLight, Strings.GetString("ttKeyLight"));
+                            tbKeyLight.Enabled = true;
+                            lblKeyLightHigh.Enabled = true;
+                            lblKeyLightLow.Enabled = true;
+                            SendSvcMessage(new ServiceCommand(Command.GetKeyLightBright));
+                        }
+                        else
+                        {
+                            ttMain.SetToolTip(tbKeyLight, Strings.GetString("ttNotSupported"));
+                            tbKeyLight.Enabled = false;
+                            lblKeyLightHigh.Enabled = false;
+                            lblKeyLightLow.Enabled = false;
+                        }
+                    }
+                    break;
                 }
                 case Response.KeyLightBright:
                 {
@@ -294,19 +308,26 @@ internal sealed partial class MainForm : Form
                         // value received from service should be valid,
                         // but let's check anyway to avoid potential crashes
                         // from non-official YAMDCC services
-                        int max = Config.KeyLightConf.MaxVal - Config.KeyLightConf.MinVal;
-                        if (brightness < 0 || brightness > max)
+                        if (brightness < 0 || brightness > 4)
                         {
                             break;
                         }
 
-                        tbKeyLight.Maximum = max;
                         tbKeyLight.Value = brightness;
                         ttMain.SetToolTip(tbKeyLight, Strings.GetString("ttKeyLight"));
-
-                        tbKeyLight.Enabled = true;
-                        lblKeyLightLow.Enabled = true;
-                        lblKeyLightHigh.Enabled = true;
+                    }
+                    break;
+                }
+                case Response.KeySwapSupported:
+                {
+                    if (args.Length == 1 && args[0] is bool supported)
+                    {
+                        if (supported)
+                        {
+                            chkWinFnSwap.Checked = Config.KeySwapEnabled;
+                            ttMain.SetToolTip(chkWinFnSwap, Strings.GetString("ttKeySwap"));
+                            chkWinFnSwap.Enabled = true;
+                        }
                     }
                     break;
                 }
@@ -371,8 +392,7 @@ internal sealed partial class MainForm : Form
 
         if (sfd.ShowDialog() == DialogResult.OK)
         {
-            Config.ChargeLimitConf.CurVal = (byte)(chkChgLim.Checked
-                ? numChgLim.Value : 0);
+            Config.ChargeLim = (byte)(chkChgLim.Checked ? numChgLim.Value : 0);
             Config.Save(sfd.FileName);
             CommonConfig.SetLastConf(sfd.FileName);
         }
@@ -387,8 +407,8 @@ internal sealed partial class MainForm : Form
     #region Options
     private void ProfRename(object sender, EventArgs e)
     {
-        FanCurveConf curveCfg = Config.FanConfs[cboFanSel.SelectedIndex]
-            .FanCurveConfs[cboProfSel.SelectedIndex];
+        FanConf cfg = GPUFan ? Config.GpuFan : Config.CpuFan;
+        FanProf curveCfg = cfg.FanProfs[cfg.ProfSel];
 
         TextInputDialog dlg = new(
             Strings.GetString("dlgProfRen"),
@@ -402,8 +422,8 @@ internal sealed partial class MainForm : Form
 
     private void ProfChangeDesc(object sender, EventArgs e)
     {
-        FanCurveConf curveCfg = Config.FanConfs[cboFanSel.SelectedIndex]
-            .FanCurveConfs[cboProfSel.SelectedIndex];
+        FanConf cfg = GPUFan ? Config.GpuFan : Config.CpuFan;
+        FanProf curveCfg = cfg.FanProfs[cfg.ProfSel];
 
         TextInputDialog dlg = new(
             Strings.GetString("dlgProfChangeDesc"),
@@ -453,11 +473,7 @@ internal sealed partial class MainForm : Form
             return;
         }
         tsiAdvanced.Checked = !tsiAdvanced.Checked;
-
-        if (Config?.FanModeConf is not null)
-        {
-            cboFanMode.Enabled = tsiAdvanced.Checked;
-        }
+        cboFanMode.Enabled = tsiAdvanced.Checked;
     }
 
     private void tsiLogNone_Click(object sender, EventArgs e)
@@ -642,26 +658,33 @@ internal sealed partial class MainForm : Form
 
     #endregion
 
-    private void FanSelChanged(object sender, EventArgs e)
+    private void FanSelChange(object sender, EventArgs e)
     {
-        FanConf cfg = Config.FanConfs[cboFanSel.SelectedIndex];
+        GPUFan = !GPUFan;
+        btnFanSel.Text = GPUFan ? "GPU Fa&n" : "CPU Fa&n";
+        RefreshFanProf();
+    }
+
+    private void RefreshFanProf()
+    {
+        FanConf cfg = GPUFan ? Config.GpuFan : Config.CpuFan;
 
         cboProfSel.Items.Clear();
-        foreach (FanCurveConf curve in cfg.FanCurveConfs)
+        foreach (FanProf curve in cfg.FanProfs)
         {
             cboProfSel.Items.Add(curve.Name);
         }
 
-        if (numFanSpds is null || numFanSpds.Length != cfg.FanCurveRegs.Length)
+        if (numFanSpds is null)
         {
             float scale = CurrentAutoScaleDimensions.Height / 96;
 
             tblCurve.SuspendLayout();
             tblCurve.Controls.Clear();
-            numUpTs = new NumericUpDown[cfg.UpThresholdRegs.Length];
-            numDownTs = new NumericUpDown[cfg.DownThresholdRegs.Length];
-            numFanSpds = new NumericUpDown[cfg.FanCurveRegs.Length];
-            tbFanSpds = new TrackBar[cfg.FanCurveRegs.Length];
+            numUpTs = new NumericUpDown[6];
+            numDownTs = new NumericUpDown[6];
+            numFanSpds = new NumericUpDown[7];
+            tbFanSpds = new TrackBar[7];
 
             tblCurve.ColumnStyles.Clear();
             tblCurve.ColumnCount = numFanSpds.Length + 1;
@@ -726,12 +749,11 @@ internal sealed partial class MainForm : Form
 
         for (int i = 0; i < numFanSpds.Length; i++)
         {
-            numFanSpds[i].Maximum = tbFanSpds[i].Maximum =
-                Math.Abs(cfg.MaxSpeed - cfg.MinSpeed);
+            numFanSpds[i].Maximum = tbFanSpds[i].Maximum = 150;
         }
 
         cboProfSel.Enabled = true;
-        cboProfSel.SelectedIndex = cfg.CurveSel;
+        cboProfSel.SelectedIndex = cfg.ProfSel;
 
         if (tsiECMon.Checked)
         {
@@ -743,39 +765,34 @@ internal sealed partial class MainForm : Form
 
     private void ProfSelChanged(object sender, EventArgs e)
     {
-        FanConf cfg = Config.FanConfs[cboFanSel.SelectedIndex];
-        FanCurveConf curveCfg = cfg.FanCurveConfs[cboProfSel.SelectedIndex];
+        FanConf cfg = GPUFan ? Config.GpuFan : Config.CpuFan;
+        FanProf curveCfg = cfg.FanProfs[cboProfSel.SelectedIndex];
 
-        for (int i = 0; i < Config.FanConfs.Count; i++)
-        {
-            Config.FanConfs[i].CurveSel = cboProfSel.SelectedIndex;
-        }
+        Config.CpuFan.ProfSel = cboProfSel.SelectedIndex;
+        Config.GpuFan.ProfSel = cboProfSel.SelectedIndex;
 
         ttMain.SetToolTip(cboProfSel, Strings.GetString(
-            "ttProfSel", cfg.FanCurveConfs[cfg.CurveSel].Desc));
+            "ttProfSel", cfg.FanProfs[cfg.ProfSel].Desc));
 
-        if (Config.PerfModeConf is not null)
-        {
-            cboProfPerfMode.SelectedIndex = Config.FanConfs[0]
-                .FanCurveConfs[cboProfSel.SelectedIndex].PerfModeSel + 1;
-            cboProfPerfMode.Enabled = true;
-        }
+        cboProfPerfMode.SelectedIndex = (int)Config.CpuFan
+            .FanProfs[cfg.ProfSel].PerfMode + 1;
+        cboProfPerfMode.Enabled = true;
 
         bool enable = curveCfg.Name != "Default";
         for (int i = 0; i < numFanSpds.Length; i++)
         {
             // Fan profile
-            TempThreshold t = curveCfg.TempThresholds[i];
-            numFanSpds[i].Value = tbFanSpds[i].Value = t.FanSpeed;
+            Threshold t = curveCfg.Thresholds[i];
+            numFanSpds[i].Value = tbFanSpds[i].Value = t.Speed;
             numFanSpds[i].Enabled = enable;
             tbFanSpds[i].Enabled = enable;
 
             // Temp thresholds
-            if (i < cfg.UpThresholdRegs.Length)
+            if (i < numUpTs.Length)
             {
-                t = curveCfg.TempThresholds[i + 1];
-                numUpTs[i].Value = t.UpThreshold;
-                numDownTs[i].Value = t.DownThreshold;
+                t = curveCfg.Thresholds[i + 1];
+                numUpTs[i].Value = t.Tup;
+                numDownTs[i].Value = t.Tdown;
                 numUpTs[i].Enabled = enable;
                 numDownTs[i].Enabled = enable;
             }
@@ -787,10 +804,9 @@ internal sealed partial class MainForm : Form
     private void ProfPerfModeChanged(object sender, EventArgs e)
     {
         int i = cboProfPerfMode.SelectedIndex;
-        PerfModeConf pModeCfg = Config.PerfModeConf;
-        Config.FanConfs[0].FanCurveConfs[cboProfSel.SelectedIndex].PerfModeSel = i - 1;
+        Config.CpuFan.FanProfs[i].PerfMode = (PerfMode)(i - 1);
 
-        if (i > 0)
+        /*if (i > 0)
         {
             ttMain.SetToolTip(cboProfPerfMode,
                 Strings.GetString("ttProfPerfMode", pModeCfg.PerfModes[i - 1].Desc));
@@ -799,38 +815,39 @@ internal sealed partial class MainForm : Form
         {
             ttMain.SetToolTip(cboProfPerfMode,
                 Strings.GetString("ttProfPerfMode", pModeCfg.PerfModes[pModeCfg.ModeSel].Desc));
-        }
+        }*/
     }
 
     private void ProfAdd(object sender, EventArgs e)
     {
-        FanConf cfg = Config.FanConfs[cboFanSel.SelectedIndex];
+        FanConf cfg = GPUFan ? Config.GpuFan : Config.CpuFan;
 
         TextInputDialog dlg = new(
             Strings.GetString("dlgProfAdd"), "New Profile",
-            $"Copy of {cfg.FanCurveConfs[cboProfSel.SelectedIndex].Name}");
+            $"Copy of {cfg.FanProfs[cfg.ProfSel].Name}");
 
         if (dlg.ShowDialog() == DialogResult.OK)
         {
-            for (int i = 0; i < cboFanSel.Items.Count; i++)
-            {
-                cfg = Config.FanConfs[i];
-
-                // Create a copy of the currently selected fan profile
-                // and add it to the config's list:
-                FanCurveConf oldCurveCfg = cfg.FanCurveConfs[cfg.CurveSel];
-                cfg.FanCurveConfs.Add(oldCurveCfg.Copy());
-                cfg.CurveSel = cfg.FanCurveConfs.Count - 1;
-
-                // Name it according to what the user specified
-                cfg.FanCurveConfs[cfg.CurveSel].Name = dlg.Result;
-                cfg.FanCurveConfs[cfg.CurveSel].Desc = $"(Copy of {oldCurveCfg.Name})\n{oldCurveCfg.Desc}";
-            }
+            CloneFanProf(Config.CpuFan, dlg.Result);
+            CloneFanProf(Config.GpuFan, dlg.Result);
 
             // Add the new fan profile to the UI's profile list and select it:
             cboProfSel.Items.Add(dlg.Result);
-            cboProfSel.SelectedIndex = Config.FanConfs[cboFanSel.SelectedIndex].CurveSel;
+            cboProfSel.SelectedIndex = cfg.ProfSel;
         }
+    }
+
+    private static void CloneFanProf(FanConf cfg, string newName)
+    {
+        // Create a copy of the currently selected fan profile
+        // and add it to the config's list:
+        FanProf oldCurveCfg = cfg.FanProfs[cfg.ProfSel];
+        cfg.FanProfs.Add(oldCurveCfg.Copy());
+        cfg.ProfSel = cfg.FanProfs.Count - 1;
+
+        // Name it according to what the user specified
+        cfg.FanProfs[cfg.ProfSel].Name = newName;
+        cfg.FanProfs[cfg.ProfSel].Desc = $"(Copy of {oldCurveCfg.Name})\n{oldCurveCfg.Desc}";
     }
 
     private void btnProfAdd_KeyPress(object sender, KeyPressEventArgs e)
@@ -855,24 +872,23 @@ internal sealed partial class MainForm : Form
 
     private void ProfDel(object sender, EventArgs e)
     {
-        FanConf cfg = Config.FanConfs[cboFanSel.SelectedIndex];
-        FanCurveConf curveCfg = cfg.FanCurveConfs[cfg.CurveSel];
+        FanConf cfg = GPUFan ? Config.GpuFan : Config.CpuFan;
+        int profIdx = cfg.ProfSel;
+        FanProf curveCfg = cfg.FanProfs[profIdx];
 
         if (curveCfg.Name != "Default" && Utils.ShowWarning(
             Strings.GetString("dlgProfDel", curveCfg.Name),
-            $"Delete fan profile? ({cfg.Name})") == DialogResult.Yes)
+            $"Delete fan profile?") == DialogResult.Yes)
         {
             // Remove each equivalent fan profile from the config's list
-            for (int i = 0; i < cboFanSel.Items.Count; i++)
-            {
-                cfg = Config.FanConfs[i];
-                cfg.FanCurveConfs.RemoveAt(cfg.CurveSel);
-                cfg.CurveSel -= 1;
-            }
+            Config.CpuFan.FanProfs.RemoveAt(profIdx);
+            Config.CpuFan.ProfSel -= 1;
+            Config.GpuFan.FanProfs.RemoveAt(profIdx);
+            Config.GpuFan.ProfSel -= 1;
 
             // Remove from the list client-side, and select a different fan profile
             cboProfSel.Items.RemoveAt(cboProfSel.SelectedIndex);
-            cboProfSel.SelectedIndex = Config.FanConfs[cboFanSel.SelectedIndex].CurveSel;
+            cboProfSel.SelectedIndex = cfg.ProfSel;
         }
     }
 
@@ -892,9 +908,10 @@ internal sealed partial class MainForm : Form
 
         if (cboProfSel.SelectedIndex != -1)
         {
-            Config.FanConfs[cboFanSel.SelectedIndex]
-                .FanCurveConfs[cboProfSel.SelectedIndex]
-                .TempThresholds[i].FanSpeed = (byte)tbFanSpds[i].Value;
+            FanConf cfg = GPUFan ? Config.GpuFan : Config.CpuFan;
+
+            cfg.FanProfs[cboProfSel.SelectedIndex]
+                .Thresholds[i].Speed = (byte)tbFanSpds[i].Value;
         }
     }
 
@@ -903,14 +920,15 @@ internal sealed partial class MainForm : Form
         NumericUpDown nud = (NumericUpDown)sender;
         int i = (int)nud.Tag;
 
-        TempThreshold threshold = Config.FanConfs[cboFanSel.SelectedIndex]
-            .FanCurveConfs[cboProfSel.SelectedIndex]
-            .TempThresholds[i + 1];
+        FanConf cfg = GPUFan ? Config.GpuFan : Config.CpuFan;
+
+        Threshold threshold = cfg
+            .FanProfs[cboProfSel.SelectedIndex].Thresholds[i + 1];
 
         // Update associated down threshold slider
-        numDownTs[i].Value += nud.Value - threshold.UpThreshold;
+        numDownTs[i].Value += nud.Value - threshold.Tup;
 
-        threshold.UpThreshold = (byte)numUpTs[i].Value;
+        threshold.Tup = (byte)numUpTs[i].Value;
     }
 
     private void DownTChange(object sender, EventArgs e)
@@ -918,9 +936,9 @@ internal sealed partial class MainForm : Form
         NumericUpDown nud = (NumericUpDown)sender;
         int i = (int)nud.Tag;
 
-        Config.FanConfs[cboFanSel.SelectedIndex]
-            .FanCurveConfs[cboProfSel.SelectedIndex]
-            .TempThresholds[i + 1].DownThreshold = (byte)numDownTs[i].Value;
+        FanConf cfg = GPUFan ? Config.GpuFan : Config.CpuFan;
+        cfg.FanProfs[cboProfSel.SelectedIndex].Thresholds[i + 1]
+            .Tdown = (byte)numDownTs[i].Value;
     }
 
     private void ChgLimToggle(object sender, EventArgs e)
@@ -931,17 +949,15 @@ internal sealed partial class MainForm : Form
     private void PerfModeChange(object sender, EventArgs e)
     {
         int i = cboPerfMode.SelectedIndex;
-        Config.PerfModeConf.ModeSel = i;
-        ttMain.SetToolTip(cboPerfMode,
-            Strings.GetString("ttPerfMode", Config.PerfModeConf.PerfModes[i].Desc));
+        Config.PerfMode = (PerfMode)i;
+        //ttMain.SetToolTip(cboPerfMode, Strings.GetString("ttPerfMode", Config.PerfModeConf.PerfModes[i].Desc));
 
-        PerfModeConf pCfg = Config.PerfModeConf;
-        cboProfPerfMode.Items[0] = $"Default ({pCfg.PerfModes[pCfg.ModeSel].Name})";
+        cboProfPerfMode.Items[0] = $"Default ({Config.PerfMode})";
     }
 
     private void WinFnSwapToggle(object sender, EventArgs e)
     {
-        Config.KeySwapConf.Enabled = chkWinFnSwap.Checked;
+        Config.KeySwapEnabled = chkWinFnSwap.Checked;
     }
 
     private void KeyLightChange(object sender, EventArgs e)
@@ -952,9 +968,8 @@ internal sealed partial class MainForm : Form
     private void FanModeChange(object sender, EventArgs e)
     {
         int i = cboFanMode.SelectedIndex;
-        Config.FanModeConf.ModeSel = i;
-        ttMain.SetToolTip(cboFanMode,
-            Strings.GetString("ttFanMode", Config.FanModeConf.FanModes[i].Desc));
+        Config.FanMode = (FanMode)i;
+        //ttMain.SetToolTip(cboFanMode, Strings.GetString("ttFanMode", Config.FanMode));
     }
 
     private void txtAuthor_Validating(object sender, CancelEventArgs e)
@@ -987,10 +1002,7 @@ internal sealed partial class MainForm : Form
             Config.Model = pcModel;
         }
 
-        if (Config.FirmVerSupported)
-        {
-            SendSvcMessage(new ServiceCommand(Command.GetFirmVer));
-        }
+        SendSvcMessage(new ServiceCommand(Command.GetFirmVer));
     }
 
     private void FullBlastToggle(object sender, EventArgs e)
@@ -1006,7 +1018,7 @@ internal sealed partial class MainForm : Form
         {
             try
             {
-                Config = YAMDCC_Config.Load(CommonConfig.GetLastConf());
+                Config = YamdccCfg.Load(CommonConfig.GetLastConf());
                 LoadConf(Config);
                 ApplyConf(sender, e);
             }
@@ -1033,8 +1045,8 @@ internal sealed partial class MainForm : Form
         ToggleSvcCmds(false);
 
         // Save the updated config
-        Config.ChargeLimitConf.CurVal = (byte)(chkChgLim.Checked ? numChgLim.Value : 0);
-        Config.Save(Paths.CurrentConf);
+        Config.ChargeLim = (byte)(chkChgLim.Checked ? numChgLim.Value : 0);
+        Config.Save(Paths.CurrentConfV2);
 
         // Tell the service to reload and apply the updated config
         SendSvcMessage(new ServiceCommand(Command.ApplyConf));
@@ -1066,7 +1078,7 @@ internal sealed partial class MainForm : Form
 
         try
         {
-            Config = YAMDCC_Config.Load(confPath);
+            Config = YamdccCfg.Load(confPath);
             LoadConf(Config);
             return true;
         }
@@ -1084,7 +1096,7 @@ internal sealed partial class MainForm : Form
         }
     }
 
-    private void LoadConf(YAMDCC_Config cfg)
+    private void LoadConf(YamdccCfg cfg)
     {
         DisableAll();
 
@@ -1093,122 +1105,70 @@ internal sealed partial class MainForm : Form
         txtAuthor.Text = cfg.Author;
         txtManufacturer.Text = cfg.Manufacturer;
         txtModel.Text = cfg.Model;
-        if (cfg.FirmVerSupported)
-        {
-            txtFirmVer.Text = cfg.FirmVer;
-            txtFirmDate.Text = $"{cfg.FirmDate:G}";
-        }
-        else
-        {
-            txtFirmVer.Text = "(unknown)";
-            txtFirmDate.Text = "(unknown)";
-        }
+        txtFirmVer.Text = cfg.FirmVer;
+        txtFirmDate.Text = $"{cfg.FirmDate:G}";
+
         txtAuthor.Enabled = true;
         btnGetModel.Enabled = true;
 
-        if (cfg.FullBlastConf is null)
-        {
-            ttMain.SetToolTip(chkFullBlast, Strings.GetString("ttNotSupported"));
-        }
-        else
-        {
-            ttMain.SetToolTip(chkFullBlast, Strings.GetString("ttFullBlast"));
-            chkFullBlast.Enabled = true;
-        }
+        ttMain.SetToolTip(chkFullBlast, Strings.GetString("ttFullBlast"));
+        chkFullBlast.Enabled = true;
 
-        if (cfg.ChargeLimitConf is null)
+        ttMain.SetToolTip(numChgLim, Strings.GetString("ttChgLim"));
+        chkChgLim.Enabled = true;
+        numChgLim.Enabled = true;
+        if (Config.ChargeLim == 0)
         {
-            ttMain.SetToolTip(chkFullBlast, Strings.GetString("ttNotSupported"));
+            chkChgLim.Checked = false;
+            numChgLim.Value = 80;
         }
         else
         {
-            ttMain.SetToolTip(numChgLim, Strings.GetString("ttChgLim"));
-            ChargeLimitConf chgLimConf = cfg.ChargeLimitConf;
-            chkChgLim.Enabled = true;
-            numChgLim.Enabled = true;
-            numChgLim.Maximum = Math.Abs(chgLimConf.MaxVal - chgLimConf.MinVal);
-            if (chgLimConf.CurVal == 0)
-            {
-                chkChgLim.Checked = false;
-                numChgLim.Value = 80;
-            }
-            else
-            {
-                chkChgLim.Checked = true;
-                numChgLim.Value = chgLimConf.CurVal;
-            }
+            chkChgLim.Checked = true;
+            numChgLim.Value = Config.ChargeLim;
         }
 
         cboPerfMode.Items.Clear();
         cboProfPerfMode.Items.Clear();
 
-        if (cfg.PerfModeConf is null)
+        foreach (PerfMode pMode in Enum.GetValues(typeof(PerfMode)))
         {
-            ttMain.SetToolTip(cboPerfMode, Strings.GetString("ttNotSupported"));
-        }
-        else
-        {
-            PerfModeConf perfModeConf = cfg.PerfModeConf;
-            cboProfPerfMode.Items.Add($"Default ({perfModeConf.PerfModes[perfModeConf.ModeSel].Name})");
-            for (int i = 0; i < perfModeConf.PerfModes.Count; i++)
-            {
-                cboPerfMode.Items.Add(perfModeConf.PerfModes[i].Name);
-                cboProfPerfMode.Items.Add(perfModeConf.PerfModes[i].Name);
-            }
+            cboProfPerfMode.Items.Add($"Default ({Config.PerfMode})");
 
-            cboPerfMode.SelectedIndex = perfModeConf.ModeSel;
-            cboPerfMode.Enabled = true;
+            if (pMode != PerfMode.Default)
+            {
+                cboPerfMode.Items.Add(pMode);
+                cboProfPerfMode.Items.Add(pMode);
+            }
         }
+
+        cboPerfMode.SelectedIndex = (int)Config.PerfMode;
+        cboPerfMode.Enabled = true;
 
         cboFanMode.Items.Clear();
-        if (cfg.FanModeConf is null)
+        foreach (FanMode fMode in Enum.GetValues(typeof(FanMode)))
         {
-            ttMain.SetToolTip(cboFanMode, Strings.GetString("ttNotSupported"));
-        }
-        else
-        {
-            FanModeConf fanModeConf = cfg.FanModeConf;
-            for (int i = 0; i < fanModeConf.FanModes.Count; i++)
-            {
-                cboFanMode.Items.Add(fanModeConf.FanModes[i].Name);
-            }
-
-            cboFanMode.SelectedIndex = fanModeConf.ModeSel;
-            cboFanMode.Enabled = tsiAdvanced.Checked;
+            cboFanMode.Items.Add(fMode);
         }
 
-        if (cfg.KeySwapConf is null)
-        {
-            ttMain.SetToolTip(chkWinFnSwap, Strings.GetString("ttNotSupported"));
-        }
-        else
-        {
-            chkWinFnSwap.Checked = cfg.KeySwapConf.Enabled;
-            ttMain.SetToolTip(chkWinFnSwap, Strings.GetString("ttKeySwap"));
-            chkWinFnSwap.Enabled = true;
-        }
+        cboFanMode.SelectedIndex = (int)Config.FanMode;
+        cboFanMode.Enabled = tsiAdvanced.Checked;
 
-        cboFanSel.Items.Clear();
-        for (int i = 0; i < cfg.FanConfs.Count; i++)
-        {
-            cboFanSel.Items.Add(cfg.FanConfs[i].Name);
-        }
+        IPCClient.PushMessage(new ServiceCommand(Command.GetKeySwapSupported));
+        ttMain.SetToolTip(chkWinFnSwap, Strings.GetString("ttNotSupported"));
+        chkWinFnSwap.Checked = false;
+        chkWinFnSwap.Enabled = false;
+
+        btnFanSel.Text = "CPU Fa&n";
+        GPUFan = false;
+        RefreshFanProf();
 
         btnProfAdd.Enabled = true;
         tsiProfAdd.Enabled = true;
         tsiProfEdit.Enabled = true;
         tsiECtoConf.Enabled = true;
-        cboFanSel.Enabled = true;
-        cboFanSel.SelectedIndex = 0;
+        btnFanSel.Enabled = true;
         tsiECMon.Enabled = true;
-
-        if (cfg.RegConfs?.Count > 0)
-        {
-            // RegConfs will be removed in a future version of YAMDCC
-            // due to no longer being needed on MSI laptops
-            MessageBox.Show(Strings.GetString("dlgRegConfWarn"), "Warning",
-                MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        }
 
         UpdateStatus(StatusCode.None);
         ToggleSvcCmds(true);
@@ -1216,9 +1176,9 @@ internal sealed partial class MainForm : Form
 
     private void PollEC()
     {
-        SendSvcMessage(new ServiceCommand(Command.GetTemp, cboFanSel.SelectedIndex));
-        SendSvcMessage(new ServiceCommand(Command.GetFanSpeed, cboFanSel.SelectedIndex));
-        SendSvcMessage(new ServiceCommand(Command.GetFanRPM, cboFanSel.SelectedIndex));
+        SendSvcMessage(new ServiceCommand(Command.GetTemp, GPUFan));
+        SendSvcMessage(new ServiceCommand(Command.GetFanSpeed, GPUFan));
+        SendSvcMessage(new ServiceCommand(Command.GetFanRPM, GPUFan));
     }
 
     private static Label FanCurveLabel(string text, float scale, int tabIdx, ContentAlignment align = ContentAlignment.MiddleRight)
@@ -1278,7 +1238,7 @@ internal sealed partial class MainForm : Form
 
         btnProfAdd.Enabled = false;
         btnProfDel.Enabled = false;
-        cboFanSel.Enabled = false;
+        btnFanSel.Enabled = false;
         cboProfSel.Enabled = false;
         cboProfPerfMode.Enabled = false;
         if (tbFanSpds is not null)

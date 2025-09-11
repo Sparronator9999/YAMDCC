@@ -19,31 +19,45 @@ using System.Xml.Serialization;
 namespace YAMDCC.Common.Configs;
 
 /// <summary>
-/// Represents a charge limit config for a laptop.
+/// Represents a fan speed/temperature threshold setting for a fan profile.
 /// </summary>
-public sealed class ChargeLimitConf
+public sealed class Threshold
 {
     /// <summary>
-    /// The register that controls the charge limit.
+    /// The temperature threshold before the fan speeds up to this fan speed.
     /// </summary>
+    /// <remarks>
+    /// Ignored if this is the last temperature threshold in the list
+    /// (i.e. this is the highest fan speed that can be set).
+    /// </remarks>
     [XmlElement]
-    public byte Reg { get; set; }
+    public byte Tup { get; set; }
 
     /// <summary>
-    /// The value that corresponds to 0% charge limit (i.e. disabled).
+    /// The temperature threshold before the fan
+    /// slows down to the previous fan speed.
     /// </summary>
+    /// <remarks>
+    /// Ignored if this is the first temperature threshold in the list
+    /// (i.e. this is the default fan speed).
+    /// </remarks>
     [XmlElement]
-    public byte MinVal { get; set; }
+    public byte Tdown { get; set; }
 
     /// <summary>
-    /// The value that corresponds to 100% charge limit.
+    /// The target fan speed to set when reaching the up threshold.
     /// </summary>
     [XmlElement]
-    public byte MaxVal { get; set; }
+    public byte Speed { get; set; }
 
     /// <summary>
-    /// The currently set charge limit value.
+    /// Creates a copy of this <seealso cref="Threshold"/>.
     /// </summary>
-    [XmlElement]
-    public byte CurVal { get; set; }
+    /// <returns>
+    /// The copy of this <seealso cref="Threshold"/>
+    /// </returns>
+    public Threshold Copy()
+    {
+        return (Threshold)MemberwiseClone();
+    }
 }

@@ -37,7 +37,7 @@ internal sealed partial class MainForm : Form
     private readonly NamedPipeClient<ServiceResponse, ServiceCommand> IPCClient =
         new("YAMDCC-Server");
 
-    private YAMDCC_Config Config;
+    private YamdccCfg Config;
     private HotkeyConf HotkeyConf;
 
     private readonly List<TextBox> txtHotkeys = [];
@@ -205,8 +205,7 @@ internal sealed partial class MainForm : Form
                 object[] value = e.Message.Value;
                 if (value.Length > 0 && value[0] is int i)
                 {
-                    KeyLightConf cfg = Config.KeyLightConf;
-                    if (KeyLightUp && i < cfg.MaxVal - cfg.MinVal)
+                    if (KeyLightUp && i < 4)
                     {
                         IPCClient.PushMessage(new ServiceCommand(
                             Command.SetKeyLightBright, (byte)(i + 1)));
@@ -283,7 +282,7 @@ internal sealed partial class MainForm : Form
     {
         // load currently applied YAMDCC config
         // (used to populate fan profiles/performance modes)
-        Config = YAMDCC_Config.Load(Paths.CurrentConf);
+        Config = YamdccCfg.Load(Paths.CurrentConfV2);
 
         if (HotkeyConf.Hotkeys.Count == 0)
         {
@@ -546,7 +545,7 @@ internal sealed partial class MainForm : Form
         {
             case 6: // switch fan profiles
                 dataCb.Items.Add("<next fan profile>");
-                foreach (FanCurveConf cfg in Config.FanConfs[0].FanCurveConfs)
+                foreach (FanProf cfg in Config.CpuFan.FanProfs)
                 {
                     dataCb.Items.Add(cfg.Name);
                 }
@@ -555,9 +554,9 @@ internal sealed partial class MainForm : Form
                 break;
             case 7: // switch perf. modes
                 dataCb.Items.Add("<next perf. mode>");
-                foreach (PerfMode pm in Config.PerfModeConf.PerfModes)
+                foreach (PerfMode pm in Enum.GetValues(typeof(PerfMode)))
                 {
-                    dataCb.Items.Add(pm.Name);
+                    dataCb.Items.Add(pm);
                 }
                 ttMain.SetToolTip(dataCb, Strings.GetString("ttHkPerfMode"));
                 dataCb.Enabled = true;
@@ -659,7 +658,7 @@ internal sealed partial class MainForm : Form
                 IPCClient.PushMessage(new ServiceCommand(Command.SetFullBlast, -1));
                 break;
             case HotkeyAction.ToggleWinFnSwap:
-                IPCClient.PushMessage(new ServiceCommand(Command.SetWinFnSwap, -1));
+                IPCClient.PushMessage(new ServiceCommand(Command.SetKeySwap, -1));
                 break;
             case HotkeyAction.KeyLightUp:
                 // Get the current keyboard backlight brightness.

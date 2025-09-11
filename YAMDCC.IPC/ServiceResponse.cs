@@ -102,6 +102,18 @@ public enum Response
     /// </remarks>
     Temp,
     /// <summary>
+    /// The result of a <see cref="Command.GetKeyLightSupported"/> command.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This response's <see cref="ServiceResponse.Value"/> field includes
+    /// the following data as a <see langword="bool"/><br/>
+    /// • Supported: <see langword="true"/> if the computer supports keyboard backlight
+    /// adjustments via YAMDCC, otherwise <see langword="false"/>.
+    /// </para>
+    /// </remarks>
+    KeyLightSupported,
+    /// <summary>
     /// The result of a <see cref="Command.GetKeyLightBright"/> command.
     /// </summary>
     /// <remarks>
@@ -112,6 +124,18 @@ public enum Response
     /// </para>
     /// </remarks>
     KeyLightBright,
+    /// <summary>
+    /// The result of a <see cref="Command.GetKeySwapSupported"/> command.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This response's <see cref="ServiceResponse.Value"/> field includes
+    /// the following data as a <see langword="bool"/><br/>
+    /// • Supported: <see langword="true"/> if the computer supports Win/Fn
+    /// key swap, otherwise <see langword="false"/>.
+    /// </para>
+    /// </remarks>
+    KeySwapSupported,
     /// <summary>
     /// Sent to all connected clients when the YAMDCC service
     /// reloads the current YAMDCC config (CurrentConfig.xml).

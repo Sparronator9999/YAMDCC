@@ -25,76 +25,18 @@ namespace YAMDCC.Common.Configs;
 public sealed class FanConf
 {
     /// <summary>
-    /// The display name of the fan in the config editor.
+    /// The zero-based index of the <see cref="FanProf"/> to apply for this fan.
     /// </summary>
     [XmlElement]
-    public string Name { get; set; }
+    public int ProfSel { get; set; }
 
     /// <summary>
-    /// The minimum possible register value for the fan speed.
-    /// </summary>
-    [XmlElement]
-    public byte MinSpeed { get; set; }
-
-    /// <summary>
-    /// The maximum possible register value for the fan speed.
-    /// </summary>
-    [XmlElement]
-    public byte MaxSpeed { get; set; }
-
-    /// <summary>
-    /// The zero-based index of the <see cref="FanCurveConf"/> to apply for this fan.
-    /// </summary>
-    [XmlElement]
-    public int CurveSel { get; set; }
-
-    /// <summary>
-    /// The register to read to get the fan speed percentage.
-    /// </summary>
-    [XmlElement]
-    public byte SpeedReadReg { get; set; }
-
-    /// <summary>
-    /// The register to read to get the temperature
-    /// of the component that controls this fan's speed.
-    /// </summary>
-    [XmlElement]
-    public byte TempReadReg { get; set; }
-
-    /// <summary>
-    /// Contains information on how to calculate the fan RPM.
-    /// </summary>
-    /// <remarks>
-    /// May be <see langword="null"/>.
-    /// </remarks>
-    [XmlElement]
-    public FanRPMConf RPMConf { get; set; }
-
-    /// <summary>
-    /// The registers that the up thresholds are written to.
-    /// </summary>
-    [XmlArray]
-    public byte[] UpThresholdRegs { get; set; }
-
-    /// <summary>
-    /// The registers that the down thresholds are written to.
-    /// </summary>
-    [XmlArray]
-    public byte[] DownThresholdRegs { get; set; }
-
-    /// <summary>
-    /// The registers to write a fan speed profile to.
-    /// </summary>
-    [XmlArray]
-    public byte[] FanCurveRegs { get; set; }
-
-    /// <summary>
-    /// The list of <see cref="FanCurveConf"/>s associated with this fan.
+    /// The list of <see cref="FanProf"/>s associated with this fan.
     /// </summary>
     /// <remarks>
     /// If the base config is a template, this may be <see langword="null"/>,
     /// otherwise at least one fan profile (the "default" profile) must exist.
     /// </remarks>
     [XmlArray]
-    public List<FanCurveConf> FanCurveConfs { get; set; }
+    public List<FanProf> FanProfs { get; set; }
 }

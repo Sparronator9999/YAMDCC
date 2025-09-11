@@ -123,6 +123,12 @@ public enum Command
     /// </remarks>
     GetTemp,
     /// <summary>
+    /// Gets whether keyboard backlight adjustment is supported via YAMDCC on
+    /// the computer and sends a <see cref="Response.KeyLightSupported"/>
+    /// response with the result.
+    /// </summary>
+    GetKeyLightSupported,
+    /// <summary>
     /// Gets the brightness of the keyboard backlight,
     /// and sends a <see cref="Response.KeyLightBright"/>
     /// response with the result.
@@ -151,13 +157,18 @@ public enum Command
     /// </remarks>
     SetKeyLightBright,
     /// <summary>
+    /// Gets whether Win/Fn swap is supported on the computer and sends a
+    /// <see cref="Response.KeySwapSupported"/> response with the result.
+    /// </summary>
+    GetKeySwapSupported,
+    /// <summary>
     /// Sets whether the Windows and Fn keys are swapped compared to their labels.
     /// </summary>
     /// <remarks>
     /// <para>This setting will be reset when reloading the current config.</para>
     /// <para>This command expects no arguments.</para>
     /// </remarks>
-    SetWinFnSwap,
+    SetKeySwap,
     /// <summary>
     /// Sets all fans' profiles to the specified index, or cycles through
     /// all available fan profiles (depending on the value passed to

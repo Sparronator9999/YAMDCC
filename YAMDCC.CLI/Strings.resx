@@ -219,7 +219,7 @@ try `net start yamdccsvc` to start the YAMDCC service.</value>
     <value>ERROR: performance mode must be an integer between {0} and {1}.</value>
   </data>
   <data name="errChgLimVal" xml:space="preserve">
-    <value>ERROR: charge limit must be an integer between 0 and {0}.</value>
+    <value>ERROR: charge limit must be an integer between 0 and 100.</value>
   </data>
   <data name="errNoCfg" xml:space="preserve">
     <value>ERROR: No config is loaded, cannot show config info!</value>

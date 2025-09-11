@@ -19,7 +19,7 @@ using System;
 namespace YAMDCC.Common.Configs;
 
 /// <summary>
-/// The exception thrown when an invalid <see cref="YAMDCC_Config"/> is loaded.
+/// The exception thrown when an invalid <see cref="YamdccCfg"/> is loaded.
 /// </summary>
 public sealed class InvalidConfigException : Exception
 {

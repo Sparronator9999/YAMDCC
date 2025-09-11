@@ -27,6 +27,7 @@ using YAMDCC.Common.Configs;
 using YAMDCC.Common.Logs;
 using YAMDCC.ECAccess;
 using YAMDCC.IPC;
+using YAMDCC.Service.RegLayouts;
 
 namespace YAMDCC.Service;
 
@@ -37,7 +38,7 @@ internal sealed class FanControlService : ServiceBase
     /// <summary>
     /// The currently loaded YAMDCC config.
     /// </summary>
-    private YAMDCC_Config Config;
+    private YamdccCfg Config;
 
     /// <summary>
     /// The named message pipe server that YAMDCC connects to.
@@ -53,6 +54,23 @@ internal sealed class FanControlService : ServiceBase
     private EcInfo EcInfo;
 
     private bool FullBlastEnabled;
+    #endregion
+
+    #region EC register definitions
+    private IRegLayout RegLayout;
+
+    private const byte CPU_FAN_SPEED_REG = 0x71;
+    private const byte GPU_FAN_SPEED_REG = 0x89;
+    private const byte CPU_TEMP_REG = 0x68;
+    private const byte GPU_TEMP_REG = 0x80;
+
+    private readonly byte[] CpuTupRegs = [0x6A, 0x6B, 0x6C, 0x6D, 0x6E, 0x6F];
+    private readonly byte[] CpuTdownRegs = [0x7A, 0x7B, 0x7C, 0x7D, 0x7E, 0x7F];
+    private readonly byte[] CpuFanSpeedRegs = [0x72, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78];
+
+    private readonly byte[] GpuTupRegs = [0x82, 0x83, 0x84, 0x85, 0x86, 0x87];
+    private readonly byte[] GpuTdownRegs = [0x92, 0x93, 0x94, 0x95, 0x96, 0x97];
+    private readonly byte[] GpuFanSpeedRegs = [0x8A, 0x8B, 0x8C, 0x8D, 0x8E, 0x8F, 0x90];
     #endregion
 
     /// <summary>
@@ -278,11 +296,11 @@ internal sealed class FanControlService : ServiceBase
             }
             case Command.GetFanSpeed:
             {
-                if (args.Length == 1 && args[0] is int fan)
+                if (args.Length == 1 && args[0] is bool gpuFan)
                 {
                     parseSuccess = true;
                     sendSuccessMsg = false;
-                    cmdSuccess = GetFanSpeed(id, fan);
+                    cmdSuccess = GetFanSpeed(id, gpuFan);
                 }
                 break;
             }
@@ -292,20 +310,25 @@ internal sealed class FanControlService : ServiceBase
                 {
                     parseSuccess = true;
                     sendSuccessMsg = false;
-                    cmdSuccess = GetFanRPM(id, fan);
+                    cmdSuccess = false; //GetFanRPM(id, fan);
                 }
                 break;
             }
             case Command.GetTemp:
             {
-                if (args.Length == 1 && args[0] is int fan)
+                if (args.Length == 1 && args[0] is bool gpuFan)
                 {
                     parseSuccess = true;
                     sendSuccessMsg = false;
-                    cmdSuccess = GetTemp(id, fan);
+                    cmdSuccess = GetTemp(id, gpuFan);
                 }
                 break;
             }
+            case Command.GetKeyLightSupported:
+                parseSuccess = true;
+                sendSuccessMsg = false;
+                cmdSuccess = GetKeyLightSupported(id);
+                break;
             case Command.GetKeyLightBright:
                 parseSuccess = true;
                 sendSuccessMsg = false;
@@ -320,23 +343,32 @@ internal sealed class FanControlService : ServiceBase
                 }
                 break;
             }
-            case Command.SetWinFnSwap:
+            case Command.GetKeySwapSupported:
+                parseSuccess = true;
+                sendSuccessMsg = false;
+                cmdSuccess = RegLayout is not null;
+                if (cmdSuccess)
+                {
+                    IPCServer.PushMessage(new ServiceResponse(Response.KeySwapSupported,
+                        RegLayout.KeySwapReg.HasValue));
+                }
+                break;
+            case Command.SetKeySwap:
             {
                 if (args.Length == 1 && args[0] is int enable)
                 {
                     parseSuccess = true;
-                    KeySwapConf cfg = Config.KeySwapConf;
                     if (enable == -1)
                     {
-                        cfg.Enabled = !cfg.Enabled;
+                        Config.KeySwapEnabled = !Config.KeySwapEnabled;
                     }
                     else if (enable == 0)
                     {
-                        cfg.Enabled = false;
+                        Config.KeySwapEnabled = false;
                     }
                     else if (enable == 1)
                     {
-                        cfg.Enabled = true;
+                        Config.KeySwapEnabled = true;
                     }
                     else
                     {
@@ -344,7 +376,7 @@ internal sealed class FanControlService : ServiceBase
                     }
                     if (parseSuccess)
                     {
-                        cmdSuccess = SetWinFnSwap(cfg);
+                        cmdSuccess = SetWinFnSwap();
                     }
                 }
                 break;
@@ -354,22 +386,23 @@ internal sealed class FanControlService : ServiceBase
                 if (args.Length == 1 && args[0] is int fanProf)
                 {
                     parseSuccess = true;
-                    foreach (FanConf cfg in Config.FanConfs)
+                    // TODO: make nicer
+                    foreach (FanConf cfg in new FanConf[] { Config.CpuFan, Config.GpuFan })
                     {
                         if (fanProf < 0)
                         {
-                            if (cfg.CurveSel >= cfg.FanCurveConfs.Count - 1)
+                            if (Config.CpuFan.ProfSel >= cfg.FanProfs.Count - 1)
                             {
-                                cfg.CurveSel = 0;
+                                cfg.ProfSel = 0;
                             }
                             else
                             {
-                                cfg.CurveSel++;
+                                cfg.ProfSel++;
                             }
                         }
                         else
                         {
-                            cfg.CurveSel = GetValidFanIndex(fanProf);
+                            cfg.ProfSel = fanProf;
                         }
                     }
                     cmdSuccess = ApplyConf();
@@ -381,28 +414,22 @@ internal sealed class FanControlService : ServiceBase
                 if (args.Length == 1 && args[0] is int perfMode)
                 {
                     parseSuccess = true;
-                    if (Config.PerfModeConf is not null)
+                    if (perfMode < 0)
                     {
-                        PerfModeConf cfg = Config.PerfModeConf;
-                        if (perfMode < 0)
+                        if (Config.PerfMode == PerfMode.Performance)
                         {
-                            if (cfg.ModeSel >= cfg.PerfModes.Count - 1)
-                            {
-                                cfg.ModeSel = 0;
-                            }
-                            else
-                            {
-                                cfg.ModeSel++;
-                            }
+                            Config.PerfMode = PerfMode.MaxBattery;
                         }
                         else
                         {
-                            cfg.ModeSel = perfMode > cfg.PerfModes.Count - 1
-                                ? cfg.PerfModes.Count - 1
-                                : perfMode;
+                            Config.PerfMode++;
                         }
-                        cmdSuccess = ApplyConf();
                     }
+                    else
+                    {
+                        Config.PerfMode = (PerfMode)perfMode;
+                    }
+                    cmdSuccess = ApplyConf();
                 }
                 break;
             }
@@ -476,7 +503,8 @@ internal sealed class FanControlService : ServiceBase
 
         try
         {
-            Config = YAMDCC_Config.Load(Paths.CurrentConf);
+            Config = YamdccCfg.Load(Paths.CurrentConfV2);
+            RegLayout = Config.IsNewEC ? new RegLayoutV2() : new RegLayoutV1();
             Log.Info(Strings.GetString("cfgLoaded"));
 
             if (clientID is not null)
@@ -485,28 +513,25 @@ internal sealed class FanControlService : ServiceBase
                     Response.ConfLoaded, clientID.Value));
             }
 
-            if (Config.FirmVerSupported)
+            EcInfo = new();
+            if (_EC.ReadString(0xA0, 0xC, out string ecVer) && ecVer.Length == 0xC)
             {
-                EcInfo = new();
-                if (_EC.ReadString(0xA0, 0xC, out string ecVer) && ecVer.Length == 0xC)
+                EcInfo.Version = ecVer;
+                Log.Debug($"EC firmware version: {ecVer}");
+            }
+            if (_EC.ReadString(0xAC, 0x10, out string ecDate) && ecDate.Length == 0x10)
+            {
+                try
                 {
-                    EcInfo.Version = ecVer;
-                    Log.Debug($"EC firmware version: {ecVer}");
+                    string temp = $"{ecDate.Substring(4, 4)}-{ecDate.Substring(0, 2)}-{ecDate.Substring(2, 2)}" +
+                $"T{ecDate.Substring(8, 2).Replace(' ', '0')}:{ecDate.Substring(11, 2)}:{ecDate.Substring(14, 2)}";
+                    EcInfo.Date = DateTime.ParseExact(temp, "s", CultureInfo.InvariantCulture);
+                    Log.Debug($"EC firmware date: {EcInfo.Date:G}");
                 }
-                if (_EC.ReadString(0xAC, 0x10, out string ecDate) && ecDate.Length == 0x10)
+                catch (FormatException ex)
                 {
-                    try
-                    {
-                        string temp = $"{ecDate.Substring(4, 4)}-{ecDate.Substring(0, 2)}-{ecDate.Substring(2, 2)}" +
-                    $"T{ecDate.Substring(8, 2).Replace(' ', '0')}:{ecDate.Substring(11, 2)}:{ecDate.Substring(14, 2)}";
-                        EcInfo.Date = DateTime.ParseExact(temp, "s", CultureInfo.InvariantCulture);
-                        Log.Debug($"EC firmware date: {EcInfo.Date:G}");
-                    }
-                    catch (FormatException ex)
-                    {
-                        Log.Error($"Failed to parse EC firmware date: {ex.Message}");
-                        Log.Debug($"EC firmware date (raw): {ecDate}");
-                    }
+                    Log.Error($"Failed to parse EC firmware date: {ex.Message}");
+                    Log.Debug($"EC firmware date (raw): {ecDate}");
                 }
             }
 
@@ -541,136 +566,105 @@ internal sealed class FanControlService : ServiceBase
         Log.Info(Strings.GetString("cfgApplying"));
         bool success = true;
 
-        // Write custom register values, if configured:
-        if (Config.RegConfs?.Count > 0)
-        {
-            // RegConfs are deprecated and will be removed in a future release
-            Log.Warn(Strings.GetString("warnRegConf"));
-
-            int numRegConfs = Config.RegConfs.Count;
-            for (int i = 0; i < numRegConfs; i++)
-            {
-                RegConf cfg = Config.RegConfs[i];
-                Log.Info(Strings.GetString("svcWriteRegConfs", i + 1, numRegConfs));
-                if (!LogECWriteByte(cfg.Reg, cfg.Enabled ? cfg.OnVal : cfg.OffVal))
-                {
-                    success = false;
-                }
-            }
-        }
-
         // Write the fan profile to the appropriate registers for each fan:
-        int numFanConfs = Config.FanConfs.Count;
-        for (int i = 0; i < numFanConfs; i++)
+        SetFanProf(Config.CpuFan.FanProfs[Config.CpuFan.ProfSel], false);
+        SetFanProf(Config.CpuFan.FanProfs[Config.GpuFan.ProfSel], true);
+
+        // Write the performance mode
+        Log.Info(Strings.GetString("svcWritePerfMode"));
+        PerfMode pMode = Config.CpuFan.FanProfs[Config.CpuFan.ProfSel].PerfMode == PerfMode.Default
+            ? Config.PerfMode
+            : Config.CpuFan.FanProfs[Config.CpuFan.ProfSel].PerfMode;
+
+        if (!LogECWriteByte(RegLayout.PerfModeReg, pMode.ToECValue()))
         {
-            FanConf cfg = Config.FanConfs[i];
-            Log.Info(Strings.GetString("svcWriteFanConfs", cfg.Name, i + 1, numFanConfs));
-
-            FanCurveConf curveCfg = cfg.FanCurveConfs[cfg.CurveSel];
-            for (int j = 0; j < curveCfg.TempThresholds.Count; j++)
-            {
-                TempThreshold t = curveCfg.TempThresholds[j];
-                if (!LogECWriteByte(cfg.FanCurveRegs[j], t.FanSpeed))
-                {
-                    success = false;
-                }
-                if (j > 0)
-                {
-                    if (!LogECWriteByte(cfg.UpThresholdRegs[j - 1], t.UpThreshold))
-                    {
-                        success = false;
-                    }
-                    byte downT = Config.OffsetDT
-                        ? (byte)(t.UpThreshold - t.DownThreshold)
-                        : t.DownThreshold;
-
-                    if (!LogECWriteByte(cfg.DownThresholdRegs[j - 1], downT))
-                    {
-                        success = false;
-                    }
-                }
-            }
-
-            // Write the performance mode
-            if (i == 0)
-            {
-                PerfModeConf pModeCfg = Config.PerfModeConf;
-                if (pModeCfg is not null)
-                {
-                    Log.Info(Strings.GetString("svcWritePerfMode"));
-                    int idx = curveCfg.PerfModeSel < 0
-                        ? pModeCfg.ModeSel
-                        : curveCfg.PerfModeSel;
-
-                    if (!LogECWriteByte(pModeCfg.Reg, pModeCfg.PerfModes[idx].Value))
-                    {
-                        success = false;
-                    }
-                }
-            }
+            success = false;
         }
 
         // Write the charge threshold:
-        ChargeLimitConf chgLimCfg = Config.ChargeLimitConf;
-        if (chgLimCfg is not null)
+        Log.Info(Strings.GetString("svcWriteChgLim"));
+        if (!LogECWriteByte(RegLayout.ChargeLimReg, (byte)(Config.ChargeLim + 128)))
         {
-            Log.Info(Strings.GetString("svcWriteChgLim"));
-            if (!LogECWriteByte(chgLimCfg.Reg, (byte)(chgLimCfg.MinVal + chgLimCfg.CurVal)))
-            {
-                success = false;
-            }
+            success = false;
         }
 
         // Write the fan mode
-        FanModeConf fModeCfg = Config.FanModeConf;
-        if (fModeCfg is not null)
+        Log.Info(Strings.GetString("svcWriteFanMode"));
+        if (!LogECWriteByte(RegLayout.FanModeReg, Config.FanMode.ToECValue()))
         {
-            Log.Info(Strings.GetString("svcWriteFanMode"));
-            if (!LogECWriteByte(fModeCfg.Reg, fModeCfg.FanModes[fModeCfg.ModeSel].Value))
-            {
-                success = false;
-            }
+            success = false;
         }
 
         // Write the Win/Fn key swap setting
-        KeySwapConf keySwapCfg = Config.KeySwapConf;
-        if (keySwapCfg is not null)
+        if (!SetWinFnSwap())
         {
-            if (!SetWinFnSwap(keySwapCfg))
+            success = false;
+        }
+        return success;
+    }
+
+    private bool SetFanProf(FanProf prof, bool gpu)
+    {
+        Log.Info(Strings.GetString("svcWriteFanConfs", gpu ? "GPU" : "CPU"));
+        bool success = true;
+
+        byte[] tUpRegs = gpu ? GpuTupRegs : CpuTupRegs;
+        byte[] tDownRegs = gpu ? GpuTdownRegs : CpuTdownRegs;
+        byte[] speedRegs = gpu ? GpuFanSpeedRegs : CpuFanSpeedRegs;
+        for (int i = 0; i < prof.Thresholds.Count; i++)
+        {
+            Threshold t = prof.Thresholds[i];
+            if (!LogECWriteByte(speedRegs[i], t.Speed))
             {
                 success = false;
+            }
+            if (i > 0)
+            {
+                if (!LogECWriteByte(tUpRegs[i - 1], t.Tup))
+                {
+                    success = false;
+                }
+                byte downT = Config.OffsetDT
+                    ? (byte)(t.Tup - t.Tdown)
+                    : t.Tdown;
+
+                if (!LogECWriteByte(tDownRegs[i - 1], downT))
+                {
+                    success = false;
+                }
             }
         }
         return success;
     }
 
-    private bool SetWinFnSwap(KeySwapConf cfg)
+    private bool SetWinFnSwap()
     {
         Log.Info(Strings.GetString("svcWriteKeySwap"));
-        return LogECWriteByte(cfg.Reg,
-            cfg.Enabled ? cfg.OnVal : cfg.OffVal);
+        if (RegLayout.KeySwapReg.HasValue)
+        {
+            return LogECWriteByte(RegLayout.KeySwapReg.Value,
+                Config.KeySwapEnabled ? (byte)16 : (byte)0);
+        }
+        return false;
     }
 
-    private bool GetFanSpeed(int clientId, int fan)
+    private bool GetFanSpeed(int clientId, bool gpuFan)
     {
         if (Config is null)
         {
             return false;
         }
 
-        fan = GetValidFanIndex(fan);
-        FanConf cfg = Config.FanConfs[fan];
-
-        if (LogECReadByte(cfg.SpeedReadReg, out byte speed))
+        if (LogECReadByte(gpuFan ? GPU_FAN_SPEED_REG : CPU_FAN_SPEED_REG, out byte speed))
         {
             IPCServer.PushMessage(new ServiceResponse(
-                Response.FanSpeed, fan, (int)speed), clientId);
+                Response.FanSpeed, gpuFan, speed), clientId);
             return true;
         }
         return false;
     }
 
-    private bool GetFanRPM(int clientId, int fan)
+    /*private bool GetFanRPM(int clientId, int fanIdx)
     {
         if (Config?.FanConfs[fan].RPMConf is null)
         {
@@ -712,22 +706,19 @@ internal sealed class FanControlService : ServiceBase
             return true;
         }
         return false;
-    }
+    }*/
 
-    private bool GetTemp(int clientId, int fan)
+    private bool GetTemp(int clientId, bool gpuFan)
     {
         if (Config is null)
         {
             return false;
         }
 
-        fan = GetValidFanIndex(fan);
-        FanConf cfg = Config.FanConfs[fan];
-
-        if (LogECReadByte(cfg.TempReadReg, out byte temp))
+        if (LogECReadByte(gpuFan ? GPU_TEMP_REG : CPU_TEMP_REG, out byte temp))
         {
             IPCServer.PushMessage(new ServiceResponse(
-                Response.Temp, fan, (int)temp), clientId);
+                Response.Temp, gpuFan, temp), clientId);
             return true;
         }
         return false;
@@ -735,13 +726,12 @@ internal sealed class FanControlService : ServiceBase
 
     private bool SetFullBlast(int enable)
     {
-        if (Config?.FullBlastConf is null)
+        if (RegLayout is null)
         {
             return false;
         }
 
-        FullBlastConf fbCfg = Config.FullBlastConf;
-        if (LogECReadByte(fbCfg.Reg, out byte value))
+        if (LogECReadByte(0x98, out byte value))
         {
             bool oldFbEnable = FullBlastEnabled;
 
@@ -766,15 +756,15 @@ internal sealed class FanControlService : ServiceBase
             if (FullBlastEnabled)
             {
                 Log.Debug("Enabling Full Blast...");
-                value |= fbCfg.Mask;
+                value |= 0x80;
             }
             else
             {
                 Log.Debug("Disabling Full Blast...");
-                value &= (byte)~fbCfg.Mask;
+                value &= 0x7F;
             }
 
-            if (LogECWriteByte(fbCfg.Reg, value))
+            if (LogECWriteByte(0x98, value))
             {
                 return true;
             }
@@ -784,20 +774,35 @@ internal sealed class FanControlService : ServiceBase
         return false;
     }
 
+    private bool GetKeyLightSupported(int clientId)
+    {
+        if (RegLayout is null)
+        {
+            return false;
+        }
+
+        if (LogECReadByte(RegLayout.KeyLightReg, out byte value))
+        {
+            IPCServer.PushMessage(new ServiceResponse(
+                Response.KeyLightSupported, (value & 0x80) == 0x80), clientId);
+            return true;
+        }
+        return false;
+    }
+
     private bool GetKeyLight(int clientId)
     {
-        if (Config?.KeyLightConf is null)
+        if (RegLayout is null)
         {
             return false;
         }
 
         Log.Debug(Strings.GetString("svcGetKeyLight"));
 
-        KeyLightConf klCfg = Config.KeyLightConf;
-        if (LogECReadByte(klCfg.Reg, out byte value) &&
-            value >= klCfg.MinVal && value <= klCfg.MaxVal)
+        if (LogECReadByte(RegLayout.KeyLightReg, out byte value) &&
+            (value & 0x80) == 0x80)
         {
-            int brightness = value - klCfg.MinVal;
+            int brightness = value & 0x7F;
 
             IPCServer.PushMessage(new ServiceResponse(
                 Response.KeyLightBright, brightness), clientId);
@@ -808,26 +813,24 @@ internal sealed class FanControlService : ServiceBase
 
     private bool SetKeyLight(byte brightness)
     {
-        if (Config?.KeyLightConf is null)
+        if (RegLayout is null)
         {
             return false;
         }
 
         Log.Debug(Strings.GetString("svcSetKeyLight", brightness));
 
-        KeyLightConf klCfg = Config.KeyLightConf;
-        byte value = (byte)(brightness + klCfg.MinVal);
-        return value >= klCfg.MinVal && value <= klCfg.MaxVal &&
-            LogECWriteByte(klCfg.Reg, value);
+        if (LogECReadByte(RegLayout.KeyLightReg, out byte value) &&
+            (value & 0x80) == 0x80 && brightness >= 0 && brightness <= 3)
+        {
+            value = (byte)(brightness | 0x80);
+            return LogECWriteByte(RegLayout.KeyLightReg, value);
+        }
+        return false;
     }
 
     private bool GetFirmVer(int clientId)
     {
-        if (Config is null || !Config.FirmVerSupported)
-        {
-            return false;
-        }
-
         Log.Debug(Strings.GetString("svcGerFirmVer", clientId));
         IPCServer.PushMessage(new ServiceResponse(Response.FirmVer, EcInfo), clientId);
         return true;
@@ -865,87 +868,14 @@ internal sealed class FanControlService : ServiceBase
                 Config.Model = pcModel;
             }
 
-            if (Config.FirmVerSupported)
-            {
-                Config.FirmVer = EcInfo.Version;
-                Config.FirmDate = EcInfo.Date;
-            }
-            else
-            {
-                Config.FirmVer = null;
-                Config.FirmDate = null;
-            }
+            Config.FirmVer = EcInfo.Version;
+            Config.FirmDate = EcInfo.Date;
 
-            for (int i = 0; i < Config.FanConfs.Count; i++)
-            {
-                Log.Info(Strings.GetString("svcReadProfs", i + 1, Config.FanConfs.Count));
-
-                FanConf cfg = Config.FanConfs[i];
-
-                // look for an already existing Default fan profile
-                FanCurveConf curveCfg = null;
-                for (int j = 0; j < cfg.FanCurveConfs.Count; j++)
-                {
-                    if (cfg.FanCurveConfs[j].Name == "Default")
-                    {
-                        curveCfg = cfg.FanCurveConfs[j];
-                    }
-                }
-
-                // there isn't already a Default fan profile in this config,
-                // make one and insert it at the start
-                if (curveCfg is null)
-                {
-                    curveCfg = new()
-                    {
-                        Name = "Default",
-                        TempThresholds = new List<TempThreshold>(cfg.FanCurveRegs.Length),
-                    };
-                    cfg.FanCurveConfs.Insert(0, curveCfg);
-                    cfg.CurveSel++;
-                }
-
-                // reset each fan's first fan profile descriptions
-                curveCfg.Desc = Strings.GetString("DefaultDesc");
-
-                for (int j = 0; j < curveCfg.TempThresholds.Count; j++)
-                {
-                    curveCfg.TempThresholds[j] ??= new();
-                    TempThreshold t = curveCfg.TempThresholds[j];
-
-                    if (LogECReadByte(cfg.FanCurveRegs[j], out byte value))
-                    {
-                        if (value < cfg.MinSpeed || value > cfg.MaxSpeed)
-                        {
-                            CommonConfig.SetECtoConfState(ECtoConfState.Fail);
-                            return false;
-                        }
-                        t.FanSpeed = value;
-                    }
-
-                    if (j == 0)
-                    {
-                        t.UpThreshold = 0;
-                        t.DownThreshold = 0;
-                    }
-                    else
-                    {
-                        if (LogECReadByte(cfg.UpThresholdRegs[j - 1], out value))
-                        {
-                            t.UpThreshold = value;
-                        }
-                        if (LogECReadByte(cfg.DownThresholdRegs[j - 1], out value))
-                        {
-                            t.DownThreshold = Config.OffsetDT
-                                ? (byte)(t.UpThreshold - value)
-                                : value;
-                        }
-                    }
-                }
-            }
+            Config.CpuFan.FanProfs[0] = GetDefaultFanProf(false);
+            Config.GpuFan.FanProfs[0] = GetDefaultFanProf(true);
 
             Log.Info("Saving config...");
-            Config.Save(Paths.CurrentConf);
+            Config.Save(Paths.CurrentConfV2);
 
             CommonConfig.SetECtoConfState(ECtoConfState.Success);
             return true;
@@ -962,11 +892,50 @@ internal sealed class FanControlService : ServiceBase
         return new Win32Exception(error).Message;
     }
 
-    private int GetValidFanIndex(int i)
+    private FanProf GetDefaultFanProf(bool gpu)
     {
-        // clamp provided i value to valid FanConf range
-        return i > Config.FanConfs.Count
-            ? Config.FanConfs.Count - 1
-            : i > 0 ? i : 0;
+        Log.Info(Strings.GetString("svcReadProfs", gpu ? "GPU" : "CPU"));
+
+        FanProf prof = new()
+        {
+            Name = "Default",
+            Desc = Strings.GetString("DefaultDesc", gpu ? "GPU" : "CPU"),
+            Thresholds = new List<Threshold>(GpuFanSpeedRegs.Length),
+        };
+
+        byte[] tUpRegs = gpu ? GpuTupRegs : CpuTupRegs;
+        byte[] tDownRegs = gpu ? GpuTdownRegs : CpuTdownRegs;
+        byte[] speedRegs = gpu ? GpuFanSpeedRegs : CpuFanSpeedRegs;
+
+        for (int j = 0; j < prof.Thresholds.Count; j++)
+        {
+            prof.Thresholds[j] ??= new();
+            Threshold t = prof.Thresholds[j];
+
+            if (LogECReadByte(speedRegs[j], out byte value))
+            {
+                t.Speed = value;
+            }
+
+            if (j == 0)
+            {
+                t.Tup = 0;
+                t.Tdown = 0;
+            }
+            else
+            {
+                if (LogECReadByte(tUpRegs[j - 1], out value))
+                {
+                    t.Tup = value;
+                }
+                if (LogECReadByte(tDownRegs[j - 1], out value))
+                {
+                    t.Tdown = Config.OffsetDT
+                        ? (byte)(t.Tup - value)
+                        : value;
+                }
+            }
+        }
+        return prof;
     }
 }

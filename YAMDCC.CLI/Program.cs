@@ -94,8 +94,9 @@ internal static class Program
             applyConf = false;
 
         int profSwitchIdx = -1,
-            fanEditIdx = -1,
             profEditIdx = -1,
+            fanEditIdx = -1,
+
 
             spdIdx = -1,
             fanSpd = -1,
@@ -107,7 +108,7 @@ internal static class Program
 
         string fanName = string.Empty,
             profName = string.Empty,
-            confPath = Paths.CurrentConf,
+            confPath = Paths.CurrentConfV2,
             cfgAuthor = string.Empty;
 
         #region Parse actual commands and arguments
@@ -158,15 +159,27 @@ internal static class Program
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine($"ERROR: {(profEditArgs.Length < 2 ? "Not enough" : "Too many")} arguments for `{verb}`");
-                        Console.WriteLine($"(expected 2-4, got {profEditArgs.Length})");
+                        Console.WriteLine($"(expected 2, got {profEditArgs.Length})");
                         Console.ForegroundColor = fgColor;
                         return;
                     }
 
-                    if (!int.TryParse(profEditArgs[0], out fanEditIdx))
+                    switch (profEditArgs[0].ToLowerInvariant())
                     {
-                        fanName = profEditArgs[0];
+                        case "cpu":
+                            fanEditIdx = 0;
+                            break;
+                        case "gpu":
+                            fanEditIdx = 1;
+                            break;
+                        default:
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine($"ERROR: unexpected value `{profEditArgs[0]}` when parsing arguments for `{verb}`");
+                            Console.WriteLine("(expected either `cpu` or `gpu`)");
+                            Console.ForegroundColor = fgColor;
+                            return;
                     }
+
                     if (!int.TryParse(profEditArgs[1], out profEditIdx))
                     {
                         profName = profEditArgs[1];
@@ -287,10 +300,10 @@ internal static class Program
         #region The actual command logic
         // load the current YAMDCC config, or
         // the one specified by -config if it's set
-        YAMDCC_Config cfg;
+        YamdccCfg cfg;
         try
         {
-            cfg = YAMDCC_Config.Load(confPath);
+            cfg = YamdccCfg.Load(confPath);
         }
         catch (Exception ex)
         {
@@ -305,25 +318,12 @@ internal static class Program
             return;
         }
 
-        // Look up fan and profile indexes by name if fanIdx/profIdx are -1:
-        if (fanEditIdx == -1)
-        {
-            for (int i = 0; i < cfg.FanConfs.Count; i++)
-            {
-                if (cfg.FanConfs[i].Name == fanName)
-                {
-                    fanEditIdx = i;
-                    break;
-                }
-            }
-        }
-
         if (profEditIdx == -1 && fanEditIdx != -1)
         {
-            FanConf fanCfg =  cfg.FanConfs[fanEditIdx];
-            for (int i = 0; i < fanCfg.FanCurveConfs.Count; i++)
+            FanConf fanCfg = fanEditIdx == 1 ? cfg.GpuFan : cfg.CpuFan;
+            for (int i = 0; i < fanCfg.FanProfs.Count; i++)
             {
-                if (fanCfg.FanCurveConfs[i].Name == profName)
+                if (fanCfg.FanProfs[i].Name == profName)
                 {
                     profEditIdx = i;
                     break;
@@ -338,7 +338,7 @@ internal static class Program
             Console.WriteLine("YAMDCC EC monitor");
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine("   Fan");
+            Console.WriteLine("   Fan    CPU         GPU");
             Console.WriteLine("  Temp");
             Console.WriteLine(" Speed");
             Console.WriteLine("   RPM");
@@ -346,21 +346,14 @@ internal static class Program
             Console.ForegroundColor = fgColor;
             Console.WriteLine("Press Ctrl+C to exit");
 
-            for (int i = 0; i < cfg.FanConfs.Count; i++)
-            {
-                Console.SetCursorPosition((i + 1) * 10, 2);
-                Console.Write(cfg.FanConfs[i].Name);
-            }
-
             while (true)
             {
-                for (int i = 0; i < cfg.FanConfs.Count; i++)
-                {
-                    IPCClient.PushMessage(new ServiceCommand(Command.GetTemp, i));
-                    IPCClient.PushMessage(new ServiceCommand(Command.GetFanSpeed, i));
-                    IPCClient.PushMessage(new ServiceCommand(Command.GetFanRPM, i));
-                }
-
+                IPCClient.PushMessage(new ServiceCommand(Command.GetTemp, false));
+                IPCClient.PushMessage(new ServiceCommand(Command.GetFanSpeed, false));
+                IPCClient.PushMessage(new ServiceCommand(Command.GetFanRPM, false));
+                IPCClient.PushMessage(new ServiceCommand(Command.GetTemp, true));
+                IPCClient.PushMessage(new ServiceCommand(Command.GetFanSpeed, true));
+                IPCClient.PushMessage(new ServiceCommand(Command.GetFanRPM, true));
                 Thread.Sleep(1000);
             }
         }
@@ -380,170 +373,93 @@ internal static class Program
                 Console.WriteLine($"Author: {cfg.Author}");
                 Console.WriteLine($"Laptop manufacturer: {cfg.Manufacturer}");
                 Console.WriteLine($"Laptop model: {cfg.Model}");
-                Console.WriteLine($"EC firmware version: {(cfg.FirmVerSupported ? cfg.FirmVer : "(unsupported)")}");
-                Console.WriteLine($"EC firmware date: {(cfg.FirmVerSupported ? cfg.FirmDate : "(unsupported)")}");
+                Console.WriteLine($"EC firmware version: {cfg.FirmVer}");
+                Console.WriteLine($"EC firmware date: {cfg.FirmDate}");
 
-                for (int i = 0; i < cfg.FanConfs.Count; i++)
-                {
-                    FanConf fanCfg = cfg.FanConfs[i];
-                    FanCurveConf curveCfg = fanCfg.FanCurveConfs[fanCfg.CurveSel];
-
-                    Console.WriteLine();
-                    Console.WriteLine($"~~~~~ {i}: {fanCfg.Name} ~~~~~");
-                    Console.WriteLine($"Fan speed range: {fanCfg.MinSpeed}-{fanCfg.MaxSpeed}%");
-                    Console.WriteLine($"Current fan profile: {curveCfg.Name}");
-                    Console.WriteLine("Available fan profiles:");
-                    for (int j = 0; j < fanCfg.FanCurveConfs.Count; j++)
-                    {
-                        Console.WriteLine($"  {j}: {fanCfg.FanCurveConfs[j].Name}");
-                    }
-
-                    Console.WriteLine();
-                    Console.WriteLine("Current fan profile settings:");
-
-                    StringBuilder
-                        fanSpds = new("  Speed (%): "),
-                        tUps =      new("    Up (°C): "),
-                        tDowns =    new("  Down (°C): ");
-
-                    for (int j = 0; j < curveCfg.TempThresholds.Count; j++)
-                    {
-                        fanSpds.Append($"{curveCfg.TempThresholds[j].FanSpeed,3} ");
-                        if (j == 0)
-                        {
-                            tUps.Append("  L ");
-                        }
-                        else
-                        {
-                            tUps.Append($"{curveCfg.TempThresholds[j].UpThreshold,3} ");
-                        }
-
-                        if (j == curveCfg.TempThresholds.Count - 1)
-                        {
-                            tDowns.Append("  H ");
-                        }
-                        else
-                        {
-                            tDowns.Append($"{curveCfg.TempThresholds[j + 1].DownThreshold,3} ");
-                        }
-                    }
-                    Console.WriteLine($"{fanSpds}");
-                    Console.WriteLine($"{tUps}");
-                    Console.WriteLine($"{tDowns}");
-                }
+                WriteConfInfo(cfg.CpuFan, false);
+                WriteConfInfo(cfg.GpuFan, true);
 
                 Console.WriteLine();
-                if (cfg.ChargeLimitConf is not null ||
-                    cfg.PerfModeConf is not null ||
-                    cfg.KeySwapConf is not null)
+                Console.WriteLine("~~~~~ Extras ~~~~~");
+                if (cfg.ChargeLim == 0)
                 {
-                    Console.WriteLine("~~~~~ Extras ~~~~~");
-                    if (cfg.ChargeLimitConf is not null)
-                    {
-                        if (cfg.ChargeLimitConf.CurVal == 0)
-                        {
-                            Console.WriteLine("Charge threshold: disabled");
-                        }
-                        Console.WriteLine($"Charge threshold: {cfg.ChargeLimitConf.CurVal}%");
-                    }
-                    if (cfg.KeySwapConf is not null)
-                    {
-                        Console.WriteLine($"Win/Fn key swap: {(cfg.KeySwapConf.Enabled ? "enabled" : "disabled")}");
-                    }
-                    if (cfg.PerfModeConf is not null)
-                    {
-                        Console.WriteLine();
-                        PerfModeConf pMode = cfg.PerfModeConf;
-                        Console.WriteLine($"Default performance mode: {pMode.PerfModes[pMode.ModeSel].Name}");
-                        Console.WriteLine("Available performance modes:");
-                        for (int i = 0; i < pMode.PerfModes.Count; i++)
-                        {
-                            Console.WriteLine($"  {i}: {pMode.PerfModes[i].Name}");
-                        }
-                    }
+                    Console.WriteLine("Charge threshold: disabled");
                 }
+                Console.WriteLine($"Charge threshold: {cfg.ChargeLim}%");
+
+                Console.WriteLine($"Win/Fn key swap: {(cfg.KeySwapEnabled ? "enabled" : "disabled")}");
+
+                Console.WriteLine();
+                Console.WriteLine($"Default performance mode: {cfg.PerfMode}");
             }
         }
 
         // -new
         if (newFanProf)
         {
-            for (int i = 0; i < cfg.FanConfs.Count; i++)
-            {
-                FanConf fanCfg = cfg.FanConfs[i];
-
-                // Create a copy of the currently selected fan profile
-                // and add it to the config's list:
-                FanCurveConf oldCurveCfg = fanCfg.FanCurveConfs[fanCfg.CurveSel];
-                fanCfg.FanCurveConfs.Add(oldCurveCfg.Copy());
-                fanCfg.CurveSel = fanCfg.FanCurveConfs.Count - 1;
-
-                // change name to indicate the new fan profile is a copy of the old one
-                // TODO: allow profile name and description to be configured
-                fanCfg.FanCurveConfs[fanCfg.CurveSel].Name = $"Copy of {oldCurveCfg.Name}";
-                fanCfg.FanCurveConfs[fanCfg.CurveSel].Desc = $"(Copy of {oldCurveCfg.Name})\n{oldCurveCfg.Desc}";
-            }
+            CloneFanProf(cfg.CpuFan);
+            CloneFanProf(cfg.GpuFan);
         }
 
         // -delete
         else if (delFanProf)
         {
             // Remove each equivalent fan profile from the config's list
-            for (int i = 0; i < cfg.FanConfs.Count; i++)
+            FanConf fanCfg = cfg.CpuFan;
+            fanCfg.FanProfs.RemoveAt(cfg.CpuFan.ProfSel);
+            if (fanCfg.ProfSel > 0)
             {
-                FanConf fanCfg = cfg.FanConfs[i];
-                fanCfg.FanCurveConfs.RemoveAt(fanCfg.CurveSel);
-                if (fanCfg.CurveSel > 0)
-                {
-                    fanCfg.CurveSel -= 1;
-                }
+                fanCfg.ProfSel -= 1;
+            }
+            fanCfg = cfg.GpuFan;
+            fanCfg.FanProfs.RemoveAt(cfg.CpuFan.ProfSel);
+            if (fanCfg.ProfSel > 0)
+            {
+                fanCfg.ProfSel -= 1;
             }
         }
 
         // -profile
         if (profSwitchIdx != -1)
         {
-            foreach (FanConf fanCfg in cfg.FanConfs)
-            {
-                fanCfg.CurveSel = profSwitchIdx;
-            }
+            cfg.CpuFan.ProfSel = profSwitchIdx;
+            cfg.GpuFan.ProfSel = profSwitchIdx;
         }
 
         // -speed
         if (spdIdx != -1)
         {
-            TempThreshold t = cfg.FanConfs[fanEditIdx].FanCurveConfs[profEditIdx]
-                .TempThresholds[spdIdx];
+            FanConf fanCfg = fanEditIdx == 1 ? cfg.GpuFan : cfg.CpuFan;
+            Threshold t = fanCfg.FanProfs[profEditIdx].Thresholds[spdIdx];
 
-            t.FanSpeed = (byte)fanSpd;
+            t.Speed = (byte)fanSpd;
             if (tUp != -1)
             {
-                t.UpThreshold = (byte)tUp;
+                t.Tup = (byte)tUp;
             }
             if (tDown != -1)
             {
-                t.UpThreshold = (byte)tDown;
+                t.Tup = (byte)tDown;
             }
         }
 
         // -chargelim
         if (chargeLim != -1)
         {
-            int max = cfg.ChargeLimitConf.MaxVal - cfg.ChargeLimitConf.MinVal;
-            if (chargeLim < 0 || chargeLim > max)
+            if (chargeLim < 0 || chargeLim > 100)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(Strings.GetString("errChgLimVal", max));
+                Console.WriteLine(Strings.GetString("errChgLimVal"));
                 Console.ForegroundColor = fgColor;
                 return;
             }
-            cfg.ChargeLimitConf.CurVal = (byte)chargeLim;
+            cfg.ChargeLim = (byte)chargeLim;
         }
 
         // -perfmode
         if (perfMode != -2)
         {
-            int max = cfg.PerfModeConf.PerfModes.Count;
+            int max = Enum.GetValues(typeof(PerfMode)).Length;
             if (profEditIdx == -1)
             {
                 // set global performance mode value by default
@@ -554,7 +470,7 @@ internal static class Program
                     Console.ForegroundColor = fgColor;
                     return;
                 }
-                cfg.PerfModeConf.ModeSel = (byte)perfMode;
+                cfg.PerfMode = (PerfMode)perfMode;
             }
             else
             {
@@ -568,18 +484,17 @@ internal static class Program
                 }
                 // per-profile performance mode is always
                 // applied from the first fan's config
-                cfg.FanConfs[0].FanCurveConfs[profEditIdx].PerfModeSel = (byte)perfMode;
+                cfg.CpuFan.FanProfs[profEditIdx].PerfMode = (PerfMode)perfMode;
             }
         }
 
         // -keylight
         if (keyLight != -1 && ConnectSvc())
         {
-            int max = cfg.KeyLightConf.MaxVal - cfg.KeyLightConf.MinVal;
-            if (keyLight < 0 || keyLight > max)
+            if (keyLight < 0 || keyLight > 4)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine(Strings.GetString("errKLVal", max));
+                Console.WriteLine(Strings.GetString("errKLVal", 4));
                 Console.ForegroundColor = fgColor;
                 return;
             }
@@ -609,13 +524,74 @@ internal static class Program
         {
             // save config to be applied to the correct location if
             // editing a config other than CurrentConfig.xml
-            if (confPath != Paths.CurrentConf)
+            if (confPath != Paths.CurrentConfV2)
             {
-                cfg.Save(Paths.CurrentConf);
+                cfg.Save(Paths.CurrentConfV2);
             }
             IPCClient.PushMessage(new ServiceCommand(Command.ApplyConf));
         }
         #endregion
+    }
+
+    private static void WriteConfInfo(FanConf cfg, bool gpu)
+    {
+        FanProf prof = cfg.FanProfs[cfg.ProfSel];
+
+        Console.WriteLine();
+        Console.WriteLine($"~~~~~ {(gpu ? "GPU" : "CPU")} fan ~~~~~");
+        Console.WriteLine($"Current fan profile: {prof.Name}");
+        Console.WriteLine("Available fan profiles:");
+        for (int j = 0; j < cfg.FanProfs.Count; j++)
+        {
+            Console.WriteLine($"  {j}: {cfg.FanProfs[j].Name}");
+        }
+
+        Console.WriteLine();
+        Console.WriteLine("Current fan profile settings:");
+
+        StringBuilder
+            fanSpds = new("  Speed (%): "),
+            tUps =      new("    Up (°C): "),
+            tDowns =    new("  Down (°C): ");
+
+        for (int j = 0; j < prof.Thresholds.Count; j++)
+        {
+            fanSpds.Append($"{prof.Thresholds[j].Speed,3} ");
+            if (j == 0)
+            {
+                tUps.Append("  L ");
+            }
+            else
+            {
+                tUps.Append($"{prof.Thresholds[j].Tup,3} ");
+            }
+
+            if (j == prof.Thresholds.Count - 1)
+            {
+                tDowns.Append("  H ");
+            }
+            else
+            {
+                tDowns.Append($"{prof.Thresholds[j + 1].Tdown,3} ");
+            }
+        }
+        Console.WriteLine($"{fanSpds}");
+        Console.WriteLine($"{tUps}");
+        Console.WriteLine($"{tDowns}");
+    }
+
+    private static void CloneFanProf(FanConf cfg)
+    {
+        // Create a copy of the currently selected fan profile
+        // and add it to the config's list:
+        FanProf oldCurveCfg = cfg.FanProfs[cfg.ProfSel];
+        cfg.FanProfs.Add(oldCurveCfg.Copy());
+        cfg.ProfSel = cfg.FanProfs.Count - 1;
+
+        // change name to indicate the new fan profile is a copy of the old one
+        // TODO: allow profile name and description to be configured
+        cfg.FanProfs[cfg.ProfSel].Name = $"Copy of {oldCurveCfg.Name}";
+        cfg.FanProfs[cfg.ProfSel].Desc = $"(Copy of {oldCurveCfg.Name})\n{oldCurveCfg.Desc}";
     }
 
     private static void PrintHelp()

@@ -22,7 +22,7 @@ namespace YAMDCC.Common.Configs;
 /// <summary>
 /// Represents a fan profile (a.k.a. fan curve) config.
 /// </summary>
-public sealed class FanCurveConf
+public sealed class FanProf
 {
     /// <summary>
     /// The name of the fan profile.
@@ -37,44 +37,42 @@ public sealed class FanCurveConf
     public string Desc { get; set; }
 
     /// <summary>
-    /// The <see cref="PerfMode"/> to use with this fan profile,
-    /// as an index of the available performance modes.
+    /// The <see cref="Configs.PerfMode"/> to use with this fan profile.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This setting is ignored if this <see cref="FanCurveConf"/>
+    /// This setting is ignored if this <see cref="FanProf"/>
     /// is not for the first fan in the computer.
     /// </para>
     /// <para>
-    /// Set to -1 to use the default performance mode
-    /// (as set by <see cref="PerfModeConf.ModeSel"/>).
+    /// Defaults to <see cref="PerfMode.Default"/>.
     /// </para>
     /// </remarks>
     [XmlElement]
-    public int PerfModeSel { get; set; } = -1;
+    public PerfMode PerfMode { get; set; } = PerfMode.Default;
 
     /// <summary>
     /// The fan speeds and associated up and down thresholds.
     /// </summary>
     [XmlArray]
-    public List<TempThreshold> TempThresholds { get; set; }
+    public List<Threshold> Thresholds { get; set; }
 
     /// <summary>
-    /// Creates a deep copy of this <see cref="FanCurveConf"/>.
+    /// Creates a deep copy of this <see cref="FanProf"/>.
     /// </summary>
     /// <returns>
-    /// A copy of this <see cref="FanCurveConf"/>.
+    /// A copy of this <see cref="FanProf"/>.
     /// </returns>
-    public FanCurveConf Copy()
+    public FanProf Copy()
     {
         // create a shallow copy of this FanCurveConfig
-        FanCurveConf newCfg = (FanCurveConf)MemberwiseClone();
+        FanProf newCfg = (FanProf)MemberwiseClone();
 
         // create a copy of everything that didn't get copied by the above
-        newCfg.TempThresholds = new List<TempThreshold>(TempThresholds.Count);
-        for (int i = 0; i < TempThresholds.Count; i++)
+        newCfg.Thresholds = new List<Threshold>(Thresholds.Count);
+        for (int i = 0; i < Thresholds.Count; i++)
         {
-            newCfg.TempThresholds.Add(TempThresholds[i].Copy());
+            newCfg.Thresholds.Add(Thresholds[i].Copy());
         }
         return newCfg;
     }
