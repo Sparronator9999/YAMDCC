@@ -62,11 +62,19 @@ A fast, lightweight MSI Center alternative and fan control utility for MSI lapto
 
 ## Screenshots
 
-![Screenshot of the config editor's fan control tab](Media/YAMDCC-FanControlTab.png)
+![Screenshot of the config editor's fan control tab](Media/CE-FanControl.png)
 
-![Screenshot of the config editor's extra options tab](Media/YAMDCC-ExtrasTab.png)
+<details><summary><b>More screenshots</b> (click to expand)</summary>
 
-![Screenshot of the config editor's config information tab](Media/YAMDCC-InfoTab.png)
+![Screenshot of the config editor's extra options tab](Media/CE-Extras.png)
+
+![Screenshot of the config editor's config information tab](Media/CE-Info.png)
+
+![Screenshot of Hotkey Handler's config window](Media/HH-Config.png)
+
+![Screenshot of the CLI after running the `-info` command](Media/CLI-Info.png)
+
+</details>
 
 ## Supported Laptops
 
