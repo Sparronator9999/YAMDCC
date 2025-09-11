@@ -2,7 +2,7 @@ name: Build Program
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "legacy-v1.x"]
     paths:
       - "**.cs"
       - "**.csproj"
