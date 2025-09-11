@@ -59,6 +59,7 @@ public class NamedPipeConnection<TRead, TWrite> : IDisposable
     private readonly PipeStreamWrapper<TRead, TWrite> _streamWrapper;
 
     private readonly AutoResetEvent _writeSignal = new(false);
+    private readonly AutoResetEvent _writeCompleteSignal = new(false);
     private readonly BlockingCollection<TWrite> _writeQueue = [];
 
     private bool _notifiedSucceeded;
@@ -84,6 +85,7 @@ public class NamedPipeConnection<TRead, TWrite> : IDisposable
     /// </param>
     public bool PushMessage(TWrite message)
     {
+        _writeCompleteSignal.Reset();
         try
         {
             return _writeQueue.TryAdd(message) && _writeSignal.Set();
@@ -187,7 +189,23 @@ public class NamedPipeConnection<TRead, TWrite> : IDisposable
                 _streamWrapper.WriteObject(obj);
                 _streamWrapper.WaitForPipeDrain();
             }
+            _writeCompleteSignal.Set();
         }
+    }
+
+    public bool WaitWrite()
+    {
+        return _writeSignal.WaitOne();
+    }
+
+    public bool WaitWrite(int timeout)
+    {
+        return _writeSignal.WaitOne(timeout);
+    }
+
+    public bool WaitWrite(TimeSpan timeout)
+    {
+        return _writeSignal.WaitOne(timeout);
     }
 
     public void Dispose()

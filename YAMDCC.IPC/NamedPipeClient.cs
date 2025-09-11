@@ -140,6 +140,21 @@ public class NamedPipeClient<TRead, TWrite> : IDisposable
         Connection?.PushMessage(message);
     }
 
+    public bool WaitWrite()
+    {
+        return Connection?.WaitWrite() ?? false;
+    }
+
+    public bool WaitWrite(int timeout)
+    {
+        return Connection?.WaitWrite(timeout) ?? false;
+    }
+
+    public bool WaitWrite(TimeSpan timeout)
+    {
+        return Connection?.WaitWrite(timeout) ?? false;
+    }
+
     #region Wait for connection/disconnection
 
     /// <summary>

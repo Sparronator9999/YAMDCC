@@ -614,6 +614,7 @@ internal static class Program
                 cfg.Save(Paths.CurrentConf);
             }
             IPCClient.PushMessage(new ServiceCommand(Command.ApplyConf));
+            IPCClient.WaitWrite();
         }
         #endregion
     }
